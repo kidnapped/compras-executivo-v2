@@ -1,0 +1,133 @@
+#!/bin/bash
+
+echo "🔧 Criando estrutura do projeto FastAPI Industrial..."
+
+# Diretórios
+folders=(
+    app
+    app/api/v1/endpoints
+    app/core
+    app/crud
+    app/db/models
+    app/db/migrations
+    app/db
+    app/schemas
+    app/services
+)
+
+for folder in "${folders[@]}"
+do
+    mkdir -p "$folder"
+    echo "📁 Criado diretório: $folder"
+done
+
+# Arquivos com conteúdo básico
+
+# main.py
+cat > app/main.py << 'EOF'
+from fastapi import FastAPI
+from app.api.v1.api_v1_router import api_router
+from app.core.config import settings
+
+app = FastAPI(title=settings.PROJECT_NAME)
+
+app.include_router(api_router, prefix="/api/v1")
+
+@app.get("/")
+def read_root():
+    return {"msg": "Backend pronto para escala industrial 🚀"}
+EOF
+
+# api_v1_router.py
+cat > app/api/v1/api_v1_router.py << 'EOF'
+from fastapi import APIRouter
+from app.api.v1.endpoints import users, kpis
+
+api_router = APIRouter()
+api_router.include_router(users.router, prefix="/users", tags=["users"])
+api_router.include_router(kpis.router, prefix="/kpis", tags=["kpis"])
+EOF
+
+# endpoints/users.py
+cat > app/api/v1/endpoints/users.py << 'EOF'
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/")
+def list_users():
+    return [{"user_id": 1, "name": "Admin"}]
+EOF
+
+# endpoints/kpis.py
+cat > app/api/v1/endpoints/kpis.py << 'EOF'
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/")
+def list_kpis():
+    return [{"kpi_id": 1, "name": "Performance"}]
+EOF
+
+# core/config.py
+cat > app/core/config.py << 'EOF'
+from pydantic import BaseSettings
+
+class Settings(BaseSettings):
+    PROJECT_NAME: str = "Minha Plataforma KPIs"
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "senha_segura"
+    POSTGRES_SERVER: str = "db"
+    POSTGRES_DB: str = "meubanco"
+    JWT_SECRET: str = "sua_chave_super_secreta"
+
+    class Config:
+        env_file = ".env"
+
+settings = Settings()
+EOF
+
+# core/security.py
+cat > app/core/security.py << 'EOF'
+from datetime import datetime, timedelta
+from jose import jwt
+from app.core.config import settings
+
+ALGORITHM = "HS256"
+
+def create_access_token(subject: str, expires_delta: timedelta = timedelta(minutes=30)):
+    to_encode = {"exp": datetime.utcnow() + expires_delta, "sub": str(subject)}
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=ALGORITHM)
+    return encoded_jwt
+EOF
+
+# base_class.py
+cat > app/db/base_class.py << 'EOF'
+from typing import Any
+from sqlalchemy.ext.declarative import as_declarative, declared_attr
+
+@as_declarative()
+class Base:
+    id: Any
+    __name__: str
+
+    @declared_attr
+    def __tablename__(cls) -> str:
+        return cls.__name__.lower()
+EOF
+
+# requirements.txt
+cat > requirements.txt << 'EOF'
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+alembic
+pydantic
+python-jose[cryptography]
+passlib[bcrypt]
+python-dotenv
+EOF
+
+echo "✅ Estrutura criada com sucesso!"

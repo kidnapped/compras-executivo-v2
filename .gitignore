@@ -1,0 +1,84 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.env
+*.egg-info/
+.venv/
+.venv*/
+venv/
+venv*/
+*.log
+.coverage
+.mypy_cache/
+.pytest_cache/
+
+# FastAPI static / templates builds (se geradas)
+*.swp
+*.bak
+
+# Node / Vite / React
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# NPM / lock
+package-lock.json
+
+# Java
+*.class
+*.jar
+*.war
+!vdb/**/*.jar
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.tar
+docker-compose.override.yml
+
+# ZIPs e backups
+*.zip
+*.bak
+*.old
+*.orig
+
+# Certificados / segurança
+*.jks
+*.pem
+*.crt
+*.key
+*.truststore
+!vdb/**/*.jks
+
+# Arquivos locais sensíveis
+.env.*
+*.local.*
+*.secret.*
+credentials.json
+
+# Arquivos de execução
+*.sh~
+*.run
+*.out
+
+# Arquivos de debug temporários
+logs/
+tmp/
+temp/
+
+# Bundles
+app/static/dist/bundle.js
+app/static/dist/bundle.js.map

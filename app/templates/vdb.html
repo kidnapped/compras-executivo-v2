@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Explorador VDB</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; display: flex; height: 100vh; }
+        aside { width: 250px; background: #f2f2f2; overflow-y: auto; padding: 10px; }
+        main { flex: 1; padding: 20px; overflow-x: auto; background: #fff; }
+        ul { list-style: none; padding-left: 0; }
+        li { margin: 5px 0; cursor: pointer; }
+        li.schema { font-weight: bold; margin-top: 10px; }
+        li.tabela { padding-left: 20px; transition: background 0.2s; font-weight: normal;}
+        li.tabela:hover { background-color: yellow; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 5px; }
+        th input { width: 100%; box-sizing: border-box; }
+        #loading { display: none; }
+    </style>
+    <script>
+        let schemaAtual = null;
+        let tabelaAtual = null;
+
+        function mostrarModoManual() {
+            document.getElementById("conteudo").style.display = "none";
+            document.getElementById("modoManual").style.display = "block";
+        }
+
+        function carregarTabela(schema, tabela, page = 1, filtros = {}) {
+            const vdb = getVDBTipo(); // Pega do cookie
+            const params = new URLSearchParams({ schema, tabela, page, vdb });
+            Object.keys(filtros).forEach(k => params.append(k, filtros[k]));
+            document.getElementById('loading').style.display = 'block';
+            fetch('/vdb/query?' + params.toString())
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('conteudo').innerHTML = html;
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
+        function selecionarTabela(el, schema, tabela) {
+            document.querySelectorAll('.tabela').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            schemaAtual = schema;
+            tabelaAtual = tabela;
+            carregarTabela(schema, tabela);
+        }
+
+        function aplicarFiltro() {
+            if (!schemaAtual || !tabelaAtual) return;
+            const inputs = document.querySelectorAll('th input');
+            const filtros = {};
+            inputs.forEach((input, i) => {
+                if (input.value) filtros['f' + i] = input.value;
+            });
+            carregarTabela(schemaAtual, tabelaAtual, 1, filtros);
+        }
+
+        function executarQueryManual() {
+            const query = document.getElementById('queryManual').value;
+            const formData = new FormData();
+            formData.append('query', query);
+        
+            document.getElementById('loading').style.display = 'block';
+        
+            fetch('/vdb/query', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('resultadoManual').innerHTML = html;
+                document.getElementById('loading').style.display = 'none';
+            });
+        }
+        
+        function getVDBTipo() {
+            const match = document.cookie.match(/(?:^| )vdbTipo=([^;]+)/);
+            return match ? match[1] : "QueryContratos"; // valor padrão
+        }
+
+        function salvarVDB() {
+            const tipo = document.getElementById('vdb-select').value;
+            document.cookie = "vdbTipo=" + tipo + "; path=/";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tipoAtual = getVDBTipo();
+            const selectVdb = document.getElementById('vdb-select');
+
+            if (selectVdb) {
+                [...selectVdb.options].forEach(opt => {
+                opt.selected = (opt.value === tipoAtual);
+                });
+
+                selectVdb.addEventListener('change', function () {
+                salvarVDB();
+                location.reload(); // recarrega ao mudar VDB
+                });
+            }
+
+            // Carrega menu lateral com tabelas
+            fetch('/vdb/menu?vdb=' + tipoAtual)
+                .then(res => res.text())
+                .then(html => {
+                document.getElementById('menuTabelas').innerHTML = html;
+                });
+
+            // Enter nos inputs de filtro
+            document.addEventListener("keydown", function (e) {
+                if (e.target.matches('th input') && e.key === "Enter") {
+                    aplicarFiltro();
+                }
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <aside>
+        <button onclick="mostrarModoManual()" style="width:100%;height:32px;border-radius:10px;">Query Manual</button>    	
+        <select id="vdb-select" onchange="salvarVDB()" style="width:100%;height:32px;border-radius:10px;padding-left:10px;margin-top:10px;">
+            <option value="QueryFinanceiro">VDB - Financeiro</option>
+            <option value="QueryContratos">VDB - Contratos</option>
+        </select>
+        <ul id="menuTabelas">
+            <!-- preenchido via JS -->
+        </ul>
+    </aside>
+    <main>
+        <div id="loading">Carregando...</div>
+        <div id="conteudo">Selecione uma tabela no menu à esquerda.</div>
+        <div id="modoManual" style="display:none;">
+            <h3>Executar Query Manual</h3>
+            <textarea id="queryManual" style="width:100%; height:200px; font-family:monospace;"></textarea>
+            <br>
+            <button onclick="executarQueryManual()">Executar</button>
+            <div id="resultadoManual" style="margin-top:20px;"></div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,126 @@
+/* Peso 400 */
+/* cyrillic-ext */
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCAIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* cyrillic */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCkIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* vietnamese */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCIIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* latin-ext */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCMIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* latin */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyC0IT4ttDfA.woff2') format('woff2');
+  }
+  
+  /* Peso 500 */
+  /* cyrillic-ext */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCAIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* cyrillic */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCkIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* vietnamese */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCIIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* latin-ext */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCMIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* latin */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyC0IT4ttDfA.woff2') format('woff2');
+  }
+  
+  /* Peso 700 */
+  /* cyrillic-ext */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCAIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* cyrillic */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCkIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* vietnamese */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCIIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* latin-ext */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyCMIT4ttDfCmxA.woff2') format('woff2');
+  }
+  /* latin */
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/static/fonts/raleway/1Ptug8zYS_SKggPNyC0IT4ttDfA.woff2') format('woff2');
+  }
+  

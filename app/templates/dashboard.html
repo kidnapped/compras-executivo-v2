@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Compras Executivo{% endblock %}
+
+{% block content %}
+
+<div class="row row-tight">
+    <!-- CONTRATOS E RENOVAÇÕES -->
+    <div class="col-12 col-lg-3" id="card-contratos-container">
+        <div class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 180px;">
+            <div class="br-loading medium" role="progressbar" aria-label="carregando contratos"></div>
+        </div>
+    </div>
+
+    <!-- CONTRATOS POR EXERCÍCIO -->
+    <div class="col-12 col-lg-3" id="card-contratos-exercicio-container">
+        <div class="br-card h-100 card-contratos d-flex justify-content-center align-items-center" style="min-height: 180px;">
+            <div class="br-loading medium" role="progressbar" aria-label="carregando gráfico"></div>
+        </div>
+    </div>
+
+    <!-- REPRESENTAÇÃO ANUAL DE VALORES -->
+    <div class="col-12 col-lg-3" id="card-representacao-anual-valores">
+        <div class="br-card h-100 card-contratos d-flex justify-content-center align-items-center" style="min-height: 180px;">
+            <div class="br-loading medium" role="progressbar" aria-label="carregando gráfico"></div>
+        </div>
+    </div>
+
+    <!-- PRÓXIMAS ATIVIDADES -->
+    <div class="col-12 col-lg-3" id="card-proximas-atividades">
+        <div class="br-card h-100 card-contratos d-flex justify-content-center align-items-center" style="min-height: 180px;">
+            <div class="br-loading medium" role="progressbar" aria-label="carregando gráfico"></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row row-tight" style="margin-top:-18px;">
+    <div class="col-12">
+        <div class="br-card card-contratos">
+            <div class="card-header d-flex align-items-center justify-content-between header-grid-custom">
+
+                <div class="d-flex align-items-center" style="margin-top:-14px;">
+                    <i class="fas fa-table" style="color: #00366f; font-size: 14px;"></i>
+                    <span class="titulo-grid-uasg">Uasg: 393003 - DNIT-SEDE</span>
+                </div>
+
+                <!-- Botão de filtro à esquerda -->
+                <div class="dropdown">
+                    <button class="br-button small" id="btn-filtro-opcoes" onclick="App.dashboardGridFiltroOpcoes()"
+                        style="margin-top:-18px;">
+                        <i class="fas fa-search"></i> Opções de exibição
+                    </button>
+
+                    <div id="filtro-opcoes-menu" class="dropdown-menu"
+                        style="display: none; position: absolute; z-index: 999;">
+                        <label class="dropdown-item"><input type="checkbox"> Somente favoritos</label>
+
+                        <div class="dropdown-submenu">
+                            <button class="dropdown-item dropdown-toggle">Minhas UASGS</button>
+                            <div class="dropdown-menu">
+                                <label class="dropdown-item"><input type="checkbox"> Todas</label>
+                                <label class="dropdown-item"><input type="checkbox"> 393003 - DNIT
+                                    Sede</label>
+                                <div class="dropdown-item">
+                                    <button class="br-button circle small" title="Atualizar">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-submenu">
+                            <button class="dropdown-item dropdown-toggle">Exibir por página</button>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item">5</div>
+                                <div class="dropdown-item">10</div>
+                                <div class="dropdown-item">20</div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-submenu">
+                            <button class="dropdown-item dropdown-toggle">Filtrar contratos</button>
+                            <div class="dropdown-menu">
+                                <label class="dropdown-item"><input type="checkbox"> Todos</label>
+                                <label class="dropdown-item"><input type="checkbox"> Vigentes</label>
+                                <label class="dropdown-item"><input type="checkbox"> Finalizados</label>
+                                <label class="dropdown-item"><input type="checkbox"> Críticos</label>
+                                <label class="dropdown-item"><input type="checkbox"> 45 dias para vigência</label>
+                                <label class="dropdown-item"><input type="checkbox"> 90 dias para vigência</label>
+                                <label class="dropdown-item"><input type="checkbox"> 120 dias para vigência</label>
+                                <label class="dropdown-item"><input type="checkbox"> Mais de 120 dias</label>
+                                <label class="dropdown-item"><input type="checkbox"> Pessoa Física</label>
+                                <label class="dropdown-item"><input type="checkbox"> Pessoa Jurídica</label>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-submenu">
+                            <button class="dropdown-item dropdown-toggle">Organizar por</button>
+                            <div class="dropdown-menu">
+                                <label class="dropdown-item"><input type="radio" name="ordenar" checked> Número</label>
+                                <label class="dropdown-item"><input type="radio" name="ordenar"> Vigência</label>
+                                <label class="dropdown-item"><input type="radio" name="ordenar"> Valor</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="table-responsive">
+                <table class="br-table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Detalhes do contrato</th>
+                            <th class="hide-mobile">Equipe de Fiscalização</th>
+                            <th class="hide-mobile">Vigência</th>
+                            <th class="hide-mobile">Renovação</th>
+                            <th class="hide-mobile">Contratado</th>
+                            <th class="hide-mobile">Empenhado</th>
+                            <th class="hide-mobile">Pagamentos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>00055/2022</td>
+                            <td class="hide-mobile">Equipe A</td>
+                            <td class="hide-mobile">05/05/2022 - 05/05/2025</td>
+                            <td class="hide-mobile">1ª renovação</td>
+                            <td class="hide-mobile">Empresa Alpha</td>
+                            <td class="hide-mobile">R$ 1.234.567,89</td>
+                            <td class="hide-mobile">R$ 980.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>00669/2020</td>
+                            <td class="hide-mobile">Equipe B</td>
+                            <td class="hide-mobile">20/03/2020 - 20/03/2024</td>
+                            <td class="hide-mobile">Final</td>
+                            <td class="hide-mobile">Empresa Beta</td>
+                            <td class="hide-mobile">R$ 876.543,21</td>
+                            <td class="hide-mobile">R$ 850.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>00120/2021</td>
+                            <td class="hide-mobile">Equipe C</td>
+                            <td class="hide-mobile">01/01/2021 - 01/01/2026</td>
+                            <td class="hide-mobile">2ª renovação</td>
+                            <td class="hide-mobile">Empresa Gamma</td>
+                            <td class="hide-mobile">R$ 2.345.000,00</td>
+                            <td class="hide-mobile">R$ 2.100.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>00245/2019</td>
+                            <td class="hide-mobile">Equipe D</td>
+                            <td class="hide-mobile">15/08/2019 - 15/08/2023</td>
+                            <td class="hide-mobile">Encerrado</td>
+                            <td class="hide-mobile">Empresa Delta</td>
+                            <td class="hide-mobile">R$ 567.890,00</td>
+                            <td class="hide-mobile">R$ 560.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>00401/2023</td>
+                            <td class="hide-mobile">Equipe E</td>
+                            <td class="hide-mobile">10/04/2023 - 10/04/2028</td>
+                            <td class="hide-mobile">Em análise</td>
+                            <td class="hide-mobile">Empresa Épsilon</td>
+                            <td class="hide-mobile">R$ 789.456,32</td>
+                            <td class="hide-mobile">R$ 100.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>00572/2018</td>
+                            <td class="hide-mobile">Equipe F</td>
+                            <td class="hide-mobile">25/12/2018 - 25/12/2022</td>
+                            <td class="hide-mobile">Final</td>
+                            <td class="hide-mobile">Empresa Zeta</td>
+                            <td class="hide-mobile">R$ 1.100.000,00</td>
+                            <td class="hide-mobile">R$ 1.100.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>00710/2020</td>
+                            <td class="hide-mobile">Equipe G</td>
+                            <td class="hide-mobile">30/06/2020 - 30/06/2025</td>
+                            <td class="hide-mobile">1ª renovação</td>
+                            <td class="hide-mobile">Empresa Eta</td>
+                            <td class="hide-mobile">R$ 950.321,99</td>
+                            <td class="hide-mobile">R$ 920.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>00830/2021</td>
+                            <td class="hide-mobile">Equipe H</td>
+                            <td class="hide-mobile">12/09/2021 - 12/09/2026</td>
+                            <td class="hide-mobile">Renovável</td>
+                            <td class="hide-mobile">Empresa Theta</td>
+                            <td class="hide-mobile">R$ 430.000,00</td>
+                            <td class="hide-mobile">R$ 390.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>00999/2022</td>
+                            <td class="hide-mobile">Equipe I</td>
+                            <td class="hide-mobile">07/07/2022 - 07/07/2027</td>
+                            <td class="hide-mobile">1ª renovação</td>
+                            <td class="hide-mobile">Empresa Iota</td>
+                            <td class="hide-mobile">R$ 1.789.000,00</td>
+                            <td class="hide-mobile">R$ 1.000.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>01010/2023</td>
+                            <td class="hide-mobile">Equipe J</td>
+                            <td class="hide-mobile">15/03/2023 - 15/03/2028</td>
+                            <td class="hide-mobile">Em análise</td>
+                            <td class="hide-mobile">Empresa Kappa</td>
+                            <td class="hide-mobile">R$ 320.654,78</td>
+                            <td class="hide-mobile">R$ 200.000,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

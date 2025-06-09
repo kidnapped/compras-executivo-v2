@@ -1,0 +1,74 @@
+<header class="br-header" data-sticky="data-sticky">
+  <div class="header-container">
+    <div class="header-top header-top-flex">
+
+      <!-- BLOCO ESQUERDO -->
+      <div id="header-esquerda" style="display: flex; align-items: center; gap: 20px;">
+        <div style="display: flex; flex-direction: column; align-items: start;">
+          <!-- LOGO -->
+          <img src="/static/images/govbr-logo.png" alt="gov.br" style="margin-bottom: 0.25rem;">
+          <!-- BOTÃO HAMBURGUER -->
+          <button id="menu-toggle-button" class="br-button small circle" type="button" aria-label="Abrir Menu">
+            <span>&#9776;</span>
+          </button>
+        </div>
+        <!-- Textos -->
+        <div style="margin: 30px 0px -30px -30px;">
+          <div class="header-sign" style="color: #1351b4;">
+            Compras Executivo
+          </div>
+          <div class="header-title" style="color: #555;">
+            Design System | Versão 3.6.1
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCO DIREITO -->
+      <!-- VERSÃO DESKTOP -->
+      <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop" style="align-items: center; gap: 10px;">
+        {% if request.session.get('cpf') %}
+          <span style="color: #1351b4; font-weight: bold;">{{ request.session.cpf }}</span>
+          <a href="/logout" class="br-button small circle" title="Sair" aria-label="Sair">
+            <i class="fas fa-sign-out-alt"></i>
+          </a>
+        {% else %}
+          <a href="/login" class="br-button small" title="Entrar">Entrar</a>
+        {% endif %}
+
+        <!-- Separador vertical -->
+        <div style="height: 24px; width: 1px; background-color: #ccc; margin: 0 1rem;"></div>
+
+        <!-- Botão menu direito -->
+        <button id="menu-toggle-button-direita" class="br-button small circle" type="button" aria-label="Abrir Menu">
+          <span>&#9776;</span>
+        </button>
+      </div>
+
+      <!-- VERSÃO MOBILE -->
+      <div id="header-direita-mobile" class="d-flex d-lg-none header-direita-mobile">
+        <button id="abrir-pesquisa" class="br-button small circle" type="button" aria-label="Buscar">
+          <i class="fas fa-search header-icon"></i>
+        </button>
+      </div>
+
+      <!-- CAMPO DE BUSCA MOBILE -->
+      <div id="busca-mobile" class="d-lg-none">
+        <div class="br-input input-highlight">
+          <input id="campo-pesquisa-mobile" type="text" placeholder="Buscar..." autocomplete="off" aria-autocomplete="list">
+          <i class="fas fa-search"></i>
+          <button id="fechar-pesquisa">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BARRA DE PESQUISA -->
+    <div class="header-bottom" id="header-search-bar">
+      <div class="br-input input-highlight">
+        <input id="campo-pesquisa" type="text" placeholder="O que você procura?" autocomplete="off" aria-autocomplete="list">
+        <i class="fas fa-search"></i>
+      </div>
+    </div>
+  </div>
+</header>

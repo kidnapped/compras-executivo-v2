@@ -1,0 +1,49 @@
+Development:
+
+    make docker-deploy
+
+Deploy:
+
+    sudo yum install make -y
+    curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+    sudo yum install -y nodejs
+    sudo python3 -m pip install uvicorn
+    sudo pip install pydantic-settings
+    sudo pip install fastapi
+    sudo pip install -r requirements.txt
+
+    export PATH="$HOME/Library/Python/3.13/bin:$PATH"
+
+    make setup
+    sudo make run
+
+    sudo vi /etc/systemd/system/fastapi.service:
+        [Unit]
+        Description=FastAPI com Uvicorn
+        After=network.target
+
+        [Service]
+        User=ec2-user
+        WorkingDirectory=/home/ec2-user/py-app
+        ExecStart=/usr/bin/python3 -m uvicorn app.main:app --host 0.0.0.0 --port 443 --ssl-keyfile /etc/pki/tls/private/server.key --ssl-certfile /etc/pki/tls/certs/server.crt
+        Restart=always
+        StandardOutput=journal
+        StandardError=journal
+
+        [Install]
+        WantedBy=multi-user.target
+
+    sudo systemctl daemon-reexec
+    sudo systemctl daemon-reload
+    sudo systemctl enable fastapi
+    sudo systemctl start fastapi
+
+    install views SQL
+
+
+Sincronizar Financeiro
+    javac -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres.java
+    nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres & tail -f clone_financeiro.log
+    pkill -f CloneFinanceiroToPostgres
+
+    tail -f py-app/vdb/clone_financeiro.log 

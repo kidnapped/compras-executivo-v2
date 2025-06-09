@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Compras Executivo</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/govbr-ds/core.min.css">
+    <script defer src="/static/govbr-ds/core.min.js"></script>
+    <link rel="stylesheet" href="/static/css/rawline.css">
+    <link rel="stylesheet" href="/static/fonts/font-awesome/css/all.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cpfInput = document.getElementById('cpf');
+            cpfInput.addEventListener('input', function () {
+                let v = cpfInput.value.replace(/\D/g, '');
+                v = v.replace(/(\d{3})(\d)/, '$1.$2');
+                v = v.replace(/(\d{3})(\d)/, '$1.$2');
+                v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                cpfInput.value = v;
+            });
+        });
+    </script>
+    <style>
+        body {
+            background-color: #f8f8f8;
+            font-family: Rawline, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 2rem auto;
+            max-width: 220px;
+        }
+        .br-button.primary {
+            width: 100%;
+        }
+        .br-input label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="/static/images/comprasexecutivo_logo.png" alt="Compras Executivo" class="logo">
+
+        {% if error %}
+        <div class="br-message danger mb-3" role="alert" style="border-radius: 10px !important;">
+            <div class="icon">
+                <i class="fas fa-times-circle" aria-hidden="true"></i>
+            </div>
+            <div class="content">
+                <span class="br-message-body">{{ error }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        {% set next_url = request.query_params.next or '/dashboard' %}
+        <form method="POST" action="/login?next={{ next_url }}">
+            <div class="br-input mb-3" data-trigger="input">
+                <label for="cpf">CPF</label>
+                <input id="cpf" name="cpf" type="text" placeholder="000.000.000-00" required maxlength="14" autocomplete="cpf">
+            </div>
+            <div class="br-input mb-4" data-trigger="input">
+                <label for="senha">Senha</label>
+                <input id="senha" name="senha" type="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="br-button primary">Entrar</button>
+        </form>
+        <!-- Botão abre modal -->
+        <a href="/login/govbr" class="br-button primary mt-2">
+            <i class="fas fa-user-shield mr-1" aria-hidden="true"></i>
+            Entrar com&nbsp;<strong>gov.br</strong>
+        </a>
+
+    </div>
+
+    <script type="module" src="{{ url_for('static', path='dist/bundle.js') }}"></script>
+</body>
+</html>

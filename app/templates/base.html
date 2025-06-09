@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Compras Executivo{% endblock %}</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/static/govbr-ds/core.min.css" />
+    <link rel="stylesheet" href="/static/css/rawline.css" />
+    <link rel="stylesheet" href="/static/fonts/font-awesome/css/all.min.css" />
+    <script defer src="/static/govbr-ds/core.min.js"></script>
+    <script src="{{ url_for('static', path='dist/bundle.js') }}"></script>
+</head>
+
+<body data-uasgs="{{ request.session.get('uasgs', []) | join(',') }}">
+    {% include 'partials/header.html' %}
+    {% include 'partials/menu.html' %}
+
+    <main class="br-main">
+        <div class="container-lg" style="margin-top: -100px;">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+</body>
+</html>
