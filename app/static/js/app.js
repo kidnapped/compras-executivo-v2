@@ -13,6 +13,7 @@ const App = {
     { texto: "Contratos", url: "/contratos", icone: "fas fa-file-contract" },
     { texto: "Empenhos", url: "/empenhos", icone: "fas fa-file-invoice" },
     { texto: "Dashboard", url: "/dashboard", icone: "fas fa-chart-line" },
+    { texto: "kpi's", url: "/kpis", icone: "fas fa-tachometer-alt" },
     { texto: "Financeiro", url: "/financeiro", icone: "fas fa-dollar-sign" },
     { texto: "Administração", url: "/admin", icone: "fas fa-cogs" },
     { texto: "Minha Conta", url: "/minha-conta", icone: "fas fa-user-circle" },
@@ -35,6 +36,75 @@ const App = {
     this.dashboardProximasAtividades();
     this.adminCards();
     this.adminUsuarios();
+    // kpis testing reuse of barchart function
+    this.barChart({
+      chartId: "card-kpi-container-chart2",
+      dataUrl: "/kpis/kpi1",
+      xAxisData: [
+        "Total",
+        "Vigentes",
+        "Finalizados",
+        "Críticos",
+        "120 dias",
+        "90 dias",
+        "45 dias",
+        "Outros",
+      ],
+      dataFields: [
+        "quantidade_total",
+        "vigentes",
+        "finalizados",
+        "criticos",
+        "dias120",
+        "dias90",
+        "dias45",
+        "outros",
+      ],
+      title: "Contratos e Renovações",
+      subtitle: "Total de contratos desde 2006",
+      labelOptions: {
+        show: true,
+        position: "top",
+        fontSize: 12,
+        color: "#333",
+      },
+    });
+    this.barChart({
+      chartId: "card-kpi-container-chart1",
+      dataUrl: "/kpis/kpi1",
+      xAxisData: [
+        "Total",
+        "Vigentes",
+        "Finalizados",
+        "Críticos",
+        "120 dias",
+        "90 dias",
+        "45 dias",
+        "Outros",
+      ],
+      dataFields: [
+        "quantidade_total",
+        "vigentes",
+        "finalizados",
+        "criticos",
+        "dias120",
+        "dias90",
+        "dias45",
+        "outros",
+      ],
+      title: "Contratos e Renovações",
+      subtitle: "Total de contratos desde 2006",
+      colors: [
+        "#5470C6",
+        "#91CC75",
+        "#FAC858",
+        "#EE6666",
+        "#73C0DE",
+        "#3BA272",
+        "#FC8452",
+        "#9A60B4",
+      ],
+    });
   },
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +206,14 @@ const App = {
         botaoAbrir.style.display = "";
         campoBusca.style.display = "none";
       });
+    }
+  },
+
+  // Alterna visibilidade do menu de filtros
+  dashboardGridFiltroOpcoes() {
+    const box = document.getElementById("filtro-opcoes-menu");
+    if (box) {
+      box.style.display = box.style.display === "none" ? "block" : "none";
     }
   },
 
@@ -408,20 +486,11 @@ const App = {
       });
   },
 
-  // Alterna visibilidade do menu de filtros
-  dashboardGridFiltroOpcoes() {
-    const box = document.getElementById("filtro-opcoes-menu");
-    if (box) {
-      box.style.display = box.style.display === "none" ? "block" : "none";
-    }
-  },
-
   // card de contratos
   renderDashboardCardContratos({
     titulo = "",
     subtitulo = "",
-    total = "",
-    labelTotal = "",
+    quantidade_total = "",
     vigentes = 0,
     finalizados = 0,
     criticos = 0,
@@ -437,7 +506,7 @@ const App = {
                     ${App.cardHeader({ titulo, subtitulo, icone })}
                     <div class="card-content" style="padding-top: 8px;">
                         <div class="valor-principal">
-                            ${total} <span>${labelTotal}</span>
+                           ${quantidade_total}
                         </div>
                         <div class="linha">
                             <div><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
@@ -753,11 +822,74 @@ const App = {
 
     container.appendChild(modal);
   },
-};
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// RODA
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // KPIS
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  barChart({
+    chartId,
+    dataUrl,
+    xAxisData,
+    dataFields,
+    title = "",
+    subtitle = "",
+    colors = [],
+    labelOptions = null, // Optional input
+  }) {
+    const chartElement = document.getElementById(chartId);
+    if (!chartElement) {
+      console.error(`Element with id '${chartId}' not found.`);
+      return;
+    }
+
+    const chart = echarts.init(chartElement);
+
+    fetch(dataUrl)
+      .then((res) => res.json())
+      .then((data) => {
+        const seriesData = dataFields.map((field, index) => ({
+          name: xAxisData[index],
+          value: data[field],
+          itemStyle: colors[index] ? { color: colors[index] } : undefined,
+          label: labelOptions ? labelOptions : undefined,
+        }));
+
+        const option = {
+          title: {
+            text: title,
+            subtext: subtitle,
+            left: "center",
+          },
+          tooltip: {
+            trigger: "axis",
+            axisPointer: { type: "shadow" },
+          },
+          xAxis: {
+            type: "category",
+            data: xAxisData,
+          },
+          yAxis: {
+            type: "value",
+          },
+          series: [
+            {
+              type: "bar",
+              data: seriesData,
+              label: labelOptions || undefined,
+            },
+          ],
+        };
+
+        chart.setOption(option);
+      })
+      .catch((err) => console.error("Error fetching chart data:", err));
+  },
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RODA
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+};
 
 window.App = App;
 

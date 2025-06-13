@@ -13,10 +13,17 @@ from app.utils.session_utils import get_uasgs_str
 from app.db.session import get_session_contratos
 
 import logging
-import json
 
 logger = logging.getLogger(__name__)
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level to INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log format
+    handlers=[
+        logging.StreamHandler()  # Output logs to the console
+    ]
+)
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -126,8 +133,8 @@ async def get_dashboard_contratos(
 
     # Prepare response
     data = {
-        "titulo": "ÍconeContratos e Renovações",
-        "descricao": "Total de contratos desde 2006",
+        "titulo": "Contratos e Renovações",
+        "subtitulo": "Total de contratos desde 2006",
         "quantidade_total": quantidade_total,
         "vigentes": vigentes,
         "finalizados": finalizados,
@@ -282,7 +289,7 @@ async def get_proximas_atividades(
         EXTRACT(YEAR FROM c.data_assinatura)::int AS ano,
         c.objeto,
         c.vigencia_fim AS fim
-    FROM contratohistorico c
+    FROM contratos c
     WHERE c.unidade_id = ANY(:unit_ids)
       AND c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '120 days'
       AND c.numero NOT ILIKE '%NE%'
