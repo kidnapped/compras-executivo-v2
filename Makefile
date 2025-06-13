@@ -60,6 +60,10 @@ run: build-static
 	@echo "Executando uvicorn via módulo Python..."
 	@PYTHONPATH=. python3 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
+run-win: build-static
+	@echo "Executando uvicorn via módulo Python..."
+	set PYTHONPATH=. && python -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
+
 run-mac: build-static
 	@echo "Executando uvicorn em ambiente macOS (sem -c)..."
 	python3 -m uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
@@ -97,6 +101,19 @@ setup: java-build
 	cp node_modules/@govbr-ds/core/dist/core.min.js app/static/govbr-ds/
 	@echo "Instalando uvicorn globalmente (modo --user)..."
 	python3 -m pip install --user --break-system-packages uvicorn
+	@echo "Setup completo."
+
+setup-win: java-build
+	@echo "Instalando dependências Python..."
+	python -m pip install --user --break-system-packages -r requirements.txt
+	@echo "Instalando pacotes NPM..."
+	npm install
+	@echo "Copiando arquivos do Design System gov.br para app/static/govbr-ds/..."
+	mkdir app\static\govbr-ds
+	copy "node_modules\@govbr-ds\core\dist\core.min.css" "app\static\govbr-ds\"
+	copy "node_modules\@govbr-ds\core\dist\core.min.js" "app\static\govbr-ds\"
+	@echo "Instalando uvicorn globalmente (modo --user)..."
+	python -m pip install --user --break-system-packages uvicorn
 	@echo "Setup completo."
 
 uninstall:

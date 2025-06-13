@@ -1,6 +1,6 @@
 /* GERAL */
 body {
-    font-family: Raleway, sans-serif;
+  font-family: Raleway, sans-serif;
 }
 
 @media (max-width: 991.98px) {
@@ -11,94 +11,94 @@ body {
 
 /* MENU LATERAL */
 #main-navigation {
-    position: fixed;
-    top: 130px; /* MESMO valxor do header normal */
-    left: 0;
-    width: 250px;
-    height: calc(100% - 130px);
-    background-color: #fff;
-    padding: 1rem;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    z-index: 999;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease, top 0.3s ease, height 0.3s ease;
+  position: fixed;
+  top: 130px; /* MESMO valxor do header normal */
+  left: 0;
+  width: 250px;
+  height: calc(100% - 130px);
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease, top 0.3s ease, height 0.3s ease;
 }
 
 #main-navigation.active {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 /* QUANDO O HEADER ENCOLHER, o menu sobe */
 .br-header.header-shrink + #main-navigation {
-    top: 90px;
-    height: calc(100% - 90px);
+  top: 90px;
+  height: calc(100% - 90px);
 }
 
 /* CONTEÚDO PRINCIPAL */
 .br-main {
-    margin-left: 0;
-    transition: margin-left 0.3s ease;
-    padding-top: 110px; /* espaço para o header normal */
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+  padding-top: 110px; /* espaço para o header normal */
 }
 .menu-open .br-main {
-    margin-left: 220px; /* Empurra o conteúdo quando o menu abre */
+  margin-left: 220px; /* Empurra o conteúdo quando o menu abre */
 }
 
 #menu-toggle-button {
-    font-size: 24px;
-    line-height: 1;
+  font-size: 24px;
+  line-height: 1;
 }
 #menu-toggle-button span {
-    position: relative;
-    top: -3px; /* move só o ícone */
+  position: relative;
+  top: -3px; /* move só o ícone */
 }
 
 /* CARD */
 .br-card {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 /* FOOTER */
 .br-footer {
-    margin-top: 20px;
-    position: relative;
-    z-index: 1000; /* Maior que o menu para ficar sempre visível */
+  margin-top: 20px;
+  position: relative;
+  z-index: 1000; /* Maior que o menu para ficar sempre visível */
 }
 
 /* TRANSIÇÕES SUAVES */
 .br-header img {
-    transition: all 0.3s ease;
-    width: 70px;
+  transition: all 0.3s ease;
+  width: 70px;
 }
 
 .br-header .header-bottom {
-    transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .br-header {
-    transition: all 0.3s ease;
-    min-height: 130px;
-    position: fixed; /* MANTÉM FIXO no topo */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: #fff; /* evita que o conteúdo apareça atrás */
+  transition: all 0.3s ease;
+  min-height: 130px;
+  position: fixed; /* MANTÉM FIXO no topo */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #fff; /* evita que o conteúdo apareça atrás */
 }
 
 /* TÍTULOS DO HEADER */
 .header-sign {
-    color: #1351b4;
-    font-size: 24px;
-    transition: all 0.3s ease;
-    margin-left: 0;
+  color: #1351b4;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  margin-left: 0;
 }
 
 .header-title {
-    color: #555;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    margin-left: 0;
+  color: #555;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin-left: 0;
 }
 
 .header-container {
@@ -220,29 +220,29 @@ body {
 
 /* QUANDO DER SCROLL (classe adicionada dinamicamente) */
 .br-header.header-shrink img {
-    width: 50px; /* logo reduzida para metade */
+  width: 50px; /* logo reduzida para metade */
 }
 
 /* Textos menores e deslocados à esquerda */
 .br-header.header-shrink .header-sign {
-    font-size: 20px;
-    margin: -28px 0px 0px 20px;
+  font-size: 20px;
+  margin: -28px 0px 0px 20px;
 }
 
 .br-header.header-shrink .header-title {
-    font-size: 12px;
-    margin-left: 20px;
+  font-size: 12px;
+  margin-left: 20px;
 }
 
 .br-header.header-shrink .header-bottom {
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
-    margin-top: 0;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  margin-top: 0;
 }
 
 .br-header.header-shrink {
-    min-height: 90px;
+  min-height: 90px;
 }
 
 @media (max-width: 768px) {
@@ -298,71 +298,75 @@ body {
 }
 
 /* Cards */
-.row-tight > [class*='col'] {
-    padding-left: 5px;
-    padding-right: 5px;
-    margin-bottom: 10px;
-  }
+.row-tight > [class*="col"] {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+}
 
 /* Card Contratos */
-  .card-contratos {
-    font-family: 'Rawline', sans-serif;
-    font-feature-settings: 'tnum';
-  }
+.card-contratos {
+  font-family: "Rawline", sans-serif;
+  font-feature-settings: "tnum";
+}
 
-  .card-contratos .titulo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    color: #00366f;
-    margin:-16px 0px 0px -20px;
-  }
+.card-contratos .titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #00366f;
+  margin: -16px 0px 0px -20px;
+}
 
-  .card-contratos .subtitulo {
-    font-size: 10px;
-    color: #000;
-    margin-left:26px;
-  }
+.card-contratos .subtitulo {
+  font-size: 10px;
+  color: #000;
+  margin-left: 26px;
+}
 
-  .card-contratos .valor-principal {
-    margin-left: 40px;
-    font-size: 30px;
-    color: #ff8000;
-  }
+.card-contratos .valor-principal {
+  margin-left: 40px;
+  font-size: 30px;
+  color: #ff8000;
+}
 
-  .card-contratos .valor-principal span {
-    font-size: 16px;
-    font-weight: normal;
-  }
+.card-contratos .valor-principal span {
+  font-size: 16px;
+  font-weight: normal;
+}
 
-  .card-contratos .linha {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    margin: 4px 0px 0px 42px;
-    font-size: 10px;
-    white-space: nowrap;
-  }
+.card-contratos .linha {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 4px 0px 0px 42px;
+  font-size: 10px;
+  white-space: nowrap;
+}
 
-  .card-contratos .linha div {
-    text-align: left;
-  }
+.card-contratos .linha div {
+  text-align: left;
+}
 
-  .card-contratos .linha .valor-azul {
-    color: #00366f;
-    font-weight: bold;
-  }
+.card-contratos .linha .valor-azul {
+  color: #00366f;
+  font-weight: bold;
+}
 
-  .card-contratos .linha .valor-vermelho {
-    color: #ff4d4d;
-    font-weight: bold;
-  }
+.card-contratos .linha .valor-vermelho {
+  color: #ff4d4d;
+  font-weight: bold;
+}
 
-  .card-contratos .linha .divider {
-    border-left: 1px solid #ccc;
-    height: 32px;
-  }
+.card-contratos .linha .divider {
+  border-left: 1px solid #ccc;
+  height: 32px;
+}
+
+.card-contratos .br-button {
+  z-index: 1000;
+}
 
 /* widget proximas atividades */
 .widget-atividades-box {
@@ -425,7 +429,6 @@ body {
 }
 
 /* GRID CONTRATOS */
-
 
 /* MENU CONTRATOS */
 .dropdown-submenu {
@@ -516,17 +519,18 @@ body {
 }
 
 /* FOOTER NA PROXIMA PAGINA */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .br-main {
-    min-height: calc(100vh + 1px); /* força scroll mínimo */
+  min-height: calc(100vh + 1px); /* força scroll mínimo */
 }
 
 .br-footer {
-    position: relative;
-    margin-top: 20px;
+  position: relative;
+  margin-top: 20px;
 }

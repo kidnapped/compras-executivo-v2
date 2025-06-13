@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from typing import Any, Dict, List
 
 from babel.dates import format_date
@@ -12,13 +12,21 @@ from app.core.config import settings
 from app.utils.session_utils import get_uasgs_str
 from app.db.session import get_session_contratos
 
+import logging
+import json
+
+logger = logging.getLogger(__name__)
+
+
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
+# Renderiza a página do dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
+# Endpoints do dashboard para contratos
 @router.get("/dashboard/contratos")
 async def get_dashboard_contratos(
     request: Request,
@@ -52,44 +60,88 @@ async def get_dashboard_contratos(
 
     # 2. Executa a query principal
     query = """
+        WITH h AS (
+          SELECT hist.*
+          FROM contratohistorico hist
+          JOIN (
+            SELECT contrato_id,
+                   MAX(data_assinatura) AS max_assinatura
+            FROM contratohistorico
+            WHERE unidade_id = ANY(:ids)
+            GROUP BY contrato_id
+          ) latest
+            ON hist.contrato_id = latest.contrato_id
+           AND hist.data_assinatura = latest.max_assinatura
+          WHERE hist.unidade_id = ANY(:ids)
+        )
+
         SELECT
-            COUNT(*) AS total,
-            SUM(CASE WHEN vigencia_fim > CURRENT_DATE THEN 1 ELSE 0 END) AS vigentes,
-            SUM(CASE WHEN vigencia_fim <= CURRENT_DATE THEN 1 ELSE 0 END) AS finalizados,
-            SUM(CASE WHEN vigencia_fim <= CURRENT_DATE + INTERVAL '120 days' THEN 1 ELSE 0 END) AS dias120,
-            SUM(CASE WHEN vigencia_fim <= CURRENT_DATE + INTERVAL '90 days' THEN 1 ELSE 0 END) AS dias90,
-            SUM(CASE WHEN vigencia_fim <= CURRENT_DATE + INTERVAL '45 days' THEN 1 ELSE 0 END) AS dias45,
-            MIN(EXTRACT(YEAR FROM data_assinatura)) AS ano_min
-        FROM contratos
-        WHERE unidade_id = ANY(:ids)
+          SUM(CASE
+                WHEN h.vigencia_fim BETWEEN CURRENT_DATE
+                                      AND CURRENT_DATE + INTERVAL '45 days'
+                THEN 1 ELSE 0
+              END) AS ending_within_45_days,
+
+          SUM(CASE
+                WHEN h.vigencia_fim > CURRENT_DATE + INTERVAL '45 days'
+                 AND h.vigencia_fim <= CURRENT_DATE + INTERVAL '90 days'
+                THEN 1 ELSE 0
+              END) AS ending_within_90_days,
+
+          SUM(CASE
+                WHEN h.vigencia_fim > CURRENT_DATE + INTERVAL '90 days'
+                 AND h.vigencia_fim <= CURRENT_DATE + INTERVAL '120 days'
+                THEN 1 ELSE 0
+              END) AS ending_within_120_days,
+
+          SUM(CASE
+                WHEN h.vigencia_fim > CURRENT_DATE + INTERVAL '120 days'
+                THEN 1 ELSE 0
+              END) AS ending_after_120_days,
+
+          COUNT(*) AS total_contracts,
+
+          SUM(CASE
+                WHEN CURRENT_DATE BETWEEN h.vigencia_inicio AND h.vigencia_fim
+                THEN CAST(h.valor_inicial AS NUMERIC)
+                ELSE 0.0
+              END) AS total_valor_inicial
+
+        FROM h;
     """
     result = await db.execute(text(query), {"ids": ids_uasg})
-    row = result.mappings().first()
+    row = result.mappings().first() or {}
 
-    total = row["total"] or 0
-    vigentes = row["vigentes"] or 0
-    finalizados = row["finalizados"] or 0
-    dias120 = row["dias120"] or 0
-    dias90 = row["dias90"] or 0
-    dias45 = row["dias45"] or 0
-    criticos = dias120 + dias90 + dias45
-    outros = vigentes - criticos
-    ano_min = int(row["ano_min"]) if row["ano_min"] else "XXXX"
+    # Extract values
+    dias45 = row.get("ending_within_45_days", 0) or 0
+    dias90 = row.get("ending_within_90_days", 0) or 0
+    dias120 = row.get("ending_within_120_days", 0) or 0
+    outros = row.get("ending_after_120_days", 0) or 0
+    quantidade_total = row.get("total_contracts", 0) or 0
 
-    return {
-        "titulo": "Contratos e Renovações",
-        "subtitulo": f"Total de contratos desde {ano_min}",
-        "total": total,
-        "labelTotal": "Contratos",
+    # Derived values
+    vigentes = dias120 + outros + dias45 + dias90
+    finalizados = quantidade_total - vigentes
+    criticos = dias45 + dias90 + dias120
+
+    # Prepare response
+    data = {
+        "titulo": "ÍconeContratos e Renovações",
+        "descricao": "Total de contratos desde 2006",
+        "quantidade_total": quantidade_total,
         "vigentes": vigentes,
         "finalizados": finalizados,
         "criticos": criticos,
         "dias120": dias120,
         "dias90": dias90,
         "dias45": dias45,
-        "outros": max(outros, 0)
+        "outros": outros
     }
 
+    logger.info(f"Returning JSON: {data}")
+    return data
+
+# Endpoint para obter contratos por exercício
 @router.get("/dashboard/contratos-por-exercicio")
 async def get_contratos_por_exercicio(
     request: Request,
@@ -117,14 +169,27 @@ async def get_contratos_por_exercicio(
 
     # 2. Query por ano de assinatura
     query = """
-        SELECT EXTRACT(YEAR FROM data_assinatura) AS ano, COUNT(*) AS total
-        FROM contratos
-        WHERE unidade_id = ANY(:ids)
-          AND data_assinatura IS NOT NULL
-        GROUP BY ano
-        ORDER BY ano
+        SELECT
+  EXTRACT(YEAR FROM c.data_assinatura)::int AS anos,
+  COUNT(DISTINCT c.id)              AS valores
+FROM 
+  contratos AS c
+JOIN 
+  unidades   AS u
+  ON c.unidadeorigem_id = u.id
+WHERE 
+  c.data_assinatura IS NOT NULL
+  AND u.codigo = ANY(:uasg)
+GROUP BY 
+  u.codigo,
+  c.unidadeorigem_id,
+  anos
+ORDER BY 
+  u.codigo,
+  anos;
+
     """
-    result = await db.execute(text(query), {"ids": ids_uasg})
+    result = await db.execute(text(query), {"uasg": uasgs})
     rows = result.fetchall()
 
     anos = [str(int(row[0])) for row in rows]
@@ -138,6 +203,7 @@ async def get_contratos_por_exercicio(
         "valores": valores
     }
 
+# Endpoint para obter valores sazonais por exercício
 @router.get("/dashboard/valores-por-exercicio")
 async def get_valores_sazonais(
     request: Request,
@@ -156,118 +222,102 @@ async def get_valores_sazonais(
     if not ids_uasg:
         return {"anos": [], "coluna": [], "linha": []}
 
-    # 2. Soma contratos + aditivos agrupados por ano usando contratohistorico
-    query = """
-        WITH base AS (
-            SELECT
-                EXTRACT(YEAR FROM vigencia_inicio) AS ano,
-                valor_global::numeric AS contrato_valor,
-                0::numeric AS aditivo_valor
-            FROM contratohistorico
-            WHERE unidade_id = ANY(:ids)
-              AND vigencia_inicio IS NOT NULL
+    # 2. Soma valor inicial dos contratos agrupado por ano
+    query = text("""
+      SELECT
+        u.codigo                                 AS uasg,
+        c.unidadeorigem_id                       AS unidade_id,
+        EXTRACT(YEAR FROM c.data_assinatura)::int AS ano,
+        SUM(CAST(c.valor_inicial AS numeric))     AS contrato_valor
+      FROM 
+        contratos c
+      JOIN 
+        unidades u
+        ON c.unidadeorigem_id = u.id
+      WHERE 
+        c.data_assinatura IS NOT NULL
+        AND c.unidadeorigem_id = ANY(:ids)
+        AND c.valor_inicial IS NOT NULL
+      GROUP BY 
+        u.codigo, c.unidadeorigem_id, ano
+      ORDER BY 
+        u.codigo, ano
 
-            UNION ALL
-
-            SELECT
-                EXTRACT(YEAR FROM COALESCE(vigencia_inicio, data_assinatura, data_publicacao)) AS ano,
-                0::numeric AS contrato_valor,
-                valor_global::numeric AS aditivo_valor
-            FROM contratohistorico
-            WHERE unidade_id = ANY(:ids)
-              AND COALESCE(vigencia_inicio, data_assinatura, data_publicacao) IS NOT NULL
-        )
-        SELECT
-            ano,
-            SUM(contrato_valor) AS contrato,
-            SUM(aditivo_valor) AS aditivo
-        FROM base
-        GROUP BY ano
-        ORDER BY ano DESC
-        LIMIT 6
-    """
-    result = await db.execute(text(query), {"ids": ids_uasg})
+    """)
+    result = await db.execute(query, {"ids": ids_uasg})
     rows = result.fetchall()
 
-    # Ordenar por ano ASC para o gráfico
-    rows = sorted(rows, key=lambda r: int(r.ano))
-
+    # 3. Build the response arrays
     return {
-        "anos": [str(int(r.ano)) for r in rows],
-        "coluna": [float(r.contrato or 0) for r in rows],
-        "linha": [float(r.aditivo or 0) for r in rows]
+        "anos":   [ str(r.ano)               for r in rows ],
+        "coluna": [ float(r.contrato_valor)  for r in rows ],
+        # if you later add an "aditivo" series, populate "linha" here
+        "linha":  [float(r.contrato_valor)  for r in rows]
     }
 
+# Endpoint para obter próximas atividades de contratos
 @router.get("/dashboard/atividades")
 async def get_proximas_atividades(
     request: Request,
     db: AsyncSession = Depends(get_session_contratos)
 ) -> Dict[str, Any]:
+    # Get UASGs from request
     uasgs = get_uasgs_str(request)
     if not uasgs:
         raise HTTPException(status_code=403, detail="UASG não definida")
 
-    # Mapeia UASGs para seus IDs
+    # Get unit IDs
     result = await db.execute(
-        text("SELECT id FROM unidades WHERE codigo = ANY(:uasg)"),
-        {"uasg": uasgs}
+        text("SELECT id FROM unidades WHERE codigo = ANY(:uasgs)"),
+        {"uasgs": uasgs}
     )
-    ids = [row.id for row in result.fetchall()]
-    if not ids:
+    unit_ids = [row[0] for row in result.fetchall()]
+    if not unit_ids:
         return {"atividades": []}
 
-    # Usa a materialized view para obter a vigência mais recente
-    query = """
-        SELECT
-            c.id,
-            c.numero,
-            EXTRACT(YEAR FROM c.data_assinatura) AS ano,
-            COALESCE(v.ultima_vigencia, c.vigencia_fim) AS fim
-        FROM contratos c
-        LEFT JOIN ultima_vigencia_por_contrato v ON v.contrato_id = c.id
-        WHERE c.unidade_id = ANY(:ids)
-    """
-    result = await db.execute(text(query), {"ids": ids})
-    contratos = result.fetchall()
+    # Simplified SQL - just get the raw data we need
+    query = text("""
+    SELECT 
+        c.numero,
+        EXTRACT(YEAR FROM c.data_assinatura)::int AS ano,
+        c.objeto,
+        c.vigencia_fim AS fim
+    FROM contratohistorico c
+    WHERE c.unidade_id = ANY(:unit_ids)
+      AND c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '120 days'
+      AND c.numero NOT ILIKE '%NE%'
+    ORDER BY c.vigencia_fim
+    """)
 
+    result = await db.execute(query, {"unit_ids": unit_ids})
+    contracts = result.fetchall()
+
+    # Process in Python
     atividades = []
-    hoje = date.today()
-    dias_alerta = [45, 90, 120]
+    summary = {'urgente': 0, 'alerta': 0, 'aviso': 0}
+    months_pt = [
+        "janeiro", "fevereiro", "março", "abril",
+        "maio", "junho", "julho", "agosto",
+        "setembro", "outubro", "novembro", "dezembro"
+    ]
 
-    for contrato in contratos:
-        fim = contrato.fim
-        if not fim or fim <= hoje:
-            continue
+    for contract in contracts:
+        numero, ano, objeto, fim = contract
+        dias_restantes = (fim - datetime.now().date()).days
 
-        for dias in dias_alerta:
-            data_alvo = fim - timedelta(days=dias)
-            if data_alvo <= hoje:
-                continue
+        atividades.append({
+            'dias_restantes': dias_restantes,
+            'data': f"{fim.day} de {months_pt[fim.month - 1]}",
+            'numero': numero,
+            'ano': ano,
+        })
 
-            restante_dias = (data_alvo - hoje).days
-            meses, dias_res = divmod(restante_dias, 30)
+    # Sort by priority and remaining days
+    atividades_sorted = sorted(atividades, key=lambda x: (x['dias_restantes']))
 
-            if restante_dias > 30:
-                restante = f"(em {meses} mês{'es' if meses != 1 else ''}, {dias_res} dia{'s' if dias_res != 1 else ''})"
-            else:
-                restante = f"(em {restante_dias} dia{'s' if restante_dias != 1 else ''})"
-
-            data_fmt = format_date(data_alvo, "d 'de' MMMM", locale="pt_BR").capitalize()
-
-            ano = str(contrato.ano)
-            numero = str(contrato.numero)
-
-            # Garante que o número já não termina com o ano, mesmo em formatos compostos
-            if numero.endswith(f"/{ano}") or f"/{ano}/" in numero:
-                contrato_fmt = numero
-            else:
-                contrato_fmt = f"{numero}/{ano}"
-
-            atividades.append({
-                "data": data_fmt,
-                "restante": restante,
-                "descricao": f"Renovação de <b>{dias} dias</b> para o contrato <b>{contrato_fmt}</b>"
-            })
-
-    atividades.sort(key=lambda x: x["data"])
-    return {"atividades": atividades[:25]}
+    return {
+        'atividades': atividades_sorted,
+        'data_consulta': datetime.now().strftime('%d/%m/%Y %H:%M')
+    }
+    
+    

@@ -157,7 +157,7 @@ const App = {
                         <div class="subtitulo">${subtitulo}</div>
                     </div>
                     <div class="ml-auto" style="margin: -10px -10px 0px 0px;">
-                        <button class="br-button circle" style="z-index: 1000;" type="button" aria-label="Mais opções">
+                        <button class="br-button circle" type="button" aria-label="Mais opções">
                             <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -363,17 +363,29 @@ const App = {
       .then((data) => {
         const atividades = data.atividades || [];
         const conteudo = atividades
-          .slice(0, 25)
-          .map(
-            (atividade) => `
-                    <div class="widget-atividades-item">
-                        <i class="fas fa-clock"></i>
-                        <a href="#">${atividade.data}</a>
-                        <span>${atividade.restante}</span><br>
-                        ${atividade.descricao}
-                    </div>
-                `
-          )
+          .slice(0, 50)
+          .map((atividade) => {
+            // calcula o valor a exibir de acordo com as regras
+            const diasExibir =
+              atividade.dias_restantes < 45
+                ? 45
+                : atividade.dias_restantes > 45
+                ? 90
+                : atividade.dias_restantes > 90
+                ? 120
+                : atividade.dias_restantes;
+
+            const dia = atividade.dias_restantes === 1 ? "dia" : "dias";
+
+            return `
+      <div class="widget-atividades-item">
+        <i class="fas fa-clock"></i>
+        <a href="#">${atividade.data}</a>
+        <span>em ${atividade.dias_restantes} ${dia}</span><br>
+        Renovação de <b>${diasExibir} dias</b> para o contrato ${atividade.numero}
+      </div>
+    `;
+          })
           .join("");
 
         container.innerHTML = `
