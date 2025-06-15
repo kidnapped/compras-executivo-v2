@@ -8,7 +8,7 @@ export default {
         App.dashboardContratosPorExercicioCard();
         App.dashboardRepresentacaoAnualValores();
         App.dashboardProximasAtividades();
-        // App.dashboardTabelaContratos();   
+        // App.dashboardTabelaContratos();
         App.adminCards();
         App.adminUsuarios();
     },

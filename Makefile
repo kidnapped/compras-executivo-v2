@@ -1,8 +1,12 @@
-APP_PORT = 80
+APP_PORT = 8001
+REACT_PORT = 80
 
-.PHONY: help run migrate upgrade downgrade makemigrations \
-        setup uninstall java-build java-query-contratos java-query-financeiro java-test java-clean \
-        docker-build docker-run docker-push docker-compose-up
+.PHONY: help run run-mac run-win run-prod \
+        migrate upgrade downgrade makemigrations \
+        install install-win uninstall \
+        java-build java-query-contratos java-query-financeiro java-test java-clean \
+        docker-build docker-run docker-push docker-compose-up docker-deploy docker-export \
+        build-static react-build restart logs status
 
 ## ----------------------------------------
 ##            AJUDA / HELP
@@ -12,31 +16,48 @@ help:
 	@echo ""
 	@echo "==== Comandos disponíveis no projeto ===="
 	@echo ""
-	@echo "Python / FastAPI:"
-	@echo "  make run                                    - Inicia o servidor FastAPI com reload"
-	@echo "  make migrate                                - Cria nova migration Alembic automaticamente"
-	@echo "  make upgrade                                - Aplica as migrations pendentes no banco de dados"
-	@echo "  make downgrade                              - Reverte a última migration"
-	@echo "  make makemigrations                         - Atalho que chama make migrate"
+	@echo "▶ Python / FastAPI:"
+	@echo "  make run                  - Inicia o servidor FastAPI com reload (Linux)"
+	@echo "  make run-mac              - Inicia o servidor FastAPI no macOS"
+	@echo "  make run-win              - Inicia o servidor FastAPI no Windows"
+	@echo "  make run-prod             - Gera os bundles e compila Java (produção)"
 	@echo ""
-	@echo "Java / DaaS SERPRO:"
-	@echo "  make java-build                             - Compila os códigos Java"
-	@echo "  make java-query-contratos QUERY=\"SQL\"     - Executa uma query nos Contratos (use aspas na query)"
-	@echo "  make java-query-financeiro QUERY=\"SQL\"    - Executa uma query no Financeiro (use aspas na query)"
-	@echo "  make java-test                              - Executa um teste simples no Java (SELECT 1)"
-	@echo "  make java-clean                             - Remove arquivos .class compilados em Java"
+	@echo "  make migrate              - Cria nova migration Alembic automaticamente"
+	@echo "  make upgrade              - Aplica as migrations pendentes no banco de dados"
+	@echo "  make downgrade            - Reverte a última migration"
+	@echo "  make makemigrations       - Alias para 'make migrate'"
 	@echo ""
-	@echo "Setup e manutenção:"
-	@echo "  make setup                                  - Instala dependências Python, NPM, copia Design System e uvicorn"
-	@echo "  make uninstall                              - Remove dependências e arquivos gerados"
+	@echo "▶ Frontend (React / Vite):"
+	@echo "  make react-build          - Gera o build do frontend React com Vite"
+	@echo "  make build-static         - Gera o bundle.js com Webpack + compila Java (legado)"
 	@echo ""
-	@echo "Docker:"
-	@echo "  make docker-build                           - Cria a imagem Docker com tag compras-executivo:prod"
-	@echo "  make docker-run                             - Executa o container Docker na porta 8000"
-	@echo "  make docker-push REGISTRY=...               # Envia a imagem para um registry remoto"
-	@echo "  make docker-compose-up                      - Sobe os serviços com docker-compose"
-	@echo "  make docker-deploy                          - Deploy de produção"
-	@echo "  make docker-export                          - Cria um pacote .tar"
+	@echo "▶ Setup / Instalação:"
+	@echo "  make install              - Instala dependências Python, NPM, builda React e copia o Design System"
+	@echo "  make install-win          - Mesmo que install, adaptado para Windows"
+	@echo "  make uninstall            - Remove dependências e artefatos gerados (node_modules, __pycache__, dist etc)"
+	@echo ""
+	@echo "▶ Java / DaaS SERPRO:"
+	@echo "  make java-build           - Compila os códigos Java"
+	@echo "  make java-clean           - Remove arquivos .class Java compilados"
+	@echo "  make java-test            - Testa conexão com QueryContratos (SELECT 1)"
+	@echo "  make java-query-contratos QUERY=\"...\""
+	@echo "                            - Executa uma query SQL no DaaS Contratos"
+	@echo "  make java-query-financeiro QUERY=\"...\""
+	@echo "                            - Executa uma query SQL no DaaS Financeiro"
+	@echo ""
+	@echo "▶ Docker:"
+	@echo "  make docker-build         - Cria a imagem Docker com tag compras-executivo:prod"
+	@echo "  make docker-run           - Executa o container localmente na porta 80"
+	@echo "  make docker-push REGISTRY=\"user/imagem:tag\""
+	@echo "                            - Envia a imagem Docker para um registry remoto"
+	@echo "  make docker-compose-up    - Sobe os serviços definidos no docker-compose.yml"
+	@echo "  make docker-deploy        - Gera imagem, executa e exporta em build/compras_executivo.tar"
+	@echo "  make docker-export        - Exporta a imagem Docker para build/minha-imagem.tar"
+	@echo ""
+	@echo "▶ Serviços (FastAPI no systemd):"
+	@echo "  make restart              - Reinicia o serviço fastapi via systemctl"
+	@echo "  make logs                 - Exibe logs ao vivo com journalctl"
+	@echo "  make status               - Mostra status do serviço fastapi"
 	@echo ""
 	@echo "==========================================="
 	@echo ""
@@ -56,16 +77,19 @@ build-static:
 ##           FASTAPI e Alembic
 ## ----------------------------------------
 
-run: build-static
+run: build-static react-build
 	@echo "Executando uvicorn via módulo Python..."
+	npm run dev & \
 	@PYTHONPATH=. python3 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
-run-win: build-static
+run-win: build-static react-build
 	@echo "Executando uvicorn via módulo Python..."
+	npm run dev & \
 	set PYTHONPATH=. && python -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
-run-mac: build-static
+run-mac: build-static react-build
 	@echo "Executando uvicorn em ambiente macOS (sem -c)..."
+	npm run dev & \
 	python3 -m uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
 
 run-prod:
@@ -90,11 +114,13 @@ makemigrations: migrate
 ##           SETUP / UNINSTALL
 ## ----------------------------------------
 
-setup: java-build
-	@echo "Instalando dependências Python..."
-	python3 -m pip install --user --break-system-packages -r requirements.txt
+install: java-build
 	@echo "Instalando pacotes NPM..."
 	npm install
+	@echo "🔧 Gerando build do React com Vite..."
+	npx vite build
+	@echo "Instalando dependências Python..."
+	python3 -m pip install --user --break-system-packages -r requirements.txt
 	@echo "Copiando arquivos do Design System gov.br para app/static/govbr-ds/..."
 	mkdir -p app/static/govbr-ds
 	cp node_modules/@govbr-ds/core/dist/core.min.css app/static/govbr-ds/
@@ -103,11 +129,13 @@ setup: java-build
 	python3 -m pip install --user --break-system-packages uvicorn
 	@echo "Setup completo."
 
-setup-win: java-build
-	@echo "Instalando dependências Python..."
-	python -m pip install --user --break-system-packages -r requirements.txt
+install-win: java-build
 	@echo "Instalando pacotes NPM..."
 	npm install
+	@echo "🔧 Gerando build do React com Vite..."
+	npx vite build
+	@echo "Instalando dependências Python..."
+	python -m pip install --user --break-system-packages -r requirements.txt
 	@echo "Copiando arquivos do Design System gov.br para app/static/govbr-ds/..."
 	mkdir app\static\govbr-ds
 	copy "node_modules\@govbr-ds\core\dist\core.min.css" "app\static\govbr-ds\"
@@ -116,12 +144,18 @@ setup-win: java-build
 	python -m pip install --user --break-system-packages uvicorn
 	@echo "Setup completo."
 
+react-build:
+	@echo "🔧 Gerando build do React com Vite..."
+	npm run build
+
 uninstall:
 	@echo "Removendo arquivos Java compilados..."
 	make java-clean
 	@echo "Removendo node_modules e package-lock.json..."
 	chmod -R u+w node_modules || true
 	rm -rf node_modules package-lock.json
+	@echo "Removendo dist do React..."
+	rm -rf react/dist
 	@echo "Removendo __pycache__..."
 	find . -type d -name '__pycache__' -exec rm -r {} +
 	@echo "Removendo .DS_Store..."
