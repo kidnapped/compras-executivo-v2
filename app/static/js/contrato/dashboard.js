@@ -1,3 +1,5 @@
+import * as echarts from 'echarts';
+
 export default {
 
     // Alterna visibilidade do menu de filtros

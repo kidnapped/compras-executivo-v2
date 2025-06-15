@@ -8,8 +8,6 @@ import admin from "./admin.js";
 import card_kpi from "./kpi/card.js";
 import contratos_dashboard from "./contrato/dashboard.js";
 
-import * as echarts from 'echarts';
-
 const App = {
     ...environment,
     ...menu,
