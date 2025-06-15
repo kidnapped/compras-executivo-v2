@@ -11,11 +11,14 @@ from app.db.models.user import User
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
+@router.get("/admin", response_class=HTMLResponse)
+async def admin_index(request: Request):
+    return templates.TemplateResponse("admin.html", {"request": request})
+
 # Página HTML
 @router.get("/admin/usuarios", response_class=HTMLResponse)
 async def admin_usuarios_html(request: Request):
     return templates.TemplateResponse("admin_usuarios.html", {"request": request})
-
 
 # API JSON para listagem paginada
 @router.get("/admin/usuarios/lista")
