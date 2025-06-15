@@ -18,7 +18,6 @@ venv*/
 
 # FastAPI static / templates builds (se geradas)
 *.swp
-*.bak
 
 # Node / Vite / React
 node_modules/
@@ -52,8 +51,11 @@ docker-compose.override.yml
 # ZIPs e backups
 *.zip
 *.bak
+*.bak/
 *.old
 *.orig
+*.bkp
+*.bkp/
 
 # Certificados / segurança
 *.jks

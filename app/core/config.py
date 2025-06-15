@@ -5,7 +5,8 @@ from typing import ClassVar
 class Settings(BaseSettings):
     # Projeto
     PROJECT_NAME: str = "Compras Executivo"
-    APP_PORT: int = 80
+    APP_PORT: int = 8001
+    REACT_PORT: int = 80
 
     # Banco de dados
     POSTGRES_USER: str = "postgres"

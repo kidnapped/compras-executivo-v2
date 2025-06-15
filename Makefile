@@ -1,6 +1,3 @@
-APP_PORT = 8001
-REACT_PORT = 80
-
 .PHONY: help run run-mac run-win run-prod \
         migrate upgrade downgrade makemigrations \
         install install-win uninstall \
@@ -80,17 +77,17 @@ build-static:
 run: build-static react-build
 	@echo "Executando uvicorn via módulo Python..."
 	npm run dev & \
-	@PYTHONPATH=. python3 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
+	PYTHONPATH=. python3 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
 run-win: build-static react-build
 	@echo "Executando uvicorn via módulo Python..."
-	npm run dev & \
+	set PYTHONPATH=. && npm run dev & \
 	set PYTHONPATH=. && python -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
 run-mac: build-static react-build
 	@echo "Executando uvicorn em ambiente macOS (sem -c)..."
-	npm run dev & \
-	python3 -m uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
+	PYTHONPATH=. npm run dev & \
+	python3 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
 run-prod:
 	@echo "Gerando bundle.js com webpack (produção)..."
