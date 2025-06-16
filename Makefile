@@ -80,9 +80,8 @@ run: build-static react-build
 	PYTHONPATH=. python3 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
 run-win: build-static react-build
-	@echo "Executando uvicorn via módulo Python..."
-	set PYTHONPATH=. && npm run dev & \
-	set PYTHONPATH=. && python -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
+	@set PYTHONPATH=. && start /b npm run dev
+	@set PYTHONPATH=. && python -m uvicorn app.main:app --host=0.0.0.0 --port=8000 --reload
 
 run-mac: build-static react-build
 	@echo "Executando uvicorn e Vite (React)..."
