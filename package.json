@@ -22,6 +22,7 @@
         "@types/react": "^19.1.2",
         "@types/react-dom": "^19.1.2",
         "@vitejs/plugin-react": "^4.4.1",
+        "concurrently": "^9.1.2",
         "copy-webpack-plugin": "^13.0.0",
         "css-loader": "^7.1.2",
         "css-minimizer-webpack-plugin": "^7.0.2",
