@@ -1,15 +1,32 @@
 import * as echarts from "echarts";
 import card_kpi from "./card.js";
 
-// --- Centralized KPI Data Fetching ---
-async function fetchKpiData(endpoint = "/kpis/kpi1") {
+/**
+ * Fetch KPI data from the backend.
+ * @param {string} endpoint - API endpoint for KPI data.
+ * @returns {Promise<Object>} KPI data as JSON.
+ */
+export const fetchKpiData = async (endpoint = "/kpis/kpi1") => {
   const res = await fetch(endpoint);
-  if (!res.ok) throw new Error("Erro ao carregar");
-  return await res.json();
-}
+  if (!res.ok) throw new Error("Erro ao carregar dados do KPI");
+  return res.json();
+};
 
-// --- Shared Chart Option Template ---
-function getBaseChartOption({ chartType, cardTitle, labels, values }) {
+/**
+ * Generate base ECharts option for bar or pie charts.
+ * @param {Object} params
+ * @param {string} params.chartType - 'bar' or 'pie'.
+ * @param {string} params.cardTitle - Chart title.
+ * @param {string[]} params.labels - Data labels.
+ * @param {number[]} params.values - Data values.
+ * @returns {Object} ECharts option object.
+ */
+export const getBaseChartOption = ({
+  chartType,
+  cardTitle,
+  labels,
+  values,
+}) => {
   if (chartType === "pie") {
     return {
       tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
@@ -28,7 +45,7 @@ function getBaseChartOption({ chartType, cardTitle, labels, values }) {
             formatter: "{b}: {c}",
           },
           emphasis: {
-            label: { show: true, fontSize: "18", fontWeight: "bold" },
+            label: { show: true, fontSize: 18, fontWeight: "bold" },
           },
           labelLine: { show: true },
           data: labels.map((label, i) => ({ value: values[i], name: label })),
@@ -36,7 +53,7 @@ function getBaseChartOption({ chartType, cardTitle, labels, values }) {
       ],
     };
   }
-  // Default: bar/stacked bar
+  // Default: bar
   return {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
     grid: { left: 5, right: 30, bottom: 80, top: 30, containLabel: true },
@@ -69,22 +86,32 @@ function getBaseChartOption({ chartType, cardTitle, labels, values }) {
       },
     ],
   };
-}
+};
 
-// --- Reusable Card Rendering Function ---
-function renderKpiCard({
+/**
+ * Render a KPI card with a chart.
+ * @param {Object} params
+ * @param {string} params.containerId - DOM container ID.
+ * @param {string} params.cardTitle - Card title.
+ * @param {string} [params.cardSubtitle] - Card subtitle.
+ * @param {string} [params.icon] - Icon name.
+ * @param {string} [params.chartType] - Chart type ('bar' or 'pie').
+ * @param {string[]} params.labels - Chart labels.
+ * @param {number[]} params.values - Chart values.
+ * @param {Function} [params.customOption] - Custom option function.
+ */
+export const renderKpiCard = ({
   containerId,
   cardTitle,
   cardSubtitle = "",
-  icon,
+  icon = "",
   chartType = "bar",
-  labels,
-  values,
+  labels = [],
+  values = [],
   customOption,
-}) {
+}) => {
   const container = document.getElementById(containerId);
   if (!container) return;
-  // Render card header and chart area
   container.innerHTML =
     card_kpi.cardHeader({
       titulo: cardTitle,
@@ -93,8 +120,8 @@ function renderKpiCard({
     }) +
     '<div class="kpi-chart-inner" style="width:100%;min-height:100px;height:300px;"></div>';
   const chartDiv = container.querySelector(".kpi-chart-inner");
-  chartDiv.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%;"><div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status"><span class="sr-only">Loading...</span></div></div>`;
-  // Remove setTimeout, render immediately
+  chartDiv.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%;"><div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status" aria-label="Carregando..."></div></div>`;
+  // Remove previous chart instance if exists
   chartDiv.innerHTML = "";
   const echartsDiv = document.createElement("div");
   echartsDiv.style.width = "100%";
@@ -107,13 +134,29 @@ function renderKpiCard({
   const chart = echarts.init(echartsDiv);
   chart.setOption(option);
   chart.resize();
-  window.addEventListener("resize", () => chart.resize());
-}
+  // Debounce resize for performance
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => chart.resize(), 150);
+  });
+};
+
+/**
+ * Display a value in an H2 element inside a container.
+ * @param {string} containerId - DOM container ID.
+ * @param {string|number} value - Value to display.
+ */
+export const displayValueInH2 = (containerId, value) => {
+  const container = document.getElementById(containerId);
+  if (container) {
+    container.textContent = value;
+  }
+};
 
 // --- Usage Example: Fetch Once, Render Many ---
 fetchKpiData()
   .then((kpiData) => {
-    // Bar chart: All categories
     renderKpiCard({
       containerId: "card-kpi-exercicio-container",
       cardTitle: "KPI Exercício",
@@ -138,8 +181,6 @@ fetchKpiData()
         kpiData.outros,
       ],
     });
-
-    // Donut chart: Total vs Vigentes
     renderKpiCard({
       containerId: "card-kpi-total-vigentes",
       cardTitle: "Total vs Vigentes",
@@ -147,75 +188,27 @@ fetchKpiData()
       labels: ["Total", "Vigentes"],
       values: [kpiData.quantidade_total, kpiData.vigentes],
     });
-
-    // Horizontal stacked bar: Finalizados vs Vigentes
     renderKpiCard({
       containerId: "card-kpi-stacked-bar",
-      cardTitle: "Finalizados vs Vigentes (Stacked, Horizontal)",
+      cardTitle: "Finalizados vs Vigentes",
       chartType: "pie",
-      labels: ["Contratos"],
+      labels: ["Finalizados", "Vigentes"],
       values: [kpiData.finalizados, kpiData.vigentes],
-      customOption: (labels, values, option) => ({
-        ...option,
-        grid: { left: 80, right: 30, bottom: 30, top: 30, containLabel: true },
-        xAxis: { type: "value" },
-        yAxis: { type: "category", data: labels },
-        legend: { data: ["Finalizados", "Vigentes"] },
-        series: [
-          {
-            name: "Finalizados",
-            type: "bar",
-            stack: "contratos",
-            label: {
-              show: true,
-              position: "inside",
-              fontSize: 14,
-              formatter: "{c}",
-            },
-            data: [kpiData.finalizados],
-            itemStyle: { color: "#FF6F61" },
-          },
-          {
-            name: "Vigentes",
-            type: "bar",
-            stack: "contratos",
-            label: {
-              show: true,
-              position: "inside",
-              fontSize: 14,
-              formatter: "{c}",
-            },
-            data: [kpiData.vigentes],
-            itemStyle: { color: "#5470C6" },
-          },
-        ],
-      }),
     });
-
-    // Display 'outros' value as a string in a chosen container
     displayValueInH2("outros-value-container", kpiData.outros);
+    displayValueInH2("criticos", kpiData.criticos);
   })
   .catch((err) => {
+    // Show error in UI if possible
+    const errorContainers = [
+      "card-kpi-exercicio-container",
+      "card-kpi-total-vigentes",
+      "card-kpi-stacked-bar",
+    ];
+    errorContainers.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el)
+        el.innerHTML = `<div class='alert alert-danger'>${err.message}</div>`;
+    });
     console.error("Erro ao carregar dados:", err);
   });
-
-// --- Utility: Display value in H2 ---
-function displayValueInH2(containerId, value) {
-  const container = document.getElementById(containerId);
-  if (container) {
-    let h2 = container.querySelector("h2");
-    if (!h2) {
-      h2 = document.createElement("h2");
-      container.appendChild(h2);
-    }
-    h2.textContent = value;
-  }
-}
-
-// Export as module for compatibility with app.js
-export default {
-  fetchKpiData,
-  renderKpiCard,
-  getBaseChartOption,
-  displayValueInH2,
-};
