@@ -144,6 +144,10 @@ body {
   border-radius: 10px;
 }
 
+.br button {
+  z-index: 1000;
+}
+
 /* FOOTER */
 .br-footer {
   margin-top: 20px;

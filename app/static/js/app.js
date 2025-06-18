@@ -7,7 +7,7 @@ import admin from "./admin.js";
 
 import card_kpi from "./kpi/card.js";
 import contratos_dashboard from "./contrato/dashboard.js";
-import kpis_kpi from "./kpi/kpis.js";
+import * as kpis_kpi from "./kpi/kpis.js";
 
 const App = {
   ...environment,
