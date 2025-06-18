@@ -1,161 +1,241 @@
 {% extends "base.html" %} {% block title %}Dashboard - Compras Executivo{%
 endblock %} {% block content %}
 
-<div class="dashboard-container --spacing-vertical-center">
-  <div class="row row-tight">
-    <!-- kpi 1 -->
-    <div class="br-card col-12 col-lg-6 p-4">
+<div class="row mt-2x">
+  <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+    <!--  Section one start-->
+
+    <div id="card-kpi-exercicio-container"></div>
+
+    <!--  Section one end -->
+
+    <!--  Section two-->
+    <section class="br-card list-card">
       <div
-        class="h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 280px"
-        id="card-kpi-container-chart1"
+        class="div br-modal auto"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="modalalerttitle"
       >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando contratos"
-        ></div>
+        <div class="br-modal-header d-flex">
+          <i
+            class="fa-regular fa-paste –icon-size-lg mr-4"
+            aria-hidden="true"
+          ></i>
+          <div class="modal-title" id="modalalerttitle">Título da modal</div>
+          <button
+            class="br-button close circle"
+            type="button"
+            data-dismiss="br-modal"
+            aria-label="Fechar"
+          >
+            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+          </button>
+
+          <h3>test</h3>
+        </div>
+      </div>
+
+      <div id="card-kpi-exercicio-container"></div>
+    </section>
+
+    <!--  Section two-->
+
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+      <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+          <section class="br-card">
+            <div class="card-header">
+              <h3 class="overflow-lg-auto p-0">Contratos terminando</h3>
+
+              <img
+                style="min-height: 200px; min-width: auto"
+                src="./../static/images/Grupo 7.png"
+                alt=""
+                class="p-4"
+              />
+            </div>
+          </section>
+          <section class="br-card">
+            <div class="card-header">
+              <h3 class="overflow-lg-auto p-0">contratos starting</h3>
+              <img
+                style="min-height: 200px; min-width: auto"
+                src="./../static/images/Grupo 7.png"
+                alt=""
+                class="p-4"
+              />
+            </div>
+          </section>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+          <section class="br-card">
+            <div class="card-header">
+              <h3 class="overflow-lg-auto p-0">
+                Manifestações Atendidas na Semana
+              </h3>
+              <img
+                style="min-height: 200px; min-width: auto"
+                src="./../static/images/Grupo 7.png"
+                alt=""
+                class="p-4"
+              />
+            </div>
+          </section>
+          <section class="br-card">
+            <div class="card-header">
+              <h3 class="overflow-lg-auto p-0">
+                Manifestações Atendidas na Semana
+              </h3>
+
+              <img
+                style="min-height: 200px; min-width: auto"
+                src="./../static/images/Grupo 7.png"
+                alt=""
+                class="p-4"
+              />
+            </div>
+          </section>
+        </div>
       </div>
     </div>
 
-    <!-- kpi 2 -->
-    <div class="col-12 col-lg-6" id="card-kpi-container-chart2">
-      <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
-      >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando gráfico"
-        ></div>
+    <!-- Tamanhos predefinidos somente na primeira coluna -->
+    <div class="row">
+      <div class="col-6 col-sm-4 col-lg-3 col-xl-2">Coluna</div>
+      <div class="col">Coluna</div>
+    </div>
+    <!-- Main Grid -->
+    <main class="dashboard-grid row">
+      <!-- Row 1 -->
+
+      <section class="br-card donut-chart-card container-lg">
+        <h2>Manifestações Atendidas no Dia</h2>
+        <div class="donut-placeholder">[Donut Chart]</div>
+        <p>Atendidas: 170</p>
+        <p>Meta: 340</p>
+      </section>
+
+      <!-- Row 2 -->
+
+      <section class="card status-chart-card">
+        <h2>Status das Manifestações</h2>
+        <div class="donut-placeholder">[Donut Chart]</div>
+        <ul>
+          <li>Em Aberto: 30%</li>
+          <li>Respondidas: 50%</li>
+          <li>Finalizadas: 30%</li>
+        </ul>
+      </section>
+
+      <!-- Row 3 -->
+      <section class="card notifications-card">
+        <h2>Minhas Notificações</h2>
+        <ul>
+          <li><span class="dot green"></span> Título - Há 00 min</li>
+          <li><span class="dot green"></span> Título - Há 00 min</li>
+          <li><span class="dot green"></span> Título - Há 00 min</li>
+        </ul>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+      <div class="icon-row">
+        <div class="icon-placeholder">[Imagem]</div>
+        <div class="icon-placeholder">[Imagem]</div>
+        <div class="icon-placeholder">[Imagem]</div>
+        <div class="icon-placeholder">[Imagem]</div>
       </div>
+      <p>
+        Texto destinado à exibição das informações relacionadas à
+        <a href="#">licença de uso</a>.
+      </p>
+    </footer>
+
+    <div class="col-sm-12 col-md-12 col-lg-12 -4">
+      <h1>Gestão de Demandas</h1>
     </div>
 
-    <!-- REPRESENTAÇÃO ANUAL DE VALORES -->
-    <div class="col-12 col-lg-3" id="card-kpi-container-chart3">
+    <div class="col-sm-6 col-md-4 col-lg-3">
       <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
+        class="div br-modal auto"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="modalalerttitle"
       >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando gráfico"
-        ></div>
+        <div class="br-modal-header">
+          <div class="modal-title" id="modalalerttitle">Título da modal</div>
+          <button
+            class="br-button close circle"
+            type="button"
+            data-dismiss="br-modal"
+            aria-label="Fechar"
+          >
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="br-modal-body">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus
+            commodi laboriosam vel sequi quam deleniti, laborum mollitia
+            blanditiis dolores officiis nulla quos dolorem repellat in nisi
+            alias nesciunt fugit. Similique!
+          </p>
+        </div>
+        <div class="br-modal-footer justify-content-end">
+          <button class="br-button secondary" type="button">Ação 1</button>
+          <button class="br-button primary ml-2" type="button">Ação2</button>
+        </div>
       </div>
-    </div>
-
-    <!-- PRÓXIMAS ATIVIDADES -->
-    <div class="col-12 col-lg-3" id="card-kpi-container-chart4">
-      <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
-      >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando gráfico"
-        ></div>
-      </div>
-    </div>
-
-    <!-- PRÓXIMAS ATIVIDADES -->
-    <div class="col-12 col-lg-3" id="card-kpi-container-chart5">
-      <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
-      >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando gráfico"
-        ></div>
-      </div>
-    </div>
-    <!-- PRÓXIMAS ATIVIDADES -->
-    <div class="col-12 col-lg-3" id="card-kpi-container-chart6">
-      <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
-      >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando gráfico"
-        ></div>
-      </div>
-    </div>
-
-    <!-- kpi 1 -->
-    <div class="col-12 col-lg-6" id="card-kpi-container-chart1">
-      <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
-      >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando contratos"
-        ></div>
-      </div>
-    </div>
-
-    <!-- kpi 2 -->
-    <div class="col-12 col-lg-6" id="card-kpi-container-chart2">
-      <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
-      >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando gráfico"
-        ></div>
-      </div>
-    </div>
-  </div>
-  <!-- big chart 1 per row -->
-  <div class="row">
-    <!-- Profit Margin by Project -->
-    <div class="col-sm-6 col-md-4 col-lg-12 mt-4 mr-4">
-      <div class="br-card">
+      <div class="br-card h-fixed">
         <div class="card-header">
           <div class="d-flex">
-            <span class="br-avatar" title="Fulano da Silva"
+            <span class="br-avatar mt-1" title="Fulano da Silva"
               ><span class="content"
-                ><i class="fa-solid fa-chart-line"></i></span
+                ><img src="https://picsum.photos/id/823/400" /></span
             ></span>
             <div class="ml-3">
-              <div class="text-weight-semi-bold text-up-02">
-                Receita por Tipo de Contrato
-              </div>
-              <div>Desempenho Financeiro</div>
+              <div class="text-weight-semi-bold text-up-02">Maria Amorim</div>
+              <div>UX Designer</div>
             </div>
             <div class="ml-auto">
               <button
                 class="br-button circle"
                 type="button"
                 aria-label="Ícone ilustrativo"
+                id="filtro-opcoes-menu"
               >
                 <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
               </button>
+              <div class="box"><a>test</a></div>
             </div>
           </div>
         </div>
-        <div class="card-content">
+        <div class="card-content" tabindex="0">
           <p>
-            A análise da receita por tipo de contrato permite entender quais
-            modalidades contratuais geram maior retorno financeiro para a
-            instituição. Contratos podem variar entre serviços contínuos, obras,
-            fornecimentos e locações, cada um com características e impactos
-            distintos na receita.
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore
+            perferendis nam porro atque ex at, numquam non optio ab eveniet
+            error vel ad exercitationem, earum et fugiat recusandae harum?
+            Assumenda. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Tempore perferendis nam porro atque ex at, numquam non optio ab
+            eveniet error vel ad exercitationem, earum et fugiat recusandae
+            harum? Assumenda.
+          </p>
+          <p>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore
+            perferendis nam porro atque ex at, numquam non optio ab eveniet
+            error vel ad exercitationem, earum et fugiat recusandae harum?
+            Assumenda. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Tempore perferendis nam porro atque ex at, numquam non optio ab
+            eveniet error vel ad exercitationem, earum et fugiat recusandae
+            harum? Assumenda.
           </p>
         </div>
         <div class="card-footer">
           <div class="d-flex">
             <div>
-              <button class="br-button" type="button">data</button>
+              <button class="br-button" type="button">Button</button>
             </div>
             <div class="ml-auto">
               <button
@@ -177,132 +257,316 @@ endblock %} {% block content %}
         </div>
       </div>
     </div>
-  </div>
-  <!-- medium chart 3 per row -->
-  <div class="row">
-    <div class="col-sm-6 col-md-4 col-lg-4 mt-4 mr-4">
-      <div class="br-card">
-        <div class="card-header">
-          <div class="d-flex">
-            <span class="br-avatar" title="Fulano da Silva"
-              ><span class="content"
-                ><i class="fa-solid fa-chart-line"></i></span
-            ></span>
-            <div class="ml-3">
-              <div class="text-weight-semi-bold text-up-02">
-                Receita por Tipo de Contrato
-              </div>
-              <div>Desempenho Financeiro</div>
-            </div>
-            <div class="ml-auto">
-              <button
-                class="br-button circle"
-                type="button"
-                aria-label="Ícone ilustrativo"
-              >
-                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="card-content">
-          <p>
-            A análise da receita por tipo de contrato permite entender quais
-            modalidades contratuais geram maior retorno financeiro para a
-            instituição. Contratos podem variar entre serviços contínuos, obras,
-            fornecimentos e locações, cada um com características e impactos
-            distintos na receita.
-          </p>
-        </div>
-        <div class="card-footer">
-          <div class="d-flex">
-            <div>
-              <button class="br-button" type="button">Data</button>
-            </div>
-            <div class="ml-auto">
-              <button
-                class="br-button circle"
-                type="button"
-                aria-label="Ícone ilustrativo"
-              >
-                <i class="fas fa-heart" aria-hidden="true"></i>
-              </button>
-              <button
-                class="br-button circle"
-                type="button"
-                aria-label="Ícone ilustrativo 3"
-              >
-                <i class="fas fa-share-alt" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- small chart 4 per row -->
-  <div class="row">
-    <div class="col-sm-6 col-md-4 col-lg-3 mt-4 mr-4">
-      <div class="br-card">
-        <div class="card-header">
-          <div class="d-flex">
-            <span class="br-avatar" title="Fulano da Silva"
-              ><span class="content"
-                ><i class="fa-solid fa-chart-line"></i></span
-            ></span>
-            <div class="ml-3">
-              <div class="text-weight-semi-bold text-up-02">
-                Receita por Tipo
+    <div class="row">
+      <div class="col-md-3">
+        <button class="br-button block" type="button">Ação</button>
+      </div>
+    </div>
+    <div class="dashboard-container --spacing-vertical-center">
+      <div class="row row-tight">
+        <!-- kpi 1 -->
+        <div class="br-card col-12 col-lg-6 p-4">
+          <div
+            class="h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 280px"
+            id="card-kpi-container-chart1"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando contratos"
+            ></div>
+          </div>
+        </div>
+
+        <!-- kpi 2 -->
+        <div class="col-12 col-lg-6" id="card-kpi-container-chart2">
+          <div
+            class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 180px"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando gráfico"
+            ></div>
+          </div>
+        </div>
+
+        <!-- REPRESENTAÇÃO ANUAL DE VALORES -->
+        <div class="col-12 col-lg-3" id="card-kpi-container-chart3">
+          <div
+            class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 180px"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando gráfico"
+            ></div>
+          </div>
+        </div>
+
+        <!-- PRÓXIMAS ATIVIDADES -->
+        <div class="col-12 col-lg-3" id="card-kpi-container-chart4">
+          <div
+            class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 180px"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando gráfico"
+            ></div>
+          </div>
+        </div>
+
+        <!-- PRÓXIMAS ATIVIDADES -->
+        <div class="col-12 col-lg-3" id="card-kpi-container-chart5">
+          <div
+            class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 180px"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando gráfico"
+            ></div>
+          </div>
+        </div>
+        <!-- PRÓXIMAS ATIVIDADES -->
+        <div class="col-12 col-lg-3" id="card-kpi-container-chart6">
+          <div
+            class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 180px"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando gráfico"
+            ></div>
+          </div>
+        </div>
+
+        <!-- kpi 1 -->
+        <div class="col-12 col-lg-6" id="card-kpi-container-chart1">
+          <div
+            class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 180px"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando contratos"
+            ></div>
+          </div>
+        </div>
+
+        <!-- kpi 2 -->
+        <div class="col-12 col-lg-6" id="card-kpi-container-chart2">
+          <div
+            class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+            style="min-height: 180px"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando gráfico"
+            ></div>
+          </div>
+        </div>
+      </div>
+      <!-- big chart 1 per row -->
+      <div class="row">
+        <!-- Profit Margin by Project -->
+        <div class="col-sm-6 col-md-4 col-lg-12 mt-4 mr-4">
+          <div class="br-card">
+            <div class="card-header">
+              <div class="d-flex">
+                <span class="br-avatar" title="Fulano da Silva"
+                  ><span class="content"
+                    ><i class="fa-solid fa-chart-line"></i></span
+                ></span>
+                <div class="ml-3">
+                  <div class="text-weight-semi-bold text-up-02">
+                    Receita por Tipo de Contrato
+                  </div>
+                  <div>Desempenho Financeiro</div>
+                </div>
+                <div class="ml-auto">
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo"
+                  >
+                    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                  </button>
+                </div>
               </div>
-              <div>Desempenho Financeiro</div>
             </div>
-            <div class="ml-auto">
-              <button
-                class="br-button circle"
-                type="button"
-                aria-label="Ícone ilustrativo"
-              >
-                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-              </button>
+            <div class="card-content">
+              <p>
+                A análise da receita por tipo de contrato permite entender quais
+                modalidades contratuais geram maior retorno financeiro para a
+                instituição. Contratos podem variar entre serviços contínuos,
+                obras, fornecimentos e locações, cada um com características e
+                impactos distintos na receita.
+              </p>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex">
+                <div>
+                  <button class="br-button" type="button">data</button>
+                </div>
+                <div class="ml-auto">
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo"
+                  >
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo 3"
+                  >
+                    <i class="fas fa-share-alt" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="card-content">
-          <p>
-            A análise da receita por tipo de contrato permite entender quais
-            modalidades contratuais geram maior retorno financeiro para a
-            instituição. Contratos podem variar entre serviços contínuos, obras,
-            fornecimentos e locações, cada um com características e impactos
-            distintos na receita.
-          </p>
-        </div>
-        <div class="card-footer">
-          <div class="d-flex">
-            <div>
-              <button class="br-button" type="button">Data</button>
+      </div>
+      <!-- medium chart 3 per row -->
+      <div class="row">
+        <div class="col-sm-6 col-md-4 col-lg-4 mt-4 mr-4">
+          <div class="br-card">
+            <div class="card-header">
+              <div class="d-flex">
+                <span class="br-avatar" title="Fulano da Silva"
+                  ><span class="content"
+                    ><i class="fa-solid fa-chart-line"></i></span
+                ></span>
+                <div class="ml-3">
+                  <div class="text-weight-semi-bold text-up-02">
+                    Receita por Tipo de Contrato
+                  </div>
+                  <div>Desempenho Financeiro</div>
+                </div>
+                <div class="ml-auto">
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo"
+                  >
+                    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="ml-auto">
-              <button
-                class="br-button circle"
-                type="button"
-                aria-label="Ícone ilustrativo"
-              >
-                <i class="fas fa-heart" aria-hidden="true"></i>
-              </button>
-              <button
-                class="br-button circle"
-                type="button"
-                aria-label="Ícone ilustrativo 3"
-              >
-                <i class="fas fa-share-alt" aria-hidden="true"></i>
-              </button>
+            <div class="card-content">
+              <p>
+                A análise da receita por tipo de contrato permite entender quais
+                modalidades contratuais geram maior retorno financeiro para a
+                instituição. Contratos podem variar entre serviços contínuos,
+                obras, fornecimentos e locações, cada um com características e
+                impactos distintos na receita.
+              </p>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex">
+                <div>
+                  <button class="br-button" type="button">Data</button>
+                </div>
+                <div class="ml-auto">
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo"
+                  >
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo 3"
+                  >
+                    <i class="fas fa-share-alt" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- small chart 4 per row -->
+      <div class="row">
+        <div class="col-sm-6 col-md-4 col-lg-3 mt-4 mr-4">
+          <div class="br-card">
+            <div class="card-header">
+              <div class="d-flex">
+                <span class="br-avatar" title="Fulano da Silva"
+                  ><span class="content"
+                    ><i class="fa-solid fa-chart-line"></i></span
+                ></span>
+                <div class="ml-3">
+                  <div class="text-weight-semi-bold text-up-02">
+                    Receita por Tipo
+                  </div>
+                  <div>Desempenho Financeiro</div>
+                </div>
+                <div class="ml-auto">
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo"
+                  >
+                    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card-content">
+              <p>
+                A análise da receita por tipo de contrato permite entender quais
+                modalidades contratuais geram maior retorno financeiro para a
+                instituição. Contratos podem variar entre serviços contínuos,
+                obras, fornecimentos e locações, cada um com características e
+                impactos distintos na receita.
+              </p>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex">
+                <div>
+                  <button class="br-button" type="button">Data</button>
+                </div>
+                <div class="ml-auto">
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo"
+                  >
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="br-button circle"
+                    type="button"
+                    aria-label="Ícone ilustrativo 3"
+                  >
+                    <i class="fas fa-share-alt" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    {% endblock %}
   </div>
 </div>
-
-{% endblock %}
