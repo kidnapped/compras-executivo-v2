@@ -4,38 +4,27 @@ endblock %} {% block content %}
 <div class="row">
   <!-- Left Column: Chart Card -->
   <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 d-flex flex-column">
-    <section class=" flex-fill mb-3">
-      <div class="">
+    <section class="flex-fill mb-3">
+      <div>
         <section class="br-card list-card mb-2x">
           <div
-            class="br-modal auto"
-            aria-modal="true"
-            role="dialog"
-            aria-labelledby="modalalerttitle"
+            id="card-kpi-exercicio-container"
+            style="width: 100%; min-height: 100px; height: 100%"
           >
-            <div class="br-modal-header d-flex align-items-center">
-              <button
-                class="br-button close circle"
-                type="button"
-                data-dismiss="br-modal"
-                aria-label="Fechar"
-              >
-                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-              </button>
-              <div
-                    id="card-kpi-exercicio-container"
-                    style="width: 100%; min-height: 100px; height: 100%"
-            ></div>
+            <div
+              class="br-loading medium"
+              style="width: 100%; min-height: 100px; height: 100%"
+              role="progressbar"
+              aria-label="carregando contratos"
+            >
+              carregando data
             </div>
           </div>
         </section>
-        
-        
       </div>
-      <div class="card-header">
-        <h3 class="overflow-lg-auto p-0">Contratos terminando</h3>
+      <div class="br-card list-card mb-2x">
         <div
-          id="card-kpi-exercicio-container"
+          id="card-kpi-exercicio-container-2"
           style="width: 100%; min-height: 100px; height: 100%"
         ></div>
       </div>
@@ -46,38 +35,21 @@ endblock %} {% block content %}
   <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
     <div class="row">
       <div class="col-12">
-        <!-- Modal Section (if needed, otherwise remove) -->
         <section class="br-card list-card mb-2x">
           <div
-            class="br-modal auto"
-            aria-modal="true"
-            role="dialog"
-            aria-labelledby="modalalerttitle"
-          >
-            <div class="br-modal-header d-flex align-items-center">
-              <button
-                class="br-button close circle"
-                type="button"
-                data-dismiss="br-modal"
-                aria-label="Fechar"
-              >
-                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-              </button>
-              <div
-                id="card-kpi-stacked-bar"
-                style="width: 100%; min-height: 120px; height: 300px"
-              ></div>
-            </div>
-          </div>
+            id="card-kpi-stacked-bar"
+            style="width: 100%; min-height: 120px; height: 300px"
+          ></div>
         </section>
-      </div>
-      <div class="col-md-6 d-flex flex-column">
-        <section class="br-card flex-fill mb-3">
+        <section class="br-card list-card mb-2x">
           <div
             id="card-kpi-total-vigentes"
             style="width: 100%; min-height: 120px; height: 300px"
           ></div>
         </section>
+      </div>
+      <div class="col-md-6 d-flex flex-column">
+        <section class="br-card flex-fill mb-3"></section>
         <section class="br-card flex-fill mb-3">
           <div
             id="outros-value-container"
@@ -85,8 +57,7 @@ endblock %} {% block content %}
             style="padding: 2rem"
           >
             <h3 class="overflow-lg-auto p-0">Em Execução</h3>
-            
-              <button class="br-button primary">
+            <button class="br-button">
               <h2
                 id="outros"
                 style="font-weight: 700; color: rgb(131, 183, 11)"
@@ -96,37 +67,30 @@ endblock %} {% block content %}
             </button>
           </div>
         </section>
-        <section class="br-card flex-fill">
+        <section class="br-card flex-fill overflow-sm-visiblle">
           <div
             id="criticos-value-container"
             class="text-center"
             style="padding: 2rem"
           >
             <h3 class="overflow-lg-auto p-0">criticos</h3>
-            <button class="br-button primary">
-              
-              <h2
-                id="criticos"
-                style="font-weight: 700; color: rgb(227, 8, 8)"
-              >
+            <button class="br-button">
+              <h2 id="criticos" style="font-weight: 700; color: rgb(227, 8, 8)">
                 &nbsp;
               </h2>
             </button>
+          </div>
         </section>
       </div>
       <div class="col-md-6 d-flex flex-column">
         <section class="br-card flex-fill mb-3">
           <div class="card-header">
-            <h3 class="overflow-lg-auto p-0">
-              Manifestações Atendidas na Semana
-            </h3>
+            <h3 class="overflow-lg-auto p-0">Manifestações Atendidas</h3>
           </div>
         </section>
         <section class="br-card flex-fill">
           <div class="card-header">
-            <h3 class="overflow-lg-auto p-0">
-              Manifestações Atendidas na Semana
-            </h3>
+            <h3 class="overflow-lg-auto p-0">Manifestações Atendidas</h3>
           </div>
         </section>
       </div>
