@@ -3,7 +3,7 @@
         install install-win uninstall \
         java-build java-query-contratos java-query-financeiro java-test java-clean \
         docker-build docker-run docker-push docker-compose-up docker-deploy docker-export \
-        build-static react-build restart logs status
+        build-static restart logs status
 
 ## ----------------------------------------
 ##            AJUDA / HELP
@@ -24,12 +24,11 @@ help:
 	@echo "  make downgrade            - Reverte a última migration"
 	@echo "  make makemigrations       - Alias para 'make migrate'"
 	@echo ""
-	@echo "▶ Frontend (React / Vite):"
-	@echo "  make react-build          - Gera o build do frontend React com Vite"
+	@echo "▶ Frontend:"
 	@echo "  make build-static         - Gera o bundle.js com Webpack + compila Java (legado)"
 	@echo ""
 	@echo "▶ Setup / Instalação:"
-	@echo "  make install              - Instala dependências Python, NPM, builda React e copia o Design System"
+	@echo "  make install              - Instala dependências Python, NPM e copia o Design System"
 	@echo "  make install-win          - Mesmo que install, adaptado para Windows"
 	@echo "  make uninstall            - Remove dependências e artefatos gerados (node_modules, __pycache__, dist etc)"
 	@echo ""
@@ -74,17 +73,16 @@ build-static:
 ##           FASTAPI e Alembic
 ## ----------------------------------------
 
-run: build-static react-build
+run: build-static
 	@echo "Executando uvicorn via módulo Python..."
-	npm run dev & \
 	PYTHONPATH=. python3 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
-run-win: build-static react-build
-	@set PYTHONPATH=. && python -m uvicorn app.main:app --host=0.0.0.0 --port=8000 --reload
+run-win: build-static
+	@set PYTHONPATH=. && python -m uvicorn app.main:app --host=0.0.0.0 --port=8001 --reload
 
-run-mac: build-static react-build
-	@echo "Executando uvicorn e Vite (React)..."
-	PYTHONPATH=. concurrently "npm run dev" "python3 -c 'import uvicorn; from app.core.config import settings; uvicorn.run(\"app.main:app\", host=\"0.0.0.0\", port=settings.APP_PORT, reload=True)'"
+run-mac: build-static
+	@echo "Executando uvicorn (macOS)..."
+	PYTHONPATH=. python3 -c 'import uvicorn; from app.core.config import settings; uvicorn.run("app.main:app", host="0.0.0.0", port=settings.APP_PORT, reload=True)'
 
 run-prod:
 	@echo "Gerando bundle.js com webpack (produção)..."
@@ -111,8 +109,6 @@ makemigrations: migrate
 install: java-build
 	@echo "Instalando pacotes NPM..."
 	npm install
-	@echo "🔧 Gerando build do React com Vite..."
-	npx vite build
 	@echo "Instalando dependências Python..."
 	python3 -m pip install --user --break-system-packages -r requirements.txt
 	@echo "Copiando arquivos do Design System gov.br para app/static/govbr-ds/..."
@@ -126,8 +122,6 @@ install: java-build
 install-win: java-build
 	@echo "Instalando pacotes NPM..."
 	npm install
-	@echo "🔧 Gerando build do React com Vite..."
-	npx vite build
 	@echo "Instalando dependências Python..."
 	python -m pip install --user --break-system-packages -r requirements.txt
 	@echo "Copiando arquivos do Design System gov.br para app/static/govbr-ds/..."
@@ -137,10 +131,6 @@ install-win: java-build
 	@echo "Instalando uvicorn globalmente (modo --user)..."
 	python -m pip install --user --break-system-packages uvicorn
 	@echo "Setup completo."
-
-react-build:
-	@echo "🔧 Gerando build do React com Vite..."
-	npm run build
 
 uninstall:
 	@echo "Removendo arquivos Java compilados..."
@@ -223,7 +213,6 @@ docker-export:
 	docker save compras-executivo:prod -o build/minha-imagem.tar
 	@echo "🎉 Arquivo build/minha-imagem.tar gerado com sucesso."
 
-
 ## ----------------------------------------
 ##        PRA ORGANIZAR (TIRAR DAQUI)
 ## ----------------------------------------
@@ -235,4 +224,4 @@ logs:
 	sudo journalctl -u fastapi -f
 
 status:
-	sudo systemctl status fastapi	
+	sudo systemctl status fastapi
