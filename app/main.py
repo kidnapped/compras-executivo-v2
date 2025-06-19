@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
-from fastapi.templating import Jinja2Templates
 
 from app.api.v1.endpoints import login as login_routes
 from app.api.v1.endpoints import vdb as vdb_routes
@@ -32,10 +31,6 @@ app.add_middleware(
 )
 
 # print(f"🧱 Middlewares registrados: {[m.cls.__name__ for m in app.user_middleware]}")
-
-# Templates
-templates = Jinja2Templates(directory="app/templates")
-templates.env.globals.update(settings.model_dump()) # copia o config.py
 
 # Arquivos estáticos
 app.mount("/static", StaticFiles(directory="app/static"), name="static")

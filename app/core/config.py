@@ -1,12 +1,15 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
 from typing import ClassVar
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Carrega variáveis do .env
 
 class Settings(BaseSettings):
     # Projeto
     PROJECT_NAME: str = "Compras Executivo"
-    APP_PORT: int = 8001
-    REACT_PORT: int = 80
+    APP_PORT: int = 80
 
     # Banco de dados
     POSTGRES_USER: str = "postgres"
@@ -23,8 +26,7 @@ class Settings(BaseSettings):
     # Configurações adicionais
     PATH_COMMON: str = str(Path(__file__).resolve().parents[2] / "ws-pentagono" / "Common")
     REPAIR_MODE: bool = False
-    # API_ENV: str = "production"
-    API_ENV: str = "development"
+    API_ENV: str = os.getenv("ENVIRONMENT", "development")
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 80
 
@@ -35,8 +37,6 @@ class Settings(BaseSettings):
     GOVBR_PROD_AUTH_URL: str = "https://sso.acesso.gov.br"
     GOVBR_HOMO_CLIENT_ID: str = "h-www.comprasexecutivo.sistema.gov.br"
     GOVBR_HOMO_SECRET: str = "BvqXVCOx2dt49HfVSiDNr5DQGnBRlgXo6NpKOXHEBfIdospIIOYl2KJL7H-qLEqQkO6617Eq8a3PGcZmJ5sEnQ"
-    
-    # Quando receber o client_id e secret de produção:
     GOVBR_PROD_CLIENT_ID: str = "SEU_CLIENT_ID_PRODUCAO"
     GOVBR_PROD_SECRET: str = "SEU_CLIENT_SECRET_PRODUCAO"
 

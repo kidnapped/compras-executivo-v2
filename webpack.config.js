@@ -1,15 +1,21 @@
+import webpack from "webpack";
 import path from "path"
 import { fileURLToPath } from "url"
 
+import dotenv from "dotenv"
 import TerserPlugin from "terser-webpack-plugin"
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin"
 import CopyWebpackPlugin from "copy-webpack-plugin"
 
+dotenv.config()  // Carrega .env
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+const isProd = process.env.ENVIRONMENT === "production"
+
 export default {
-    mode: "production",
+    mode: isProd ? "production" : "development",
     cache: false,
     entry: "./app/static/js/app.js",
     output: {
@@ -56,6 +62,9 @@ export default {
                     to: "fonts",
                 },
             ],
+        }),
+        new webpack.DefinePlugin({
+            'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT || "development"),
         }),
     ],
     devtool: "source-map",

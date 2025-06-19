@@ -5,7 +5,6 @@ __pycache__/
 *.pyd
 *.sqlite3
 *.db
-*.env
 *.egg-info/
 .venv/
 .venv*/
@@ -66,7 +65,6 @@ docker-compose.override.yml
 !vdb/**/*.jks
 
 # Arquivos locais sensíveis
-.env.*
 *.local.*
 *.secret.*
 credentials.json
