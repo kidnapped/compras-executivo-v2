@@ -1,5 +1,8 @@
-import "../css/rawline.css";
-import "../css/app.css";
+const isProd = window.location.pathname.startsWith("/static/dist/");
+
+if (isProd) {
+  import("./style.js");
+}
 
 import environment from "./environment.js";
 import menu from "./menu.js";

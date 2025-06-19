@@ -1,3 +1,4 @@
+import webpack from "webpack";
 import path from "path"
 import { fileURLToPath } from "url"
 
@@ -61,6 +62,9 @@ export default {
                     to: "fonts",
                 },
             ],
+        }),
+        new webpack.DefinePlugin({
+            'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT || "development"),
         }),
     ],
     devtool: "source-map",

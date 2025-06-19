@@ -3,13 +3,26 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Compras Executivo{% endblock %}</title>
+    <title>Dashboard - Compras Executivo</title>
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+    {% if config.API_ENV == "production" -%}
+    <link rel="stylesheet" href="/static/fonts/font-awesome/css/all.min.css" />
     <link rel="stylesheet" href="/static/govbr-ds/core.min.css" />
     <link rel="stylesheet" href="/static/css/rawline.css" />
-    <link rel="stylesheet" href="/static/fonts/font-awesome/css/all.min.css" />
-    <script defer src="/static/govbr-ds/core.min.js"></script>
-    <script src="{{ url_for('static', path='dist/bundle.js') }}"></script>
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script src="/static/dist/bundle.js"></script>
+    {%- else -%}
+    {%- for css_file in dev_css_files %}
+    <link rel="stylesheet" href="{{ css_file }}" />
+    {%- endfor %}
+    {%- for js_file in dev_js_modules %}
+    <script type="module" src="{{ js_file }}"></script>
+    {%- endfor %}
+    {%- for js_file in dev_js_files %}
+    <script type="module" src="{{ js_file }}"></script>
+    {%- endfor %}
+    <script src="/static/govbr-ds/core.min.js"></script>
+    {%- endif %}
 </head>
 
 <body data-uasgs="{{ request.session.get('uasgs', []) | join(',') }}">

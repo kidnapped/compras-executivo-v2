@@ -4,11 +4,11 @@ from typing import Any, Dict, List
 from babel.dates import format_date
 from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.core.templates import templates
 from app.utils.session_utils import get_uasgs_str
 from app.db.session import get_session_contratos
 
@@ -26,7 +26,6 @@ logging.basicConfig(
 )
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
 # Renderiza a página do dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
