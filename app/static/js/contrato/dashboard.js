@@ -1,5 +1,4 @@
-import * as echarts from "echarts";
-
+import * as echarts from "https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.esm.min.js";
 export default {
   // Alterna visibilidade do menu de filtros
   dashboardGridFiltroOpcoes() {

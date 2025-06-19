@@ -139,3 +139,62 @@ async def get_dashboard_contratos(
 
     logger.info(f"Returning JSON: {data}")
     return data
+
+@router.get("/kpis/kpi2")
+async def get_dashboard_contratos_sem_licitacao(
+    request: Request,
+    db: AsyncSession = Depends(get_session_contratos)
+):
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida")
+    
+    # Descobre os ID_UASG com base nos códigos
+    result = await db.execute(
+        text("SELECT id FROM unidades WHERE codigo = ANY(:uasg)"),
+        {"uasg": uasgs}
+    )
+    ids_uasg = [row.id for row in result.fetchall()]
+
+    if not ids_uasg:
+        return {
+            "titulo": "Contratos sem Licitação",
+            "subtitulo": "Nenhum dado encontrado",
+            "total_contratos": 0,
+            "contratos_sem_licitacao": 0,
+            "percentual_sem_licitacao": 0.0
+        }
+
+    query = """
+        SELECT 
+          total.total_contratos,
+          sem_licitacao.contratos_sem_licitacao,
+          ROUND(
+            100.0 * sem_licitacao.contratos_sem_licitacao / NULLIF(total.total_contratos, 0),
+            2
+          ) AS percentual_sem_licitacao
+        FROM
+          (
+            SELECT COUNT(DISTINCT contrato_id) AS total_contratos
+            FROM contratohistorico
+            WHERE unidade_id = ANY(:ids)
+          ) AS total,
+          (
+            SELECT COUNT(DISTINCT contrato_id) AS contratos_sem_licitacao
+            FROM contratohistorico
+            WHERE unidade_id = ANY(:ids) AND modalidade_id IN (74, 75)
+          ) AS sem_licitacao;
+    """
+    result = await db.execute(text(query), {"ids": ids_uasg})
+    row = result.mappings().first() or {}
+
+    data = {
+        "titulo": "Contratos sem Licitação",
+        "subtitulo": "Percentual de contratos sem licitação",
+        "total_contratos": row.get("total_contratos", 0) or 0,
+        "contratos_sem_licitacao": row.get("contratos_sem_licitacao", 0) or 0,
+        "percentual_sem_licitacao": float(row.get("percentual_sem_licitacao", 0.0) or 0.0)
+    }
+
+    logger.info(f"Returning JSON: {data}")
+    return data

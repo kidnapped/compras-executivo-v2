@@ -1,5 +1,5 @@
-import * as echarts from "echarts";
 import card_kpi from "./card.js";
+import * as echarts from "https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.esm.min.js";
 
 /**
  * Fetch KPI data from the backend.
@@ -56,7 +56,7 @@ export const getBaseChartOption = ({
   // Default: bar
   return {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
-    grid: { left: 5, right: 30, bottom: 80, top: 30, containLabel: true },
+    grid: { left: 5, right: 30, bottom: 5, top: 30, containLabel: true },
     xAxis: {
       type: "category",
       data: labels,
@@ -116,7 +116,6 @@ export const renderKpiCard = ({
     card_kpi.cardHeader({
       titulo: cardTitle,
       subtitulo: cardSubtitle,
-      icone: icon,
     }) +
     '<div class="kpi-chart-inner" style="width:100%;min-height:100px;height:300px;"></div>';
   const chartDiv = container.querySelector(".kpi-chart-inner");
@@ -140,6 +139,12 @@ export const renderKpiCard = ({
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => chart.resize(), 150);
   });
+  // Store chart instance by container id for dropdown menu access
+  if (!window.kpiCharts) window.kpiCharts = {};
+  window.kpiCharts[containerId] = chart;
+  // Store chart data for type switching
+  if (!window.kpiChartData) window.kpiChartData = {};
+  window.kpiChartData[containerId] = { labels, values, cardTitle };
 };
 
 /**
@@ -153,6 +158,28 @@ export const displayValueInH2 = (containerId, value) => {
     container.textContent = value;
   }
 };
+
+fetchKpiData("/kpis/kpi2")
+  .then((kpiData) => {
+    renderKpiCard({
+      containerId: "card-kpi-sem-licitacao",
+      cardTitle: kpiData.titulo,
+      cardSubtitle: kpiData.subtitulo,
+      chartType: "pie",
+      labels: ["Total contratos", "Sem Licitacao"],
+      values: [kpiData.total_contratos, kpiData.contratos_sem_licitacao],
+    });
+  })
+  .catch((err) => {
+    // Show error in UI if possible
+    const errorContainers = ["card-kpi-sem-licitacao"];
+    errorContainers.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el)
+        el.innerHTML = `<div class='alert alert-danger'>${err.message}</div>`;
+    });
+    console.error("Erro ao carregar dados:", err);
+  });
 
 // --- Usage Example: Fetch Once, Render Many ---
 fetchKpiData()
@@ -212,3 +239,6 @@ fetchKpiData()
     });
     console.error("Erro ao carregar dados:", err);
   });
+
+// Expose getBaseChartOption globally for dropdown use
+window.getBaseChartOption = getBaseChartOption;

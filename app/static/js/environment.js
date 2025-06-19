@@ -8,7 +8,7 @@ export default {
     App.dashboardRepresentacaoAnualValores();
     App.dashboardProximasAtividades();
     // App.dashboardTabelaContratos();
-    App.loadKpiData();
+    //App.loadKpiData();
 
     App.adminCards();
     App.adminUsuarios();
