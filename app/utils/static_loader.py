@@ -1,18 +1,26 @@
 from pathlib import Path
+import re
 
 def collect_static_files():
     base = Path(__file__).resolve().parents[1] / "static"
 
     def files(exts):
-        return sorted([
-            str(f).replace("\\", "/").replace(str(base), "/static")
-            for f in base.rglob("*")
+        result = []
+        for f in base.rglob("*"):
             if (
                 f.suffix in exts and
                 f.is_file() and
                 "/dist/" not in str(f).replace("\\", "/")
-            )
-        ])
+            ):
+                rel_path = str(f).replace("\\", "/")
+                # Remove everything before and including '/static'
+                m = re.search(r"/static(/.*)$", rel_path)
+                if m:
+                    rel_path = "/static" + m.group(1)
+                else:
+                    rel_path = "/static/" + f.relative_to(base).as_posix()
+                result.append(rel_path)
+        return sorted(result)
 
     dev_css = files((".css",))
     js_all = files((".js",))

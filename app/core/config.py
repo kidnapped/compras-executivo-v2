@@ -55,3 +55,4 @@ class Settings(BaseSettings):
         return self.GOVBR_HOMO_SECRET if self.GOVBR_ENV == "homolog" else self.GOVBR_PROD_SECRET
 
 settings = Settings()
+

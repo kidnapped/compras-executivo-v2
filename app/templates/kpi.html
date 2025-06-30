@@ -1,35 +1,138 @@
 {% extends "base.html" %} {% block title %}Dashboard - Compras Executivo{%
 endblock %} {% block content %}
 
-<div class="row">
-  <!-- Left Column: Chart Card -->
-  <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 d-flex flex-column">
-    <section class="flex-fill mb-3">
-      <div>
-        <section class="br-card list-card mb-2x">
-          <div
-            id="card-kpi-exercicio-container"
-            style="width: 100%; min-height: 100px; height: 100%"
+<div class="container-fluid">
+  <!-- Summary Cards Row - Top Section -->
+  <div class="row">
+    <!-- Summary Card: Em Execução -->
+    <div class="col-lg-3 col-md-6 col-sm-12">
+      <section class="br-card">
+        <div class="text-center" style="padding: 0.2rem">
+          <h3
+            class="mb-3"
+            style="
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              font-size: 1.1rem;
+              font-weight: bold;
+            "
           >
-            <div
-              class="br-loading medium"
-              style="width: 100%; min-height: 100px; height: 100%"
-              role="progressbar"
-              aria-label="carregando contratos"
+            Em Execução
+          </h3>
+          <a href="#" class="text-decoration-none">
+            <h2
+              id="outros-value-container"
+              style="font-weight: 700; color: #83b70b; font-size: 2.5rem"
             >
-              carregando data
-            </div>
-          </div>
-        </section>
-      </div>
-      <section class="br-card list-card mb-2x">
+              &nbsp;
+            </h2>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Summary Card: Críticos -->
+    <div class="col-lg-3 col-md-6 col-sm-12">
+      <section class="br-card">
+        <div class="text-center" style="padding: 0.2rem">
+          <h3
+            class="mb-3"
+            style="
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              font-size: 1.1rem;
+              font-weight: bold;
+            "
+          >
+            Críticos
+          </h3>
+          <a href="#" class="text-decoration-none">
+            <h2
+              id="criticos"
+              style="font-weight: 700; color: #e30808; font-size: 2.5rem"
+            >
+              &nbsp;
+            </h2>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Summary Card: Com Aditivos -->
+    <div class="col-lg-3 col-md-6 col-sm-12">
+      <section class="br-card">
+        <div class="text-center" style="padding: 0.2rem">
+          <h3
+            class="mb-3"
+            style="
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              font-size: 1.1rem;
+              font-weight: bold;
+            "
+          >
+            Com Aditivos
+          </h3>
+          <a href="#" class="text-decoration-none">
+            <h2
+              id="percentual-com-aditivos"
+              style="font-weight: 700; color: #007bff; font-size: 2.5rem"
+            >
+              &nbsp;
+            </h2>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Summary Card: Com Cláusulas -->
+    <div class="col-lg-3 col-md-6 col-sm-12">
+      <section class="br-card">
+        <div class="text-center" style="padding: 0.2rem">
+          <h3
+            class="mb-3"
+            style="
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              font-size: 1.1rem;
+              font-weight: bold;
+            "
+          >
+            Com Cláusulas
+          </h3>
+          <a href="#" class="text-decoration-none">
+            <h2
+              id="percentual-com-clausulas"
+              style="font-weight: 700; color: #28a745; font-size: 2.5rem"
+            >
+              &nbsp;
+            </h2>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- KPI 8: Full Page Width Map -->
+  <div class="row mt-1 mb-1 kpi-full-width-section">
+    <div class="col-12">
+      <section class="br-card list-card">
         <div
-          id="card-kpi-sem-licitacao"
-          style="width: 100%; min-height: 100px; height: 100%"
+          id="card-kpi-por-estado"
+          style="
+            width: 100%;
+            height: 85vh;
+            min-height: 500px;
+            max-height: 800px;
+          "
         >
           <div
             class="br-loading medium"
-            style="width: 100%; min-height: 100px; height: 100%"
+            style="width: 100%; height: 100%; min-height: 450px"
             role="progressbar"
             aria-label="carregando contratos"
           >
@@ -37,88 +140,257 @@ endblock %} {% block content %}
           </div>
         </div>
       </section>
-    </section>
+    </div>
   </div>
 
-  <!-- Right Column: Other Cards -->
-  <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
-    <div class="row">
-      <div class="col-12">
-        <section class="br-card list-card mb-2x">
+  <!-- All Other KPIs in Two-Column Layout -->
+  <div class="row kpi-content-section kpi-two-column-layout">
+    <!-- Column 1: Left Side KPIs -->
+    <div class="col-lg-6 col-md-12">
+      <!-- KPI 1: Exercício Container -->
+      <section class="br-card list-card mb-3">
+        <div
+          id="card-kpi-exercicio-container"
+          style="width: 100%; height: 350px"
+        >
           <div
-            id="card-kpi-stacked-bar"
-            style="width: 100%; min-height: 120px; height: 300px"
-          ></div>
-        </section>
-        <section class="br-card list-card mb-2x">
-          <div
-            id="card-kpi-total-vigentes"
-            style="width: 100%; min-height: 120px; height: 300px"
-          ></div>
-        </section>
-      </div>
-      <div class="col-md-6 d-flex flex-column">
-        <section class="br-card flex-fill mb-3">
-          <div id="outros" class="text-center" style="padding: 2rem">
-            <h3 class="overflow-lg-auto p-0">Em Execução</h3>
-            <a href="#">
-              <h2
-                id="outros-value-container"
-                style="font-weight: 700; color: rgb(131, 183, 11)"
-              >
-                &nbsp;
-              </h2>
-            </a>
-          </div>
-        </section>
-        <section class="br-card flex-fill overflow-sm-visiblle">
-          <div
-            id="criticos-value-container"
-            class="text-center"
-            style="padding: 2rem"
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
           >
-            <h3 class="overflow-lg-auto p-0">criticos</h3>
-            <a href="#">
-              <h2
-                id="criticos1"
-                style="font-weight: 700; color: rgb(227, 8, 8)"
-              ></h2>
-            </a>
+            carregando data
           </div>
-        </section>
-      </div>
-      <div class="col-md-6 d-flex flex-column">
-        <section class="br-card flex-fill overflow-sm-visiblle">
+        </div>
+      </section>
+
+      <!-- KPI 3: Contratos por Área -->
+      <section class="br-card list-card mb-3">
+        <div
+          id="card-kpi-contratos-por-area"
+          style="width: 100%; height: 350px"
+        >
           <div
-            id="criticos-value-container"
-            class="text-center"
-            style="padding: 2rem"
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
           >
-            <h3 class="overflow-lg-auto p-0">criticos</h3>
-            <a href="#">
-              <h2
-                id="criticos"
-                style="font-weight: 700; color: rgb(227, 8, 8)"
-              ></h2>
-            </a>
+            carregando data
           </div>
-        </section>
-        <section class="br-card flex-fill overflow-sm-visiblle">
+        </div>
+      </section>
+
+      <!-- KPI 5: Contratos por Região -->
+      <section class="br-card list-card mb-3">
+        <div
+          id="card-kpi-contratos-por-regiao"
+          style="width: 100%; height: 350px"
+        >
           <div
-            id="criticos-value-container"
-            class="text-center"
-            style="padding: 2rem"
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
           >
-            <h3 class="overflow-lg-auto p-0">test1</h3>
-            <a href="#">
-              <h2
-                id="criticos1"
-                style="font-weight: 700; color: rgb(227, 8, 8)"
-              ></h2>
-            </a>
+            carregando data
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      <!-- KPI 7: Contratos com Cláusulas -->
+      <section class="br-card list-card mb-3">
+        <div
+          id="card-kpi-contratos-com-clausulas"
+          style="width: 100%; height: 350px"
+        >
+          <div
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
+          >
+            carregando data
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Column 2: Right Side KPIs -->
+    <div class="col-lg-6 col-md-12">
+      <!-- KPI 2: Sem Licitação -->
+      <section class="br-card list-card mb-3">
+        <div id="card-kpi-sem-licitacao" style="width: 100%; height: 350px">
+          <div
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
+          >
+            carregando data
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI 4: Top Fornecedores -->
+      <section class="br-card list-card mb-3">
+        <div id="card-kpi-top-fornecedores" style="width: 100%; height: 350px">
+          <div
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
+          >
+            carregando data
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI 6: Contratos com Aditivos -->
+      <section class="br-card list-card mb-3">
+        <div
+          id="card-kpi-contratos-com-aditivos"
+          style="width: 100%; height: 350px"
+        >
+          <div
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
+          >
+            carregando data
+          </div>
+        </div>
+      </section>
+
+      <!-- Additional KPIs: Stacked Bar & Total Vigentes -->
+      <section class="br-card list-card mb-3">
+        <div id="card-kpi-stacked-bar" style="width: 100%; height: 350px">
+          <div
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
+          >
+            carregando data
+          </div>
+        </div>
+      </section>
+
+      <section class="br-card list-card mb-3">
+        <div id="card-kpi-total-vigentes" style="width: 100%; height: 350px">
+          <div
+            class="br-loading medium"
+            style="width: 100%; height: 350px"
+            role="progressbar"
+            aria-label="carregando contratos"
+          >
+            carregando data
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- KPI 9: Full Width Calendar Section -->
+  <div class="row mb-4 kpi-full-width-section">
+    <div class="col-12">
+      <section class="br-card list-card">
+        <div
+          id="card-kpi-calendar-vencimentos"
+          style="
+            width: 100%;
+            height: 70vh;
+            min-height: 200px;
+            max-height: 360px;
+          "
+        >
+          <div
+            class="br-loading medium"
+            style="width: 100%; height: 40vh; min-height: 360px"
+            role="progressbar"
+            aria-label="carregando contratos"
+          >
+            carregando data
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- KPI 10: Contratos com Aditivos de Valor - Stacked Bar Chart -->
+  <div class="row mb-4 kpi-full-width-section">
+    <div class="col-12">
+      <section class="br-card list-card">
+        <div id="card-kpi10-stacked-bar" style="width: 100%; height: 450px">
+          <div
+            class="br-loading medium"
+            style="width: 100%; height: 450px"
+            role="progressbar"
+            aria-label="carregando contratos"
+          >
+            carregando data
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- KPI 10 Data Table -->
+  <div class="row mb-4 kpi-full-width-section">
+    <div class="col-12">
+      <section class="br-card">
+        <div class="card-header">
+          <h3>Detalhes dos Contratos com Aditivos</h3>
+          <div class="ml-auto">
+            <input
+              type="text"
+              id="kpi10-search"
+              class="form-control"
+              placeholder="Buscar contratos..."
+              style="width: 300px; display: inline-block"
+            />
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="kpi10-table" class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="sortable" data-column="numero">
+                    Número <i class="fas fa-sort"></i>
+                  </th>
+                  <th class="sortable" data-column="valor_inicial">
+                    Valor Inicial <i class="fas fa-sort"></i>
+                  </th>
+                  <th class="sortable" data-column="valor_global">
+                    Valor Global <i class="fas fa-sort"></i>
+                  </th>
+                  <th class="sortable" data-column="diferenca_valores">
+                    Diferença <i class="fas fa-sort"></i>
+                  </th>
+                  <th class="sortable" data-column="total_valor_empenhado">
+                    Total Empenhado <i class="fas fa-sort"></i>
+                  </th>
+                  <th>Objeto</th>
+                </tr>
+              </thead>
+              <tbody id="kpi10-table-body">
+                <!-- Data will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+          <div
+            id="kpi10-pagination"
+            class="d-flex justify-content-between align-items-center mt-3"
+          >
+            <div id="kpi10-info"></div>
+            <nav>
+              <ul id="kpi10-pagination-controls" class="pagination"></ul>
+            </nav>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </div>

@@ -2,6 +2,7 @@ catmatclasses
 catmatpdms
 catmatsergrupos
 catmatseritens
+codigos
 codigoitens
 contrato_arquivos
 contratodespesaacessoria
@@ -12,6 +13,8 @@ contratofaturas_itens
 contratohistorico
 contratohistorico_fornecedores_pivot
 contratohistoricoqualificacao
+contrato_minuta_empenho_pivot
+contratoresponsaveis
 contratoterceirizados
 contratos
 empenhos
