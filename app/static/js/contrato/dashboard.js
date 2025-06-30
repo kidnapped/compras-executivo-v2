@@ -1,4 +1,5 @@
 import getEcharts from "../util/echarts.js";
+import Card from "../kpi/card.js";
 
 export default {
   dashboardGridFiltroOpcoes() {
@@ -36,7 +37,7 @@ export default {
       if (!res.ok) throw new Error("Erro ao carregar");
       const data = await res.json();
 
-      const novoCard = this.renderDashboardCardContratosPorExercicio({
+      const novoCard = Card.cardGrafico({
         id: "grafico-contratos-por-exercicio",
         titulo: "Contratos por exercício",
         subtitulo: "Histórico de contratos por ano",
@@ -98,7 +99,7 @@ export default {
       if (!res.ok) throw new Error("Erro ao carregar");
       const data = await res.json();
 
-      const novoCard = App.renderDashboardCardContratosPorExercicio({
+      const novoCard = Card.cardGrafico({
         id: "grafico-representacao-anual-valores",
         titulo: "Valores por exercício",
         subtitulo: "Valores de contratos nos últimos 6 anos",
@@ -229,7 +230,7 @@ export default {
     return `
       <div class="col-12 col-lg-3">
         <div class="br-card h-100 card-contratos">
-          ${App.cardHeader({ titulo, subtitulo, icone })}
+          ${this.cardHeader({ titulo, subtitulo, icone })}
           <div class="card-content" style="padding-top: 8px;">
             <div class="valor-principal">${quantidade_total}</div>
             <div class="linha">
@@ -251,17 +252,5 @@ export default {
           </div>
         </div>
       </div>`;
-  },
-
-  renderDashboardCardContratosPorExercicio({ id, titulo, subtitulo, icone = "/static/images/doc2.png" }) {
-    return `
-      <div class="col-12 col-lg-3">
-        <div class="br-card h-100 card-contratos" style="min-height: 180px;">
-          ${App.cardHeader({ titulo, subtitulo, icone })}
-          <div class="card-content" style="padding: 0px; height: 180px !important;">
-            <div id="${id}" style="width: 100%; height: 210px; margin-top: -40px;"></div>
-          </div>
-        </div>
-      </div>`;
-  },
+  }
 };

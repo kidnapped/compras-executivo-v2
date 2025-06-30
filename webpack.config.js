@@ -6,6 +6,7 @@ import dotenv from "dotenv"
 import TerserPlugin from "terser-webpack-plugin"
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin"
 import CopyWebpackPlugin from "copy-webpack-plugin"
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 dotenv.config()  // Carrega .env
 
@@ -28,14 +29,12 @@ export default {
             {
                 test: /\.css$/i,
                 use: [
-                    "style-loader",
+                    isProd ? MiniCssExtractPlugin.loader : "style-loader",
                     {
                         loader: "css-loader",
                         options: {
                             url: {
-                                filter: (url) => {
-                                    return !url.startsWith("/static/")
-                                },
+                                filter: (url) => !url.startsWith("/static/"),
                             },
                         },
                     },
@@ -65,6 +64,9 @@ export default {
         }),
         new webpack.DefinePlugin({
             'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT || "development"),
+        }),
+        new MiniCssExtractPlugin({
+            filename: "bundle.css",
         }),
     ],
     devtool: "source-map",

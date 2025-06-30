@@ -1,3 +1,26 @@
+/*
+ * ───────────────────────────────────────────────────────────────────────────────
+ * 📄 CloneFinanceiroToPostgres.java
+ *
+ * Sincroniza tabelas do DaaS SERPRO (via Teiid) para banco local PostgreSQL,
+ * usando datas do campo `DT_CARGA_C`, controladas por `tables_financeiro.txt`.
+ * A sincronização é incremental e atualiza automaticamente o arquivo de controle.
+ *
+ * 🔧 Compilação:
+ *   javac -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres.java
+ *
+ * ▶️ Execução em segundo plano:
+ *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres </dev/null &>/dev/null & disown
+ *
+ * 📂 Log:
+ *   tail -f clone_financeiro.log
+ *
+ * 🛑 Parar o processo:
+ *   pkill -f CloneFinanceiroToPostgres
+ * ───────────────────────────────────────────────────────────────────────────────
+ */
+
+
 import java.sql.*;
 import java.nio.file.*;
 import java.util.*;

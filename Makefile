@@ -5,6 +5,8 @@
         docker-build docker-run docker-push docker-compose-up docker-deploy docker-export \
         build-static restart logs status
 
+ENVIRONMENT := $(shell grep ^ENVIRONMENT= .env | cut -d '=' -f2)
+
 ## ----------------------------------------
 ##            AJUDA / HELP
 ## ----------------------------------------
@@ -69,27 +71,25 @@ build-static:
 	javac -cp vdb/jboss-dv-6.3.0-teiid-jdbc.jar vdb/QueryContratos.java
 	javac -cp vdb/jboss-dv-6.3.0-teiid-jdbc.jar vdb/QueryFinanceiro.java
 
+build-static-if-needed:
+ifeq ($(ENVIRONMENT),development)
+	@echo "🌱 Ambiente de desenvolvimento..."
+else
+	@$(MAKE) build-static
+endif
+
 ## ----------------------------------------
 ##           FASTAPI e Alembic
 ## ----------------------------------------
 
-run: build-static
-	@echo "Executando uvicorn via módulo Python..."
+run: build-static-if-needed
 	PYTHONPATH=. python3 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
 
-run-win: build-static
-	@set PYTHONPATH=. && python -m uvicorn app.main:app --host=0.0.0.0 --port=8001 --reload
-
-run-mac: build-static
-	@echo "Executando uvicorn (macOS)..."
+run-mac: build-static-if-needed
 	PYTHONPATH=. python3 -c 'import uvicorn; from app.core.config import settings; uvicorn.run("app.main:app", host="0.0.0.0", port=settings.APP_PORT, reload=True)'
 
-run-prod:
-	@echo "Gerando bundle.js com webpack (produção)..."
-	npx webpack
-	@echo "Compilando arquivos Java..."
-	javac -cp vdb/jboss-dv-6.3.0-teiid-jdbc.jar vdb/QueryContratos.java
-	javac -cp vdb/jboss-dv-6.3.0-teiid-jdbc.jar vdb/QueryFinanceiro.java
+run-win: build-static-if-needed
+	@set PYTHONPATH=. && python -m uvicorn app.main:app --host=0.0.0.0 --port=8001 --reload
 
 migrate:
 	alembic revision --autogenerate -m "nova migration"

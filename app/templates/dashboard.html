@@ -7,8 +7,7 @@
 <div class="row row-tight">
     <!-- CONTRATOS E RENOVAÇÕES -->
     <div class="col-12 col-lg-3" id="card-contratos-container">
-        <div class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-            style="min-height: 180px;">
+        <div class="br-card h-100 card-contratos d-flex justify-content-center align-items-center" style="min-height: 180px;">
             <div class="br-loading medium" role="progressbar" aria-label="carregando contratos"></div>
         </div>
     </div>
@@ -158,6 +157,46 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Bloco de paginação com fundo igual ao thead -->
+            <div style="background: #f8f8f8; border-top: 1px solid #ddd; padding: 0px 16px;">
+
+                <div class="d-flex flex-wrap align-items-center justify-content-between" style="font-size: 12px;">
+
+                    <!-- Controles de paginação -->
+                    <div class="d-flex flex-wrap align-items-center gap-1">
+                        <button class="br-button circle small" title="Primeira página" onclick="App.irParaPrimeiraPagina()">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button class="br-button circle small" title="Página anterior" onclick="App.irParaAnterior()">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+
+                        <!-- Página atual (input) -->
+                        <input type="number" min="1" value="1" id="pagina-atual" class="br-input"
+                            style="width: 60px; height: 20px; font-size: 12px; margin-top: 2px;" onchange="App.irParaPaginaEspecifica(this.value)">
+                        <span class="mx-1">de <strong>151</strong></span>
+
+                        <button class="br-button circle small" title="Próxima página" onclick="App.irParaProxima()">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button class="br-button circle small" title="Última página" onclick="App.irParaUltima()">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+
+                        <!-- Botão de refresh -->
+                        <button class="br-button circle small" title="Atualizar contratos" onclick="App.atualizarTabelaContratos()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+
+                    <!-- Texto à direita -->
+                    <div class="ms-auto text-muted small" style="font-size: 12px; position: relative; top: -1px;">
+                        Exibindo 1–20 de 3023 contratos
+                    </div>
+                </div>
+            </div>
+
 
         </div>
     </div>

@@ -1,3 +1,26 @@
+/*
+ * ───────────────────────────────────────────────────────────────────────────────
+ * 📄 CloneContratosToPostgres.java
+ *
+ * Sincroniza tabelas do DaaS SERPRO (via Teiid) para banco local PostgreSQL,
+ * com base nos nomes listados em `tables_contratos.txt`. A sincronização é 
+ * incremental, usando a maior chave primária (`id` ou colunas terminadas com `_id`).
+ *
+ * 🔧 Compilação:
+ *   javac -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneContratosToPostgres.java
+ *
+ * ▶️ Execução em segundo plano:
+ *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneContratosToPostgres </dev/null &>/dev/null & disown
+ *
+ * 📂 Log:
+ *   tail -f clone_contratos.log
+ *
+ * 🛑 Parar o processo:
+ *   pkill -f CloneContratosToPostgres
+ * ───────────────────────────────────────────────────────────────────────────────
+ */
+
+
 import java.sql.*;
 import java.nio.file.*;
 import java.util.*;

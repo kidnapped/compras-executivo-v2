@@ -1,5 +1,20 @@
+/*
+ * Uso:
+ *   java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroTabelaData TABELA DATA [OFFSET]
+ *
+ * Exemplos:
+ *   Execução normal (do zero):
+ *     java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroTabelaData WD_DOCUMENTO 20201110
+ *
+ *   Retomar após travamento (a partir do 9066500):
+ *     java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroTabelaData WD_DOCUMENTO 20201110 9066500
+ *
+ * - Se usar OFFSET, apaga registros da data antes de inserir.
+ * - Log: clone_financeiro_table_size.log
+ * - Ver progresso: tail -f clone_financeiro_table_size.log
+ */
+
 import java.sql.*;
-import java.nio.file.*;
 import java.util.*;
 import java.io.*;
 import java.time.*;
@@ -13,13 +28,14 @@ public class CloneFinanceiroTabelaData {
 
         System.out.println(timestamp() + " 📝 Log iniciado em: " + LocalDateTime.now());
 
-        if (args.length != 2) {
-            System.err.println("Uso: java CloneFinanceiroTabelaData <TABELA> <DATA_AAAAmmdd>");
+        if (args.length < 2 || args.length > 3) {
+            System.err.println("Uso: java CloneFinanceiroTabelaData <TABELA> <DATA_AAAAmmdd> [OFFSET_INICIAL]");
             return;
         }
 
         String tabela = args[0];
         String dataStr = args[1];
+        int offsetInicial = (args.length == 3) ? Integer.parseInt(args[2]) : 0;
 
         String truststorePath = "/home/ec2-user/java/daas.serpro.gov.br.jks";
         System.setProperty("javax.net.ssl.trustStore", truststorePath);
@@ -71,6 +87,14 @@ public class CloneFinanceiroTabelaData {
             }
         }
 
+        if (offsetInicial > 0) {
+            System.out.println(timestamp() + " 🔄 Apagando dados anteriores de " + dataStr + " para evitar duplicatas...");
+            try (Statement stmtDel = pgConn.createStatement()) {
+                stmtDel.executeUpdate("DELETE FROM " + tabela + " WHERE DT_CARGA_C = '" + dataStr + "'");
+                System.out.println(timestamp() + " ✅ Registros apagados com sucesso.");
+            }
+        }
+
         System.out.println(timestamp() + " 📄 Buscando registros de " + dataStr);
         String countQuery = "SELECT COUNT(*) FROM DWTG_Colunar_Afinco_VBL." + tabela + " WHERE DT_CARGA_C = '" + dataStr + "'";
         try (Statement stmtCount = daasConn.createStatement(); ResultSet rsCount = stmtCount.executeQuery(countQuery)) {
@@ -87,6 +111,10 @@ public class CloneFinanceiroTabelaData {
         }
         selectQueryBuilder.append(" FROM DWTG_Colunar_Afinco_VBL.").append(tabela)
                           .append(" WHERE DT_CARGA_C = '").append(dataStr).append("'");
+
+        if (offsetInicial > 0) {
+            selectQueryBuilder.append(" OFFSET ").append(offsetInicial);
+        }
 
         Statement stmtDaaS = daasConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         stmtDaaS.setFetchSize(50);
@@ -110,7 +138,7 @@ public class CloneFinanceiroTabelaData {
             insertCount++;
             if (insertCount % 500 == 0) {
                 psPG.executeBatch();
-                System.out.println(timestamp() + " 📅 " + insertCount + " registros inseridos.");
+                System.out.println(timestamp() + " 📅 " + (insertCount + offsetInicial) + " registros inseridos.");
             }
         }
         if (insertCount % 500 != 0) psPG.executeBatch();
@@ -118,7 +146,7 @@ public class CloneFinanceiroTabelaData {
         psPG.close();
         stmtDaaS.close();
 
-        System.out.println(timestamp() + " ✅ " + insertCount + " registros inseridos em " + tabela + " para " + dataStr);
+        System.out.println(timestamp() + " ✅ " + (insertCount + offsetInicial) + " registros inseridos em " + tabela + " para " + dataStr);
         daasConn.close();
         pgConn.close();
         System.out.println(timestamp() + " 🎉 Finalizado com sucesso.");
