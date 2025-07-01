@@ -1,5 +1,106 @@
 export default {
-  cardHeader({ titulo, subtitulo, icone = "/static/images/doc2.png" }) {
+  cardHeader({
+    titulo,
+    subtitulo,
+    icone = "/static/images/doc2.png",
+    isKPI8 = false,
+    isKPI9 = false,
+    isKPI10 = false,
+  }) {
+    // Standard dropdown options for all KPIs
+    const standardDropdownOptions = `
+      <a href="#" class="dropdown-item kpi-bar-option">
+        <i class="fas fa-chart-bar" style="margin-right:8px;"></i>Gráfico de Barras
+      </a>
+      <a href="#" class="dropdown-item kpi-pie-option">
+        <i class="fas fa-chart-pie" style="margin-right:8px;"></i>Gráfico de Pizza
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="#" class="dropdown-item kpi-show-data-option">
+        <i class="fas fa-table" style="margin-right:8px;"></i>Mostrar Dados
+      </a>
+      <a href="#" class="dropdown-item kpi-export-image-option">
+        <i class="fas fa-download" style="margin-right:8px;"></i>Exportar Imagem
+      </a>
+    `;
+
+    // KPI 9 specific dropdown options (with pie chart added back)
+    const kpi9DropdownOptions = `
+      <a href="#" class="dropdown-item kpi-bar-option">
+        <i class="fas fa-chart-bar" style="margin-right:8px;"></i>Gráfico de Barras
+      </a>
+      <a href="#" class="dropdown-item kpi-pie-option">
+        <i class="fas fa-chart-pie" style="margin-right:8px;"></i>Gráfico de Pizza
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="#" class="dropdown-item kpi-show-data-option">
+        <i class="fas fa-table" style="margin-right:8px;"></i>Mostrar Dados
+      </a>
+      <a href="#" class="dropdown-item kpi-export-image-option">
+        <i class="fas fa-download" style="margin-right:8px;"></i>Exportar Imagem
+      </a>
+    `;
+
+    // KPI 10 specific dropdown options (stacked bar and line chart only)
+    const kpi10DropdownOptions = `
+      <a href="#" class="dropdown-item kpi-bar-option">
+        <i class="fas fa-chart-bar" style="margin-right:8px;"></i>Gráfico de Barras Empilhadas
+      </a>
+      <a href="#" class="dropdown-item kpi-line-option">
+        <i class="fas fa-chart-line" style="margin-right:8px;"></i>Gráfico de Linhas
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="#" class="dropdown-item kpi-show-data-option">
+        <i class="fas fa-table" style="margin-right:8px;"></i>Mostrar Dados
+      </a>
+      <a href="#" class="dropdown-item kpi-export-image-option">
+        <i class="fas fa-download" style="margin-right:8px;"></i>Exportar Imagem
+      </a>
+    `;
+
+    // Extra option for KPI 8 (Map)
+    const mapOption = isKPI8
+      ? `
+      <a href="#" class="dropdown-item kpi-map-option">
+        <i class="fas fa-map" style="margin-right:8px;"></i>Mapa
+      </a>
+    `
+      : "";
+
+    // Extra option for KPI 9 (Calendar)
+    const calendarOption = isKPI9
+      ? `
+      <a href="#" class="dropdown-item kpi-calendar-option">
+        <i class="fas fa-calendar" style="margin-right:8px;"></i>Calendário
+      </a>
+    `
+      : "";
+
+    const dropdownButton = `
+      <div class="ml-auto" style="margin: -10px -10px 0px 0px; position: relative;">
+        <button class="br-button circle kpi-dropdown-btn${
+          isKPI8 ? " kpi8-dropdown-btn" : ""
+        }${isKPI9 ? " kpi9-dropdown-btn" : ""}${
+      isKPI10 ? " kpi10-dropdown-btn" : ""
+    }" type="button" aria-label="Opções de visualização">
+          <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+        </button>
+        <div class="kpi-dropdown-menu${isKPI8 ? " kpi8-dropdown-menu" : ""}${
+      isKPI9 ? " kpi9-dropdown-menu" : ""
+    }${isKPI10 ? " kpi10-dropdown-menu" : ""}" style="display:none;">
+          ${mapOption}
+          ${calendarOption}
+          ${
+            isKPI10
+              ? kpi10DropdownOptions
+              : isKPI9
+              ? kpi9DropdownOptions
+              : standardDropdownOptions
+          }
+        </div>
+      </div>
+    `;
+
     return `
             <div class="card-header">
                 <div class="d-flex" style="width: 100%;">
@@ -11,11 +112,7 @@ export default {
                         <div style="border-bottom: 1px solid #ccc;margin:-6px 0px 0px 26px;"></div>
                         <div class="subtitulo">${subtitulo}</div>
                     </div>
-                    <div class="ml-auto" style="margin: -10px -10px 0px 0px;">
-                        <button class="br-button circle chart-dropdown-btn" type="button" aria-label="Mais opções">
-                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-                        </button>
-                    </div>
+                    ${dropdownButton}
                 </div>
             </div>
         `;

@@ -837,6 +837,43 @@ body {
 .table-responsive {
   max-height: 400px;
   overflow-y: auto;
+  overflow-x: auto;
+}
+
+/* Dashboard table specific styles */
+.dashboard-table-container {
+  width: 100%;
+  flex-grow: 1;
+  min-height: 400px;
+}
+
+.dashboard-table-container .table-responsive {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  overflow-x: auto;
+  min-height: 400px;
+  height: auto;
+  flex-grow: 1;
+}
+
+.dashboard-table-container .br-table {
+  width: 100%;
+  table-layout: auto;
+  margin-bottom: 0;
+}
+
+.dashboard-table-container .br-table tbody {
+  display: table-row-group;
+}
+
+/* Ensure dashboard row can grow with content */
+.row-tight {
+  min-height: fit-content;
+}
+
+.row-tight .col-12 {
+  display: flex;
+  flex-direction: column;
 }
 
 /* KPI Dashboard Layout Styles */
@@ -1190,5 +1227,291 @@ body {
 
   .objeto-text {
     max-width: 120px;
+  }
+}
+
+/* Renewal Bar Charts */
+.renewal-bars-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+}
+
+.renewal-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.renewal-bar-value {
+  font-size: 11px;
+  font-weight: bold;
+  color: #333;
+  min-height: 14px;
+}
+
+.renewal-bar {
+  width: 32px;
+  height: 150px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.renewal-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transition: height 0.3s ease;
+  border-radius: 1px;
+}
+
+/* Bar fill colors based on renewal period - matching gauge colors */
+.renewal-bar[data-days="120"] .renewal-bar-fill {
+  background-color: #ffcd07; /* Yellow for 120 days - matches gauge yellow zone */
+}
+
+.renewal-bar[data-days="90"] .renewal-bar-fill {
+  background-color: #d27a56; /* Orange for 90 days - matches gauge orange zone */
+}
+
+.renewal-bar[data-days="45"] .renewal-bar-fill {
+  background-color: #b50909; /* Red for 45 days - matches gauge red zone */
+}
+
+/* Active renewal bar styling */
+.renewal-bar.active {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+.renewal-bar.active .renewal-bar-fill {
+  animation: fillAnimation 0.5s ease-out;
+}
+
+@keyframes fillAnimation {
+  from {
+    height: 0%;
+  }
+  to {
+    height: var(--final-height);
+  }
+}
+
+/* Hover effects */
+.renewal-bar:hover {
+  border-color: #007bff;
+}
+
+.renewal-bar-group:hover .renewal-bar-value {
+  color: #007bff;
+}
+
+/* Financial Bar Charts - Similar to renewal bars but for money amounts */
+.financial-bars-container {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  min-height: 169.95px;
+}
+
+.financial-bar-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1px;
+}
+
+.financial-bar-value {
+  font-size: 9px;
+  font-weight: bold;
+  color: #333;
+  min-width: 20px;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.financial-bar {
+  width: 48px;
+  height: 169.95px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.financial-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transition: height 0.3s ease;
+  border-radius: 1px;
+}
+
+/* Financial bar fill colors - different from renewal bars */
+.financial-bar[data-type="contratado"] .financial-bar-fill {
+  background-color: #0c326f; /* Blue for contracted amount - always 100% full */
+}
+
+.financial-bar[data-type="empenhado"] {
+  background-color: #c5d4eb; /* Light blue background for committed amount */
+}
+
+.financial-bar[data-type="empenhado"] .financial-bar-fill {
+  background-color: #168821; /* Green fill for committed amount */
+}
+
+.financial-bar[data-type="pagamentos"] {
+  background-color: #e3f5e1; /* Light green background for payments */
+}
+
+.financial-bar[data-type="pagamentos"] .financial-bar-fill {
+  background-color: #168821; /* Green fill for payments */
+}
+
+/* Active financial bar styling */
+.financial-bar.active {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+.financial-bar.active .financial-bar-fill {
+  animation: fillAnimation 0.5s ease-out;
+}
+
+/* Hover effects for financial bars */
+.financial-bar:hover {
+  border-color: #007bff;
+}
+
+.financial-bar-group:hover .financial-bar-value {
+  color: #007bff;
+}
+
+/* Financial columns width - Contratado, Empenhado, Pagamentos */
+.br-table th:nth-child(5), /* Contratado column */
+.br-table th:nth-child(6), /* Empenhado column */
+.br-table th:nth-child(7), /* Pagamentos column */
+.br-table td:nth-child(5), /* Contratado cells */
+.br-table td:nth-child(6), /* Empenhado cells */
+.br-table td:nth-child(7)  /* Pagamentos cells */ {
+  width: 93px;
+  min-width: 93px;
+  max-width: 93px;
+}
+
+/* Filter menu button and dropdown styles */
+.filter-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+#btn-filtro-opcoes {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 6px 12px;
+  background-color: #0c326f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#btn-filtro-opcoes:hover {
+  background-color: #084a8a;
+}
+
+#btn-filtro-opcoes i {
+  font-size: 11px;
+}
+
+.filter-dropdown {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 999;
+  min-width: 250px;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+.filter-dropdown .br-checkbox,
+.filter-dropdown .br-radio {
+  margin-bottom: 4px;
+}
+
+.filter-dropdown details summary {
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 4px;
+  list-style: none;
+}
+
+.filter-dropdown details summary::-webkit-details-marker {
+  display: none;
+}
+
+.filter-dropdown details summary::before {
+  content: "▼";
+  margin-right: 6px;
+  font-size: 10px;
+  transition: transform 0.2s;
+}
+
+.filter-dropdown details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+/* Search and filter container alignment */
+.header-grid-custom .d-flex.ms-auto {
+  min-width: 350px; /* Ensure enough space */
+}
+
+.header-grid-custom .br-input.input-highlight {
+  min-width: 200px; /* Ensure search input has adequate width */
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.header-grid-custom .filter-menu-container {
+  flex-shrink: 0; /* Prevent filter button from shrinking */
+}
+
+/* Ensure filter button is always visible */
+.header-grid-custom .br-button.small {
+  white-space: nowrap; /* Prevent text wrapping */
+  min-width: auto;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .header-grid-custom .d-flex.ms-auto {
+    flex-direction: column;
+    gap: 8px !important;
+    align-items: flex-end;
+  }
+
+  .header-grid-custom .br-input.input-highlight {
+    min-width: 150px;
   }
 }
