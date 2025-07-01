@@ -33,14 +33,7 @@ router = APIRouter()
 # Renderiza a página do dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
-    dev_css_files, dev_js_modules, dev_js_files = collect_static_files()
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
-        "dev_css_files": dev_css_files,
-        "dev_js_modules": dev_js_modules,
-        "dev_js_files": dev_js_files, 
-        "config": app_config
-    })
+    return templates.TemplateResponse("dashboard.html", {"request": request})
 
 # Endpoints do dashboard para contratos
 @router.get("/dashboard/contratos")
