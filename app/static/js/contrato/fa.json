@@ -1,0 +1,1104 @@
+{
+  "SELECT DISTINCT \r\n    e.naturezadespesa_id,\r\n    c.descricao\r\nFROM empenhos e\r\nLEFT JOIN naturezadespesa c\r\n    ON e.naturezadespesa_id = c.id": [
+    {
+      "naturezadespesa_id": 1,
+      "descricao": "DESPESAS CORRENTES"
+    },
+    {
+      "naturezadespesa_id": 4,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 22,
+      "descricao": "APOSENTADORIAS, RESERVA REMUNERADA E REFORMAS"
+    },
+    {
+      "naturezadespesa_id": 23,
+      "descricao": "PENSOES"
+    },
+    {
+      "naturezadespesa_id": 24,
+      "descricao": "CONTRATACAO P/TEMPO DETERMINADO"
+    },
+    {
+      "naturezadespesa_id": 25,
+      "descricao": "OUTROS BENEF.PREV. DO SERVIDOR OU DO MILITAR"
+    },
+    {
+      "naturezadespesa_id": 26,
+      "descricao": "CONTRIB. A ENTIDADES FECHADAS DE PREVIDENCIA"
+    },
+    {
+      "naturezadespesa_id": 29,
+      "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL"
+    },
+    {
+      "naturezadespesa_id": 30,
+      "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PES. MILITAR"
+    },
+    {
+      "naturezadespesa_id": 31,
+      "descricao": "OBRIGACOES PATRONAIS"
+    },
+    {
+      "naturezadespesa_id": 32,
+      "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL CIVIL"
+    },
+    {
+      "naturezadespesa_id": 33,
+      "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL MILITAR"
+    },
+    {
+      "naturezadespesa_id": 37,
+      "descricao": "SENTENCAS JUDICIAIS"
+    },
+    {
+      "naturezadespesa_id": 38,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 39,
+      "descricao": "INDENIZACOES E RESTITUICOES TRABALHISTAS"
+    },
+    {
+      "naturezadespesa_id": 40,
+      "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO"
+    },
+    {
+      "naturezadespesa_id": 43,
+      "descricao": "CONTRATACAO POR TEMPO DETERMINADO"
+    },
+    {
+      "naturezadespesa_id": 44,
+      "descricao": "OBRIGACOES PATRONAIS - OP.INTRA-ORCAMENTARIAS"
+    },
+    {
+      "naturezadespesa_id": 45,
+      "descricao": "SENTENCAS JUDICIAIS"
+    },
+    {
+      "naturezadespesa_id": 46,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 48,
+      "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO"
+    },
+    {
+      "naturezadespesa_id": 80,
+      "descricao": "JUROS SOBRE A DIVIDA POR CONTRATO"
+    },
+    {
+      "naturezadespesa_id": 81,
+      "descricao": "OUTROS ENCARGOS SOBRE A DIVIDA POR CONTRATO"
+    },
+    {
+      "naturezadespesa_id": 82,
+      "descricao": "JUROS,DESAGIOS E DESCONTOS DA DIV. MOBILIARIA"
+    },
+    {
+      "naturezadespesa_id": 83,
+      "descricao": "OUTROS ENCARGOS SOBRE A DIVIDA MOBILIARIA"
+    },
+    {
+      "naturezadespesa_id": 85,
+      "descricao": "OBRIGACOES DECORRENTES DE POLITICA MONETARIA"
+    },
+    {
+      "naturezadespesa_id": 87,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 104,
+      "descricao": "DIARIAS - CIVIL"
+    },
+    {
+      "naturezadespesa_id": 105,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 120,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 121,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 122,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 125,
+      "descricao": "DISTRIBUICAO DE RECEITAS"
+    },
+    {
+      "naturezadespesa_id": 126,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 127,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 130,
+      "descricao": "CONTRIBUICOES - FUNDO A FUNDO"
+    },
+    {
+      "naturezadespesa_id": 131,
+      "descricao": "DESPESAS DE EXERC. ANTERIORES FUNDO A FUNDO"
+    },
+    {
+      "naturezadespesa_id": 134,
+      "descricao": "AUXILIO FINANCEIRO A ESTUDANTES"
+    },
+    {
+      "naturezadespesa_id": 135,
+      "descricao": "AUXILIO FINANCEIRO A PESQUISADORES"
+    },
+    {
+      "naturezadespesa_id": 136,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 140,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 141,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 142,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 151,
+      "descricao": "DIARIAS - CIVIL"
+    },
+    {
+      "naturezadespesa_id": 158,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 161,
+      "descricao": "DISTRIBUICAO DE RECEITAS"
+    },
+    {
+      "naturezadespesa_id": 162,
+      "descricao": "SENTENCAS JUDICIAIS"
+    },
+    {
+      "naturezadespesa_id": 163,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 164,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 167,
+      "descricao": "CONTRIBUICOES - FUNDO A FUNDO"
+    },
+    {
+      "naturezadespesa_id": 168,
+      "descricao": "DESPESAS DE EXERC. ANTERIORES FUNDO A FUNDO"
+    },
+    {
+      "naturezadespesa_id": 171,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 175,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 176,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 188,
+      "descricao": "DIARIAS - PESSOAL CIVIL"
+    },
+    {
+      "naturezadespesa_id": 189,
+      "descricao": "AUXILIO FINANCEIRO A ESTUDANTES"
+    },
+    {
+      "naturezadespesa_id": 190,
+      "descricao": "AUXILIO FINANCEIRO A PESQUISADORES"
+    },
+    {
+      "naturezadespesa_id": 191,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 193,
+      "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO"
+    },
+    {
+      "naturezadespesa_id": 194,
+      "descricao": "SERVICO DE CONSULTORIA"
+    },
+    {
+      "naturezadespesa_id": 195,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 196,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 197,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 198,
+      "descricao": "SUBVENCOES SOCIAIS"
+    },
+    {
+      "naturezadespesa_id": 199,
+      "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS"
+    },
+    {
+      "naturezadespesa_id": 200,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 204,
+      "descricao": "SUBVENCOES ECONOMICAS"
+    },
+    {
+      "naturezadespesa_id": 205,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 208,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 219,
+      "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO"
+    },
+    {
+      "naturezadespesa_id": 233,
+      "descricao": "DIARIAS - PESSOAL CIVIL"
+    },
+    {
+      "naturezadespesa_id": 234,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 235,
+      "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO"
+    },
+    {
+      "naturezadespesa_id": 237,
+      "descricao": "SERVICOS DE CONSULTORIA"
+    },
+    {
+      "naturezadespesa_id": 238,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS ± PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 240,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 241,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 242,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 247,
+      "descricao": "CONTRATACAO POR TEMPO DETERMINADO"
+    },
+    {
+      "naturezadespesa_id": 249,
+      "descricao": "BENEFICIO MENSAL AO DEFICIENTE E AO IDOSO"
+    },
+    {
+      "naturezadespesa_id": 250,
+      "descricao": "OUTROS BENEF.ASSIST. DO SERVIDOR E DO MILITAR"
+    },
+    {
+      "naturezadespesa_id": 252,
+      "descricao": "SEGURO DESEMPREGO E ABONO SALARIAL"
+    },
+    {
+      "naturezadespesa_id": 253,
+      "descricao": "DIARIAS - PESSOAL CIVIL"
+    },
+    {
+      "naturezadespesa_id": 254,
+      "descricao": "DIARIAS - PESSOAL MILITAR"
+    },
+    {
+      "naturezadespesa_id": 255,
+      "descricao": "AUXILIO FINANCEIRO A ESTUDANTES"
+    },
+    {
+      "naturezadespesa_id": 256,
+      "descricao": "AUXILIO-FARDAMENTO"
+    },
+    {
+      "naturezadespesa_id": 257,
+      "descricao": "AUXILIO FINANCEIRO A PESQUISADORES"
+    },
+    {
+      "naturezadespesa_id": 259,
+      "descricao": "ENC.P/ HONRA DE AVAIS, GARANT.,SEGUROS E SIM."
+    },
+    {
+      "naturezadespesa_id": 260,
+      "descricao": "REMUNERACAO DE COTAS DE FUNDOS AUTARQUICOS"
+    },
+    {
+      "naturezadespesa_id": 261,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 262,
+      "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR."
+    },
+    {
+      "naturezadespesa_id": 263,
+      "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA"
+    },
+    {
+      "naturezadespesa_id": 264,
+      "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO"
+    },
+    {
+      "naturezadespesa_id": 265,
+      "descricao": "OUTRAS DESP.PESSOAL DEC. CONTRATOS TERCEIRIZ."
+    },
+    {
+      "naturezadespesa_id": 266,
+      "descricao": "SERVICOS DE CONSULTORIA"
+    },
+    {
+      "naturezadespesa_id": 267,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 268,
+      "descricao": "LOCACAO DE MAO-DE-OBRA"
+    },
+    {
+      "naturezadespesa_id": 269,
+      "descricao": "ARRENDAMENTO MERCANTIL"
+    },
+    {
+      "naturezadespesa_id": 270,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 271,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 273,
+      "descricao": "SUBVENCOES ECONOMICAS"
+    },
+    {
+      "naturezadespesa_id": 274,
+      "descricao": "AUXILIO-ALIMENTACAO"
+    },
+    {
+      "naturezadespesa_id": 275,
+      "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS"
+    },
+    {
+      "naturezadespesa_id": 276,
+      "descricao": "OUTROS AUXILIOS FINANCEIROS A PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 277,
+      "descricao": "AUXILIO-TRANSPORTE"
+    },
+    {
+      "naturezadespesa_id": 283,
+      "descricao": "OUTROS BENEFICIOS DO RGPS - AREA URBANA"
+    },
+    {
+      "naturezadespesa_id": 284,
+      "descricao": "PENSOES ESPECIAIS"
+    },
+    {
+      "naturezadespesa_id": 285,
+      "descricao": "DEPOSITOS COMPULSORIOS"
+    },
+    {
+      "naturezadespesa_id": 286,
+      "descricao": "DISTRIBUICAO CONSTITUCIONAL OU LEGAL DE RECEITAS"
+    },
+    {
+      "naturezadespesa_id": 287,
+      "descricao": "SENTENCAS JUDICIAIS"
+    },
+    {
+      "naturezadespesa_id": 288,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 289,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 290,
+      "descricao": "INDENIZACAO PELA EXECUCAO TRABALHOS DE CAMPO"
+    },
+    {
+      "naturezadespesa_id": 291,
+      "descricao": "RESSARC. DE DESPESAS DE PESSOAL REQUISITADO"
+    },
+    {
+      "naturezadespesa_id": 295,
+      "descricao": "CONTRATATACAO POR TEMPO DETERMINADO"
+    },
+    {
+      "naturezadespesa_id": 296,
+      "descricao": "AUXILIO FINANCEIRO A ESTUDANTES"
+    },
+    {
+      "naturezadespesa_id": 298,
+      "descricao": "DIVIDENDOS - EMPRESAS ESTATAIS DEPENDENTES"
+    },
+    {
+      "naturezadespesa_id": 299,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 300,
+      "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR."
+    },
+    {
+      "naturezadespesa_id": 301,
+      "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA"
+    },
+    {
+      "naturezadespesa_id": 302,
+      "descricao": "SERVICOS DE CONSULTORIA"
+    },
+    {
+      "naturezadespesa_id": 303,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)"
+    },
+    {
+      "naturezadespesa_id": 304,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 305,
+      "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS"
+    },
+    {
+      "naturezadespesa_id": 307,
+      "descricao": "SENTENCAS JUDICIAIS"
+    },
+    {
+      "naturezadespesa_id": 308,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 309,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 310,
+      "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO"
+    },
+    {
+      "naturezadespesa_id": 311,
+      "descricao": "COMPENSACOES AO RGPS"
+    },
+    {
+      "naturezadespesa_id": 342,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 397,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 398,
+      "descricao": "AUXILIOS"
+    },
+    {
+      "naturezadespesa_id": 399,
+      "descricao": "OBRAS E INSTALACOES"
+    },
+    {
+      "naturezadespesa_id": 400,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 402,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 404,
+      "descricao": "CONTRIBUICOES - FUNDO A FUNDO"
+    },
+    {
+      "naturezadespesa_id": 405,
+      "descricao": "AUXILIOS - FUNDO A FUNDO"
+    },
+    {
+      "naturezadespesa_id": 408,
+      "descricao": "AUXILIO FINANCEIRO A PESQUISADORES"
+    },
+    {
+      "naturezadespesa_id": 409,
+      "descricao": "OBRAS E INSTALACOES"
+    },
+    {
+      "naturezadespesa_id": 410,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 422,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 423,
+      "descricao": "AUXILIOS"
+    },
+    {
+      "naturezadespesa_id": 427,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 430,
+      "descricao": "CONTRIBUICOES - FUNDO A FUNDO"
+    },
+    {
+      "naturezadespesa_id": 431,
+      "descricao": "AUXILIOS - FUNDO A FUNDO"
+    },
+    {
+      "naturezadespesa_id": 434,
+      "descricao": "OBRAS E INSTALACOES"
+    },
+    {
+      "naturezadespesa_id": 435,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 436,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 446,
+      "descricao": "DIARIAS - PESSOAL CIVIL"
+    },
+    {
+      "naturezadespesa_id": 447,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 448,
+      "descricao": "SERVICOS DE TERCEIROS - PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 449,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 450,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 451,
+      "descricao": "AUXILIOS"
+    },
+    {
+      "naturezadespesa_id": 453,
+      "descricao": "OBRAS E INSTALACOES"
+    },
+    {
+      "naturezadespesa_id": 454,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 460,
+      "descricao": "AUXILIOS"
+    },
+    {
+      "naturezadespesa_id": 462,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 464,
+      "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO"
+    },
+    {
+      "naturezadespesa_id": 479,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 480,
+      "descricao": "AUXILIOS"
+    },
+    {
+      "naturezadespesa_id": 481,
+      "descricao": "OBRAS E INSTALACOES"
+    },
+    {
+      "naturezadespesa_id": 482,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 484,
+      "descricao": "CONTRATACAO POR TEMPO DETERMINADO - PES.CIVIL"
+    },
+    {
+      "naturezadespesa_id": 485,
+      "descricao": "DIARIAS - PESSOAL CIVIL"
+    },
+    {
+      "naturezadespesa_id": 486,
+      "descricao": "DIARIAS - PESSOAL MILITAR"
+    },
+    {
+      "naturezadespesa_id": 488,
+      "descricao": "AUXILIO FINANCEIRO A ESTUDANTES"
+    },
+    {
+      "naturezadespesa_id": 489,
+      "descricao": "AUXILIO FINANCEIRO A PESQUISADORES"
+    },
+    {
+      "naturezadespesa_id": 490,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 491,
+      "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO"
+    },
+    {
+      "naturezadespesa_id": 492,
+      "descricao": "SERVICOS DE CONSULTORIA"
+    },
+    {
+      "naturezadespesa_id": 493,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - P.FISICA"
+    },
+    {
+      "naturezadespesa_id": 494,
+      "descricao": "LOCACAO DE MAO-DE-OBRA"
+    },
+    {
+      "naturezadespesa_id": 495,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 496,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 498,
+      "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS"
+    },
+    {
+      "naturezadespesa_id": 499,
+      "descricao": "OBRAS E INSTALACOES"
+    },
+    {
+      "naturezadespesa_id": 500,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 501,
+      "descricao": "AQUISICAO DE IMOVEIS"
+    },
+    {
+      "naturezadespesa_id": 502,
+      "descricao": "SENTENCAS JUDICIAIS"
+    },
+    {
+      "naturezadespesa_id": 503,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 504,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 505,
+      "descricao": "INDENIZACAO PELA EXECUCAO TRABALHOS DE CAMPO"
+    },
+    {
+      "naturezadespesa_id": 508,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS PJ - OP.INT.ORC."
+    },
+    {
+      "naturezadespesa_id": 509,
+      "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS"
+    },
+    {
+      "naturezadespesa_id": 510,
+      "descricao": "OBRAS E INSTALACOES - OP.INT.ORC."
+    },
+    {
+      "naturezadespesa_id": 511,
+      "descricao": "EQUIP.E MATERIAL PERMANENTE - OP.INTRA-ORC."
+    },
+    {
+      "naturezadespesa_id": 572,
+      "descricao": "AQUISICAO DE IMOVEIS"
+    },
+    {
+      "naturezadespesa_id": 573,
+      "descricao": "AQUISICAO DE BENS PARA REVENDA"
+    },
+    {
+      "naturezadespesa_id": 575,
+      "descricao": "AQUISICAO TIT.REPRES.DE CAP.JA INTEGRALIZADO"
+    },
+    {
+      "naturezadespesa_id": 576,
+      "descricao": "CONSTIT. OU AUMENTO DE CAPITAL DE EMPRESAS"
+    },
+    {
+      "naturezadespesa_id": 577,
+      "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS"
+    },
+    {
+      "naturezadespesa_id": 579,
+      "descricao": "PARTICIPACAO EM FUNDOS, ORGANISMOS OU ENTIDADES ASSEME-LHADAS, NACIONAIS E INTERNACIONAIS."
+    },
+    {
+      "naturezadespesa_id": 580,
+      "descricao": "SENTENCAS JUDICIAIS"
+    },
+    {
+      "naturezadespesa_id": 581,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 582,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 584,
+      "descricao": "AQUISICAO DE IMOVEIS"
+    },
+    {
+      "naturezadespesa_id": 587,
+      "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS"
+    },
+    {
+      "naturezadespesa_id": 612,
+      "descricao": "OBRIGACOES DECORRENTES DE POLITICA MONETARIA"
+    },
+    {
+      "naturezadespesa_id": 613,
+      "descricao": "PRINCIPAL DA DIVIDA CONTRATUAL RESGATADO"
+    },
+    {
+      "naturezadespesa_id": 614,
+      "descricao": "PRINCIPAL DA DIVIDA MOBILIARIA RESGATADO"
+    },
+    {
+      "naturezadespesa_id": 618,
+      "descricao": "PRINCIPAL CORRIGIDO DA DIV.MOB.REFINANCIADO"
+    },
+    {
+      "naturezadespesa_id": 619,
+      "descricao": "PRINCIPAL CORRIGIDO DIVIDA CONTR.REFINANCIADO"
+    },
+    {
+      "naturezadespesa_id": 645,
+      "descricao": "RESERVA DE CONTINGENCIA"
+    },
+    {
+      "naturezadespesa_id": 649,
+      "descricao": "OUTRAS DESPESAS DE PESSOAL - CONTRATOS DE TERCEIRIZACAO"
+    },
+    {
+      "naturezadespesa_id": 655,
+      "descricao": "DISTRIBUICAO CONSTITUCIONAL OU LEGAL DE RECEITAS"
+    },
+    {
+      "naturezadespesa_id": 656,
+      "descricao": "PRINCIPAL CORRIGIDO DIVIDA CONTRATUAL REFINANCIADO"
+    },
+    {
+      "naturezadespesa_id": 657,
+      "descricao": "TRANSFERENCIAS POR MEIO DE CONTRATO DE GESTAO"
+    },
+    {
+      "naturezadespesa_id": 660,
+      "descricao": "AQUISICAO DE BENS PARA REVENDA"
+    },
+    {
+      "naturezadespesa_id": 661,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 663,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 664,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 665,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 666,
+      "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS"
+    },
+    {
+      "naturezadespesa_id": 667,
+      "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS"
+    },
+    {
+      "naturezadespesa_id": 668,
+      "descricao": "LOCACAO DE MAO-DE-OBRA"
+    },
+    {
+      "naturezadespesa_id": 669,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 670,
+      "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO"
+    },
+    {
+      "naturezadespesa_id": 671,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 672,
+      "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO"
+    },
+    {
+      "naturezadespesa_id": 673,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 674,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 675,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 676,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)"
+    },
+    {
+      "naturezadespesa_id": 677,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 678,
+      "descricao": "LOCACAO DE MAO-DE-OBRA"
+    },
+    {
+      "naturezadespesa_id": 679,
+      "descricao": "OBRAS E INSTALACOES"
+    },
+    {
+      "naturezadespesa_id": 680,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 685,
+      "descricao": "SERVICOS DE CONSULTORIA"
+    },
+    {
+      "naturezadespesa_id": 686,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 687,
+      "descricao": "GENERICA"
+    },
+    {
+      "naturezadespesa_id": 690,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 691,
+      "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE"
+    },
+    {
+      "naturezadespesa_id": 692,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 693,
+      "descricao": "OBRAS E INSTALACOES"
+    },
+    {
+      "naturezadespesa_id": 694,
+      "descricao": "OUTROS AUXILIOS FINANCEIROS A PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 695,
+      "descricao": "SERVICOS DE CONSULTORIA"
+    },
+    {
+      "naturezadespesa_id": 696,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 706,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 707,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 711,
+      "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA"
+    },
+    {
+      "naturezadespesa_id": 712,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA"
+    },
+    {
+      "naturezadespesa_id": 721,
+      "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO"
+    },
+    {
+      "naturezadespesa_id": 722,
+      "descricao": "DIARIAS - PESSOAL CIVIL"
+    },
+    {
+      "naturezadespesa_id": 723,
+      "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA"
+    },
+    {
+      "naturezadespesa_id": 724,
+      "descricao": "AUXILIO-TRANSPORTE"
+    },
+    {
+      "naturezadespesa_id": 727,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 733,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 734,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 737,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 738,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 739,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)"
+    },
+    {
+      "naturezadespesa_id": 740,
+      "descricao": "OUTRAS DESP.PESSOAL DEC. CONTRATOS TERCEIRIZ."
+    },
+    {
+      "naturezadespesa_id": 741,
+      "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS"
+    },
+    {
+      "naturezadespesa_id": 742,
+      "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS"
+    },
+    {
+      "naturezadespesa_id": 743,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 744,
+      "descricao": "SERVICOS DE CONSULTORIA"
+    },
+    {
+      "naturezadespesa_id": 745,
+      "descricao": "SUBVENCOES ECONOMICAS"
+    },
+    {
+      "naturezadespesa_id": 746,
+      "descricao": "CONTRATACAO POR TEMPO DETERMINADO"
+    },
+    {
+      "naturezadespesa_id": 747,
+      "descricao": "AUXILIO FINANCEIRO A ESTUDANTES"
+    },
+    {
+      "naturezadespesa_id": 748,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 749,
+      "descricao": "MATERIAL DE CONSUMO"
+    },
+    {
+      "naturezadespesa_id": 750,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)"
+    },
+    {
+      "naturezadespesa_id": 751,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 753,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    },
+    {
+      "naturezadespesa_id": 754,
+      "descricao": "CONTRIBUICOES"
+    },
+    {
+      "naturezadespesa_id": 755,
+      "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO"
+    },
+    {
+      "naturezadespesa_id": 756,
+      "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA"
+    },
+    {
+      "naturezadespesa_id": 757,
+      "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR."
+    },
+    {
+      "naturezadespesa_id": 758,
+      "descricao": "LOCACAO DE MAO-DE-OBRA"
+    },
+    {
+      "naturezadespesa_id": 759,
+      "descricao": "DESPESAS DE EXERCICIOS ANTERIORES"
+    },
+    {
+      "naturezadespesa_id": 760,
+      "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS"
+    },
+    {
+      "naturezadespesa_id": 761,
+      "descricao": "AUXILIO-TRANSPORTE"
+    },
+    {
+      "naturezadespesa_id": 763,
+      "descricao": "INDENIZACOES E RESTITUICOES"
+    },
+    {
+      "naturezadespesa_id": 764,
+      "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ"
+    }
+  ]
+}

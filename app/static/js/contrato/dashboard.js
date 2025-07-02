@@ -1214,14 +1214,8 @@ export default {
         <td>
           <div style="display: flex; gap: 10px; padding: 10px; font-family: Arial, sans-serif;">
           <div class="icon-circle">  
-          <i class="fas fa-file-contract" style="font-size: 38px; color: #6a86c0;"></i>
+          <i class="fas fa-file-contract" alt="contracto" style="font-size: 38px; color: #6a86c0;"></i>
           </div>  
-          <div style="width: 62px; text-align: center;">
-              <img style="width: 5px; height: 5px;" src="${
-                this.getContratoInfo(contract.tipo_id).icon
-              }" />
-            </div>
-
             <div style="flex: 1;">
               <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
                 <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 20px;" />
@@ -1272,9 +1266,30 @@ export default {
       contract.ano
     }});" title="Encontro de Contas" />
 
-                <span style="width: 20px; cursor: pointer; background-image: url('/static/images/ico/bkg-reload.png'); background-repeat: no-repeat; padding: 2px; color: #FF9933;" onclick="ContratoWidget.aditivosChart({id:${
-                  contract.id
-                },numero:'${contract.numero}',fornecedor:'${this.escapeQuotes(
+    <div style="position: relative; display: inline-block; padding-top: 5px;">
+  <svg
+    width="30"
+    height="30"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M13.1459 11.0499L12.9716 9.05752L15.3462 8.84977C14.4471 7.98322 13.2242 7.4503 11.8769 7.4503C9.11547 7.4503 6.87689 9.68888 6.87689 12.4503C6.87689 15.2117 9.11547 17.4503 11.8769 17.4503C13.6977 17.4503 15.2911 16.4771 16.1654 15.0224L18.1682 15.5231C17.0301 17.8487 14.6405 19.4503 11.8769 19.4503C8.0109 19.4503 4.87689 16.3163 4.87689 12.4503C4.87689 8.58431 8.0109 5.4503 11.8769 5.4503C13.8233 5.4503 15.5842 6.24474 16.853 7.52706L16.6078 4.72412L18.6002 4.5498L19.1231 10.527L13.1459 11.0499Z"
+      fill="#ccc"
+    />
+  </svg>
+  <div style="cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    color: #666;
+    padding-top: 5px;
+    font-size: 11px;"onclick="ContratoWidget.aditivosChart({id:${
+      contract.id
+    },numero:'${contract.numero}',fornecedor:'${this.escapeQuotes(
       contract.fornecedor_nome
     )}',total_contrato:'${contract.aditivos_count}',total_a_c:'${
       contract.aditivos_count
@@ -1282,24 +1297,57 @@ export default {
       contract.fornecedor_cnpj
     }',tempo_transcorrido_contrato:'${contract.dias_restantes}',ano:${
       contract.ano
-    }});" title="Termos aditivos">${contract.aditivos_count}</span>
-
-                <span style="width: 20px;cursor: pointer; background-image: url('/static/images/ico/circle-${this.getRestricoesIcone(
-                  contract.status
-                )}.png'); background-repeat: no-repeat; padding: 2px; color: ${this.getRestricoesCor(
-      contract.status
-    )};" onclick="ContratoWidget.restricoes(${
-      contract.id
-    });" title="Restrições">0</span>
-
-                <span style="width: 20px; cursor: pointer; background-image: url('/static/images/ico/bkg-reload.png'); background-repeat: no-repeat; padding: 2px; color: #FF9933;" 
-                title="${this.formatContractStartInfo(
-                  contract.vigencia_inicio
-                )}">${this.getContractYearsDisplay(
+    }});" title="Termos aditivos"
+  >${contract.aditivos_count}</div>
+</div>            
+    <div style="position: relative; display: inline-block; padding-top: 5px;">
+  <svg
+    width="30"
+    height="30"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M13.1459 11.0499L12.9716 9.05752L15.3462 8.84977C14.4471 7.98322 13.2242 7.4503 11.8769 7.4503C9.11547 7.4503 6.87689 9.68888 6.87689 12.4503C6.87689 15.2117 9.11547 17.4503 11.8769 17.4503C13.6977 17.4503 15.2911 16.4771 16.1654 15.0224L18.1682 15.5231C17.0301 17.8487 14.6405 19.4503 11.8769 19.4503C8.0109 19.4503 4.87689 16.3163 4.87689 12.4503C4.87689 8.58431 8.0109 5.4503 11.8769 5.4503C13.8233 5.4503 15.5842 6.24474 16.853 7.52706L16.6078 4.72412L18.6002 4.5498L19.1231 10.527L13.1459 11.0499Z"
+      fill="#ccc"
+    />
+  </svg>
+  <div style="cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    color: #666;
+    padding-top: 5px;
+    font-size: 11px;"title="Restrições">0</div>
+</div>
+      <div style="position: relative; display: inline-block; padding-top: 5px;">
+  <svg
+    width="30"
+    height="30"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M13.1459 11.0499L12.9716 9.05752L15.3462 8.84977C14.4471 7.98322 13.2242 7.4503 11.8769 7.4503C9.11547 7.4503 6.87689 9.68888 6.87689 12.4503C6.87689 15.2117 9.11547 17.4503 11.8769 17.4503C13.6977 17.4503 15.2911 16.4771 16.1654 15.0224L18.1682 15.5231C17.0301 17.8487 14.6405 19.4503 11.8769 19.4503C8.0109 19.4503 4.87689 16.3163 4.87689 12.4503C4.87689 8.58431 8.0109 5.4503 11.8769 5.4503C13.8233 5.4503 15.5842 6.24474 16.853 7.52706L16.6078 4.72412L18.6002 4.5498L19.1231 10.527L13.1459 11.0499Z"
+      fill="#ccc"
+    />
+  </svg>
+  <div style="cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    color: #666;
+    padding-top: 5px;
+    font-size: 11px;"title="${this.formatContractStartInfo(
       contract.vigencia_inicio
-    )}</span>
-
-                
+    )}">${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
+</div>              
 
                 <span style="cursor: pointer;" onclick="SeiWidget.seiDocumentos({id_contrato:${
                   contract.id
@@ -1432,7 +1480,7 @@ export default {
           contract.responsaveis ||
           "Nenhuma designação atribuída para este contrato"
         }</td>  
-      </tr> 
+      </tr>
     `;
   },
 

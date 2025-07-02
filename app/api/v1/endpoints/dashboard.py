@@ -453,6 +453,7 @@ async def get_contratos_lista(
             c.vigencia_fim,
             c.valor_inicial,
             c.valor_global,
+            e.naturezadespesa_id,
             c.justificativa_contrato_inativo_id,
             COALESCE(SUM(e.empenhado::numeric), 0) AS total_valor_empenhado,
             COALESCE(SUM(e.pago::numeric), 0) AS total_valor_pago,
@@ -489,6 +490,7 @@ async def get_contratos_lista(
             c.vigencia_fim,
             c.valor_inicial,
             c.valor_global,
+            e.naturezadespesa_id,
             c.justificativa_contrato_inativo_id
         {order_by}
         LIMIT :limit OFFSET :offset
@@ -542,6 +544,9 @@ async def get_contratos_lista(
         elif dias_restantes <= 90:
             status = "alerta"
         
+        # implement call a function to get fontawsomicone from naturezadespesa_lookup_fa.json
+        # fontawesome_icon = get_fontawesome_icon(contract.naturezadespesa_id)
+
         # Get favorite status for this contract
         favorite_info = get_random_favorite_status(contract.id)
         
@@ -551,6 +556,8 @@ async def get_contratos_lista(
             "ano": contract.ano,
             "processo": contract.processo,
             "tipo_id": contract.tipo_id,
+            "natureza_despesa_id": contract.naturezadespesa_id,
+            "justificativa_contrato_inativo_id": contract.justificativa_contrato_inativo_id,
             "fornecedor_id": contract.fornecedor_id,
             "fornecedor_nome": contract.fornecedor_nome,
             "fornecedor_cnpj": contract.cpf_cnpj_idgener,
