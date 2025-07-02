@@ -1,6 +1,7 @@
 from datetime import date, timedelta, datetime
 from typing import Any, Dict, List, Optional
 import json
+import random
 
 from babel.dates import format_date
 from fastapi import APIRouter, Depends, Request, HTTPException, Query
@@ -450,8 +451,7 @@ async def get_contratos_lista(
             c.id,
             c.numero,
             c.processo,
-            c.categoria_id,
-            ci.descricao AS tipo_descricao,
+            c.tipo_id,
             c.fornecedor_id,
             f.cpf_cnpj_idgener,
             f.nome AS fornecedor_nome,
@@ -463,13 +463,12 @@ async def get_contratos_lista(
             c.justificativa_contrato_inativo_id,
             COALESCE(SUM(e.empenhado::numeric), 0) AS total_valor_empenhado,
             COALESCE(SUM(e.pago::numeric), 0) AS total_valor_pago,
+            COUNT(DISTINCT ce.id) AS total_empenhos,
             COUNT(DISTINCT ch.id) AS aditivos_count,
             STRING_AGG(DISTINCT u.name, ', ') AS responsaveis,
             EXTRACT(YEAR FROM c.vigencia_inicio)::int AS ano
         FROM
             contratos c
-        LEFT JOIN codigoitens ci
-            ON c.categoria_id = ci.id
         LEFT JOIN fornecedores f
             ON c.fornecedor_id = f.id
         LEFT JOIN contratoempenhos ce
@@ -488,8 +487,7 @@ async def get_contratos_lista(
             c.id,
             c.numero,
             c.processo,
-            c.categoria_id,
-            ci.descricao,
+            c.tipo_id,
             c.fornecedor_id,
             f.cpf_cnpj_idgener,
             f.nome,
@@ -508,8 +506,6 @@ async def get_contratos_lista(
         SELECT COUNT(DISTINCT c.id)
         FROM
             contratos c
-        LEFT JOIN codigoitens ci
-            ON c.categoria_id = ci.id
         LEFT JOIN fornecedores f
             ON c.fornecedor_id = f.id
         {where_clause}
@@ -553,12 +549,16 @@ async def get_contratos_lista(
         elif dias_restantes <= 90:
             status = "alerta"
         
+        # Get favorite status for this contract
+        favorite_info = get_random_favorite_status(contract.id)
+        
         data.append({
             "id": contract.id,
-            "numero": contract.numero,
+            "numero": contract.numero[:-5] if contract.numero else contract.numero,
             "ano": contract.ano,
             "processo": contract.processo,
-            "tipo_descricao": contract.tipo_descricao,
+            "tipo_id": contract.tipo_id,
+            "fornecedor_id": contract.fornecedor_id,
             "fornecedor_nome": contract.fornecedor_nome,
             "fornecedor_cnpj": contract.cpf_cnpj_idgener,
             "objeto": contract.objeto,
@@ -568,10 +568,17 @@ async def get_contratos_lista(
             "valor_global": float(contract.valor_global or 0),
             "total_valor_empenhado": float(contract.total_valor_empenhado or 0),
             "total_valor_pago": float(contract.total_valor_pago or 0),
+            "total_empenhos": contract.total_empenhos or 0,
             "aditivos_count": contract.aditivos_count or 0,
             "responsaveis": contract.responsaveis,
             "dias_restantes": dias_restantes,
-            "status": status
+            "status": status,
+            # Favorite status information
+            "is_favorite": favorite_info["is_favorite"],
+            "favorite_icon": favorite_info["favorite_icon"],
+            "favorite_status": favorite_info["favorite_status"],
+            "favorite_action": favorite_info["favorite_action"],
+            "favorite_title": favorite_info["favorite_title"]
         })
 
     # Calculate pagination info
@@ -590,6 +597,26 @@ async def get_contratos_lista(
             "tipo": tipo,
             "sort": sort
         }
+    }
+
+def get_random_favorite_status(contract_id: int) -> Dict[str, Any]:
+    """
+    Generate random favorite status for a contract.
+    Later this will be replaced with actual database lookup.
+    
+    Returns:
+        Dict containing favorite status information
+    """
+    # Use contract_id as seed for consistent results per contract
+    random.seed(contract_id)
+    is_favorite = random.choice([True, False, False, False])  # 25% chance of being favorite
+    
+    return {
+        "is_favorite": is_favorite,
+        "favorite_icon": "red" if is_favorite else "gray", 
+        "favorite_status": "red" if is_favorite else "gray",
+        "favorite_action": "Remove" if is_favorite else "Adicionar",
+        "favorite_title": "Remover dos favoritos" if is_favorite else "Adicionar aos favoritos"
     }
 
 

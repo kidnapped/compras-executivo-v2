@@ -1,0 +1,3702 @@
+[
+  {
+    "id": 1,
+    "descricao": "DESPESAS CORRENTES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 2,
+    "descricao": "PESSOAL E ENCARGOS SOCIAIS",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 3,
+    "descricao": "TRANSF. A ESTADOS E AO DISTRITO FEDERAL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 4,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 5,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 6,
+    "descricao": "TRANSF. A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 7,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 8,
+    "descricao": "TRANSF.CONSOR.PUB.MEDIANTE CONTRATO DE RATEIO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 9,
+    "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 10,
+    "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 11,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 12,
+    "descricao": "RESSARCIMENTO DE DESP.DE PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 13,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 14,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 15,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 16,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 17,
+    "descricao": "TRANSFEENCIAS AO EXTERIOR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 18,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 19,
+    "descricao": "OUTRAS DESP. PESSOAL CONTRATOSDE TERCEIRIZ.",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 20,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 21,
+    "descricao": "APLICACOES DIRETAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 22,
+    "descricao": "APOSENTADORIAS, RESERVA REMUNERADA E REFORMAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 23,
+    "descricao": "PENSOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 24,
+    "descricao": "CONTRATACAO P/TEMPO DETERMINADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 25,
+    "descricao": "OUTROS BENEF.PREV. DO SERVIDOR OU DO MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 26,
+    "descricao": "CONTRIB. A ENTIDADES FECHADAS DE PREVIDENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 27,
+    "descricao": "OUTROS BENEF.ASSIST. DO SERVIDOR E DO MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 28,
+    "descricao": "SALARIO-FAMILIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 29,
+    "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 30,
+    "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PES. MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 31,
+    "descricao": "OBRIGACOES PATRONAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 32,
+    "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 33,
+    "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 34,
+    "descricao": "OUTRAS DESP.PESSOAL DEC. CONTRATOS TERCEIRIZ.",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 35,
+    "descricao": "PENSOES ESPECIAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 36,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 37,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 38,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 39,
+    "descricao": "INDENIZACOES E RESTITUICOES TRABALHISTAS",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 40,
+    "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 41,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 42,
+    "descricao": "APLICACOES DIRETAS - OPER.INTRA-ORCAMENTARIAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 43,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 44,
+    "descricao": "OBRIGACOES PATRONAIS - OP.INTRA-ORCAMENTARIAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 45,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 46,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 47,
+    "descricao": "INDENIZACOES TRABALHISTAS",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 48,
+    "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 49,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 50,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO LC 141/2012",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 51,
+    "descricao": "CONTRIBUICAO A ENTIDADE FECHADA PREVIDENCIA",
+    "icon": "fas fa-hand-holding-usd"
+  },
+  {
+    "id": 52,
+    "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 53,
+    "descricao": "OBRIGACOES PATRONAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 54,
+    "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 55,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 56,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 57,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 58,
+    "descricao": "INDENIZACOES E RESTITUICOES TRABALHISTAS",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 59,
+    "descricao": "RESSARCIMENTO DESPESAS DE PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 60,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 61,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO LC 141/2012",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 62,
+    "descricao": "CONTRIBUICAO A ENTIDADE FECHADA PREVIDENCIA",
+    "icon": "fas fa-hand-holding-usd"
+  },
+  {
+    "id": 63,
+    "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 64,
+    "descricao": "OBRIGACOES PATRONAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 65,
+    "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 66,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 67,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 68,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 69,
+    "descricao": "INDENIZACOES E RESTITUICOES TRABALHISTAS",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 70,
+    "descricao": "RESSARCIMENTO DESPESAS DE PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 71,
+    "descricao": "JUROS E ENCARGOS DA DIVIDA",
+    "icon": "fas fa-percent"
+  },
+  {
+    "id": 72,
+    "descricao": "TRANSF. A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 73,
+    "descricao": "TRANSF.CONSORC.PUB.MEDIANTE CONTRATO RATEIO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 74,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 75,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 76,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 77,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 78,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 79,
+    "descricao": "APLICACOES DIRETAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 80,
+    "descricao": "JUROS SOBRE A DIVIDA POR CONTRATO",
+    "icon": "fas fa-percent"
+  },
+  {
+    "id": 81,
+    "descricao": "OUTROS ENCARGOS SOBRE A DIVIDA POR CONTRATO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 82,
+    "descricao": "JUROS,DESAGIOS E DESCONTOS DA DIV. MOBILIARIA",
+    "icon": "fas fa-percent"
+  },
+  {
+    "id": 83,
+    "descricao": "OUTROS ENCARGOS SOBRE A DIVIDA MOBILIARIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 84,
+    "descricao": "ENC.SOBRE OPER.DE CRED.POR ANTEC. DA RECEITA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 85,
+    "descricao": "OBRIGACOES DECORRENTES DE POLITICA MONETARIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 86,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 87,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 88,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 89,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 90,
+    "descricao": "JUROS,DESAGIOS E DESCONTOS DA DIV. MOBILIARIA",
+    "icon": "fas fa-percent"
+  },
+  {
+    "id": 91,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 92,
+    "descricao": "JUROS SOBRE A DIVIDA POR CONTRATO - LC 141/12",
+    "icon": "fas fa-percent"
+  },
+  {
+    "id": 93,
+    "descricao": "OUTROS ENCARGOS SOBRE A DIVIDA POR CONTRATO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 94,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES - LC 141/12",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 95,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 96,
+    "descricao": "JUROS SOBRE A DIVIDA POR CONTRATO - LC 141/12",
+    "icon": "fas fa-percent"
+  },
+  {
+    "id": 97,
+    "descricao": "OUTROS ENCARGOS SOBRE A DIVIDA POR CONTRATO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 98,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES - LC 141/12",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 99,
+    "descricao": "A DEFINIR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 100,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 101,
+    "descricao": "OUTRAS DESPESAS CORRENTES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 102,
+    "descricao": "APOSENTADORIAS E REFORMAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 103,
+    "descricao": "PENSOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 104,
+    "descricao": "DIARIAS - CIVIL",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 105,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 106,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 107,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 108,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 109,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 110,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 111,
+    "descricao": "EXECUCAO ORCAMENTARIA DELEGADA AA UNIAO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 112,
+    "descricao": "TRANSFER.  A ESTADOS E AO DISTRITO FEDERAL",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 113,
+    "descricao": "PAGAMENTO DE DIARIAS-CIVIL NO PAIS E EXTERIOR",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 114,
+    "descricao": "PAGTO DE DIARIAS-MILITAR NO PAIS E EXTERIOR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 115,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 116,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 117,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 118,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 119,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 120,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 121,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 122,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 123,
+    "descricao": "SUBVENCOES SOCIAIS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 124,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 125,
+    "descricao": "DISTRIBUICAO DE RECEITAS",
+    "icon": "fas fa-cash-register"
+  },
+  {
+    "id": 126,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 127,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 128,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 129,
+    "descricao": "TRANSFER. A ESTADOS E AO DF - FUNDO A FUNDO",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 130,
+    "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 131,
+    "descricao": "DESPESAS DE EXERC. ANTERIORES FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 132,
+    "descricao": "EXECUCAO ORCAMENTARIA DELEGADA AOS ESTADOS/DF",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 133,
+    "descricao": "DIARIAS - CIVIL",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 134,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 135,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 136,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 137,
+    "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 138,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 139,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 140,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 141,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 142,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 143,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 144,
+    "descricao": "TRANSFERENCIAS FUNDO A FUNDO ART.24 LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 145,
+    "descricao": "CONTRIBUICOES (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 146,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 147,
+    "descricao": "TRANSFERENCIAS FUNDO A FUNDO ART.25 LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 148,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 149,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 150,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 151,
+    "descricao": "DIARIAS - CIVIL",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 152,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 153,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 154,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 155,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 156,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS ± PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 157,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 158,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 159,
+    "descricao": "SUBVENCOES SOCIAIS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 160,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 161,
+    "descricao": "DISTRIBUICAO DE RECEITAS",
+    "icon": "fas fa-cash-register"
+  },
+  {
+    "id": 162,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 163,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 164,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 165,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 166,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS - FUNDO A FUNDO",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 167,
+    "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 168,
+    "descricao": "DESPESAS DE EXERC. ANTERIORES FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 169,
+    "descricao": "EXECUCAO ORCAMENTARIA DELEGADA A MUNICIPIOS",
+    "icon": "fas fa-city"
+  },
+  {
+    "id": 170,
+    "descricao": "DIARIAS - CIVIL",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 171,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 172,
+    "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 173,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 174,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 175,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 176,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 177,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 178,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 179,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS ART.24 LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 180,
+    "descricao": "CONTRIBUICOES (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 181,
+    "descricao": "SENTENCAS JUDICIAIS (ACOES/SERVICOS DE SAUDE)",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 182,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 183,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS ART.25 LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 184,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 185,
+    "descricao": "SENTENCAS JUDICIAIS (ACOES/SERVICOS DE SAUDE)",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 186,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 187,
+    "descricao": "TRANSFERENCIA INSTITUICOES PRIVADAS SEM FINS LUCRATIVOS",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 188,
+    "descricao": "DIARIAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 189,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 190,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 191,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 192,
+    "descricao": "PREMIACOES CULTURAIS/ARTISTICAS/CIENTIFICAS/DESPORTIVAS",
+    "icon": "fas fa-award"
+  },
+  {
+    "id": 193,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 194,
+    "descricao": "SERVICO DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 195,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 196,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 197,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 198,
+    "descricao": "SUBVENCOES SOCIAIS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 199,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 200,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 201,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 202,
+    "descricao": "TRANSFERENCIA INSTITUICOES PRIVADAS COM FINS LUCRATIVOS",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 203,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 204,
+    "descricao": "SUBVENCOES ECONOMICAS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 205,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 206,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 207,
+    "descricao": "TRANSF. A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 208,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 209,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 210,
+    "descricao": "TRANSF.CONSORC.PUB.MEDIANTE CONTRATO RATEIO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 211,
+    "descricao": "DIARIAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 212,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 213,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 214,
+    "descricao": "OUTRAS DESPESAS DE PESSOAL - TERCEIRIZACAO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 215,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 216,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 217,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 218,
+    "descricao": "INDENIZACAO AUXILIO-ALIMENTACAO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 219,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 220,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 221,
+    "descricao": "EXECUCAO ORCAM.DELEGADA A CONSORCIOS PUBLICOS",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 222,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS PJ - OP.INT.ORC.",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 223,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 224,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 225,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 226,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 227,
+    "descricao": "TRANSF.A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 228,
+    "descricao": "CONTRIBUICOES (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 229,
+    "descricao": "TRANSF.A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 230,
+    "descricao": "CONTRIBUICOES (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 231,
+    "descricao": "TRANSFERENCIAS AO EXTERIOR",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 232,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 233,
+    "descricao": "DIARIAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 234,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 235,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 236,
+    "descricao": "OUTRAS DESP.PESSOAL DEC. CONTRATOS TERCEIRIZ.",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 237,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 238,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS ± PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 239,
+    "descricao": "LOCACAO DE MAO-DE-OBRA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 240,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 241,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 242,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 243,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 244,
+    "descricao": "APLICACOES DIRETAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 245,
+    "descricao": "APOSENT.RPPS, RESER. REMUNER. E REFOR.MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 246,
+    "descricao": "PENSOES, EXCLUSIVE DO RGPS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 247,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 248,
+    "descricao": "OUTROS BENEFICIOS PREVIDENCIARIOS DO RPPS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 249,
+    "descricao": "BENEFICIO MENSAL AO DEFICIENTE E AO IDOSO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 250,
+    "descricao": "OUTROS BENEF.ASSIST. DO SERVIDOR E DO MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 251,
+    "descricao": "SALARIO-FAMILIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 252,
+    "descricao": "SEGURO DESEMPREGO E ABONO SALARIAL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 253,
+    "descricao": "DIARIAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 254,
+    "descricao": "DIARIAS - PESSOAL MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 255,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 256,
+    "descricao": "AUXILIO-FARDAMENTO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 257,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 258,
+    "descricao": "OBRIGACOES DECORRENTES DE POLITICA MONETARIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 259,
+    "descricao": "ENC.P/ HONRA DE AVAIS, GARANT.,SEGUROS E SIM.",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 260,
+    "descricao": "REMUNERACAO DE COTAS DE FUNDOS AUTARQUICOS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 261,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 262,
+    "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR.",
+    "icon": "fas fa-award"
+  },
+  {
+    "id": 263,
+    "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 264,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 265,
+    "descricao": "OUTRAS DESP.PESSOAL DEC. CONTRATOS TERCEIRIZ.",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 266,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 267,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 268,
+    "descricao": "LOCACAO DE MAO-DE-OBRA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 269,
+    "descricao": "ARRENDAMENTO MERCANTIL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 270,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 271,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 272,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 273,
+    "descricao": "SUBVENCOES ECONOMICAS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 274,
+    "descricao": "AUXILIO-ALIMENTACAO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 275,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 276,
+    "descricao": "OUTROS AUXILIOS FINANCEIROS A PESSOA FISICA",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 277,
+    "descricao": "AUXILIO-TRANSPORTE",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 278,
+    "descricao": "APOSENTADORIAS DO RGPS - AREA RURAL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 279,
+    "descricao": "APOSENTADORIAS DO RGPS - AREA URBANA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 280,
+    "descricao": "PENSOES DO RGPS - AREA RURAL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 281,
+    "descricao": "PENSOES DO RGPS - AREA URBANA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 282,
+    "descricao": "OUTROS BENEFICIOS DO RGPS - AREA RURAL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 283,
+    "descricao": "OUTROS BENEFICIOS DO RGPS - AREA URBANA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 284,
+    "descricao": "PENSOES ESPECIAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 285,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 286,
+    "descricao": "DISTRIBUICAO CONSTITUCIONAL OU LEGAL DE RECEITAS",
+    "icon": "fas fa-cash-register"
+  },
+  {
+    "id": 287,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 288,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 289,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 290,
+    "descricao": "INDENIZACAO PELA EXECUCAO TRABALHOS DE CAMPO",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 291,
+    "descricao": "RESSARC. DE DESPESAS DE PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 292,
+    "descricao": "COMPENSACOES AO RGPS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 293,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 294,
+    "descricao": "APLICACOES DIRETAS - OPER.INTRA-ORCAMENTARIAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 295,
+    "descricao": "CONTRATATACAO POR TEMPO DETERMINADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 296,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 297,
+    "descricao": "REM.DE COTAS FUNDOS AUTARQUICOS-OP.INTRA-ORC.",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 298,
+    "descricao": "DIVIDENDOS - EMPRESAS ESTATAIS DEPENDENTES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 299,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 300,
+    "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR.",
+    "icon": "fas fa-award"
+  },
+  {
+    "id": 301,
+    "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 302,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 303,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 304,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 305,
+    "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 306,
+    "descricao": "AQUISICAO E BENS PARA REVENDA",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 307,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 308,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 309,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 310,
+    "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 311,
+    "descricao": "COMPENSACOES AO RGPS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 312,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 313,
+    "descricao": "APLIC DIRETA DE RECUR RECEB DE OUTROS  ENTES DA FEDERA-CAO DECORRENTES DE DELEGACAO OU DESCENTRALIZACAO.",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 314,
+    "descricao": "DIARIAS - CIVIL",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 315,
+    "descricao": "DIARIAS - CIVIL",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 316,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 317,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 318,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 319,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 320,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 321,
+    "descricao": "MATERIAL, BEM OU SERVICO PARA DISTRIBUICAO GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 322,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 323,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 324,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 325,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 326,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 327,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 328,
+    "descricao": "APLICACAO DIRETA - CONS PUB ENTE PARTICIPE",
+    "icon": "fas fa-arrow-right"
+  },
+  {
+    "id": 329,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 330,
+    "descricao": "MATERIAL, BEM OU SERVICO PARA DIST GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 331,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PJ",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 332,
+    "descricao": "APLIC DIRETA - CONS PUB ENTE NAO PARTICIPE",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 333,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 334,
+    "descricao": "MATERIAL, BEM OU SERVICO PARA DIST GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 335,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PJ",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 336,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 337,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO LC 141/2012",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 338,
+    "descricao": "OUTROS BENEF.ASSIST. DO SERVIDOR E DO MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 339,
+    "descricao": "DIARIAS - CIVIL",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 340,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 341,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 342,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 343,
+    "descricao": "PREMIACOES CULTURAIS, ARTISTICAS, CIENTIFICAS",
+    "icon": "fas fa-award"
+  },
+  {
+    "id": 344,
+    "descricao": "MATERIAL, BEM OU SERVICO PARA DIST.GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 345,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 346,
+    "descricao": "OUTRAS DESPESAS DE PESSOAL - TERCEIRIZACAO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 347,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 348,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 349,
+    "descricao": "LOCACAO DE MAO-DE-OBRA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 350,
+    "descricao": "ARRENDAMENTO MERCANTIL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 351,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 352,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 353,
+    "descricao": "SUBVENCOES ECONOMICAS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 354,
+    "descricao": "AUXILIO-ALIMENTACAO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 355,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 356,
+    "descricao": "OUTROS AUXILIOS FINANCEIROS A PESSOAS FISICAS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 357,
+    "descricao": "AUXILIO-TRANSPORTE",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 358,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 359,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 360,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 361,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 362,
+    "descricao": "RESSARCIMENTO DESPESAS PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 363,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 364,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO LC 141/2012",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 365,
+    "descricao": "OUTROS BENEF.ASSIST. DO SERVIDOR E DO MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 366,
+    "descricao": "DIARIAS - CIVIL",
+    "icon": "fas fa-calendar-day"
+  },
+  {
+    "id": 367,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 368,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 369,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 370,
+    "descricao": "PREMIACOES CULTURAIS, ARTISTICAS, CIENTIFICAS",
+    "icon": "fas fa-award"
+  },
+  {
+    "id": 371,
+    "descricao": "MATERIAL, BEM OU SERVICO PARA DIST.GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 372,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 373,
+    "descricao": "OUTRAS DESPESAS DE PESSOAL - TERCEIRIZACAO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 374,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 375,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 376,
+    "descricao": "LOCACAO DE MAO-DE-OBRA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 377,
+    "descricao": "ARRENDAMENTO MERCANTIL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 378,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 379,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 380,
+    "descricao": "SUBVENCOES ECONOMICAS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 381,
+    "descricao": "AUXILIO-ALIMENTACAO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 382,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 383,
+    "descricao": "OUTROS AUXILIOS FINANCEIROS A PESSOAS FISICAS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 384,
+    "descricao": "AUXILIO-TRANSPORTE",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 385,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 386,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 387,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 388,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 389,
+    "descricao": "RESSARCIMENTO DESPESAS PESSOAL REQUISITADO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 390,
+    "descricao": "A DEFINIR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 391,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 392,
+    "descricao": "DESPESAS DE CAPITAL",
+    "icon": "fas fa-chart-line"
+  },
+  {
+    "id": 393,
+    "descricao": "INVESTIMENTOS",
+    "icon": "fas fa-chart-line"
+  },
+  {
+    "id": 394,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 395,
+    "descricao": "TRANSFERENCIAS A ESTADOS E DISTRITO FEDERAL",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 396,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 397,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 398,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 399,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 400,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 401,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 402,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 403,
+    "descricao": "TRANSFERENCIAS A ESTADOS E DF - FUNDO A FUNDO",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 404,
+    "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 405,
+    "descricao": "AUXILIOS - FUNDO A FUNDO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 406,
+    "descricao": "DESPESAS DE EXER. ANTERIORES FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 407,
+    "descricao": "EXECUCAO ORCAMENTARIA DELEGADA AOS ESTADOS/DF",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 408,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 409,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 410,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 411,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 412,
+    "descricao": "TRANSFERENCIAS FUNDO A FUNDO ART.24 LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 413,
+    "descricao": "CONTRIBUICOES (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 414,
+    "descricao": "AUXILIOS (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 415,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 416,
+    "descricao": "TRANSFERENCIAS FUNDO A FUNDO ART.25 LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 417,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 418,
+    "descricao": "AUXILIOS (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 419,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 420,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 421,
+    "descricao": "DIARIAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 422,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 423,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 424,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 425,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 426,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 427,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 428,
+    "descricao": "INDENIZACOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 429,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS - FUNDO A FUNDO",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 430,
+    "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 431,
+    "descricao": "AUXILIOS - FUNDO A FUNDO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 432,
+    "descricao": "DESPESAS DE EXERC. ANTERIORES FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 433,
+    "descricao": "EXECUCAO ORCAMENTARIA DELEGADA A MUNICIPIOS",
+    "icon": "fas fa-city"
+  },
+  {
+    "id": 434,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 435,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 436,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 437,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS ART.24 LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 438,
+    "descricao": "CONTRIBUICOES (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 439,
+    "descricao": "AUXILIOS (ACOES E SERVICOS PUBLICOS DE SAUDE)",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 440,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 441,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS ART.25 LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 442,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 443,
+    "descricao": "AUXILIOS (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 444,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 445,
+    "descricao": "TRANSFERENCIA INSTITUICOES PRIVADAS SEM FINS LUCRATIVOS",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 446,
+    "descricao": "DIARIAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 447,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 448,
+    "descricao": "SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 449,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 450,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 451,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 452,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 453,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 454,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 455,
+    "descricao": "TRANSF. A INST. PRIVADAS COM FINS LUCRATIVOS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 456,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 457,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 458,
+    "descricao": "TRANSF. A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 459,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 460,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 461,
+    "descricao": "TRANSF.CONSORC.PUB.MEDIANTE CONTRATO RATEIO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 462,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 463,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 464,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 465,
+    "descricao": "EXECUCAO ORCAM.DELEGADA A CONSORCIOS PUBLICOS",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 466,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 467,
+    "descricao": "TRANSF.CONSOR.PUB.ART.24 LC 141/12 œœ 1º E 2º",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 468,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 469,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 470,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 471,
+    "descricao": "TRANSF.A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 472,
+    "descricao": "CONTRIBUICOES (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 473,
+    "descricao": "AUXILIOS (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 474,
+    "descricao": "TRANSF.A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 475,
+    "descricao": "CONTRIBUICOES (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 476,
+    "descricao": "AUXILIOS (ACOES E SERVICOS DE SAUDE)",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 477,
+    "descricao": "TRANSFERENCIAS AO EXTERIOR",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 478,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 479,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 480,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 481,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 482,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 483,
+    "descricao": "APLICACOES DIRETAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 484,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO - PES.CIVIL",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 485,
+    "descricao": "DIARIAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 486,
+    "descricao": "DIARIAS - PESSOAL MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 487,
+    "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL MILITAR",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 488,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 489,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 490,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 491,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 492,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 493,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - P.FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 494,
+    "descricao": "LOCACAO DE MAO-DE-OBRA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 495,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 496,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 497,
+    "descricao": "AUXILIO-ALIMENTACAO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 498,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 499,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 500,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 501,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 502,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 503,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 504,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 505,
+    "descricao": "INDENIZACAO PELA EXECUCAO TRABALHOS DE CAMPO",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 506,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 507,
+    "descricao": "APLICACOES DIRETAS - OP. INTRA-ORCAMENTARIAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 508,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS PJ - OP.INT.ORC.",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 509,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 510,
+    "descricao": "OBRAS E INSTALACOES - OP.INT.ORC.",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 511,
+    "descricao": "EQUIP.E MATERIAL PERMANENTE - OP.INTRA-ORC.",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 512,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 513,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 514,
+    "descricao": "APLICACAO DIRETA DE RECURSOS  RECEBIDOS DE OUTROS ENTESDA FEDERACAO DECORRENTES DE DELEGACAO/DESCENTRALIZACAO",
+    "icon": "fas fa-arrow-right"
+  },
+  {
+    "id": 515,
+    "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 516,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 517,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 518,
+    "descricao": "A CLASSIFICAR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 519,
+    "descricao": "APLICACAO DIRETA - CONS PUB ENTE PARTICIPE",
+    "icon": "fas fa-arrow-right"
+  },
+  {
+    "id": 520,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 521,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 522,
+    "descricao": "APLIC DIRETA - CONS PUB ENTE NAO PARTICIPE",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 523,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 524,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 525,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 526,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 527,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 528,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 529,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 530,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 531,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 532,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 533,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 534,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 535,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 536,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 537,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 538,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 539,
+    "descricao": "A DEFINIR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 540,
+    "descricao": "INVERSOES FINANCEIRAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 541,
+    "descricao": "TRANSFER. A ESTADOS E AO DISTRITO FEDERAL",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 542,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 543,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 544,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 545,
+    "descricao": "AQUISICAO TIT.REPRES.DE CAP. JA INTEGRALIZADO",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 546,
+    "descricao": "CONSTITUICAO OU AUMENTO DE CAPITAL DE EMPRESA",
+    "icon": "fas fa-chart-line"
+  },
+  {
+    "id": 547,
+    "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS",
+    "icon": "fas fa-university"
+  },
+  {
+    "id": 548,
+    "descricao": "TRANSFER. A ESTADOS E DF - FUNDO A FUNDO",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 549,
+    "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 550,
+    "descricao": "AUXILIOS - FUNDO A FUNDO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 551,
+    "descricao": "EXECUCAO ORCAMENTARIA DELEGADA AOS ESTADOS/DF",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 552,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 553,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 554,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 555,
+    "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS",
+    "icon": "fas fa-university"
+  },
+  {
+    "id": 556,
+    "descricao": "EXECUCAO ORCAMENTARIA DELEGADA A MUNICIPIOS",
+    "icon": "fas fa-city"
+  },
+  {
+    "id": 557,
+    "descricao": "TRANSFERENCIA INSTITUICOES PRIVADAS SEM FINS LUCRATIVOS",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 558,
+    "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS",
+    "icon": "fas fa-university"
+  },
+  {
+    "id": 559,
+    "descricao": "TRANSF. A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 560,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 561,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 562,
+    "descricao": "TRANSF.CONSORC.PUB.MEDIANTE CONTRATO RATEIO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 563,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 564,
+    "descricao": "AUXILIOS",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 565,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 566,
+    "descricao": "EXECUCAO ORCAM.DELEGADA A CONSORCIOS PUBLICOS",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 567,
+    "descricao": "TRANSF.CONSOR.PUB.ART.24 LC 141/12 œœ 1º E 2º",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 568,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 569,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 570,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 571,
+    "descricao": "APLICACOES DIRETAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 572,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 573,
+    "descricao": "AQUISICAO DE BENS PARA REVENDA",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 574,
+    "descricao": "AQUISICAO DE TITULOS DE CREDITO",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 575,
+    "descricao": "AQUISICAO TIT.REPRES.DE CAP.JA INTEGRALIZADO",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 576,
+    "descricao": "CONSTIT. OU AUMENTO DE CAPITAL DE EMPRESAS",
+    "icon": "fas fa-chart-line"
+  },
+  {
+    "id": 577,
+    "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS",
+    "icon": "fas fa-university"
+  },
+  {
+    "id": 578,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 579,
+    "descricao": "PARTICIPACAO EM FUNDOS, ORGANISMOS OU ENTIDADES ASSEME-LHADAS, NACIONAIS E INTERNACIONAIS.",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 580,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 581,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 582,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 583,
+    "descricao": "APLICACOES DIRETAS - OPERACOES INTERNAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 584,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 585,
+    "descricao": "AQUISICAO DE BENS PARA REVENDA",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 586,
+    "descricao": "CONSTIT. OU AUMENTO DE CAPITAL DE EMPRESAS",
+    "icon": "fas fa-chart-line"
+  },
+  {
+    "id": 587,
+    "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS",
+    "icon": "fas fa-university"
+  },
+  {
+    "id": 588,
+    "descricao": "PARTICIPACAO EM FUNDOS, ORGANISMOS OU ENTIDADES ASSEME-LHADAS, NACIONAIS E INTERNACIONAIS.",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 589,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 590,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 591,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 592,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 593,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 594,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 595,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 596,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 597,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 598,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 599,
+    "descricao": "DEPOSITOS COMPULSORIOS",
+    "icon": "fas fa-piggy-bank"
+  },
+  {
+    "id": 600,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 601,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 602,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 603,
+    "descricao": "A DEFINIR",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 604,
+    "descricao": "AMORTIZACAO/REFINANCIAMENTO DA DIVIDA",
+    "icon": "fas fa-university"
+  },
+  {
+    "id": 605,
+    "descricao": "TRANSF. A INSTITUICOES MULTIGOVERNAMENTAIS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 606,
+    "descricao": "TRANSF.CONSORC.PUB.MEDIANTE CONTRATO RATEIO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 607,
+    "descricao": "TRANSF.CONSOR.PUB.ART.24 LC 141/12 œœ 1º E 2º",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 608,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 609,
+    "descricao": "TRANSFERENCIA A CONSORCIOS PULBICOS LC 141/12",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 610,
+    "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
+    "icon": "fas fa-users"
+  },
+  {
+    "id": 611,
+    "descricao": "APLICACOES DIRETAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 612,
+    "descricao": "OBRIGACOES DECORRENTES DE POLITICA MONETARIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 613,
+    "descricao": "PRINCIPAL DA DIVIDA CONTRATUAL RESGATADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 614,
+    "descricao": "PRINCIPAL DA DIVIDA MOBILIARIA RESGATADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 615,
+    "descricao": "CORREC.MONET.E CAMBIAL DA DIVIDA POR CONTRATO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 616,
+    "descricao": "COR.MONET.E CAMBIAL DA DIV.MOBIL.RESGATADA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 617,
+    "descricao": "COR.MONET.OPER.DE CRED.POR ANTEC.DA RECEITA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 618,
+    "descricao": "PRINCIPAL CORRIGIDO DA DIV.MOB.REFINANCIADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 619,
+    "descricao": "PRINCIPAL CORRIGIDO DIVIDA CONTR.REFINANCIADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 620,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 621,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 622,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 623,
+    "descricao": "PRINCIPAL CORRIGIDO DA DIV.MOB.REFINANCIADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 624,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 625,
+    "descricao": "PRINCIPAL DA DIVIDA CONTRATUAL RESGATADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 626,
+    "descricao": "CM OU CAMBIAL DA DIVIDA CONTRATUAL RESGATADA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 627,
+    "descricao": "PRINCIPAL CORRIGIDO DA DIVIDA CONTRATUAL RESG",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 628,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 629,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 630,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 631,
+    "descricao": "APLICACAO DIRETA - ACOES E SERVICOS DE SAUDE",
+    "icon": "fas fa-notes-medical"
+  },
+  {
+    "id": 632,
+    "descricao": "PRINCIPAL DA DIVIDA CONTRATUAL RESGATADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 633,
+    "descricao": "CM OU CAMBIAL DA DIVIDA CONTRATUAL RESGATADA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 634,
+    "descricao": "PRINCIPAL CORRIGIDO DA DIVIDA CONTRATUAL RESG",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 635,
+    "descricao": "SENTENCAS JUDICIAIS",
+    "icon": "fas fa-gavel"
+  },
+  {
+    "id": 636,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 637,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 638,
+    "descricao": "PASSIVO FINANCEIRO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 639,
+    "descricao": "PASSIVO FINANCEIRO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 640,
+    "descricao": "RESERVA DE CONTINGENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 641,
+    "descricao": "RESERVA DE CONTINGENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 642,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 643,
+    "descricao": "APLICACOES DIRETAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 644,
+    "descricao": "RESERVA DE CONTINGENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 645,
+    "descricao": "RESERVA DE CONTINGENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 646,
+    "descricao": "CODIGO INEXISTENTE NO SIAFI",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 647,
+    "descricao": "TRANSFERENCIAS A UNIAO",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 648,
+    "descricao": "CODIGO INEXISTENTE NO SIAFI",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 649,
+    "descricao": "OUTRAS DESPESAS DE PESSOAL - CONTRATOS DE TERCEIRIZACAO",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 650,
+    "descricao": "**************************************************************************************************************",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 651,
+    "descricao": "CODIGO INEXISTENTE NO SIAFI",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 652,
+    "descricao": "TRANSFERENCIAS A MUNICIPIOS - FUNDO A FUNDO",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 653,
+    "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
+    "icon": "fas fa-layer-group"
+  },
+  {
+    "id": 654,
+    "descricao": "AUXILIOS - TRANSFERENCIAS FUNDO A FUNDO",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 655,
+    "descricao": "DISTRIBUICAO CONSTITUCIONAL OU LEGAL DE RECEITAS",
+    "icon": "fas fa-cash-register"
+  },
+  {
+    "id": 656,
+    "descricao": "PRINCIPAL CORRIGIDO DIVIDA CONTRATUAL REFINANCIADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 657,
+    "descricao": "TRANSFERENCIAS POR MEIO DE CONTRATO DE GESTAO",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 658,
+    "descricao": "COMPENSACOES A REGIMES DE PREVIDENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 659,
+    "descricao": "COMPENSACOES A REGIMES DE PREVIDENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 660,
+    "descricao": "AQUISICAO DE BENS PARA REVENDA",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 661,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 662,
+    "descricao": "SUBVENCOES ECONOMICAS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 663,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 664,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 665,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 666,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 667,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 668,
+    "descricao": "LOCACAO DE MAO-DE-OBRA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 669,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 670,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 671,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 672,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 673,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 674,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 675,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 676,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 677,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 678,
+    "descricao": "LOCACAO DE MAO-DE-OBRA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 679,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 680,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 685,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 686,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 687,
+    "descricao": "GENERICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 690,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 691,
+    "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
+    "icon": "fas fa-cogs"
+  },
+  {
+    "id": 692,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 693,
+    "descricao": "OBRAS E INSTALACOES",
+    "icon": "fas fa-hard-hat"
+  },
+  {
+    "id": 694,
+    "descricao": "OUTROS AUXILIOS FINANCEIROS A PESSOA FISICA",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 695,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 696,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 697,
+    "descricao": "CONTRATO DE PARCERIA PUBLICO-PRIVADA - PPP",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 706,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 707,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 708,
+    "descricao": "TRANSFERENCIAS AO EXTERIOR",
+    "icon": "fas fa-random"
+  },
+  {
+    "id": 709,
+    "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS",
+    "icon": "fas fa-university"
+  },
+  {
+    "id": 710,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 711,
+    "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 712,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 713,
+    "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR.",
+    "icon": "fas fa-award"
+  },
+  {
+    "id": 720,
+    "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 721,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 722,
+    "descricao": "DIARIAS - PESSOAL CIVIL",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 723,
+    "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
+    "icon": "fas fa-gift"
+  },
+  {
+    "id": 724,
+    "descricao": "AUXILIO-TRANSPORTE",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 725,
+    "descricao": "COMPENSACOES A REGIMES DE PREVIDENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 726,
+    "descricao": "AQUISICAO DE IMOVEIS",
+    "icon": "fas fa-building"
+  },
+  {
+    "id": 727,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 728,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 729,
+    "descricao": "COMPENSACOES A REGIMES DE PREVIDENCIA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 730,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 731,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 733,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 734,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 737,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 738,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 739,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 740,
+    "descricao": "OUTRAS DESP.PESSOAL DEC. CONTRATOS TERCEIRIZ.",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 741,
+    "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 742,
+    "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "id": 743,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 744,
+    "descricao": "SERVICOS DE CONSULTORIA",
+    "icon": "fas fa-user-tie"
+  },
+  {
+    "id": 745,
+    "descricao": "SUBVENCOES ECONOMICAS",
+    "icon": "fas fa-donate"
+  },
+  {
+    "id": 746,
+    "descricao": "CONTRATACAO POR TEMPO DETERMINADO",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 747,
+    "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 748,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 749,
+    "descricao": "MATERIAL DE CONSUMO",
+    "icon": "fas fa-box-open"
+  },
+  {
+    "id": 750,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 751,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 752,
+    "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR.",
+    "icon": "fas fa-award"
+  },
+  {
+    "id": 753,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  },
+  {
+    "id": 754,
+    "descricao": "CONTRIBUICOES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 755,
+    "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
+    "icon": "fas fa-bus"
+  },
+  {
+    "id": 756,
+    "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 757,
+    "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR.",
+    "icon": "fas fa-award"
+  },
+  {
+    "id": 758,
+    "descricao": "LOCACAO DE MAO-DE-OBRA",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 759,
+    "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 760,
+    "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS",
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "id": 761,
+    "descricao": "AUXILIO-TRANSPORTE",
+    "icon": "fas fa-hands-helping"
+  },
+  {
+    "id": 763,
+    "descricao": "INDENIZACOES E RESTITUICOES",
+    "icon": "fas fa-money-bill-wave"
+  },
+  {
+    "id": 764,
+    "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
+    "icon": "fas fa-microchip"
+  }
+]

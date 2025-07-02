@@ -850,7 +850,6 @@ export default {
         <div style="width: 62px; text-align: center;">
           <img src="${icone}" alt="Ícone do contrato" />
         </div>
-
         <div style="flex: 1;">
           <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
             <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 37px;" alt="Fornecedor" />
@@ -1214,13 +1213,18 @@ export default {
       <tr>
         <td>
           <div style="display: flex; gap: 10px; padding: 10px; font-family: Arial, sans-serif;">
-            <div style="width: 62px; text-align: center;">
-              <img src="${this.getContratoIcon(contract.tipo_descricao)}" />
+          <div class="icon-circle">  
+          <i class="fas fa-file-contract" style="font-size: 38px; color: #6a86c0;"></i>
+          </div>  
+          <div style="width: 62px; text-align: center;">
+              <img style="width: 5px; height: 5px;" src="${
+                this.getContratoInfo(contract.tipo_id).icon
+              }" />
             </div>
 
             <div style="flex: 1;">
               <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 37px;" />
+                <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 20px;" />
                 <div style="padding-left: 6px;">
                   <span style="color: #909ab8; font-size: 14px; text-transform: uppercase;" title="Fornecedor do contrato"><b>${
                     contract.fornecedor_nome || "N/A"
@@ -1234,21 +1238,23 @@ export default {
               </div>
 
               <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                <img src="${this.getCategoriaIcon(
-                  contract.tipo_descricao
-                )}" title="${
-      contract.tipo_descricao || "A definir"
+                <img src="${
+                  this.getContratoInfo(contract.tipo_id).icon
+                }" title="${
+      this.getContratoInfo(contract.tipo_id).name
     }" style="height: 20px;" />
 
                 <span style="font-size: 16px; color: #FF9933;" title="Número do contrato">${
                   contract.numero
                 } <span style="color: #000">/</span> ${contract.ano}</span>
 
-                <img src="static/images/ico/heart_adicionar.png" style="cursor: pointer;" onclick="ContratoWidget.favoritoAdicionar(${
-                  contract.id
-                },'${contract.numero}','${
-      contract.ano
-    }',this);" title="Adicionar aos favoritos" />
+                <img src="static/images/ico/heart_${
+                  contract.favorite_icon
+                }.png" style="cursor: pointer;" onclick="ContratoWidget.favorito${
+      contract.favorite_action
+    }(${contract.id},'${contract.numero}','${contract.ano}',this);" title="${
+      contract.favorite_title
+    }" alt="Favorito" />
 
                 <img src="static/images/ico/bank.png" style="cursor: pointer;" onclick="ContratoWidget.empenhosChart({id:${
                   contract.id
@@ -1266,7 +1272,7 @@ export default {
       contract.ano
     }});" title="Encontro de Contas" />
 
-                <span style="cursor: pointer; background-image: url('/static/images/ico/bkg-reload.png'); background-repeat: no-repeat; padding: 2px; color: #FF9933;" onclick="ContratoWidget.aditivosChart({id:${
+                <span style="width: 20px; cursor: pointer; background-image: url('/static/images/ico/bkg-reload.png'); background-repeat: no-repeat; padding: 2px; color: #FF9933;" onclick="ContratoWidget.aditivosChart({id:${
                   contract.id
                 },numero:'${contract.numero}',fornecedor:'${this.escapeQuotes(
       contract.fornecedor_nome
@@ -1276,23 +1282,24 @@ export default {
       contract.fornecedor_cnpj
     }',tempo_transcorrido_contrato:'${contract.dias_restantes}',ano:${
       contract.ano
-    }});" title="Termos aditivos">${this.getContratoFase(
-      contract.status
-    )}</span>
+    }});" title="Termos aditivos">${contract.aditivos_count}</span>
 
-                <span style="cursor: pointer; background-image: url('/static/images/ico/circle-${this.getRestricoesIcone(
+                <span style="width: 20px;cursor: pointer; background-image: url('/static/images/ico/circle-${this.getRestricoesIcone(
                   contract.status
                 )}.png'); background-repeat: no-repeat; padding: 2px; color: ${this.getRestricoesCor(
       contract.status
     )};" onclick="ContratoWidget.restricoes(${
       contract.id
-    });" title="Restrições">${this.getRestricoesTexto(contract.status)}</span>
+    });" title="Restrições">0</span>
 
-                <span style="cursor: pointer; background-image: url('/static/images/ico/bkg-reload.png'); background-repeat: no-repeat; padding: 2px; color: #FF9933;" title="${this.getTempoContrato(
-                  contract.dias_restantes
-                )}">${this.getTempoContratoIcone(
-      contract.dias_restantes
+                <span style="width: 20px; cursor: pointer; background-image: url('/static/images/ico/bkg-reload.png'); background-repeat: no-repeat; padding: 2px; color: #FF9933;" 
+                title="${this.formatContractStartInfo(
+                  contract.vigencia_inicio
+                )}">${this.getContractYearsDisplay(
+      contract.vigencia_inicio
     )}</span>
+
+                
 
                 <span style="cursor: pointer;" onclick="SeiWidget.seiDocumentos({id_contrato:${
                   contract.id
@@ -1315,15 +1322,16 @@ export default {
     }</span>
               </div>
 
-              <div style="margin-top: 10px; letter-spacing: 0.5px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px;">
-                <span style="font-size: 12px; text-transform: uppercase;">${
+              
+            </div>
+          </div>
+          <div class="capitalize capitalizeBig"style="margin-top: 10px; letter-spacing: 0.5px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px;">
+                <span style="font-size: 12px;">${
                   contract.objeto || "Objeto não informado"
                 }</span>
               </div>
-            </div>
-          </div>
         </td>
-        <td class="hide-mobile">${contract.responsaveis || "Equipe A"}</td>
+        
         <td class="hide-mobile">
           <div class="vigencia-gauge-container" 
                data-contract-id="${contract.numero}/${contract.ano}" 
@@ -1420,7 +1428,11 @@ export default {
             </div>
           </div>
         </td>
-      </tr>
+        <td class="hide-mobile" valign="top">${
+          contract.responsaveis ||
+          "Nenhuma designação atribuída para este contrato"
+        }</td>  
+      </tr> 
     `;
   },
 
@@ -1441,6 +1453,88 @@ export default {
   calculateFinancialPercentage(value, total) {
     if (!value || !total) return 0;
     return Math.min(100, Math.max(0, (value / total) * 100));
+  },
+
+  // Calculate years elapsed since contract start
+  calculateContractYears(vigenciaInicio) {
+    if (!vigenciaInicio) return 0;
+
+    const startDate = new Date(vigenciaInicio);
+    const currentDate = new Date();
+
+    let years = currentDate.getFullYear() - startDate.getFullYear();
+    let months = currentDate.getMonth() - startDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // If we're before the start day in the current month, subtract one month
+    if (currentDate.getDate() < startDate.getDate()) {
+      months--;
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+    }
+
+    return { years, months, startDate };
+  },
+
+  // Format contract start info for tooltip
+  formatContractStartInfo(vigenciaInicio) {
+    if (!vigenciaInicio) return "Data de início não disponível";
+
+    const { years, months, startDate } =
+      this.calculateContractYears(vigenciaInicio);
+
+    // Format start date in Portuguese
+    const monthNames = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ];
+
+    const formattedStartDate = `${startDate
+      .getDate()
+      .toString()
+      .padStart(2, "0")} de ${
+      monthNames[startDate.getMonth()]
+    } de ${startDate.getFullYear()}`;
+
+    // Format elapsed time
+    let elapsedTime = "";
+    if (years > 0 && months > 0) {
+      elapsedTime = `${years} ano${years > 1 ? "s" : ""} e ${months} mês${
+        months > 1 ? "es" : ""
+      }`;
+    } else if (years > 0) {
+      elapsedTime = `${years} ano${years > 1 ? "s" : ""}`;
+    } else if (months > 0) {
+      elapsedTime = `${months} mês${months > 1 ? "es" : ""}`;
+    } else {
+      elapsedTime = "Menos de 1 mês";
+    }
+
+    return `Início: ${formattedStartDate}\nTempo transcorrido: ${elapsedTime}`;
+  },
+
+  // Get the number of years for display
+  getContractYearsDisplay(vigenciaInicio) {
+    if (!vigenciaInicio) return "0";
+
+    const { years } = this.calculateContractYears(vigenciaInicio);
+    return years.toString();
   },
 
   // Update pagination information
@@ -1555,28 +1649,59 @@ export default {
   },
 
   // Helper functions for contract details display
-  getContratoIcon(tipo) {
-    // Return appropriate icon based on contract type
-    if (tipo && tipo.toLowerCase().includes("serviço")) {
-      return "static/images/ico/ico-servicos.png";
-    } else if (tipo && tipo.toLowerCase().includes("obra")) {
-      return "static/images/ico/ico-obras.png";
-    } else if (tipo && tipo.toLowerCase().includes("material")) {
-      return "static/images/ico/ico-materiais.png";
-    }
-    return "static/images/ico/ico-default.png";
+  getContratoInfo(tipo_id) {
+    // Unified function to get contract icon and name based on tipo_id
+    const contratoTypes = {
+      66: {
+        icon: "static/images/ico/ico-termo-adesao.png",
+        name: "Termo de Adesão",
+      },
+      175: {
+        icon: "static/images/ico/ico-termo-compromisso.png",
+        name: "Termo de Compromisso",
+      },
+      61: {
+        icon: "static/images/ico/ico-credenciamento.png",
+        name: "Credenciamento",
+      },
+      62: { icon: "static/images/ico/ico-comodato.png", name: "Comodato" },
+      151: { icon: "static/images/ico/ico-empenho.png", name: "Empenho" },
+      60: { icon: "static/images/ico/ico-contrato.png", name: "Contrato" },
+      164: { icon: "static/images/ico/ico-outros.png", name: "Outros" },
+      174: {
+        icon: "static/images/ico/ico-act.png",
+        name: "Acordo de Cooperação Técnica (ACT)",
+      },
+      67: { icon: "static/images/ico/ico-convenio.png", name: "Convênio" },
+      64: { icon: "static/images/ico/ico-concessao.png", name: "Concessão" },
+      173: {
+        icon: "static/images/ico/ico-ted.png",
+        name: "Termo de Execução Descentralizada (TED)",
+      },
+      311: {
+        icon: "static/images/ico/ico-carta-contrato.png",
+        name: "Carta Contrato",
+      },
+      63: {
+        icon: "static/images/ico/ico-arrendamento.png",
+        name: "Arrendamento",
+      },
+    };
+
+    return (
+      contratoTypes[tipo_id] || {
+        icon: "static/images/ico/ico-default.png",
+        name: "Tipo não identificado",
+      }
+    );
   },
 
-  getCategoriaIcon(tipo) {
-    // Return category icon based on contract type
-    if (tipo && tipo.toLowerCase().includes("serviço")) {
-      return "static/images/ico/categoria-servicos.png";
-    } else if (tipo && tipo.toLowerCase().includes("obra")) {
-      return "static/images/ico/categoria-obras.png";
-    } else if (tipo && tipo.toLowerCase().includes("material")) {
-      return "static/images/ico/categoria-materiais.png";
-    }
-    return "static/images/ico/categoria-default.png";
+  getContratoIcon(tipo_id) {
+    return this.getContratoInfo(tipo_id).icon;
+  },
+
+  getCategoriaIcon(tipo_id) {
+    return this.getContratoInfo(tipo_id).icon;
   },
 
   getContratoFase(status) {
