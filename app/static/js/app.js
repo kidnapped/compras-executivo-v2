@@ -1,7 +1,5 @@
-const isProd = window.location.pathname.startsWith("/static/dist/");
-
-if (isProd) {
-  import("./style.js");
+if (process.env.ENVIRONMENT === "production") {
+    import("./style.js");
 }
 
 import environment from "./environment.js";
@@ -13,16 +11,16 @@ import contratos_dashboard from "./contrato/dashboard.js";
 import * as kpis_kpi from "./kpi/kpis.js";
 
 const App = {
-  ...environment,
-  ...menu,
-  ...admin,
-  ...card_kpi,
-  ...contratos_dashboard,
-  ...kpis_kpi,
+    ...environment,
+    ...menu,
+    ...admin,
+    ...card_kpi,
+    ...contratos_dashboard,
+    ...kpis_kpi,
 };
 
 window.App = App;
 
 document.addEventListener("DOMContentLoaded", () => {
-  App.init();
+    App.init();
 });

@@ -17,6 +17,7 @@ contrato_minuta_empenho_pivot
 contratoresponsaveis
 contratoterceirizados
 contratos
+contratos_fornecedores_pivot
 empenhos
 envia_dados_pncp
 fornecedores

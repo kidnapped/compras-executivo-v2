@@ -67,6 +67,7 @@ export default {
         }),
         new MiniCssExtractPlugin({
             filename: "bundle.css",
+            chunkFilename: "bundle.css",
         }),
     ],
     devtool: "source-map",

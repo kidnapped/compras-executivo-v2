@@ -6,22 +6,25 @@
     <title>Dashboard - Compras Executivo</title>
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
     {% if config.API_ENV == "production" -%}
-    <link rel="stylesheet" href="/static/fonts/font-awesome/css/all.min.css" />
-    <link rel="stylesheet" href="/static/govbr-ds/core.min.css" />
-    <link rel="stylesheet" href="/static/css/rawline.css" />
-    <link rel="stylesheet" href="/static/css/app.css" />
+    <link rel="stylesheet" href="/static/dist/bundle.css" />
     <script src="/static/dist/bundle.js"></script>
     {%- else -%}
     {%- for css_file in dev_css_files %}
     <link rel="stylesheet" href="{{ css_file }}" />
     {%- endfor %}
+    <script>
+  window.process = {
+    env: {
+      ENVIRONMENT: "{{ config.API_ENV }}"
+    }
+  };
+</script>
     {%- for js_file in dev_js_modules %}
     <script type="module" src="{{ js_file }}"></script>
     {%- endfor %}
     {%- for js_file in dev_js_files %}
-    <script type="module" src="{{ js_file }}"></script>
+    <script src="{{ js_file }}"></script>
     {%- endfor %}
-    <script src="/static/govbr-ds/core.min.js"></script>
     {%- endif %}
 </head>
 

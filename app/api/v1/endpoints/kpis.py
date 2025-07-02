@@ -144,7 +144,7 @@ async def get_dashboard_contratos(
         "outros": outros
     }
 
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi2")
@@ -203,7 +203,7 @@ async def get_dashboard_contratos_sem_licitacao(
         "percentual_sem_licitacao": float(row.get("percentual_sem_licitacao", 0.0) or 0.0)
     }
 
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi3")
@@ -258,7 +258,7 @@ async def get_dashboard_contratos_por_categoria(
         "categorias": categorias
     }
 
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi4")
@@ -340,7 +340,7 @@ LIMIT 10;
         "fornecedores": fornecedores
     }
 
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi5")
@@ -439,7 +439,7 @@ async def get_dashboard_contratos_com_aditivos(
         "percentual_com_aditivos": float(row.get("percentual_com_aditivos", 0.0) or 0.0)
     }
 
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi7")
@@ -501,7 +501,7 @@ async def get_dashboard_contratos_com_clausulas(
         "percentual_com_clausulas": float(row.get("percentual_com_clausulas", 0.0) or 0.0)
     }
 
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi8")
@@ -547,7 +547,7 @@ async def get_dashboard_contratos_por_estado(
         "estados": estados
     }
 
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi9")
@@ -604,7 +604,7 @@ async def get_dashboard_calendar_vencimentos(
         'total_contratos': len(rows)
     }
     
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi10")
@@ -690,7 +690,7 @@ async def get_dashboard_kpi10(
         "contratos": contratos
     }
     
-    logger.info(f"Returning JSON: {data}")
+    # logger.info(f"Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi11")
@@ -760,7 +760,7 @@ async def get_dashboard_kpi11(
         "percentual_rescindidos": float(row.get("percentual_rescindidos", 0.0) or 0.0)
     }
     
-    logger.info(f"KPI 11 - Returning JSON: {data}")
+    # logger.info(f"KPI 11 - Returning JSON: {data}")
     return data
 
 @router.get("/kpis/kpi12")
@@ -830,5 +830,5 @@ async def get_dashboard_kpi12(
         "media_meses_execucao": float(row.get("media_meses_execucao", 0.0) or 0.0)
     }
     
-    logger.info(f"KPI 12 - Returning JSON: {data}")
+    # logger.info(f"KPI 12 - Returning JSON: {data}")
     return data
