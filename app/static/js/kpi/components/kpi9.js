@@ -283,8 +283,31 @@ export const showContractDetails = (date, contracts) => {
 
   // Helper function to format dates
   const formatDate = (dateString) => {
+    if (!dateString || dateString === null || dateString === undefined) {
+      return "N/A";
+    }
+
+    // Try to create a date object
     const date = new Date(dateString);
-    return date.toLocaleDateString("pt-BR");
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return "Data Inválida";
+    }
+
+    // Check if it's a reasonable date (not too far in past/future)
+    const currentYear = new Date().getFullYear();
+    const dateYear = date.getFullYear();
+
+    if (dateYear < 1900 || dateYear > currentYear + 50) {
+      return "Data Inválida";
+    }
+
+    try {
+      return date.toLocaleDateString("pt-BR");
+    } catch (error) {
+      return "Data Inválida";
+    }
   };
 
   const modalHtml = `
@@ -387,8 +410,31 @@ export const exportContractsData = (date, contracts) => {
 
     // Helper function to format dates
     const formatDate = (dateString) => {
+      if (!dateString || dateString === null || dateString === undefined) {
+        return "N/A";
+      }
+
+      // Try to create a date object
       const date = new Date(dateString);
-      return date.toLocaleDateString("pt-BR");
+
+      // Check if the date is valid
+      if (isNaN(date.getTime())) {
+        return "Data Inválida";
+      }
+
+      // Check if it's a reasonable date (not too far in past/future)
+      const currentYear = new Date().getFullYear();
+      const dateYear = date.getFullYear();
+
+      if (dateYear < 1900 || dateYear > currentYear + 50) {
+        return "Data Inválida";
+      }
+
+      try {
+        return date.toLocaleDateString("pt-BR");
+      } catch (error) {
+        return "Data Inválida";
+      }
     };
 
     const csvHeaders = [
@@ -442,6 +488,29 @@ window.showContractDetails = showContractDetails;
 window.exportContractsData = exportContractsData;
 window.viewContract = viewContract;
 window.formatDate = (dateString) => {
+  if (!dateString || dateString === null || dateString === undefined) {
+    return "N/A";
+  }
+
+  // Try to create a date object
   const date = new Date(dateString);
-  return date.toLocaleDateString("pt-BR");
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return "Data Inválida";
+  }
+
+  // Check if it's a reasonable date (not too far in past/future)
+  const currentYear = new Date().getFullYear();
+  const dateYear = date.getFullYear();
+
+  if (dateYear < 1900 || dateYear > currentYear + 50) {
+    return "Data Inválida";
+  }
+
+  try {
+    return date.toLocaleDateString("pt-BR");
+  } catch (error) {
+    return "Data Inválida";
+  }
 };

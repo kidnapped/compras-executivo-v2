@@ -291,105 +291,113 @@ endblock %} {% block content %}
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="dashboard-table-container">
-      <div class="table-responsive">
-        <table class="br-table table-hover table-striped">
-          <thead>
-            <tr>
-              <th>Detalhes do contrato</th>
-              <th class="hide-mobile">Vigência</th>
-              <th class="hide-mobile">Renovação</th>
-              <th class="hide-mobile">Contratado</th>
-              <th class="hide-mobile">Empenhado</th>
-              <th class="hide-mobile">Pagamentos</th>
-              <th class="hide-mobile">Equipe de Fiscalização</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dynamic content will be loaded here -->
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Bloco de paginação com fundo igual ao thead -->
-      <div
-        style="
-          background: #f8f8f8;
-          border-top: 1px solid #ddd;
-          padding: 0px 16px;
-        "
-      >
-        <div
-          class="d-flex flex-wrap align-items-center justify-content-between"
-          style="font-size: 12px"
-        >
-          <!-- Controles de paginação -->
-          <div class="d-flex flex-wrap align-items-center gap-1">
-            <button
-              class="br-button circle small"
-              title="Primeira página"
-              onclick="App.irParaPrimeiraPagina()"
-            >
-              <i class="fas fa-angle-double-left"></i>
-            </button>
-            <button
-              class="br-button circle small"
-              title="Página anterior"
-              onclick="App.irParaAnterior()"
-            >
-              <i class="fas fa-angle-left"></i>
-            </button>
-
-            <!-- Página atual (input) -->
-            <input
-              type="number"
-              min="1"
-              value="1"
-              id="pagina-atual"
-              class="br-input"
+      <div class="dashboard-table-container">
+        <div class="table-responsive">
+          <table class="br-table table-hover table-striped">
+            <thead
               style="
-                width: 60px;
-                height: 20px;
-                font-size: 12px;
-                margin-top: 2px;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                background-color: #f8f8f8;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
               "
-              onchange="App.irParaPaginaEspecifica(this.value)"
-            />
-            <span class="mx-1">de <strong>151</strong></span>
-
-            <button
-              class="br-button circle small"
-              title="Próxima página"
-              onclick="App.irParaProxima()"
             >
-              <i class="fas fa-angle-right"></i>
-            </button>
-            <button
-              class="br-button circle small"
-              title="Última página"
-              onclick="App.irParaUltima()"
-            >
-              <i class="fas fa-angle-double-right"></i>
-            </button>
+              <tr>
+                <th>Detalhes do contrato</th>
+                <th class="hide-mobile">Vigência</th>
+                <th class="hide-mobile">Renovação</th>
+                <th class="hide-mobile">Contratado</th>
+                <th class="hide-mobile">Empenhado</th>
+                <th class="hide-mobile">Pagamentos</th>
+                <th class="hide-mobile">Equipe de Fiscalização</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Dynamic content will be loaded here -->
+            </tbody>
+          </table>
+        </div>
 
-            <!-- Botão de refresh -->
-            <button
-              class="br-button circle small"
-              title="Atualizar contratos"
-              onclick="App.atualizarTabelaContratos()"
-            >
-              <i class="fas fa-sync-alt"></i>
-            </button>
-          </div>
-
-          <!-- Texto à direita -->
+        <!-- Bloco de paginação com fundo igual ao thead -->
+        <div
+          style="
+            background: #f8f8f8;
+            border-top: 1px solid #ddd;
+            padding: 0px 16px;
+          "
+        >
           <div
-            class="ms-auto text-muted small"
-            style="font-size: 12px; position: relative; top: -1px"
+            class="d-flex flex-wrap align-items-center justify-content-between"
+            style="font-size: 12px"
           >
-            Exibindo 1–20 de 3023 contratos
+            <!-- Controles de paginação -->
+            <div class="d-flex flex-wrap align-items-center gap-1">
+              <button
+                class="br-button circle small"
+                title="Primeira página"
+                onclick="App.irParaPrimeiraPagina()"
+              >
+                <i class="fas fa-angle-double-left"></i>
+              </button>
+              <button
+                class="br-button circle small"
+                title="Página anterior"
+                onclick="App.irParaAnterior()"
+              >
+                <i class="fas fa-angle-left"></i>
+              </button>
+
+              <!-- Página atual (input) -->
+              <input
+                type="number"
+                min="1"
+                value="1"
+                id="pagina-atual"
+                class="br-input"
+                style="
+                  width: 60px;
+                  height: 20px;
+                  font-size: 12px;
+                  margin-top: 2px;
+                "
+                onchange="App.irParaPaginaEspecifica(this.value)"
+              />
+              <span class="mx-1">de <strong>151</strong></span>
+
+              <button
+                class="br-button circle small"
+                title="Próxima página"
+                onclick="App.irParaProxima()"
+              >
+                <i class="fas fa-angle-right"></i>
+              </button>
+              <button
+                class="br-button circle small"
+                title="Última página"
+                onclick="App.irParaUltima()"
+              >
+                <i class="fas fa-angle-double-right"></i>
+              </button>
+
+              <!-- Botão de refresh -->
+              <button
+                class="br-button circle small"
+                title="Atualizar contratos"
+                onclick="App.atualizarTabelaContratos()"
+              >
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+
+            <!-- Texto à direita -->
+            <div
+              class="ms-auto text-muted small"
+              style="font-size: 12px; position: relative; top: -1px"
+            >
+              Exibindo 1–20 de 3023 contratos
+            </div>
           </div>
         </div>
       </div>
@@ -414,6 +422,43 @@ endblock %} {% block content %}
       }
     });
   </script>
-
-  {% endblock %}
 </div>
+
+<div class="br-scrim" data-dismiss="br-modal" style="display: none"></div>
+<div
+  id="reusable-modal"
+  class="br-modal reusable-modal-container large"
+  style="display: none"
+>
+  <div class="br-modal-dialog">
+    <div class="br-modal-content">
+      <div class="br-modal-header">
+        <h2 class="br-modal-title" id="reusable-modal-title">
+          Título do Modal
+        </h2>
+        <button
+          class="br-button circle"
+          type="button"
+          aria-label="Close"
+          data-dismiss="br-modal"
+        >
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="br-modal-body" id="reusable-modal-body">
+        <!-- Content will be loaded here by JavaScript -->
+        <div class="br-loading medium" role="progressbar"></div>
+      </div>
+      <div class="br-modal-footer">
+        <button
+          class="br-button secondary"
+          type="button"
+          data-dismiss="br-modal"
+        >
+          <i class="fas fa-times"></i> Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

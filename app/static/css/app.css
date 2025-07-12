@@ -724,6 +724,11 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: white; /* Ensures content doesn't show through */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
 }
 
 .kpi-modal-title {
@@ -797,6 +802,9 @@ body {
   justify-content: flex-end;
   gap: 0.5rem;
   background-color: #f8f9fa;
+  flex-shrink: 0;
+  z-index: 1;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .kpi-btn {
@@ -1274,15 +1282,15 @@ body {
 
 /* Bar fill colors based on renewal period - matching gauge colors */
 .renewal-bar[data-days="120"] .renewal-bar-fill {
-  background-color: #ffcd07; /* Yellow for 120 days - matches gauge yellow zone */
+  background-color: #fcec8f; /* Yellow for 120 days - matches gauge yellow zone */
 }
 
 .renewal-bar[data-days="90"] .renewal-bar-fill {
-  background-color: #d27a56; /* Orange for 90 days - matches gauge orange zone */
+  background-color: #f5c289; /* Orange for 90 days - matches gauge orange zone */
 }
 
 .renewal-bar[data-days="45"] .renewal-bar-fill {
-  background-color: #b50909; /* Red for 45 days - matches gauge red zone */
+  background-color: #ec7975; /* Red for 45 days - matches gauge red zone */
 }
 
 /* Active renewal bar styling */
@@ -1364,23 +1372,23 @@ body {
 
 /* Financial bar fill colors - different from renewal bars */
 .financial-bar[data-type="contratado"] .financial-bar-fill {
-  background-color: #0c326f; /* Blue for contracted amount - always 100% full */
+  background-color: #8f9dd2; /* Blue for contracted amount - always 100% full */
 }
 
 .financial-bar[data-type="empenhado"] {
-  background-color: #c5d4eb; /* Light blue background for committed amount */
+  background-color: #f0f0f0; /* Light blue background for committed amount */
 }
 
 .financial-bar[data-type="empenhado"] .financial-bar-fill {
-  background-color: #168821; /* Green fill for committed amount */
+  background-color: #bbc6ea; /* Green fill for committed amount */
 }
 
 .financial-bar[data-type="pagamentos"] {
-  background-color: #e3f5e1; /* Light green background for payments */
+  background-color: #f0f0f0; /* Light green background for payments */
 }
 
 .financial-bar[data-type="pagamentos"] .financial-bar-fill {
-  background-color: #168821; /* Green fill for payments */
+  background-color: #d0d9f6; /* Green fill for payments */
 }
 
 /* Active financial bar styling */
@@ -1522,11 +1530,11 @@ body {
   justify-content: center;
   width: 70px; /* Slightly larger for glow */
   height: 70px;
-  border: 4px solid #a6b5d9; /* Your light blue color */
+  border: 4px solid #bbc6ea; /* Your light blue color */
   border-radius: 50%;
-  color: #a6b5d9; /* Icon color matches border */
+  color: #bbc6ea; /* Icon color matches border */
   font-size: 28px; /* Slightly bigger icon */
-  box-shadow: inset 0 0 5px 2px rgba(166, 181, 217, 0.7); /* Inner glow */
+  box-shadow: inset 0 0 5px 2px rgba(187, 198, 234, 0.7); /* Inner glow */
   transition: box-shadow 0.3s ease; /* Smooth glow effect */
 }
 
@@ -1546,4 +1554,366 @@ body {
 }
 .capitalizeSmall:first-letter {
   font-size: 16px;
+}
+
+/* Reusable Modal Styles - Simple center popup approach */
+.reusable-modal-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: 2050 !important;
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+/* Show modal when display block is set */
+.reusable-modal-container[style*="display: block"] {
+  display: block !important;
+}
+
+/* Center the modal dialog - More specific selector to override other styles */
+.reusable-modal-container .br-modal-dialog,
+#reusable-modal .br-modal-dialog {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: 90% !important;
+  max-width: 800px !important;
+  max-height: 80vh !important;
+  background: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Disable body scrolling when modal is open */
+.reusable-modal-container[style*="display: block"] ~ * body,
+body:has(.reusable-modal-container[style*="display: block"]) {
+  overflow: hidden !important;
+}
+
+/* Alternative approach using class-based method */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+/* Ensure the scrim is also correctly positioned and visible */
+.br-scrim[style*="display: block"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: 2040 !important; /* Below the modal, above everything else */
+}
+
+/* Override any container constraints for modal and scrim */
+.container-lg .reusable-modal-container,
+.container-lg .br-scrim,
+.container .reusable-modal-container,
+.container .br-scrim,
+.container-fluid .reusable-modal-container,
+.container-fluid .br-scrim {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 2050 !important;
+}
+
+/* Ensure scrim has proper background when inside containers */
+.container-lg .br-scrim[style*="display: block"],
+.container .br-scrim[style*="display: block"],
+.container-fluid .br-scrim[style*="display: block"] {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: 2040 !important;
+}
+
+/* Modal dialog container - Updated to match KPI modal with center popup */
+.br-modal .br-modal-dialog {
+  background: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  max-width: 80vw !important;
+  width: 90% !important;
+  max-height: 80vh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  position: relative !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+/* Override for reusable modal container dialog positioning */
+.reusable-modal-container .br-modal-dialog {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+/* Modal content container with fixed height */
+.br-modal .br-modal-content {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important; /* Prevent scrolling on the modal content itself */
+}
+
+/* Fixed header - Updated to match KPI modal */
+.br-modal .br-modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0 !important;
+}
+
+.br-modal .br-modal-header .br-modal-title {
+  margin: 0 !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  flex: 1 !important;
+}
+
+.br-modal .br-modal-header .br-button.circle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
+}
+
+.br-modal .br-modal-header .br-button.circle:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+/* Scrollable body - Updated to match KPI modal */
+.br-modal .br-modal-body {
+  padding: 1.5rem !important;
+  flex: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  text-align: left !important;
+}
+
+/* Fixed footer - Updated to match KPI modal */
+.br-modal .br-modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e9ecef;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 0.5rem !important;
+  background-color: #f8f9fa;
+  flex-shrink: 0 !important;
+  z-index: 1;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.br-modal .br-modal-footer .br-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0 !important;
+}
+
+.br-modal .br-modal-footer .br-button.primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.br-modal .br-modal-footer .br-button.primary:hover {
+  background-color: #0056b3;
+}
+
+.br-modal .br-modal-footer .br-button.secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.br-modal .br-modal-footer .br-button.secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Additional styles for text alignment */
+.br-modal .br-modal-body * {
+  text-align: left !important;
+}
+
+/* Aditivos modal data table styles - matching KPI modal */
+.aditivos-summary {
+  padding: 0.75rem 1rem;
+  background-color: #e7f3ff;
+  border-left: 4px solid #0066cc;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.aditivos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.aditivos-table th,
+.aditivos-table td {
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.aditivos-table th {
+  background-color: #343a40;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: none;
+}
+
+.aditivos-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.aditivos-table tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.aditivos-table .objeto-text {
+  line-height: 1.4;
+  max-width: 200px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.aditivos-table .observacao-text {
+  line-height: 1.4;
+  max-width: 150px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.valor-currency {
+  font-weight: bold;
+  color: #198754;
+}
+
+.data-badge {
+  background-color: #ffc107;
+  color: #000;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Aditivos table styling for reorganized layout */
+.aditivos-table .aditivo-objeto-row,
+.aditivos-table .aditivo-observacao-row {
+  background-color: #f8f9fa !important;
+  border-top: none !important;
+}
+
+.aditivos-table .aditivo-objeto-row td,
+.aditivos-table .aditivo-observacao-row td {
+  padding: 0.5rem 0.75rem !important;
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+.aditivos-table .aditivo-detail-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.aditivos-table .aditivo-detail-content {
+  color: #333;
+  line-height: 1.4;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Add subtle separation between aditivos */
+.aditivos-table .aditivo-observacao-row {
+  border-bottom: 2px solid #e9ecef !important;
+}
+
+/* Hover effect for main aditivo rows */
+.aditivos-table
+  tbody
+  tr:not(.aditivo-objeto-row):not(.aditivo-observacao-row):hover {
+  background-color: #e9ecef !important;
+}
+
+.aditivos-table
+  tbody
+  tr:not(.aditivo-objeto-row):not(.aditivo-observacao-row):hover
+  + .aditivo-objeto-row,
+.aditivos-table
+  tbody
+  tr:not(.aditivo-objeto-row):not(.aditivo-observacao-row):hover
+  + .aditivo-objeto-row
+  + .aditivo-observacao-row {
+  background-color: #f1f3f4 !important;
 }

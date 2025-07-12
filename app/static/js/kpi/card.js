@@ -128,8 +128,7 @@ export default {
             </div>
         </div>
         </div>`;
-    },
-    
+  },
 };
 
 // DEBUG: Log to check if script runs and button is found

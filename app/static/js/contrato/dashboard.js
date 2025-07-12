@@ -1,5 +1,6 @@
 import getEcharts from "../util/echarts.js";
 import Card from "../kpi/card.js";
+import DashboardEvents from "./dashboard-events.js"; // <-- 1. IMPORT THE NEW MODULE
 
 export default {
   // State management for the table
@@ -14,6 +15,27 @@ export default {
       tipo: [],
     },
     sort: "numero",
+  },
+
+  // Modal popup functionality
+  dashboardModalPopup() {
+    const modal = document.getElementById("dashboard-modal");
+    if (!modal) return;
+
+    modal.style.display = "block";
+
+    const closeButton = modal.querySelector(".close");
+    if (closeButton) {
+      closeButton.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+    }
+
+    // Add click outside listener to close modal
+    document.addEventListener("click", (event) => {
+      if (modal.contains(event.target)) return;
+      modal.style.display = "none";
+    });
   },
 
   // Dashboard filter options
@@ -195,13 +217,13 @@ export default {
             type: "line",
             data: data.linha,
             smooth: true,
-            lineStyle: { width: 3, color: "#0099ff" },
+            lineStyle: { width: 3, color: "#8f9dd2" },
             symbol: "circle",
             symbolSize: 10,
             itemStyle: {
               borderWidth: 2,
               borderColor: "#fff",
-              color: "#5470c6",
+              color: "#bbc6ea",
             },
           },
         ],
@@ -591,10 +613,10 @@ export default {
             lineStyle: {
               width: 13,
               color: [
-                [0.7, "#168821"], // 0 to 70 - Green
-                [0.8, "#FFCD07"], // 70 to 80 - Yellow
-                [0.9, "#D27A56"], // 80 to 90 - Orange
-                [1, "#B50909"], // 90 to 100 - Red
+                [0.7, "#b0cdac"], // 0 to 70 - Green
+                [0.8, "#fcec8f"], // 70 to 80 - Yellow
+                [0.9, "#f5c289"], // 80 to 90 - Orange
+                [1, "#ec7975"], // 90 to 100 - Red
               ],
             },
           },
@@ -812,146 +834,12 @@ export default {
     }
   },
 
-  // Contract detail rendering for first row
-  renderDetailedContractInfo(contractData) {
-    const {
-      icone = "static/images/ico/contract-default.png",
-      fornecedor_nome = "NOME DO FORNECEDOR LTDA",
-      fornecedor_id = "12345",
-      fornecedor_cnpj = "12.345.678/0001-99",
-      iconeCategoriaNovo = "static/images/ico/category.png",
-      nomeCategoriaNovo = "Categoria",
-      heightCategoriaNovo = 20,
-      numero = "00055",
-      ano = "2022",
-      favorito_img = "off",
-      favorito = "Adicionar",
-      id = 1,
-      valor_total = "1234567.89",
-      descricao = "CONTRATAÇÃO DE EMPRESA ESPECIALIZADA EM SERVIÇOS DE LIMPEZA E CONSERVAÇÃO",
-      total_contrato = "1234567.89",
-      total_orcamentario = "1234567.89",
-      total_financa = "1234567.89",
-      fornecedor_razao_social = "FORNECEDOR LTDA",
-      siasg_numero_processo = "23632001234202200001",
-      total_aditivos_contratos = "0",
-      tempo_transcorrido_contrato = "85%",
-      contrato_fase = "Vigente",
-      restricoes_icone = "green",
-      restricoes_cor = "#168821",
-      restricoes = "0",
-      tempo_contrato = "30 meses",
-      tempo_contrato_icone = "📅",
-      total_processos = "1",
-    } = contractData;
-
-    return `
-      <div style="display: flex; gap: 10px; padding: 10px; font-family: Arial, sans-serif;">
-        <div style="width: 62px; text-align: center;">
-          <img src="${icone}" alt="Ícone do contrato" />
-        </div>
-        <div style="flex: 1;">
-          <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-            <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 37px;" alt="Fornecedor" />
-            <div style="padding-left: 6px;">
-              <span style="color: #909ab8; font-size: 14px; text-transform: uppercase;" title="Fornecedor do contrato"><b>${fornecedor_nome}</b></span><br />
-              <span style="color: #666; cursor: pointer;" onclick="detalhesFornecedor('${fornecedor_id}');" title="Fornecedor do contrato">${fornecedor_cnpj}</span>
-            </div>
-          </div>
-
-          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-            <img src="${iconeCategoriaNovo}" title="${nomeCategoriaNovo}" style="height: ${heightCategoriaNovo}px;" alt="Categoria" />
-
-            <span style="font-size: 16px; color: #FF9933;" title="Número do contrato">${numero} <span style="color: #000">/</span> ${ano}</span>
-
-            <img src="static/images/ico/heart_${favorito_img}.png" style="cursor: pointer;" onclick="ContratoWidget.favorito${favorito}(${id},'${numero}','${ano}',this);" title="${favorito} aos favoritos" alt="Favorito" />
-
-            <img src="static/images/ico/bank.png" style="cursor: pointer;" onclick="ContratoWidget.empenhosChart({id:${id},valor:'${valor_total}',descricao:'${descricao}',total_contrato:'${total_contrato}',total_orcamentario:'${total_orcamentario}',total_financa:'${total_financa}',numero:'${numero}',fornecedor:'${fornecedor_razao_social}',numero_processo:'${siasg_numero_processo}',fornecedor_id:'${fornecedor_id}',fornecedor_cnpj:'${fornecedor_cnpj}',ano:${ano}});" title="Encontro de Contas" alt="Banco" />
-
-            <span style="cursor: pointer; background-image: url('/static/images/ico/bkg-reload.png'); background-repeat: no-repeat; padding: 2px; color: #FF9933;" onclick="ContratoWidget.aditivosChart({id:${id},numero:'${numero}',fornecedor:'${fornecedor_razao_social}',total_contrato:'${total_aditivos_contratos}',total_a_c:'${total_aditivos_contratos}',fornecedor_cnpj:'${fornecedor_cnpj}',tempo_transcorrido_contrato:'${tempo_transcorrido_contrato}',ano:${ano}});" title="Termos aditivos">${contrato_fase}</span>
-
-            <span style="cursor: pointer; background-image: url('/static/images/ico/circle-${restricoes_icone}.png'); background-repeat: no-repeat; padding: 2px; color: ${restricoes_cor};" onclick="ContratoWidget.restricoes(${id});" title="Restrições">${restricoes}</span>
-
-            <span style="cursor: pointer; background-image: url('/static/images/ico/bkg-reload.png'); background-repeat: no-repeat; padding: 2px; color: #FF9933;" title="${tempo_contrato}">${tempo_contrato_icone}</span>
-
-            <span style="cursor: pointer;" onclick="SeiWidget.seiDocumentos({id_contrato:${id},numero:'${numero}',fornecedor:'${fornecedor_razao_social}',numero_processo:'${siasg_numero_processo}',total_processos:'${total_processos}',fornecedor_id:'${fornecedor_id}',fornecedor_cnpj:'${fornecedor_cnpj}',ano:${ano}});">
-              <img src="img/sei_icone.png" alt="SEI" />
-            </span>
-
-            <img src="static/images/ico/ico-processos.png" alt="Processos" />
-
-            <span style="color: #666; cursor: pointer;" onclick="detalhesProcesso('${siasg_numero_processo}');" title="Número do processo">${siasg_numero_processo}</span>
-          </div>
-
-          <div style="margin-top: 10px; letter-spacing: 0.5px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px;">
-            <span style="font-size: 12px; text-transform: uppercase;">${descricao}</span>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  // Initialize detailed contract info for first row
-  async initDetailedContractInfo() {
-    console.log("=== INITIALIZING DETAILED CONTRACT INFO ===");
-
-    // Only update the first row's first cell
-    const firstRow = document.querySelector("tbody tr:first-child");
-    if (!firstRow) {
-      console.warn("First table row not found");
-      return;
-    }
-
-    const firstCell = firstRow.querySelector("td:first-child");
-    if (!firstCell) {
-      console.warn("First cell in first row not found");
-      return;
-    }
-
-    // Sample contract data for the first row
-    const contractData = {
-      icone: "static/images/ico/contract-default.png",
-      fornecedor_nome: "EMPRESA DE LIMPEZA LTDA",
-      fornecedor_id: "12345",
-      fornecedor_cnpj: "12.345.678/0001-99",
-      iconeCategoriaNovo: "static/images/ico/cleaning.png",
-      nomeCategoriaNovo: "Serviços de Limpeza",
-      heightCategoriaNovo: 20,
-      numero: "00055",
-      ano: "2022",
-      favorito_img: "off",
-      favorito: "Adicionar",
-      id: 1,
-      valor_total: "1234567.89",
-      descricao:
-        "CONTRATAÇÃO DE EMPRESA ESPECIALIZADA EM SERVIÇOS DE LIMPEZA E CONSERVAÇÃO PREDIAL",
-      total_contrato: "1234567.89",
-      total_orcamentario: "1234567.89",
-      total_financa: "1234567.89",
-      fornecedor_razao_social: "EMPRESA DE LIMPEZA LTDA",
-      siasg_numero_processo: "23632001234202200001",
-      total_aditivos_contratos: "0",
-      tempo_transcorrido_contrato: "85%",
-      contrato_fase: "Vigente",
-      restricoes_icone: "green",
-      restricoes_cor: "#168821",
-      restricoes: "Sem restrições",
-      tempo_contrato: "36 meses",
-      tempo_contrato_icone: "📅",
-      total_processos: "1",
-    };
-
-    // Replace the content of the first cell
-    firstCell.innerHTML = this.renderDetailedContractInfo(contractData);
-
-    console.log("✅ Detailed contract info updated for first row");
-  },
-
   // Initialize dashboard - called from DOMContentLoaded
   initDashboard() {
     console.log("Initializing dashboard...");
     this.loadContractsTable();
-    this.setupTableEventListeners();
+    //this.setupTableEventListeners();
+    DashboardEvents.initialize();
     this.initCards();
   },
 
@@ -1204,9 +1092,31 @@ export default {
     };
 
     const formatDate = (dateString) => {
-      if (!dateString) return "";
+      if (!dateString || dateString === null || dateString === undefined) {
+        return "N/A";
+      }
+
+      // Try to create a date object
       const date = new Date(dateString);
-      return date.toLocaleDateString("pt-BR");
+
+      // Check if the date is valid
+      if (isNaN(date.getTime())) {
+        return "Data Inválida";
+      }
+
+      // Check if it's a reasonable date (not too far in past/future)
+      const currentYear = new Date().getFullYear();
+      const dateYear = date.getFullYear();
+
+      if (dateYear < 1900 || dateYear > currentYear + 50) {
+        return "Data Inválida";
+      }
+
+      try {
+        return date.toLocaleDateString("pt-BR");
+      } catch (error) {
+        return "Data Inválida";
+      }
     };
 
     return `
@@ -1214,7 +1124,7 @@ export default {
         <td>
           <div style="display: flex; gap: 10px; padding: 10px; font-family: Arial, sans-serif;">
           <div class="icon-circle">  
-          <i class="fas fa-file-contract" alt="contracto" style="font-size: 38px; color: #6a86c0;"></i>
+          <i class="fas fa-file-contract" alt="contracto" style="font-size: 38px; color: #bbc6ea;"></i>
           </div>  
             <div style="flex: 1;">
               <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
@@ -1244,29 +1154,15 @@ export default {
 
                 <img src="static/images/ico/heart_${
                   contract.favorite_icon
-                }.png" style="cursor: pointer;" onclick="ContratoWidget.favorito${
-      contract.favorite_action
-    }(${contract.id},'${contract.numero}','${contract.ano}',this);" title="${
-      contract.favorite_title
-    }" alt="Favorito" />
+                }.png" style="cursor: pointer;"  alt="Favorito" />
 
-                <img src="static/images/ico/bank.png" style="cursor: pointer;" onclick="ContratoWidget.empenhosChart({id:${
-                  contract.id
-                },valor:'${
-      contract.valor_inicial
-    }',descricao:'${this.escapeQuotes(contract.objeto)}',total_contrato:'${
-      contract.valor_inicial
-    }',total_orcamentario:'${contract.total_valor_empenhado}',total_financa:'${
-      contract.total_valor_pago
-    }',numero:'${contract.numero}',fornecedor:'${this.escapeQuotes(
-      contract.fornecedor_nome
-    )}',numero_processo:'${contract.processo}',fornecedor_id:'${
-      contract.fornecedor_id
-    }',fornecedor_cnpj:'${contract.fornecedor_cnpj}',ano:${
-      contract.ano
-    }});" title="Encontro de Contas" />
+                <img src="static/images/ico/bank.png" style="cursor: pointer;" title="Encontro de Contas" />
 
-    <div style="position: relative; display: inline-block; padding-top: 5px;">
+    <div class="aditivo-action" style="position: relative; display: inline-block; padding-top: 5px;" 
+      data-contract-id="${contract.id}"
+      data-contract-numero="${contract.numero}"
+      data-contract-ano="${contract.ano}"
+      data-contract-aditivos-count="${contract.aditivos_count || 0}">
   <svg
     width="30"
     height="30"
@@ -1286,19 +1182,10 @@ export default {
     transform: translate(-50%, -50%);
     font-weight: bold;
     color: #666;
-    padding-top: 5px;
-    font-size: 11px;"onclick="ContratoWidget.aditivosChart({id:${
-      contract.id
-    },numero:'${contract.numero}',fornecedor:'${this.escapeQuotes(
-      contract.fornecedor_nome
-    )}',total_contrato:'${contract.aditivos_count}',total_a_c:'${
-      contract.aditivos_count
-    }',fornecedor_cnpj:'${
-      contract.fornecedor_cnpj
-    }',tempo_transcorrido_contrato:'${contract.dias_restantes}',ano:${
-      contract.ano
-    }});" title="Termos aditivos"
-  >${contract.aditivos_count}</div>
+    padding-top: 2px;
+    font-size: 11px;" title="Termos aditivos">
+    ${contract.aditivos_count || 0}
+  </div>
 </div>            
     <div style="position: relative; display: inline-block; padding-top: 5px;">
   <svg
@@ -1308,10 +1195,7 @@ export default {
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M13.1459 11.0499L12.9716 9.05752L15.3462 8.84977C14.4471 7.98322 13.2242 7.4503 11.8769 7.4503C9.11547 7.4503 6.87689 9.68888 6.87689 12.4503C6.87689 15.2117 9.11547 17.4503 11.8769 17.4503C13.6977 17.4503 15.2911 16.4771 16.1654 15.0224L18.1682 15.5231C17.0301 17.8487 14.6405 19.4503 11.8769 19.4503C8.0109 19.4503 4.87689 16.3163 4.87689 12.4503C4.87689 8.58431 8.0109 5.4503 11.8769 5.4503C13.8233 5.4503 15.5842 6.24474 16.853 7.52706L16.6078 4.72412L18.6002 4.5498L19.1231 10.527L13.1459 11.0499Z"
-      fill="#ccc"
-    />
+    <circle cx="12" cy="12" r="6" stroke="green" stroke-width="1,2" />
   </svg>
   <div style="cursor: pointer;
     position: absolute;
@@ -1320,7 +1204,7 @@ export default {
     transform: translate(-50%, -50%);
     font-weight: bold;
     color: #666;
-    padding-top: 5px;
+    padding-top: 2px;
     font-size: 11px;"title="Restrições">0</div>
 </div>
       <div style="position: relative; display: inline-block; padding-top: 5px;">
@@ -1343,21 +1227,13 @@ export default {
     transform: translate(-50%, -50%);
     font-weight: bold;
     color: #666;
-    padding-top: 5px;
+    padding-top: 2px;
     font-size: 11px;"title="${this.formatContractStartInfo(
       contract.vigencia_inicio
     )}">${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
 </div>              
 
-                <span style="cursor: pointer;" onclick="SeiWidget.seiDocumentos({id_contrato:${
-                  contract.id
-                },numero:'${contract.numero}',fornecedor:'${this.escapeQuotes(
-      contract.fornecedor_nome
-    )}',numero_processo:'${
-      contract.processo
-    }',total_processos:'1',fornecedor_id:'${
-      contract.fornecedor_id
-    }',fornecedor_cnpj:'${contract.fornecedor_cnpj}',ano:${contract.ano}});">
+                <span style="cursor: pointer;">
                   <img src="static/images/sei_icone.png" />
                 </span>
 
@@ -1425,7 +1301,7 @@ export default {
           }/${contract.ano}" data-type="contratado">
             <div class="financial-bar-group">
               <div class="financial-bar-value">${formatCurrency(
-                contract.valor_inicial
+                contract.valor_global
               )}</div>
               <div class="financial-bar" data-type="contratado" data-amount="${
                 contract.valor_inicial || 0
@@ -1846,6 +1722,4 @@ export default {
     if (!str) return "";
     return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
   },
-
-  // ...existing code...
 };

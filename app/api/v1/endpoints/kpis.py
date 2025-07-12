@@ -285,41 +285,17 @@ async def get_dashboard_top_fornecedores(
         }
 
     query = """
-        SELECT
-  f.id   AS fornecedor_id,
-  SUBSTRING(f.nome FROM 1 FOR 10) AS fornecedor_nome,
-  'R$ ' || TO_CHAR(
-    ROUND(SUM(
-      CAST(
-        NULLIF(
-          REGEXP_REPLACE(c.valor_inicial, '[^0-9,.-]', '', 'g'),
-          ''
-        ) AS NUMERIC
-      )
-    ), 2),
-    'FM9999999999990.00'
-  ) AS total_valor_contratos
-FROM contratos AS c
-JOIN contratohistorico AS ch
-  ON ch.contrato_id = c.id
-  AND c.unidade_id = 16617
-LEFT JOIN contratohistorico_fornecedores_pivot AS chf
-  ON chf.contratohistorico_id = ch.id
-LEFT JOIN fornecedores AS f
-  ON f.id = COALESCE(chf.fornecedor_id, ch.fornecedor_id)
-GROUP BY
-  f.id,
-  f.nome
-ORDER BY
-  SUM(
-    CAST(
-      NULLIF(
-        REGEXP_REPLACE(c.valor_inicial, '[^0-9,.-]', '', 'g'),
-        ''
-      ) AS NUMERIC
-    )
-  ) DESC
-LIMIT 10;
+        select
+    f.id AS fornecedor_id,
+    f.nome AS fornecedor_nome,
+    COUNT(*) as total_contratos,
+    round(SUM(c.valor_global::numeric)) AS valor_total_contratos
+FROM contratos c
+JOIN fornecedores f ON f.id = c.fornecedor_id
+WHERE c.unidade_id = 16617
+  AND c.valor_global IS NOT NULL
+GROUP BY f.id, f.nome
+ORDER BY valor_total_contratos desc limit 20;
 
     """
     result = await db.execute(text(query), {"ids": ids_uasg})
@@ -327,9 +303,10 @@ LIMIT 10;
 
     fornecedores = [
         {
-            "fornecedor_id": row.get("fornecedor_id"),
-            "fornecedor_nome": row.get("fornecedor_nome"),
-            "total_valor_contratos": row.get("total_valor_contratos")
+            "fornecedor_id": row.get("fornecedor_id") or 0,
+            "fornecedor_nome": row.get("fornecedor_nome") or "Desconhecido",
+            "total_contratos": row.get("total_contratos") or 0,
+            "valor_total_contratos": row.get("valor_total_contratos") or 0.0
         }
         for row in rows
     ]
@@ -781,11 +758,12 @@ async def get_dashboard_kpi12(
 
     if not ids_uasg:
         return {
-            "titulo": "Análise de Vigência de Contratos Ativos",
-            "subtitulo": "Duração média de vigência e execução de contratos",
-            "total_contratos_ativos": 0,
+            "titulo": "Análise de Vigência de Contratos",
+            "subtitulo": "Duração média de vigência e tempo de execução",
+            "total_contratos": 0,
+            "media_anos_vigencia": 0,
             "media_meses_vigencia": 0.0,
-            "media_meses_execucao": 0.0
+            "media_dias_execucao": 0.0
         }
 
     # Use the first UASG ID for the query (since the original query uses a specific unidade_id)
@@ -793,18 +771,12 @@ async def get_dashboard_kpi12(
 
     query = """
         SELECT
-            COUNT(*) AS total_contratos_ativos,
-            ROUND(AVG(
-                EXTRACT(YEAR FROM AGE(CAST(vigencia_fim AS date), CAST(vigencia_inicio AS date))) * 12 +
-                EXTRACT(MONTH FROM AGE(CAST(vigencia_fim AS date), CAST(vigencia_inicio AS date)))
-            ), 1) AS media_meses_vigencia,
-            ROUND(AVG(
-                EXTRACT(YEAR FROM AGE(CAST(vigencia_inicio AS date), CAST(data_assinatura AS date))) * 12 +
-                EXTRACT(MONTH FROM AGE(CAST(vigencia_inicio AS date), CAST(data_assinatura AS date)))
-            ), 1) AS media_meses_execucao
+            COUNT(*) AS total_contratos_inativos,
+            FLOOR(AVG(EXTRACT(YEAR FROM AGE(vigencia_fim, vigencia_inicio)))) AS media_anos_vigencia,
+            ROUND(AVG(EXTRACT(MONTH FROM AGE(vigencia_fim, vigencia_inicio)))) AS media_meses_vigencia,
+            ROUND(AVG((vigencia_inicio::date - data_assinatura::date))) AS media_dias_execucao
         FROM contratos
         WHERE unidade_id = :unidade_id
-          AND CURRENT_DATE BETWEEN CAST(vigencia_inicio AS date) AND CAST(vigencia_fim AS date)
           AND vigencia_inicio IS NOT NULL
           AND vigencia_fim IS NOT NULL
           AND data_assinatura IS NOT NULL;
@@ -815,19 +787,21 @@ async def get_dashboard_kpi12(
 
     if not row:
         return {
-            "titulo": "Análise de Vigência de Contratos Ativos",
-            "subtitulo": "Duração média de vigência e execução de contratos",
-            "total_contratos_ativos": 0,
+            "titulo": "Análise de Vigência de Contratos",
+            "subtitulo": "Duração média de vigência e tempo de execução",
+            "total_contratos": 0,
+            "media_anos_vigencia": 0,
             "media_meses_vigencia": 0.0,
-            "media_meses_execucao": 0.0
+            "media_dias_execucao": 0.0
         }
 
     data = {
-        "titulo": "Análise de Vigência de Contratos Ativos",
-        "subtitulo": f"Duração média de vigência e execução de contratos - Unidade {unidade_id}",
-        "total_contratos_ativos": int(row.get("total_contratos_ativos", 0) or 0),
+        "titulo": "Análise de Vigência de Contratos",
+        "subtitulo": f"Duração média de vigência e tempo de execução - Unidade {unidade_id}",
+        "total_contratos": int(row.get("total_contratos_inativos", 0) or 0),
+        "media_anos_vigencia": int(row.get("media_anos_vigencia", 0) or 0),
         "media_meses_vigencia": float(row.get("media_meses_vigencia", 0.0) or 0.0),
-        "media_meses_execucao": float(row.get("media_meses_execucao", 0.0) or 0.0)
+        "media_dias_execucao": float(row.get("media_dias_execucao", 0.0) or 0.0)
     }
     
     # logger.info(f"KPI 12 - Returning JSON: {data}")

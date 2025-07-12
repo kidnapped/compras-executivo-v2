@@ -251,7 +251,7 @@ async def get_valores_sazonais(
       GROUP BY 
         u.codigo, c.unidadeorigem_id, ano
       ORDER BY 
-        u.codigo, ano
+        ano DESC LIMIT 6
 
     """)
     result = await db.execute(query, {"ids": ids_uasg})
@@ -410,11 +410,11 @@ async def get_contratos_lista(
                         order_clauses.append(f"{db_column} {direction}")
         except (json.JSONDecodeError, ValueError, KeyError):
             # Default sorting if parsing fails
-            order_clauses = ["c.numero ASC"]
+            order_clauses = ["c.vigencia_inicio DESC"]
     
     if not order_clauses:
-        order_clauses = ["c.numero ASC"]
-    
+        order_clauses = ["c.vigencia_inicio DESC"]
+
     order_by = "ORDER BY " + ", ".join(order_clauses)
 
     # Build WHERE conditions
@@ -453,7 +453,6 @@ async def get_contratos_lista(
             c.vigencia_fim,
             c.valor_inicial,
             c.valor_global,
-            e.naturezadespesa_id,
             c.justificativa_contrato_inativo_id,
             COALESCE(SUM(e.empenhado::numeric), 0) AS total_valor_empenhado,
             COALESCE(SUM(e.pago::numeric), 0) AS total_valor_pago,
@@ -490,7 +489,6 @@ async def get_contratos_lista(
             c.vigencia_fim,
             c.valor_inicial,
             c.valor_global,
-            e.naturezadespesa_id,
             c.justificativa_contrato_inativo_id
         {order_by}
         LIMIT :limit OFFSET :offset
@@ -556,7 +554,6 @@ async def get_contratos_lista(
             "ano": contract.ano,
             "processo": contract.processo,
             "tipo_id": contract.tipo_id,
-            "natureza_despesa_id": contract.naturezadespesa_id,
             "justificativa_contrato_inativo_id": contract.justificativa_contrato_inativo_id,
             "fornecedor_id": contract.fornecedor_id,
             "fornecedor_nome": contract.fornecedor_nome,
@@ -618,5 +615,87 @@ def get_random_favorite_status(contract_id: int) -> Dict[str, Any]:
         "favorite_action": "Remove" if is_favorite else "Adicionar",
         "favorite_title": "Remover dos favoritos" if is_favorite else "Adicionar aos favoritos"
     }
+
+@router.get("/dashboard/contrato/{contract_id}/aditivos")
+async def get_contract_aditivos(
+    contract_id: int,
+    request: Request,
+    db: AsyncSession = Depends(get_session_contratos)
+) -> List[Dict[str, Any]]:
+    """
+    Get the additives of a specific contract.
+    
+    - URL: /contrato/{contract_id}/aditivos
+    - Authorization: Checks user's session UASGs.
+    - Error Handling: Returns 404 if not found or 403 if not authorized.
+    - Formatting: Dates and currency are formatted.
+    """
+    # 1. Authorization: Check user's session for authorized UASGs
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida para o usuário.")
+
+    # Get unit IDs for the user's UASGs
+    user_units_result = await db.execute(
+        text("SELECT id FROM unidades WHERE codigo = ANY(:uasgs)"),
+        {"uasgs": uasgs}
+    )
+    user_unit_ids = [row.id for row in user_units_result.fetchall()]
+    if not user_unit_ids:
+        raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário foi encontrada.")
+
+    # 2. Data Fetching: Parameterized query to prevent SQL injection
+    query = text("""
+        SELECT
+            ch.valor_global,
+            ch.valor_inicial,
+            ch.vigencia_inicio,
+            ch.vigencia_fim,
+            ch.objeto,
+            LOWER(ch.observacao) AS observacao,
+            ch.tipo_id,
+            LOWER(ci.descricao) AS tipo_descricao,
+            ch.novo_valor_global
+        FROM contratohistorico ch
+        LEFT JOIN codigoitens ci ON ch.tipo_id = ci.id
+        WHERE ch.contrato_id = :contract_id
+          AND ch.unidade_id = ANY(:user_unit_ids)
+          AND ch.tipo_id <> 60  -- Exclude type 60 (cancellation)
+        ORDER BY ch.vigencia_inicio ASC;
+    """)
+    
+    result = await db.execute(query, {"contract_id": contract_id, "user_unit_ids": user_unit_ids})
+    historico_records = result.mappings().fetchall()
+
+    # 3. Error Handling: Check if any records were found
+    if not historico_records:
+        # To give a more specific error, check if the contract exists at all
+        contract_exists_result = await db.execute(
+            text("SELECT 1 FROM contratos WHERE id = :contract_id"),
+            {"contract_id": contract_id}
+        )
+        if contract_exists_result.scalar_one_or_none():
+            # Contract exists, but user doesn't have access to its history
+            raise HTTPException(status_code=403, detail="Acesso negado aos aditivos deste contrato.")
+        else:
+            # Contract does not exist
+            raise HTTPException(status_code=404, detail="Contrato não encontrado.")
+
+    # 4. Formatting: Prepare the response data
+    aditivos_list = []
+    for record in historico_records:
+        aditivos_list.append({
+            "valor_global": float(record.valor_global) if record.valor_global is not None else None,
+            "valor_inicial": float(record.valor_inicial) if record.valor_inicial is not None else None,
+            "vigencia_inicio": record.vigencia_inicio.strftime("%d/%m/%Y") if record.vigencia_inicio else None,
+            "vigencia_fim": record.vigencia_fim.strftime("%d/%m/%Y") if record.vigencia_fim else None,
+            "objeto": record.objeto.lower() if record.objeto else None,
+            "observacao": record.observacao.lower() if record.observacao else None,
+            "tipo_id": record.tipo_id,
+            "tipo_descricao": record.tipo_descricao,
+            "novo_valor_global": float(record.novo_valor_global) if record.novo_valor_global is not None else None,
+        })
+
+    return aditivos_list
 
 

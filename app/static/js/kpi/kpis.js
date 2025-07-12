@@ -12,6 +12,7 @@ import { initKpi7 } from "./components/kpi7.js";
 import { initKpi8 } from "./components/kpi8.js";
 import { initKpi9 } from "./components/kpi9.js";
 import { initKpi10 } from "./components/kpi10.js";
+import { initKpi12 } from "./components/kpi12.js";
 
 // Expose shared utilities globally for backward compatibility
 window.getBaseChartOption = getBaseChartOption;
@@ -33,6 +34,7 @@ const initializeAllKpis = async () => {
       initKpi8(),
       initKpi9(),
       initKpi10(),
+      initKpi12(),
     ]);
 
     console.log("All KPIs initialized successfully!");
