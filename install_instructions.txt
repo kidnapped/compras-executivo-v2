@@ -58,7 +58,7 @@ Sincronizar Financeiro
 
     echo > clone_financeiro_table_size.log
     nohup bash reprocessar_datas_puladas.sh </dev/null &>/dev/null & disown
-    tail -f clone_financeiro_table_size.log
+        
 
     pkill -f 'CloneFinanceiroTabelaData\|reprocessar_datas_puladas.sh\|flock -n /tmp/lock_reprocessar_datas.lock'
     rm -f /tmp/lock_reprocessar_datas.lock

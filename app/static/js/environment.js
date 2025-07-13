@@ -28,8 +28,8 @@ export default {
     App.dashboardContratosPorExercicioCard();
     App.dashboardRepresentacaoAnualValores();
     App.dashboardProximasAtividades();
-    App.adminCards();
-    App.adminUsuarios();
+    // App.adminCards();
+    // App.adminUsuarios();
   },
 
   // Comportamento de encolhimento do cabeçalho com base no scroll

@@ -42,6 +42,9 @@ class Settings(BaseSettings):
 
     REDIRECT_URI: str = "https://afinco.serpro.gov.br/login/callback"
 
+    # Dashboard UI configurações
+    DASHBOARD_SHOW_RENEWAL_COLUMN: bool = False
+
     @property
     def GOVBR_BASE_URL(self):
         return self.GOVBR_HOMO_AUTH_URL if self.GOVBR_ENV == "homolog" else self.GOVBR_PROD_AUTH_URL

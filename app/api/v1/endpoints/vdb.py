@@ -6,7 +6,7 @@ import subprocess
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
-JAVA_DIR = "/home/ec2-user/py-app/vdb"
+JAVA_DIR = "/Users/leo/Development/ws-blocok/comprasexecutivo/vdb"
 JAR_FILE = "jboss-dv-6.3.0-teiid-jdbc.jar"
 
 def executar_java(vdb_tipo: str, query: str):

@@ -489,12 +489,12 @@ body {
 }
 
 .widget-atividades-item i {
-  color: #467fd0;
+  color: #bbc6ea;
   margin-right: 2px;
 }
 
 .widget-atividades-item a {
-  color: #0050d7;
+  color: #8f9dd2;
   text-decoration: none;
   margin-right: 2px;
 }
@@ -576,7 +576,7 @@ body {
   font-size: 12px;
   color: #555;
   background-color: #f0f0f0;
-  padding: 6px 10px;
+  padding: 2px 10px;
   font-weight: bold;
 }
 
@@ -852,16 +852,19 @@ body {
 .dashboard-table-container {
   width: 100%;
   flex-grow: 1;
-  min-height: 400px;
+  min-height: calc(100vh - 380px);
+  display: flex;
+  flex-direction: column;
 }
 
 .dashboard-table-container .table-responsive {
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 420px);
   overflow-y: auto;
   overflow-x: auto;
-  min-height: 400px;
+  min-height: calc(100vh - 420px);
   height: auto;
   flex-grow: 1;
+  position: relative;
 }
 
 .dashboard-table-container .br-table {
@@ -913,10 +916,33 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f8f9fa;
+  background-color: transparent !important;
   border-radius: 8px;
   color: #6c757d;
   font-size: 0.875rem;
+  min-height: 120px;
+  width: 100%;
+  position: relative;
+}
+
+/* Cor personalizada para todos os spinners br-loading */
+.br-loading.medium::before,
+.br-loading.medium::after {
+  border-color: #8f9dd2 !important;
+}
+
+.br-loading.medium {
+  border-color: #8f9dd2 !important;
+}
+
+/* Garantir que a animação de loading use a cor correta */
+.br-loading.medium > *,
+.br-loading.medium::before,
+.br-loading.medium::after {
+  border-top-color: #8f9dd2 !important;
+  border-left-color: #8f9dd2 !important;
+  border-bottom-color: transparent !important;
+  border-right-color: transparent !important;
 }
 
 /* Responsive adjustments for KPI layout */
@@ -1327,7 +1353,7 @@ body {
   gap: 6px;
   align-items: center;
   justify-content: center;
-  min-height: 169.95px;
+  min-height: 100px;
 }
 
 .financial-bar-group {
@@ -1353,7 +1379,7 @@ body {
 
 .financial-bar {
   width: 48px;
-  height: 169.95px;
+  height: 100px;
   background-color: #f0f0f0;
   border: 1px solid #ddd;
   border-radius: 2px;
@@ -1433,8 +1459,8 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  padding: 6px 12px;
-  background-color: #0c326f;
+  padding: 0px 12px;
+  background-color: #8f9dd2;
   color: white;
   border: none;
   border-radius: 4px;
@@ -1541,6 +1567,15 @@ body {
 /* Optional: Hover effect for stronger glow */
 .icon-circle:hover {
   box-shadow: inset 0 0 10px 3px rgba(166, 181, 217, 0.9);
+}
+
+/* Estilo para ícones com círculo no grid */
+.icon-circle {
+  opacity: 0.7 !important;
+}
+
+.icon-circle i {
+  opacity: 0.7 !important;
 }
 
 .capitalize {
@@ -1916,4 +1951,171 @@ body.modal-open {
   + .aditivo-objeto-row
   + .aditivo-observacao-row {
   background-color: #f1f3f4 !important;
+}
+
+
+/* Cards do topo (KPIs) */
+.row-tight .br-card.card-contratos {
+  min-height: 180px !important;
+  max-height: 180px !important;
+  height: 180px !important;
+  overflow: visible !important;
+}
+
+/* Loading states melhorado */
+.dashboard-table-container {
+  width: 100%;
+  flex-grow: 1;
+  min-height: calc(100vh - 380px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.dashboard-table-container .table-responsive {
+  max-height: calc(100vh - 420px);
+  overflow-y: auto;
+  overflow-x: auto;
+  min-height: calc(100vh - 420px);
+  height: auto;
+  flex-grow: 1;
+}
+
+/* Remover bordas desnecessárias que podem causar linhas no grid */
+.dashboard-table-container .br-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: none;
+}
+
+.dashboard-table-container .br-table td,
+.dashboard-table-container .br-table th {
+  border-left: none;
+  border-right: none;
+}
+
+.dashboard-table-container .br-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Loading states melhorado */
+.br-loading.medium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent !important;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 0.875rem;
+  min-height: 120px;
+  width: 100%;
+  position: relative;
+}
+
+/* Garantir que tooltips dos gráficos apareçam acima de tudo */
+.echarts-tooltip {
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+/* Forçar tooltips do ECharts para maior z-index */
+div[class*="echarts-tooltip"] {
+  z-index: 9999 !important;
+}
+
+/* Containers de gráficos devem permitir overflow para tooltips */
+.financial-bars-container,
+.renewal-bars-container,
+.kpi-chart-inner {
+  overflow: visible !important;
+}
+
+/* Padding no final da página para evitar conteúdo colado na borda */
+.br-main {
+  padding-bottom: 10px;
+}
+
+/* Ajustar paginação para eliminar espaços desnecessários */
+.dashboard-table-container > div:last-child {
+  padding: 8px 16px;
+  margin-bottom: 0;
+}
+
+/* Garantir que não há margem extra no final do grid */
+.row-tight .br-card.card-contratos-grid {
+  min-height: calc(100vh - 320px) !important;
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+  margin-bottom: 0 !important;
+}
+
+/* Eliminar margens extras no container principal */
+.row-tight:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Ajustes específicos para a paginação */
+.pagination-container {
+  margin-bottom: 0 !important;
+}
+
+.pagination-container .d-flex {
+  margin: 0;
+  padding: 0;
+}
+
+/* Garantir que o card do grid não tenha margem inferior */
+.card-contratos-grid {
+  margin-bottom: 0 !important;
+}
+
+/* Loading overlay independente da tabela */
+#table-loading-overlay {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 100 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  padding: 20px !important;
+  box-shadow: none !important;
+}
+
+/* Loading overlay deve ter o loading transparente */
+#table-loading-overlay .br-loading.medium {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  margin-bottom: 15px !important;
+}
+
+/* Texto do loading posicionado abaixo da imagem */
+#table-loading-overlay .loading-text {
+  margin-top: 15px !important;
+  color: #6c757d !important;
+  font-size: 0.875rem !important;
+  text-align: center !important;
+  font-weight: 500 !important;
+}
+
+/* Loading específico do grid - sem aparência de card */
+#grid-loading {
+  pointer-events: none !important;
+}
+
+#grid-loading .br-loading.medium {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: auto !important;
 }

@@ -27,7 +27,7 @@
       <!-- VERSÃO DESKTOP -->
       <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop" style="align-items: center; gap: 10px;">
         {% if request.session.get('cpf') %}
-          <span style="color: #1351b4; font-weight: bold;">{{ request.session.cpf }}</span>
+          <span style="color: #1351b4; font-weight: bold;" id="cpf-display">{{ request.session.cpf }}</span>
           <a href="/logout" class="br-button small circle" title="Sair" aria-label="Sair">
             <i class="fas fa-sign-out-alt"></i>
           </a>
@@ -72,3 +72,26 @@
     </div>
   </div>
 </header>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Format CPF with mask (XXX.XXX.XXX-XX)
+  function formatCPF(cpf) {
+    // Remove any non-numeric characters
+    cpf = cpf.replace(/\D/g, '');
+    
+    // Apply CPF mask
+    if (cpf.length === 11) {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+    return cpf; // Return original if not 11 digits
+  }
+  
+  // Apply CPF mask to the header display
+  const cpfElement = document.getElementById('cpf-display');
+  if (cpfElement) {
+    const originalCpf = cpfElement.textContent.trim();
+    cpfElement.textContent = formatCPF(originalCpf);
+  }
+});
+</script>
