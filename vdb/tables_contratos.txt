@@ -1,3 +1,6 @@
+amparo_legal
+amparo_legal_contrato
+amparo_legal_contratohistorico
 catmatclasses
 catmatpdms
 catmatsergrupos
@@ -21,6 +24,7 @@ contratos_fornecedores_pivot
 empenhos
 envia_dados_pncp
 fornecedores
+minutaempenhos
 municipios
 naturezadespesa
 orgaos
@@ -30,3 +34,10 @@ ordens_bancarias
 unidades
 users
 unidadesusers
+sfcentrocusto
+sfdadosbasicos
+sfdadospgto
+sfdomiciliobancario
+sforcempenhodados
+sfpadrao
+sfpcoitem
