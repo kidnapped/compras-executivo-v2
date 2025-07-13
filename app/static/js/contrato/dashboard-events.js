@@ -22,6 +22,23 @@ const handleTableClick = (event) => {
     return;
   }
 
+  // Check if the click was on the encontro de contas action
+  const encontroAction = event.target.closest(".encontro-action");
+  if (encontroAction) {
+    // Get contract ID from the data attribute
+    const contractId = encontroAction.getAttribute("data-contract-id");
+
+    // Navigate to encontro de contas page with contract ID parameter
+    if (contractId && contractId !== "N/A") {
+      window.location.href = `/encontro-de-contas?contrato=${contractId}`;
+    } else {
+      console.error("Contract ID not found for navigation");
+    }
+
+    console.log(`Encontro de Contas clicked for contract ID: ${contractId}`);
+    return;
+  }
+
   // Check if the click was on the favorite icon
   // const favoriteAction = event.target.closest('.favorite-action');
   // if (favoriteAction) {

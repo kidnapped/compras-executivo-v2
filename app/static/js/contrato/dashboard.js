@@ -1031,23 +1031,23 @@ export default {
   // Show loading state in table
   showTableLoading() {
     const tbody = document.querySelector("table.br-table tbody");
-    const gridLoading = document.getElementById('grid-loading');
-    
+    const gridLoading = document.getElementById("grid-loading");
+
     if (tbody) {
       // Clear table content
       tbody.innerHTML = "";
     }
-    
+
     if (gridLoading) {
-      gridLoading.style.display = 'block';
+      gridLoading.style.display = "block";
     }
   },
 
   // Hide loading overlay
   hideTableLoading() {
-    const gridLoading = document.getElementById('grid-loading');
+    const gridLoading = document.getElementById("grid-loading");
     if (gridLoading) {
-      gridLoading.style.display = 'none';
+      gridLoading.style.display = "none";
     }
   },
 
@@ -1057,7 +1057,7 @@ export default {
     if (tbody) {
       // Remove loading overlay first
       this.hideTableLoading();
-      
+
       tbody.innerHTML = `
         <tr>
           <td colspan="7" class="text-center text-danger" style="padding: 40px;">
@@ -1100,8 +1100,9 @@ export default {
   // Render a single contract row
   renderContractRow(contract) {
     // Check if renewal column should be shown
-    const showRenewalColumn = window.dashboardConfig?.showRenewalColumn !== false;
-    
+    const showRenewalColumn =
+      window.dashboardConfig?.showRenewalColumn !== false;
+
     const formatCurrency = (value) => {
       if (!value) return "R$ 0,00";
       return new Intl.NumberFormat("pt-BR", {
@@ -1175,7 +1176,9 @@ export default {
                   contract.favorite_icon
                 }.png" style="cursor: pointer; margin-left: 2px;"  alt="Favorito" />
 
-                <img src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" title="Encontro de Contas" />
+                <img data-contract-id="${
+                  contract.id
+                }" class="encontro-action" src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" title="Encontro de Contas" />
 
     <div class="aditivo-action" style="position: relative; display: inline-block; padding-top: 5px; margin-left: -6px;" 
       data-contract-id="${contract.id}"
@@ -1286,7 +1289,9 @@ export default {
                style="width: 180px; height: 180px; display: inline-block">
           </div>
         </td>
-        ${showRenewalColumn ? `
+        ${
+          showRenewalColumn
+            ? `
         <td class="hide-mobile">
           <div class="renewal-bars-container" style="display: flex; gap: 8px; align-items: center">
             <div class="renewal-bar-group">
@@ -1318,7 +1323,9 @@ export default {
             </div>
           </div>
         </td>
-        ` : ''}
+        `
+            : ""
+        }
         <td class="hide-mobile">
           <div class="financial-bars-container" data-contract-id="${
             contract.numero

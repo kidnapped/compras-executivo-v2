@@ -6,7 +6,7 @@ import EncontroUI from "../ui/encontro-ui.js";
  * Manages all user interactions and events
  */
 
-export default {
+const EncontroEvents = {
   /**
    * Initialize all event listeners
    */
@@ -20,6 +20,7 @@ export default {
 
       this.setupSearchEvents();
       this.setupFormEvents();
+      this.setupNavigationEvents();
       console.log("Encontro de Contas events initialized");
     } catch (error) {
       console.error("Error initializing Encontro events:", error);
@@ -87,6 +88,26 @@ export default {
   },
 
   /**
+   * Setup navigation events
+   */
+  setupNavigationEvents() {
+    // Handle browser back/forward buttons
+    window.addEventListener("popstate", () => {
+      // Reload the page with new URL parameters
+      window.location.reload();
+    });
+
+    // Add right-click context menu for opening in new tab
+    document.addEventListener("contextmenu", (e) => {
+      const encontroAction = e.target.closest(".encontro-action");
+      if (encontroAction) {
+        // Browser's default context menu will handle "Open in new tab"
+        console.log("Context menu for Encontro de Contas action");
+      }
+    });
+  },
+
+  /**
    * Handle search button click
    */
   async handleSearch() {
@@ -112,6 +133,9 @@ export default {
     }
 
     const unidadeEmpenhoId = unidadeInput ? unidadeInput.value.trim() : null;
+
+    // Update URL parameter
+    this.updateUrlParameter(contratoId);
 
     // Show loading state
     EncontroUI.showLoading();
@@ -150,6 +174,45 @@ export default {
     if (unidadeInput) unidadeInput.value = "";
     if (resultsContainer) resultsContainer.innerHTML = "";
 
+    // Clear URL parameter
+    this.updateUrlParameter(null);
+
     console.log("Search fields cleared");
   },
+
+  // URL Parameter management
+  updateUrlParameter(contractId) {
+    const url = new URL(window.location);
+    if (contractId) {
+      url.searchParams.set("contrato", contractId);
+    } else {
+      url.searchParams.delete("contrato");
+    }
+    window.history.replaceState({}, "", url);
+  },
+
+  getUrlParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  },
+
+  // Public method for external navigation
+  searchContract(contractId) {
+    if (contractId) {
+      // Update URL parameter
+      this.updateUrlParameter(contractId);
+
+      // Update search input
+      const contractInput = document.getElementById("contrato-id-input");
+      if (contractInput) {
+        contractInput.value = contractId;
+      }
+
+      // Trigger search
+      this.handleSearch();
+    }
+  },
 };
+
+// Export the EncontroEvents object
+export default EncontroEvents;
