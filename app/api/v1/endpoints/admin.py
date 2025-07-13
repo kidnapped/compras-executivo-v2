@@ -1,15 +1,14 @@
 from fastapi import APIRouter, Request, Depends, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
-from starlette.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import func
 
 from app.db.session import get_session_blocok
 from app.db.models.user import User
+from app.core.templates import templates
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_index(request: Request):

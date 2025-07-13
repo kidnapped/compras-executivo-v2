@@ -141,7 +141,7 @@ export default {
             name: "Contratos",
             type: "bar",
             data: data.valores,
-            itemStyle: { color: "#5470C6" },
+            itemStyle: { color: "#8f9dd2" },
             barMaxWidth: 20,
           },
         ],
@@ -209,7 +209,7 @@ export default {
             name: "Contratos",
             type: "bar",
             data: data.coluna,
-            itemStyle: { color: "#0072c6" },
+            itemStyle: { color: "#bbc6ea" },
             barMaxWidth: 20,
           },
           {
@@ -481,7 +481,7 @@ export default {
             bottom: "10%",
             style: {
               text: formatDate(startDate),
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: "bold",
               fill: "#999999",
               textAlign: "center",
@@ -494,7 +494,7 @@ export default {
             bottom: "10%",
             style: {
               text: formatDate(endDate),
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: "bold",
               fill: "#999999",
               textAlign: "center",
@@ -526,7 +526,7 @@ export default {
             },
             title: {
               offsetCenter: [0, "60%"],
-              fontSize: 12,
+              fontSize: 11,
             },
             detail: {
               show: false, // Hide the detail/counter for finished contracts
@@ -582,7 +582,7 @@ export default {
           bottom: "10%",
           style: {
             text: formatDate(startDate),
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: "bold",
             fill: "#333",
             textAlign: "center",
@@ -595,7 +595,7 @@ export default {
           bottom: "10%",
           style: {
             text: formatDate(endDate),
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: "bold",
             fill: "#333",
             textAlign: "center",
@@ -630,7 +630,7 @@ export default {
           },
           title: {
             offsetCenter: [0, "60%"],
-            fontSize: 12,
+            fontSize: 11,
           },
           detail: {
             valueAnimation: true,
@@ -1017,7 +1017,9 @@ export default {
       // Initialize visual elements after render
       setTimeout(() => {
         this.initVigenciaGauges();
-        this.initRenewalBars();
+        if (window.dashboardConfig?.showRenewalColumn !== false) {
+          this.initRenewalBars();
+        }
         this.initFinancialBars();
       }, 100);
     } catch (error) {
@@ -1029,15 +1031,23 @@ export default {
   // Show loading state in table
   showTableLoading() {
     const tbody = document.querySelector("table.br-table tbody");
+    const gridLoading = document.getElementById('grid-loading');
+    
     if (tbody) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="7" class="text-center" style="padding: 40px;">
-            <div class="br-loading medium" role="progressbar" aria-label="carregando contratos"></div>
-            <div style="margin-top: 10px;">Carregando contratos...</div>
-          </td>
-        </tr>
-      `;
+      // Clear table content
+      tbody.innerHTML = "";
+    }
+    
+    if (gridLoading) {
+      gridLoading.style.display = 'block';
+    }
+  },
+
+  // Hide loading overlay
+  hideTableLoading() {
+    const gridLoading = document.getElementById('grid-loading');
+    if (gridLoading) {
+      gridLoading.style.display = 'none';
     }
   },
 
@@ -1045,6 +1055,9 @@ export default {
   showTableError() {
     const tbody = document.querySelector("table.br-table tbody");
     if (tbody) {
+      // Remove loading overlay first
+      this.hideTableLoading();
+      
       tbody.innerHTML = `
         <tr>
           <td colspan="7" class="text-center text-danger" style="padding: 40px;">
@@ -1063,6 +1076,9 @@ export default {
   renderContractsTable(contracts) {
     const tbody = document.querySelector("table.br-table tbody");
     if (!tbody) return;
+
+    // Remove loading overlay first
+    this.hideTableLoading();
 
     if (contracts.length === 0) {
       tbody.innerHTML = `
@@ -1083,6 +1099,9 @@ export default {
 
   // Render a single contract row
   renderContractRow(contract) {
+    // Check if renewal column should be shown
+    const showRenewalColumn = window.dashboardConfig?.showRenewalColumn !== false;
+    
     const formatCurrency = (value) => {
       if (!value) return "R$ 0,00";
       return new Intl.NumberFormat("pt-BR", {
@@ -1121,16 +1140,16 @@ export default {
 
     return `
       <tr>
-        <td>
-          <div style="display: flex; gap: 10px; padding: 10px; font-family: Arial, sans-serif;">
-          <div class="icon-circle">  
-          <i class="fas fa-file-contract" alt="contracto" style="font-size: 38px; color: #bbc6ea;"></i>
+        <td style="padding: 8px 8px !important;">
+          <div style="display: flex; gap: 8px; font-family: Arial, sans-serif;">
+          <div class="icon-circle" style="opacity: 0.7;">  
+          <i class="fas fa-file-contract" alt="contracto" style="font-size: 38px; color: #bbc6ea; opacity: 0.7;"></i>
           </div>  
             <div style="flex: 1;">
-              <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+              <div style="display: flex; align-items: flex-start; margin-bottom: 5px;">
                 <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 20px;" />
                 <div style="padding-left: 6px;">
-                  <span style="color: #909ab8; font-size: 14px; text-transform: uppercase;" title="Fornecedor do contrato"><b>${
+                  <span style="color: #ff9966; font-size: 14px; text-transform: uppercase;" title="Fornecedor do contrato"><b>${
                     contract.fornecedor_nome || "N/A"
                   }</b></span><br />
                   <span style="color: #666; cursor: pointer;" onclick="detalhesFornecedor('${
@@ -1141,24 +1160,24 @@ export default {
                 </div>
               </div>
 
-              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; white-space: nowrap; margin-top: -10px !important;">
                 <img src="${
                   this.getContratoInfo(contract.tipo_id).icon
                 }" title="${
       this.getContratoInfo(contract.tipo_id).name
     }" style="height: 20px;" />
 
-                <span style="font-size: 16px; color: #FF9933;" title="Número do contrato">${
+                <span style="font-size: 16px; color: #FF9933; white-space: nowrap;" title="Número do contrato">${
                   contract.numero
                 } <span style="color: #000">/</span> ${contract.ano}</span>
 
                 <img src="static/images/ico/heart_${
                   contract.favorite_icon
-                }.png" style="cursor: pointer;"  alt="Favorito" />
+                }.png" style="cursor: pointer; margin-left: 2px;"  alt="Favorito" />
 
-                <img src="static/images/ico/bank.png" style="cursor: pointer;" title="Encontro de Contas" />
+                <img src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" title="Encontro de Contas" />
 
-    <div class="aditivo-action" style="position: relative; display: inline-block; padding-top: 5px;" 
+    <div class="aditivo-action" style="position: relative; display: inline-block; padding-top: 5px; margin-left: -6px;" 
       data-contract-id="${contract.id}"
       data-contract-numero="${contract.numero}"
       data-contract-ano="${contract.ano}"
@@ -1169,6 +1188,7 @@ export default {
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    style="opacity: 0.7;"
   >
     <path
       d="M13.1459 11.0499L12.9716 9.05752L15.3462 8.84977C14.4471 7.98322 13.2242 7.4503 11.8769 7.4503C9.11547 7.4503 6.87689 9.68888 6.87689 12.4503C6.87689 15.2117 9.11547 17.4503 11.8769 17.4503C13.6977 17.4503 15.2911 16.4771 16.1654 15.0224L18.1682 15.5231C17.0301 17.8487 14.6405 19.4503 11.8769 19.4503C8.0109 19.4503 4.87689 16.3163 4.87689 12.4503C4.87689 8.58431 8.0109 5.4503 11.8769 5.4503C13.8233 5.4503 15.5842 6.24474 16.853 7.52706L16.6078 4.72412L18.6002 4.5498L19.1231 10.527L13.1459 11.0499Z"
@@ -1187,15 +1207,16 @@ export default {
     ${contract.aditivos_count || 0}
   </div>
 </div>            
-    <div style="position: relative; display: inline-block; padding-top: 5px;">
+    <div style="position: relative; display: inline-block; padding-top: 5px; margin-left: -10px;">
   <svg
     width="30"
     height="30"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    style="opacity: 0.7;"
   >
-    <circle cx="12" cy="12" r="6" stroke="green" stroke-width="1,2" />
+    <circle cx="12" cy="12" r="6" stroke="green" stroke-width="1.2" />
   </svg>
   <div style="cursor: pointer;
     position: absolute;
@@ -1205,15 +1226,16 @@ export default {
     font-weight: bold;
     color: #666;
     padding-top: 2px;
-    font-size: 11px;"title="Restrições">0</div>
+    font-size: 11px;" title="Restrições">0</div>
 </div>
-      <div style="position: relative; display: inline-block; padding-top: 5px;">
+      <div style="position: relative; display: inline-block; padding-top: 5px; margin-left: -10px;">
   <svg
     width="30"
     height="30"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    style="opacity: 0.7;"
   >
     <path
       d="M13.1459 11.0499L12.9716 9.05752L15.3462 8.84977C14.4471 7.98322 13.2242 7.4503 11.8769 7.4503C9.11547 7.4503 6.87689 9.68888 6.87689 12.4503C6.87689 15.2117 9.11547 17.4503 11.8769 17.4503C13.6977 17.4503 15.2911 16.4771 16.1654 15.0224L18.1682 15.5231C17.0301 17.8487 14.6405 19.4503 11.8769 19.4503C8.0109 19.4503 4.87689 16.3163 4.87689 12.4503C4.87689 8.58431 8.0109 5.4503 11.8769 5.4503C13.8233 5.4503 15.5842 6.24474 16.853 7.52706L16.6078 4.72412L18.6002 4.5498L19.1231 10.527L13.1459 11.0499Z"
@@ -1228,18 +1250,18 @@ export default {
     font-weight: bold;
     color: #666;
     padding-top: 2px;
-    font-size: 11px;"title="${this.formatContractStartInfo(
+    font-size: 11px;" title="${this.formatContractStartInfo(
       contract.vigencia_inicio
     )}">${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
 </div>              
 
-                <span style="cursor: pointer;">
+                <span style="cursor: pointer; margin-left: 2px;">
                   <img src="static/images/sei_icone.png" />
                 </span>
 
-                <img src="static/images/ico/ico-processos.png" />
+                <img src="static/images/ico/ico-processos.png" style="margin-left: -4px;" />
 
-                <span style="color: #666; cursor: pointer;" onclick="detalhesProcesso('${
+                <span style="color: #666; cursor: pointer; margin-left: 2px;" onclick="detalhesProcesso('${
                   contract.processo
                 }');" title="Número do processo">${
       contract.processo || "N/A"
@@ -1249,21 +1271,22 @@ export default {
               
             </div>
           </div>
-          <div class="capitalize capitalizeBig"style="margin-top: 10px; letter-spacing: 0.5px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px;">
+          <div class="capitalize capitalizeBig" style="margin-top: 5px; letter-spacing: 0.25px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px; line-height: 1.2;">
                 <span style="font-size: 12px;">${
                   contract.objeto || "Objeto não informado"
                 }</span>
               </div>
         </td>
         
-        <td class="hide-mobile">
+        <td class="hide-mobile" valign="top">
           <div class="vigencia-gauge-container" 
                data-contract-id="${contract.numero}/${contract.ano}" 
                data-start-date="${contract.vigencia_inicio}" 
                data-end-date="${contract.vigencia_fim}"
-               style="width: 200px; height: 200px; display: inline-block">
+               style="width: 180px; height: 180px; display: inline-block">
           </div>
         </td>
+        ${showRenewalColumn ? `
         <td class="hide-mobile">
           <div class="renewal-bars-container" style="display: flex; gap: 8px; align-items: center">
             <div class="renewal-bar-group">
@@ -1295,6 +1318,7 @@ export default {
             </div>
           </div>
         </td>
+        ` : ''}
         <td class="hide-mobile">
           <div class="financial-bars-container" data-contract-id="${
             contract.numero
@@ -1352,7 +1376,7 @@ export default {
             </div>
           </div>
         </td>
-        <td class="hide-mobile" valign="top">${
+        <td class="hide-mobile" valign="top" style="padding: 5px 8px;">${
           contract.responsaveis ||
           "Nenhuma designação atribuída para este contrato"
         }</td>  

@@ -12,13 +12,7 @@
     {%- for css_file in dev_css_files %}
     <link rel="stylesheet" href="{{ css_file }}" />
     {%- endfor %}
-    <script>
-  window.process = {
-    env: {
-      ENVIRONMENT: "{{ config.API_ENV }}"
-    }
-  };
-</script>
+    <script>window.process={env:{ENVIRONMENT:"{{ config.API_ENV }}"}};</script>
     {%- for js_file in dev_js_modules %}
     <script type="module" src="{{ js_file }}"></script>
     {%- endfor %}

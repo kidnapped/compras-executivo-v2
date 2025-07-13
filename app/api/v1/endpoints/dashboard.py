@@ -34,7 +34,10 @@ router = APIRouter()
 # Renderiza a página do dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "show_renewal_column": settings.DASHBOARD_SHOW_RENEWAL_COLUMN
+    })
 
 # Endpoints do dashboard para contratos
 @router.get("/dashboard/contratos")
