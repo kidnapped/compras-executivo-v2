@@ -2,1376 +2,1376 @@
   {
     "naturezadespesa_id": 1,
     "descricao": "DESPESAS CORRENTES",
-    "FA": "fas fa-coins"
+    "FA": "fa-regular fa-address-book"
   },
   {
     "naturezadespesa_id": 4,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-address-card"
   },
   {
     "naturezadespesa_id": 22,
     "descricao": "APOSENTADORIAS, RESERVA REMUNERADA E REFORMAS",
-    "FA": "fas fa-briefcase"
+    "FA": "fa-regular fa-angry"
   },
   {
     "naturezadespesa_id": 23,
     "descricao": "PENSOES",
-    "FA": "fas fa-user-friends"
+    "FA": "fa-regular fa-arrow-alt-circle-down"
   },
   {
     "naturezadespesa_id": 24,
     "descricao": "CONTRATACAO P/TEMPO DETERMINADO",
-    "FA": "fas fa-file-signature"
+    "FA": "fa-regular fa-arrow-alt-circle-left"
   },
   {
     "naturezadespesa_id": 25,
     "descricao": "OUTROS BENEF.PREV. DO SERVIDOR OU DO MILITAR",
-    "FA": "fas fa-piggy-bank"
+    "FA": "fa-regular fa-arrow-alt-circle-right"
   },
   {
     "naturezadespesa_id": 26,
     "descricao": "CONTRIB. A ENTIDADES FECHADAS DE PREVIDENCIA",
-    "FA": "fas fa-user-shield"
+    "FA": "fa-regular fa-arrow-alt-circle-up"
   },
   {
     "naturezadespesa_id": 29,
     "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL",
-    "FA": "fas fa-money-check-alt"
+    "FA": "fa-regular fa-bell"
   },
   {
     "naturezadespesa_id": 30,
     "descricao": "VENCIMENTOS E VANTAGENS FIXAS - PES. MILITAR",
-    "FA": "fas fa-money-check-alt"
+    "FA": "fa-regular fa-bell-slash"
   },
   {
     "naturezadespesa_id": 31,
     "descricao": "OBRIGACOES PATRONAIS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-book"
   },
   {
     "naturezadespesa_id": 32,
     "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL CIVIL",
-    "FA": "fas fa-random"
+    "FA": "fa-regular fa-bookmark"
   },
   {
     "naturezadespesa_id": 33,
     "descricao": "OUTRAS DESPESAS VARIAVEIS - PESSOAL MILITAR",
-    "FA": "fas fa-random"
+    "FA": "fa-regular fa-building"
   },
   {
     "naturezadespesa_id": 37,
     "descricao": "SENTENCAS JUDICIAIS",
-    "FA": "fas fa-gavel"
+    "FA": "fa-regular fa-calendar"
   },
   {
     "naturezadespesa_id": 38,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-calendar-alt"
   },
   {
     "naturezadespesa_id": 39,
     "descricao": "INDENIZACOES E RESTITUICOES TRABALHISTAS",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-calendar-check"
   },
   {
     "naturezadespesa_id": 40,
     "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO",
-    "FA": "fas fa-exchange-alt"
+    "FA": "fa-regular fa-calendar-minus"
   },
   {
     "naturezadespesa_id": 43,
     "descricao": "CONTRATACAO POR TEMPO DETERMINADO",
-    "FA": "fas fa-file-signature"
+    "FA": "fa-regular fa-calendar-plus"
   },
   {
     "naturezadespesa_id": 44,
     "descricao": "OBRIGACOES PATRONAIS - OP.INTRA-ORCAMENTARIAS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-calendar-times"
   },
   {
     "naturezadespesa_id": 45,
     "descricao": "SENTENCAS JUDICIAIS",
-    "FA": "fas fa-gavel"
+    "FA": "fa-regular fa-chart-bar"
   },
   {
     "naturezadespesa_id": 46,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-check-circle"
   },
   {
     "naturezadespesa_id": 48,
     "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO",
-    "FA": "fas fa-exchange-alt"
+    "FA": "fa-regular fa-chart-line"
   },
   {
     "naturezadespesa_id": 80,
     "descricao": "JUROS SOBRE A DIVIDA POR CONTRATO",
-    "FA": "fas fa-percentage"
+    "FA": "fa-regular fa-check-square"
   },
   {
     "naturezadespesa_id": 81,
     "descricao": "OUTROS ENCARGOS SOBRE A DIVIDA POR CONTRATO",
-    "FA": "fas fa-file-invoice"
+    "FA": "fa-regular fa-circle"
   },
   {
     "naturezadespesa_id": 82,
     "descricao": "JUROS,DESAGIOS E DESCONTOS DA DIV. MOBILIARIA",
-    "FA": "fas fa-percentage"
+    "FA": "fa-regular fa-circle-notch"
   },
   {
     "naturezadespesa_id": 83,
     "descricao": "OUTROS ENCARGOS SOBRE A DIVIDA MOBILIARIA",
-    "FA": "fas fa-file-invoice"
+    "FA": "fa-regular fa-clipboard"
   },
   {
     "naturezadespesa_id": 85,
     "descricao": "OBRIGACOES DECORRENTES DE POLITICA MONETARIA",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-clock"
   },
   {
     "naturezadespesa_id": 87,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-clone"
   },
   {
     "naturezadespesa_id": 104,
     "descricao": "DIARIAS - CIVIL",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-closed-captioning"
   },
   {
     "naturezadespesa_id": 105,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-comment"
   },
   {
     "naturezadespesa_id": 120,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-comments"
   },
   {
     "naturezadespesa_id": 121,
     "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-copy"
   },
   {
     "naturezadespesa_id": 122,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-copyright"
   },
   {
     "naturezadespesa_id": 125,
     "descricao": "DISTRIBUICAO DE RECEITAS",
-    "FA": "fas fa-project-diagram"
+    "FA": "fa-regular fa-credit-card"
   },
   {
     "naturezadespesa_id": 126,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-dot-circle"
   },
   {
     "naturezadespesa_id": 127,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-edit"
   },
   {
     "naturezadespesa_id": 130,
     "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-envelope"
   },
   {
     "naturezadespesa_id": 131,
     "descricao": "DESPESAS DE EXERC. ANTERIORES FUNDO A FUNDO",
-    "FA": "fas fa-recycle"
+    "FA": "fa-regular fa-envelope-open"
   },
   {
     "naturezadespesa_id": 134,
     "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-eye"
   },
   {
     "naturezadespesa_id": 135,
     "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-eye-slash"
   },
   {
     "naturezadespesa_id": 136,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-file"
   },
   {
     "naturezadespesa_id": 140,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-file-alt"
   },
   {
     "naturezadespesa_id": 141,
     "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-file-archive"
   },
   {
     "naturezadespesa_id": 142,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-file-audio"
   },
   {
     "naturezadespesa_id": 151,
     "descricao": "DIARIAS - CIVIL",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-file-code"
   },
   {
     "naturezadespesa_id": 158,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-file-excel"
   },
   {
     "naturezadespesa_id": 161,
     "descricao": "DISTRIBUICAO DE RECEITAS",
-    "FA": "fas fa-project-diagram"
+    "FA": "fa-regular fa-file-image"
   },
   {
     "naturezadespesa_id": 162,
     "descricao": "SENTENCAS JUDICIAIS",
-    "FA": "fas fa-gavel"
+    "FA": "fa-regular fa-file-pdf"
   },
   {
     "naturezadespesa_id": 163,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-file-powerpoint"
   },
   {
     "naturezadespesa_id": 164,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-file-video"
   },
   {
     "naturezadespesa_id": 167,
     "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-file-word"
   },
   {
     "naturezadespesa_id": 168,
     "descricao": "DESPESAS DE EXERC. ANTERIORES FUNDO A FUNDO",
-    "FA": "fas fa-recycle"
+    "FA": "fa-regular fa-flag"
   },
   {
     "naturezadespesa_id": 171,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-flushed"
   },
   {
     "naturezadespesa_id": 175,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-folder"
   },
   {
     "naturezadespesa_id": 176,
     "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-folder-open"
   },
   {
     "naturezadespesa_id": 188,
     "descricao": "DIARIAS - PESSOAL CIVIL",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-frown"
   },
   {
     "naturezadespesa_id": 189,
     "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-frown-open"
   },
   {
     "naturezadespesa_id": 190,
     "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-futbol"
   },
   {
     "naturezadespesa_id": 191,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-gem"
   },
   {
     "naturezadespesa_id": 193,
     "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
-    "FA": "fas fa-bus"
+    "FA": "fa-regular fa-grimace"
   },
   {
     "naturezadespesa_id": 194,
     "descricao": "SERVICO DE CONSULTORIA",
-    "FA": "fas fa-user-tie"
+    "FA": "fa-regular fa-grin"
   },
   {
     "naturezadespesa_id": 195,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-grin-alt"
   },
   {
     "naturezadespesa_id": 196,
     "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-grin-beam"
   },
   {
     "naturezadespesa_id": 197,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-grin-hearts"
   },
   {
     "naturezadespesa_id": 198,
     "descricao": "SUBVENCOES SOCIAIS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-grin-squint"
   },
   {
     "naturezadespesa_id": 199,
     "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-grin-tears"
   },
   {
     "naturezadespesa_id": 200,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-grin-tongue"
   },
   {
     "naturezadespesa_id": 204,
     "descricao": "SUBVENCOES ECONOMICAS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-grin-wink"
   },
   {
     "naturezadespesa_id": 205,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-hand-lizard"
   },
   {
     "naturezadespesa_id": 208,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-hand-paper"
   },
   {
     "naturezadespesa_id": 219,
     "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
-    "FA": "fas fa-users-cog"
+    "FA": "fa-regular fa-hand-peace"
   },
   {
     "naturezadespesa_id": 233,
     "descricao": "DIARIAS - PESSOAL CIVIL",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-hand-point-down"
   },
   {
     "naturezadespesa_id": 234,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-hand-point-left"
   },
   {
     "naturezadespesa_id": 235,
     "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
-    "FA": "fas fa-bus"
+    "FA": "fa-regular fa-hand-point-right"
   },
   {
     "naturezadespesa_id": 237,
     "descricao": "SERVICOS DE CONSULTORIA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-hand-point-up"
   },
   {
     "naturezadespesa_id": 238,
     "descricao": "OUTROS SERVICOS DE TERCEIROS ± PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-hand-pointer"
   },
   {
     "naturezadespesa_id": 240,
     "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-hand-rock"
   },
   {
     "naturezadespesa_id": 241,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-hand-scissors"
   },
   {
     "naturezadespesa_id": 242,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-hand-spock"
   },
   {
     "naturezadespesa_id": 247,
     "descricao": "CONTRATACAO POR TEMPO DETERMINADO",
-    "FA": "fas fa-file-signature"
+    "FA": "fa-regular fa-handshake"
   },
   {
     "naturezadespesa_id": 249,
     "descricao": "BENEFICIO MENSAL AO DEFICIENTE E AO IDOSO",
-    "FA": "fas fa-piggy-bank"
+    "FA": "fa-regular fa-hdd"
   },
   {
     "naturezadespesa_id": 250,
     "descricao": "OUTROS BENEF.ASSIST. DO SERVIDOR E DO MILITAR",
-    "FA": "fas fa-piggy-bank"
+    "FA": "fa-regular fa-heart"
   },
   {
     "naturezadespesa_id": 252,
     "descricao": "SEGURO DESEMPREGO E ABONO SALARIAL",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-hospital"
   },
   {
     "naturezadespesa_id": 253,
     "descricao": "DIARIAS - PESSOAL CIVIL",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-hourglass"
   },
   {
     "naturezadespesa_id": 254,
     "descricao": "DIARIAS - PESSOAL MILITAR",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-id-badge"
   },
   {
     "naturezadespesa_id": 255,
     "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-id-card"
   },
   {
     "naturezadespesa_id": 256,
     "descricao": "AUXILIO-FARDAMENTO",
-    "FA": "fas fa-tshirt"
+    "FA": "fa-regular fa-image"
   },
   {
     "naturezadespesa_id": 257,
     "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-images"
   },
   {
     "naturezadespesa_id": 259,
     "descricao": "ENC.P/ HONRA DE AVAIS, GARANT.,SEGUROS E SIM.",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-keyboard"
   },
   {
     "naturezadespesa_id": 260,
     "descricao": "REMUNERACAO DE COTAS DE FUNDOS AUTARQUICOS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-kiss"
   },
   {
     "naturezadespesa_id": 261,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-kiss-beam"
   },
   {
     "naturezadespesa_id": 262,
     "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR.",
-    "FA": "fas fa-award"
+    "FA": "fa-regular fa-kiss-wink-heart"
   },
   {
     "naturezadespesa_id": 263,
     "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
-    "FA": "fas fa-gifts"
+    "FA": "fa-regular fa-laugh"
   },
   {
     "naturezadespesa_id": 264,
     "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
-    "FA": "fas fa-bus"
+    "FA": "fa-regular fa-laugh-beam"
   },
   {
     "naturezadespesa_id": 265,
     "descricao": "OUTRAS DESP.PESSOAL DEC. CONTRATOS TERCEIRIZ.",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-laugh-squint"
   },
   {
     "naturezadespesa_id": 266,
     "descricao": "SERVICOS DE CONSULTORIA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-laugh-wink"
   },
   {
     "naturezadespesa_id": 267,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-lemon"
   },
   {
     "naturezadespesa_id": 268,
     "descricao": "LOCACAO DE MAO-DE-OBRA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-life-ring"
   },
   {
     "naturezadespesa_id": 269,
     "descricao": "ARRENDAMENTO MERCANTIL",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-lightbulb"
   },
   {
     "naturezadespesa_id": 270,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-list-alt"
   },
   {
     "naturezadespesa_id": 271,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-map"
   },
   {
     "naturezadespesa_id": 273,
     "descricao": "SUBVENCOES ECONOMICAS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-meh"
   },
   {
     "naturezadespesa_id": 274,
     "descricao": "AUXILIO-ALIMENTACAO",
-    "FA": "fas fa-utensils"
+    "FA": "fa-regular fa-meh-blank"
   },
   {
     "naturezadespesa_id": 275,
     "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-meh-rolling-eyes"
   },
   {
     "naturezadespesa_id": 276,
     "descricao": "OUTROS AUXILIOS FINANCEIROS A PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-minus-square"
   },
   {
     "naturezadespesa_id": 277,
     "descricao": "AUXILIO-TRANSPORTE",
-    "FA": "fas fa-truck"
+    "FA": "fa-regular fa-money-bill-alt"
   },
   {
     "naturezadespesa_id": 283,
     "descricao": "OUTROS BENEFICIOS DO RGPS - AREA URBANA",
-    "FA": "fas fa-piggy-bank"
+    "FA": "fa-regular fa-moon"
   },
   {
     "naturezadespesa_id": 284,
     "descricao": "PENSOES ESPECIAIS",
-    "FA": "fas fa-user-friends"
+    "FA": "fa-regular fa-newspaper"
   },
   {
     "naturezadespesa_id": 285,
     "descricao": "DEPOSITOS COMPULSORIOS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-object-group"
   },
   {
     "naturezadespesa_id": 286,
     "descricao": "DISTRIBUICAO CONSTITUCIONAL OU LEGAL DE RECEITAS",
-    "FA": "fas fa-gifts"
+    "FA": "fa-regular fa-object-ungroup"
   },
   {
     "naturezadespesa_id": 287,
     "descricao": "SENTENCAS JUDICIAIS",
-    "FA": "fas fa-gavel"
+    "FA": "fa-regular fa-paper-plane"
   },
   {
     "naturezadespesa_id": 288,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-pause-circle"
   },
   {
     "naturezadespesa_id": 289,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-play-circle"
   },
   {
     "naturezadespesa_id": 290,
     "descricao": "INDENIZACAO PELA EXECUCAO TRABALHOS DE CAMPO",
-    "FA": "fas fa-tractor"
+    "FA": "fa-regular fa-plus-square"
   },
   {
     "naturezadespesa_id": 291,
     "descricao": "RESSARC. DE DESPESAS DE PESSOAL REQUISITADO",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-question-circle"
   },
   {
     "naturezadespesa_id": 295,
     "descricao": "CONTRATATACAO POR TEMPO DETERMINADO",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-registered"
   },
   {
     "naturezadespesa_id": 296,
     "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-save"
   },
   {
     "naturezadespesa_id": 298,
     "descricao": "DIVIDENDOS - EMPRESAS ESTATAIS DEPENDENTES",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-share-square"
   },
   {
     "naturezadespesa_id": 299,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-smile"
   },
   {
     "naturezadespesa_id": 300,
     "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR.",
-    "FA": "fas fa-award"
+    "FA": "fa-regular fa-smile-beam"
   },
   {
     "naturezadespesa_id": 301,
     "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
-    "FA": "fas fa-gifts"
+    "FA": "fa-regular fa-smile-wink"
   },
   {
     "naturezadespesa_id": 302,
     "descricao": "SERVICOS DE CONSULTORIA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-snowflake"
   },
   {
     "naturezadespesa_id": 303,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-square"
   },
   {
     "naturezadespesa_id": 304,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-star"
   },
   {
     "naturezadespesa_id": 305,
     "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-star-half"
   },
   {
     "naturezadespesa_id": 307,
     "descricao": "SENTENCAS JUDICIAIS",
-    "FA": "fas fa-gavel"
+    "FA": "fa-regular fa-sticky-note"
   },
   {
     "naturezadespesa_id": 308,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-stop-circle"
   },
   {
     "naturezadespesa_id": 309,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-sun"
   },
   {
     "naturezadespesa_id": 310,
     "descricao": "RESSARCIMENTO DE DESP. DE PESSOAL REQUISITADO",
-    "FA": "fas fa-exchange-alt"
+    "FA": "fa-regular fa-surprise"
   },
   {
     "naturezadespesa_id": 311,
     "descricao": "COMPENSACOES AO RGPS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-thumbs-down"
   },
   {
     "naturezadespesa_id": 342,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-thumbs-up"
   },
   {
     "naturezadespesa_id": 397,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-times-circle"
   },
   {
     "naturezadespesa_id": 398,
     "descricao": "AUXILIOS",
-    "FA": "fas fa-gift"
+    "FA": "fa-regular fa-tired"
   },
   {
     "naturezadespesa_id": 399,
     "descricao": "OBRAS E INSTALACOES",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-trash-alt"
   },
   {
     "naturezadespesa_id": 400,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-user"
   },
   {
     "naturezadespesa_id": 402,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-user-circle"
   },
   {
     "naturezadespesa_id": 404,
     "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-window-close"
   },
   {
     "naturezadespesa_id": 405,
     "descricao": "AUXILIOS - FUNDO A FUNDO",
-    "FA": "fas fa-gift"
+    "FA": "fa-regular fa-window-maximize"
   },
   {
     "naturezadespesa_id": 408,
     "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-window-minimize"
   },
   {
     "naturezadespesa_id": 409,
     "descricao": "OBRAS E INSTALACOES",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-window-restore"
   },
   {
     "naturezadespesa_id": 410,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-address-book"
   },
   {
     "naturezadespesa_id": 422,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-address-card"
   },
   {
     "naturezadespesa_id": 423,
     "descricao": "AUXILIOS",
-    "FA": "fas fa-gift"
+    "FA": "fa-regular fa-angry"
   },
   {
     "naturezadespesa_id": 427,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-arrow-alt-circle-down"
   },
   {
     "naturezadespesa_id": 430,
     "descricao": "CONTRIBUICOES - FUNDO A FUNDO",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-arrow-alt-circle-left"
   },
   {
     "naturezadespesa_id": 431,
     "descricao": "AUXILIOS - FUNDO A FUNDO",
-    "FA": "fas fa-gift"
+    "FA": "fa-regular fa-arrow-alt-circle-right"
   },
   {
     "naturezadespesa_id": 434,
     "descricao": "OBRAS E INSTALACOES",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-arrow-alt-circle-up"
   },
   {
     "naturezadespesa_id": 435,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-bell"
   },
   {
     "naturezadespesa_id": 436,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-bell-slash"
   },
   {
     "naturezadespesa_id": 446,
     "descricao": "DIARIAS - PESSOAL CIVIL",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-book"
   },
   {
     "naturezadespesa_id": 447,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-bookmark"
   },
   {
     "naturezadespesa_id": 448,
     "descricao": "SERVICOS DE TERCEIROS - PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-building"
   },
   {
     "naturezadespesa_id": 449,
     "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-calendar"
   },
   {
     "naturezadespesa_id": 450,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-calendar-alt"
   },
   {
     "naturezadespesa_id": 451,
     "descricao": "AUXILIOS",
-    "FA": "fas fa-gift"
+    "FA": "fa-regular fa-calendar-check"
   },
   {
     "naturezadespesa_id": 453,
     "descricao": "OBRAS E INSTALACOES",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-calendar-minus"
   },
   {
     "naturezadespesa_id": 454,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-calendar-plus"
   },
   {
     "naturezadespesa_id": 460,
     "descricao": "AUXILIOS",
-    "FA": "fas fa-gift"
+    "FA": "fa-regular fa-calendar-times"
   },
   {
     "naturezadespesa_id": 462,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-chart-bar"
   },
   {
     "naturezadespesa_id": 464,
     "descricao": "RATEIO PELA PARTICIPACAO EM CONSORCIO PUBLICO",
-    "FA": "fas fa-users-cog"
+    "FA": "fa-regular fa-check-circle"
   },
   {
     "naturezadespesa_id": 479,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-chart-line"
   },
   {
     "naturezadespesa_id": 480,
     "descricao": "AUXILIOS",
-    "FA": "fas fa-gift"
+    "FA": "fa-regular fa-check-square"
   },
   {
     "naturezadespesa_id": 481,
     "descricao": "OBRAS E INSTALACOES",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-circle"
   },
   {
     "naturezadespesa_id": 482,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-circle-notch"
   },
   {
     "naturezadespesa_id": 484,
     "descricao": "CONTRATACAO POR TEMPO DETERMINADO - PES.CIVIL",
-    "FA": "fas fa-file-signature"
+    "FA": "fa-regular fa-clipboard"
   },
   {
     "naturezadespesa_id": 485,
     "descricao": "DIARIAS - PESSOAL CIVIL",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-clock"
   },
   {
     "naturezadespesa_id": 486,
     "descricao": "DIARIAS - PESSOAL MILITAR",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-clone"
   },
   {
     "naturezadespesa_id": 488,
     "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-closed-captioning"
   },
   {
     "naturezadespesa_id": 489,
     "descricao": "AUXILIO FINANCEIRO A PESQUISADORES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-comment"
   },
   {
     "naturezadespesa_id": 490,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-comments"
   },
   {
     "naturezadespesa_id": 491,
     "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
-    "FA": "fas fa-bus"
+    "FA": "fa-regular fa-copy"
   },
   {
     "naturezadespesa_id": 492,
     "descricao": "SERVICOS DE CONSULTORIA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-copyright"
   },
   {
     "naturezadespesa_id": 493,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - P.FISICA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-credit-card"
   },
   {
     "naturezadespesa_id": 494,
     "descricao": "LOCACAO DE MAO-DE-OBRA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-dot-circle"
   },
   {
     "naturezadespesa_id": 495,
     "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-edit"
   },
   {
     "naturezadespesa_id": 496,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-envelope"
   },
   {
     "naturezadespesa_id": 498,
     "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-envelope-open"
   },
   {
     "naturezadespesa_id": 499,
     "descricao": "OBRAS E INSTALACOES",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-eye"
   },
   {
     "naturezadespesa_id": 500,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-eye-slash"
   },
   {
     "naturezadespesa_id": 501,
     "descricao": "AQUISICAO DE IMOVEIS",
-    "FA": "fas fa-home"
+    "FA": "fa-regular fa-file"
   },
   {
     "naturezadespesa_id": 502,
     "descricao": "SENTENCAS JUDICIAIS",
-    "FA": "fas fa-gavel"
+    "FA": "fa-regular fa-file-alt"
   },
   {
     "naturezadespesa_id": 503,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-file-archive"
   },
   {
     "naturezadespesa_id": 504,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-file-audio"
   },
   {
     "naturezadespesa_id": 505,
     "descricao": "INDENIZACAO PELA EXECUCAO TRABALHOS DE CAMPO",
-    "FA": "fas fa-tractor"
+    "FA": "fa-regular fa-file-code"
   },
   {
     "naturezadespesa_id": 508,
     "descricao": "OUTROS SERVICOS DE TERCEIROS PJ - OP.INT.ORC.",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-file-excel"
   },
   {
     "naturezadespesa_id": 509,
     "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-file-image"
   },
   {
     "naturezadespesa_id": 510,
     "descricao": "OBRAS E INSTALACOES - OP.INT.ORC.",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-file-pdf"
   },
   {
     "naturezadespesa_id": 511,
     "descricao": "EQUIP.E MATERIAL PERMANENTE - OP.INTRA-ORC.",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-file-powerpoint"
   },
   {
     "naturezadespesa_id": 572,
     "descricao": "AQUISICAO DE IMOVEIS",
-    "FA": "fas fa-home"
+    "FA": "fa-regular fa-file-video"
   },
   {
     "naturezadespesa_id": 573,
     "descricao": "AQUISICAO DE BENS PARA REVENDA",
-    "FA": "fas fa-shopping-cart"
+    "FA": "fa-regular fa-file-word"
   },
   {
     "naturezadespesa_id": 575,
     "descricao": "AQUISICAO TIT.REPRES.DE CAP.JA INTEGRALIZADO",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-flag"
   },
   {
     "naturezadespesa_id": 576,
     "descricao": "CONSTIT. OU AUMENTO DE CAPITAL DE EMPRESAS",
-    "FA": "fas fa-chart-line"
+    "FA": "fa-regular fa-flushed"
   },
   {
     "naturezadespesa_id": 577,
     "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS",
-    "FA": "fas fa-piggy-bank"
+    "FA": "fa-regular fa-folder"
   },
   {
     "naturezadespesa_id": 579,
     "descricao": "PARTICIPACAO EM FUNDOS, ORGANISMOS OU ENTIDADES ASSEME-LHADAS, NACIONAIS E INTERNACIONAIS.",
-    "FA": "fas fa-theater-masks"
+    "FA": "fa-regular fa-folder-open"
   },
   {
     "naturezadespesa_id": 580,
     "descricao": "SENTENCAS JUDICIAIS",
-    "FA": "fas fa-gavel"
+    "FA": "fa-regular fa-frown"
   },
   {
     "naturezadespesa_id": 581,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-frown-open"
   },
   {
     "naturezadespesa_id": 582,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-futbol"
   },
   {
     "naturezadespesa_id": 584,
     "descricao": "AQUISICAO DE IMOVEIS",
-    "FA": "fas fa-home"
+    "FA": "fa-regular fa-gem"
   },
   {
     "naturezadespesa_id": 587,
     "descricao": "CONCESSAO DE EMPRESTIMOS E FINANCIAMENTOS",
-    "FA": "fas fa-piggy-bank"
+    "FA": "fa-regular fa-grimace"
   },
   {
     "naturezadespesa_id": 612,
     "descricao": "OBRIGACOES DECORRENTES DE POLITICA MONETARIA",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-grin"
   },
   {
     "naturezadespesa_id": 613,
     "descricao": "PRINCIPAL DA DIVIDA CONTRATUAL RESGATADO",
-    "FA": "fas fa-file-invoice"
+    "FA": "fa-regular fa-grin-alt"
   },
   {
     "naturezadespesa_id": 614,
     "descricao": "PRINCIPAL DA DIVIDA MOBILIARIA RESGATADO",
-    "FA": "fas fa-file-invoice"
+    "FA": "fa-regular fa-grin-beam"
   },
   {
     "naturezadespesa_id": 618,
     "descricao": "PRINCIPAL CORRIGIDO DA DIV.MOB.REFINANCIADO",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-grin-hearts"
   },
   {
     "naturezadespesa_id": 619,
     "descricao": "PRINCIPAL CORRIGIDO DIVIDA CONTR.REFINANCIADO",
-    "FA": "fas fa-file-invoice"
+    "FA": "fa-regular fa-grin-squint"
   },
   {
     "naturezadespesa_id": 645,
     "descricao": "RESERVA DE CONTINGENCIA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-grin-tears"
   },
   {
     "naturezadespesa_id": 649,
     "descricao": "OUTRAS DESPESAS DE PESSOAL - CONTRATOS DE TERCEIRIZACAO",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-grin-tongue"
   },
   {
     "naturezadespesa_id": 655,
     "descricao": "DISTRIBUICAO CONSTITUCIONAL OU LEGAL DE RECEITAS",
-    "FA": "fas fa-gifts"
+    "FA": "fa-regular fa-grin-wink"
   },
   {
     "naturezadespesa_id": 656,
     "descricao": "PRINCIPAL CORRIGIDO DIVIDA CONTRATUAL REFINANCIADO",
-    "FA": "fas fa-file-invoice"
+    "FA": "fa-regular fa-hand-lizard"
   },
   {
     "naturezadespesa_id": 657,
     "descricao": "TRANSFERENCIAS POR MEIO DE CONTRATO DE GESTAO",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-hand-paper"
   },
   {
     "naturezadespesa_id": 660,
     "descricao": "AQUISICAO DE BENS PARA REVENDA",
-    "FA": "fas fa-shopping-cart"
+    "FA": "fa-regular fa-hand-peace"
   },
   {
     "naturezadespesa_id": 661,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-hand-point-down"
   },
   {
     "naturezadespesa_id": 663,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-hand-point-left"
   },
   {
     "naturezadespesa_id": 664,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-hand-point-right"
   },
   {
     "naturezadespesa_id": 665,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-hand-point-up"
   },
   {
     "naturezadespesa_id": 666,
     "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-hand-pointer"
   },
   {
     "naturezadespesa_id": 667,
     "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-hand-rock"
   },
   {
     "naturezadespesa_id": 668,
     "descricao": "LOCACAO DE MAO-DE-OBRA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-hand-scissors"
   },
   {
     "naturezadespesa_id": 669,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-hand-spock"
   },
   {
     "naturezadespesa_id": 670,
     "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
-    "FA": "fas fa-bus"
+    "FA": "fa-regular fa-handshake"
   },
   {
     "naturezadespesa_id": 671,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-hdd"
   },
   {
     "naturezadespesa_id": 672,
     "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
-    "FA": "fas fa-bus"
+    "FA": "fa-regular fa-heart"
   },
   {
     "naturezadespesa_id": 673,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-hospital"
   },
   {
     "naturezadespesa_id": 674,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-hourglass"
   },
   {
     "naturezadespesa_id": 675,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-id-badge"
   },
   {
     "naturezadespesa_id": 676,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-id-card"
   },
   {
     "naturezadespesa_id": 677,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-image"
   },
   {
     "naturezadespesa_id": 678,
     "descricao": "LOCACAO DE MAO-DE-OBRA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-images"
   },
   {
     "naturezadespesa_id": 679,
     "descricao": "OBRAS E INSTALACOES",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-keyboard"
   },
   {
     "naturezadespesa_id": 680,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-kiss"
   },
   {
     "naturezadespesa_id": 685,
     "descricao": "SERVICOS DE CONSULTORIA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-kiss-beam"
   },
   {
     "naturezadespesa_id": 686,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-kiss-wink-heart"
   },
   {
     "naturezadespesa_id": 687,
     "descricao": "GENERICA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-laugh"
   },
   {
     "naturezadespesa_id": 690,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-laugh-beam"
   },
   {
     "naturezadespesa_id": 691,
     "descricao": "EQUIPAMENTOS E MATERIAL PERMANENTE",
-    "FA": "fas fa-tools"
+    "FA": "fa-regular fa-laugh-squint"
   },
   {
     "naturezadespesa_id": 692,
     "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-laugh-wink"
   },
   {
     "naturezadespesa_id": 693,
     "descricao": "OBRAS E INSTALACOES",
-    "FA": "fas fa-hard-hat"
+    "FA": "fa-regular fa-lemon"
   },
   {
     "naturezadespesa_id": 694,
     "descricao": "OUTROS AUXILIOS FINANCEIROS A PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-life-ring"
   },
   {
     "naturezadespesa_id": 695,
     "descricao": "SERVICOS DE CONSULTORIA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-lightbulb"
   },
   {
     "naturezadespesa_id": 696,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-list-alt"
   },
   {
     "naturezadespesa_id": 706,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-map"
   },
   {
     "naturezadespesa_id": 707,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-meh"
   },
   {
     "naturezadespesa_id": 711,
     "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
-    "FA": "fas fa-gifts"
+    "FA": "fa-regular fa-meh-blank"
   },
   {
     "naturezadespesa_id": 712,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA FISICA",
-    "FA": "fas fa-user"
+    "FA": "fa-regular fa-meh-rolling-eyes"
   },
   {
     "naturezadespesa_id": 721,
     "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
-    "FA": "fas fa-bus"
+    "FA": "fa-regular fa-minus-square"
   },
   {
     "naturezadespesa_id": 722,
     "descricao": "DIARIAS - PESSOAL CIVIL",
-    "FA": "fas fa-calendar-day"
+    "FA": "fa-regular fa-money-bill-alt"
   },
   {
     "naturezadespesa_id": 723,
     "descricao": "MATERIAL, BEM OU SERVICO P/ DISTRIB. GRATUITA",
-    "FA": "fas fa-gifts"
+    "FA": "fa-regular fa-moon"
   },
   {
     "naturezadespesa_id": 724,
     "descricao": "AUXILIO-TRANSPORTE",
-    "FA": "fas fa-truck"
+    "FA": "fa-regular fa-newspaper"
   },
   {
     "naturezadespesa_id": 727,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-object-group"
   },
   {
     "naturezadespesa_id": 733,
     "descricao": "OUTROS SERVICOS DE TERCEIROS- PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-object-ungroup"
   },
   {
     "naturezadespesa_id": 734,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-paper-plane"
   },
   {
     "naturezadespesa_id": 737,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-pause-circle"
   },
   {
     "naturezadespesa_id": 738,
     "descricao": "OUTROS SERVICOS DE TERCEIROS-PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-play-circle"
   },
   {
     "naturezadespesa_id": 739,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-plus-square"
   },
   {
     "naturezadespesa_id": 740,
     "descricao": "OUTRAS DESP.PESSOAL DEC. CONTRATOS TERCEIRIZ.",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-question-circle"
   },
   {
     "naturezadespesa_id": 741,
     "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-registered"
   },
   {
     "naturezadespesa_id": 742,
     "descricao": "OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
-    "FA": "fas fa-file-invoice-dollar"
+    "FA": "fa-regular fa-save"
   },
   {
     "naturezadespesa_id": 743,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-share-square"
   },
   {
     "naturezadespesa_id": 744,
     "descricao": "SERVICOS DE CONSULTORIA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-smile"
   },
   {
     "naturezadespesa_id": 745,
     "descricao": "SUBVENCOES ECONOMICAS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-smile-beam"
   },
   {
     "naturezadespesa_id": 746,
     "descricao": "CONTRATACAO POR TEMPO DETERMINADO",
-    "FA": "fas fa-file-signature"
+    "FA": "fa-regular fa-smile-wink"
   },
   {
     "naturezadespesa_id": 747,
     "descricao": "AUXILIO FINANCEIRO A ESTUDANTES",
-    "FA": "fas fa-wallet"
+    "FA": "fa-regular fa-snowflake"
   },
   {
     "naturezadespesa_id": 748,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-square"
   },
   {
     "naturezadespesa_id": 749,
     "descricao": "MATERIAL DE CONSUMO",
-    "FA": "fas fa-boxes"
+    "FA": "fa-regular fa-star"
   },
   {
     "naturezadespesa_id": 750,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA (INTRA)",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-star-half"
   },
   {
     "naturezadespesa_id": 751,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-sticky-note"
   },
   {
     "naturezadespesa_id": 753,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-stop-circle"
   },
   {
     "naturezadespesa_id": 754,
     "descricao": "CONTRIBUICOES",
-    "FA": "fas fa-hands-helping"
+    "FA": "fa-regular fa-sun"
   },
   {
     "naturezadespesa_id": 755,
     "descricao": "PASSAGENS E DESPESAS COM LOCOMOCAO",
-    "FA": "fas fa-bus"
+    "FA": "fa-regular fa-surprise"
   },
   {
     "naturezadespesa_id": 756,
     "descricao": "OUTROS SERVICOS DE TERCEIROS - PESSOA JURIDICA",
-    "FA": "fas fa-building"
+    "FA": "fa-regular fa-thumbs-down"
   },
   {
     "naturezadespesa_id": 757,
     "descricao": "PREMIACOES CULT., ART., CIENT., DESP. E OUTR.",
-    "FA": "fas fa-award"
+    "FA": "fa-regular fa-thumbs-up"
   },
   {
     "naturezadespesa_id": 758,
     "descricao": "LOCACAO DE MAO-DE-OBRA",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-times-circle"
   },
   {
     "naturezadespesa_id": 759,
     "descricao": "DESPESAS DE EXERCICIOS ANTERIORES",
-    "FA": "fas fa-history"
+    "FA": "fa-regular fa-tired"
   },
   {
     "naturezadespesa_id": 760,
     "descricao": "OBRIG.TRIBUT.E CONTRIB-OP.INTRA-ORCAMENTARIAS",
-    "FA": "fas fa-folder"
+    "FA": "fa-regular fa-trash-alt"
   },
   {
     "naturezadespesa_id": 761,
     "descricao": "AUXILIO-TRANSPORTE",
-    "FA": "fas fa-truck"
+    "FA": "fa-regular fa-user"
   },
   {
     "naturezadespesa_id": 763,
     "descricao": "INDENIZACOES E RESTITUICOES",
-    "FA": "fas fa-hand-holding-usd"
+    "FA": "fa-regular fa-user-circle"
   },
   {
     "naturezadespesa_id": 764,
     "descricao": "SERVICOS DE TECNOLOGIA DA INFORMACAO E COMUNICACAO - PJ",
-    "FA": "fas fa-network-wired"
+    "FA": "fa-regular fa-window-close"
   }
 ]
