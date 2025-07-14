@@ -102,3 +102,77 @@ async def editar_usuario(
         user.ativo = (ativo == "true")
         await db.commit()
     return RedirectResponse(url="/admin/usuarios", status_code=303)
+
+
+# Outras páginas administrativas
+@router.get("/admin/perfis", response_class=HTMLResponse)
+async def admin_perfis(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "titulo": "Perfis",
+        "descricao": "Em desenvolvimento",
+        "icone": "fas fa-id-badge"
+    })
+
+@router.get("/admin/permissoes", response_class=HTMLResponse)
+async def admin_permissoes(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "titulo": "Permissões",
+        "descricao": "Em desenvolvimento", 
+        "icone": "fas fa-user-shield"
+    })
+
+@router.get("/admin/logs", response_class=HTMLResponse)
+async def admin_logs(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "titulo": "Logs",
+        "descricao": "Em desenvolvimento",
+        "icone": "fas fa-file-alt"
+    })
+
+@router.get("/admin/sistema", response_class=HTMLResponse)
+async def admin_sistema(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "titulo": "Sistema",
+        "descricao": "Em desenvolvimento",
+        "icone": "fas fa-cogs"
+    })
+
+@router.get("/admin/etl", response_class=HTMLResponse)
+async def admin_etl(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "titulo": "ETL",
+        "descricao": "Em desenvolvimento",
+        "icone": "fas fa-database"
+    })
+
+@router.get("/admin/uasgs", response_class=HTMLResponse)
+async def admin_uasgs(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "titulo": "UASGs",
+        "descricao": "Em desenvolvimento",
+        "icone": "fas fa-university"
+    })
+
+@router.get("/admin/parametros", response_class=HTMLResponse)
+async def admin_parametros(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "titulo": "Parâmetros",
+        "descricao": "Em desenvolvimento",
+        "icone": "fas fa-sliders-h"
+    })
+
+@router.get("/admin/integracoes", response_class=HTMLResponse)
+async def admin_integracoes(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "titulo": "Integrações",
+        "descricao": "Em desenvolvimento",
+        "icone": "fas fa-plug"
+    })

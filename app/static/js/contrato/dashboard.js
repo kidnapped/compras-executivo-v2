@@ -1141,7 +1141,7 @@ export default {
 
     return `
       <tr>
-        <td style="padding: 8px 8px !important;">
+        <td style="padding: 8px 8px !important;" valign="top">
           <div style="display: flex; gap: 8px; font-family: Arial, sans-serif;">
           <div class="icon-circle" style="opacity: 0.7;">  
           <i class="${
@@ -1152,7 +1152,7 @@ export default {
               <div style="display: flex; align-items: flex-start; margin-bottom: 5px;">
                 <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 20px;" />
                 <div style="padding-left: 6px;">
-                  <span style="color: #ff9966; font-size: 14px; text-transform: uppercase;" title="Fornecedor do contrato"><b>${
+                  <span style="color: #929ab5; font-size: 14px; text-transform: uppercase;" title="Fornecedor do contrato"><b>${
                     contract.fornecedor_nome || "N/A"
                   }</b></span><br />
                   <span style="color: #666; cursor: pointer;" onclick="detalhesFornecedor('${
@@ -1176,7 +1176,7 @@ export default {
 
                 <img src="static/images/ico/heart_${
                   contract.favorite_icon
-                }.png" style="cursor: pointer; margin-left: 2px;"  alt="Favorito" />
+                }.png" style="cursor: pointer; margin-left: 20px;"  alt="Favorito" />
 
                 <img data-contract-id="${
                   contract.id
@@ -1261,10 +1261,10 @@ export default {
 </div>              
 
                 <span style="cursor: pointer; margin-left: 2px;">
-                  <img src="static/images/sei_icone.png" />
+                  <img src="static/images/sei_icone.png" style="margin-left: 10px;" />
                 </span>
 
-                <img src="static/images/ico/ico-processos.png" style="margin-left: -4px;" />
+                <img src="static/images/ico/ico-processos.png" style="margin-left: 10px;" />
 
                 <span style="color: #666; cursor: pointer; margin-left: 2px;" onclick="detalhesProcesso('${
                   contract.processo
