@@ -10,7 +10,7 @@
  *   javac -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneContratosToPostgres.java
  *
  * ▶️ Execução em segundo plano:
- *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneContratosToPostgres </dev/null &>/dev/null & disown
+ *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneContratosToPostgres </dev/null &>/dev/null & disown ; tail -f clone_contratos.log
  *
  * 📂 Log:
  *   tail -f clone_contratos.log

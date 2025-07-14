@@ -6,7 +6,8 @@ import subprocess
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
-JAVA_DIR = "/Users/leo/Development/ws-blocok/comprasexecutivo/vdb"
+# JAVA_DIR = "/Users/leo/Development/ws-blocok/comprasexecutivo/vdb"
+JAVA_DIR = "/home/ec2-user/py-app/vdb"
 JAR_FILE = "jboss-dv-6.3.0-teiid-jdbc.jar"
 
 def executar_java(vdb_tipo: str, query: str):
@@ -51,13 +52,12 @@ def listar_menu(request: Request, vdb: str = Query(default=None)):
 
     return HTMLResponse(html)
 
-# Query automática (por schema + tabela)
+# Query automática (por schema + tabela) - Uses VDB selection from UI
 @router.get("/vdb/query", response_class=HTMLResponse)
 def executar_query_automatica(
     request: Request,
     schema: str = Query(...),
     tabela: str = Query(...),
-    page: int = Query(default=1),
     vdb: str = Query(default=None),
     debug: bool = Query(default=False),
 ):
@@ -66,9 +66,6 @@ def executar_query_automatica(
         k: v for k, v in request.query_params.items()
         if k.startswith("f") and v.strip()
     }
-
-    limit = 20
-    offset = (page - 1) * limit
 
     # 1. Obter colunas da tabela
     query_cols = f"SELECT c.name FROM SYS.Columns c WHERE c.SchemaName = '{schema}' AND c.TableName = '{tabela}' ORDER BY c.name;"
@@ -90,6 +87,14 @@ def executar_query_automatica(
         html += "</code></pre></div>"
 
     headers = [h.strip() for h in colunas[1:] if h.strip()]  # Ignora cabeçalho da resposta
+    
+    # Reorganiza colunas: 'id' primeiro, depois alfabético
+    if 'id' in headers:
+        headers.remove('id')
+        headers.sort()  # Ordena alfabeticamente
+        headers.insert(0, 'id')  # Coloca 'id' no início
+    else:
+        headers.sort()  # Apenas ordena alfabeticamente se não houver 'id'
 
     # 2. WHERE com filtros
     where_clauses = []
@@ -98,25 +103,49 @@ def executar_query_automatica(
             idx = int(key[1:])
             col = headers[idx]
             val = value.replace("'", "''")
-            where_clauses.append(f"UPPER(\"{col}\") LIKE UPPER('%{val}%')")
+            
+            # User can type their own wildcards like "test%" or "%test" or "%test%"
+            if '%' in val:
+                where_clauses.append(f"UPPER(\"{col}\") LIKE UPPER('{val}')")
+            else:
+                where_clauses.append(f"UPPER(\"{col}\") = UPPER('{val}')")  # exact match if no wildcards
+
         except (IndexError, ValueError):
             continue
 
     where_sql = " WHERE " + " AND ".join(where_clauses) if where_clauses else ""
 
-    # 3. Query paginada
+    # 3. Query com limite de 20 registros - Adaptive approach for large tables
     colunas_quoted = ", ".join(f'"{c}"' for c in headers)
-    coluna_ordem = headers[0] if headers else "1"
-    row_ini = offset + 1
-    row_fim = offset + limit
-
-    query = f'''
-        SELECT * FROM (
-            SELECT {colunas_quoted}, ROW_NUMBER() OVER (ORDER BY "{coluna_ordem}") AS rn
-            FROM "{schema}"."{tabela}" {where_sql}
-        ) AS sub
-        WHERE rn BETWEEN {row_ini} AND {row_fim};
-    '''.strip()
+    
+    # List of known large schemas/tables that need special handling
+    large_schemas = ["DWTG_Colunar_Afinco_VBL"]
+    large_table_prefixes = ["WD_", "DW_", "FACT_", "DIM_"]
+    
+    is_large_table = (
+        schema in large_schemas or 
+        any(tabela.startswith(prefix) for prefix in large_table_prefixes)
+    )
+    
+    if is_large_table:
+        # For large tables: use ORDER BY 1 (first column by position) - faster than column name
+        query = f'''
+            SELECT {colunas_quoted} FROM (
+                SELECT {colunas_quoted}, ROW_NUMBER() OVER (ORDER BY 1) AS rn
+                FROM "{schema}"."{tabela}" {where_sql}
+            ) AS sub
+            WHERE rn <= 20;
+        '''.strip()
+    else:
+        # Keep the current approach for smaller tables
+        coluna_ordem = headers[0] if headers else "1"
+        query = f'''
+            SELECT {colunas_quoted} FROM (
+                SELECT {colunas_quoted}, ROW_NUMBER() OVER (ORDER BY "{coluna_ordem}") AS rn
+                FROM "{schema}"."{tabela}" {where_sql}
+            ) AS sub
+            WHERE rn <= 20;
+        '''.strip()
 
     # Adiciona query principal ao HTML
     html += "<pre style='background:#f4f4f4; border:1px solid #ccc; padding:10px; font-size:12px; margin-bottom:10px; overflow:auto; white-space:pre-wrap;'><code>"
@@ -147,52 +176,101 @@ def executar_query_automatica(
         html += "<tr>" + "".join(f"<td>{c}</td>" for c in linha.split(" | ")) + "</tr>"
     html += "</tbody></table>"
 
-    # 5. Paginação
-    count_query = f'SELECT COUNT(*) FROM "{schema}"."{tabela}" {where_sql};'
-    count_result = executar_java(vdb, count_query)
-    total = int(count_result[1].strip()) if len(count_result) > 1 else 0
-    total_paginas = max(1, (total + limit - 1) // limit)
-
-    html += "<div style='margin-top:10px; display:flex; gap:5px; flex-wrap:wrap;'>"
-
-    # Intervalo de páginas vizinhas
-    start = max(1, page - 3)
-    end = min(total_paginas, page + 3)
-
-    # Renderiza intervalo
-    for p in range(start, end + 1):
-        if p == page:
-            html += f"<button disabled style='font-weight:bold; background:#b0e0ff'>{p}</button>"
-        else:
-            html += f"<button onclick=\"carregarTabela('{schema}', '{tabela}', {p}, {filtros})\">{p}</button>"
-
-    # Adiciona botão final se ainda não estiver incluído
-    if end < total_paginas:
-        html += f"<button onclick=\"carregarTabela('{schema}', '{tabela}', {total_paginas}, {filtros})\">{total_paginas}</button>"
-
-    html += "</div>"
-
     return HTMLResponse(html)
 
-# Query manual (via POST)
-@router.post("/vdb/query", response_class=HTMLResponse)
+def detect_vdb_from_query(query: str) -> str:
+    """
+    Detect which VDB/Java file to use based on the actual schema names in the SQL query.
+    Looks for specific schema identifiers to determine the appropriate database connection.
+    """
+    query_upper = query.upper()
+    
+    # Actual schema names used in the databases
+    financeiro_schema = "DWTG_COLUNAR_AFINCO_VBL"
+    contratos_schema = "CONTRATOSGOV_USR_COMPRASEXECUTIVO_VBL"
+    
+    # Count occurrences of each schema in the query
+    financeiro_count = query_upper.count(financeiro_schema)
+    contratos_count = query_upper.count(contratos_schema)
+    
+    # Also check for partial schema patterns (fallback)
+    if financeiro_count == 0 and contratos_count == 0:
+        # Check for common schema components
+        if "DWTG_COLUNAR" in query_upper or "AFINCO_VBL" in query_upper:
+            financeiro_count += 1
+        
+        if "CONTRATOSGOV" in query_upper or "COMPRASEXECUTIVO" in query_upper:
+            contratos_count += 1
+    
+    # Return the VDB based on which schema appears more frequently
+    # Default to Contratos if no specific schema is detected
+    if financeiro_count > contratos_count:
+        return "QueryFinanceiro"
+    else:
+        return "QueryContratos"
+
+# Query manual (via POST) - Separate endpoint with intelligent VDB detection
+@router.post("/vdb/manual-query", response_class=HTMLResponse)
 def executar_query_manual(
     request: Request,
     query: str = Form(...),
-    vdb: str = Query(default=None)
+    debug: bool = Query(default=False)
 ):
-    vdb = vdb or "QueryContratos"
-    linhas = executar_java(vdb, query)
-
-    if not linhas:
-        return HTMLResponse("<p>Nenhum dado retornado.</p>", status_code=200)
-
-    # Mostrar a query em destaque
-    html = "<pre style='background:#f4f4f4; border:1px solid #ccc; padding:10px; font-size:12px; margin-bottom:10px; overflow:auto; white-space:pre-wrap;'><code>"
+    # Intelligently detect which VDB to use based on query content
+    vdb_detectado = detect_vdb_from_query(query)
+    
+    html = ""
+    
+    # Show debug info if requested
+    if debug:
+        query_upper = query.upper()
+        financeiro_schema = "DWTG_COLUNAR_AFINCO_VBL"
+        contratos_schema = "CONTRATOSGOV_USR_COMPRASEXECUTIVO_VBL"
+        
+        financeiro_count = query_upper.count(financeiro_schema)
+        contratos_count = query_upper.count(contratos_schema)
+        
+        html += "<div style='background:#e6f3ff; border:1px solid #0066cc; padding:10px; font-size:12px; margin-bottom:10px;'>"
+        html += f"<strong>Debug: VDB Auto-detectado:</strong> {vdb_detectado}<br>"
+        html += f"<strong>Schema Financeiro detectado:</strong> {financeiro_count} ocorrências<br>"
+        html += f"<strong>Schema Contratos detectado:</strong> {contratos_count} ocorrências<br>"
+        html += f"<strong>Query analisada:</strong> {query[:100]}{'...' if len(query) > 100 else ''}"
+        html += "</div>"
+    
+    # Show the query
+    html += "<pre style='background:#f4f4f4; border:1px solid #ccc; padding:10px; font-size:12px; margin-bottom:10px; overflow:auto; white-space:pre-wrap;'><code>"
     html += query
     html += "</code></pre>"
+    
+    # Show which VDB is being used
+    vdb_name = "Financeiro" if vdb_detectado == "QueryFinanceiro" else "Contratos"
+    html += f"<div style='background:#f0f8f0; border:1px solid #4caf50; padding:8px; font-size:12px; margin-bottom:10px;'>"
+    html += f"<strong>Executando com VDB:</strong> {vdb_name} ({vdb_detectado})"
+    html += "</div>"
 
-    # Tabela de resultados
+    try:
+        linhas = executar_java(vdb_detectado, query)
+        
+        if not linhas:
+            return HTMLResponse(html + "<p>Nenhum dado retornado.</p>", status_code=200)
+        
+        # Check for errors in response
+        if any("Erro:" in l or "Exception" in l or "Error" in l for l in linhas):
+            error_output = "\n".join(linhas)
+            html += "<div style='background:#fee; border:1px solid #f00; padding:10px;'>"
+            html += "<strong>Erro ao executar a query:</strong><br><br>"
+            html += f"<pre style='color:#c00; white-space:pre-wrap;'><code>{error_output}</code></pre>"
+            html += "</div>"
+            return HTMLResponse(html, status_code=500)
+    
+    except Exception as e:
+        html += "<div style='background:#fee; border:1px solid #f00; padding:10px;'>"
+        html += "<strong>Erro ao executar a query:</strong><br><br>"
+        html += f"<pre style='color:#c00'><code>{str(e)}</code></pre>"
+        html += "</div>"
+        return HTMLResponse(html, status_code=500)
+
+    # Build results table
     html += "<table><thead><tr>"
     headers = linhas[0].split(" | ")
     for h in headers:

@@ -26,9 +26,9 @@
             document.getElementById("modoManual").style.display = "block";
         }
 
-        function carregarTabela(schema, tabela, page = 1, filtros = {}) {
+        function carregarTabela(schema, tabela, filtros = {}) {
             const vdb = getVDBTipo(); // Pega do cookie
-            const params = new URLSearchParams({ schema, tabela, page, vdb });
+            const params = new URLSearchParams({ schema, tabela, vdb });
             Object.keys(filtros).forEach(k => params.append(k, filtros[k]));
             document.getElementById('loading').style.display = 'block';
             fetch('/vdb/query?' + params.toString())
@@ -54,23 +54,34 @@
             inputs.forEach((input, i) => {
                 if (input.value) filtros['f' + i] = input.value;
             });
-            carregarTabela(schemaAtual, tabelaAtual, 1, filtros);
+            carregarTabela(schemaAtual, tabelaAtual, filtros);
         }
 
         function executarQueryManual() {
             const query = document.getElementById('queryManual').value;
+            const debug = document.getElementById('debugManual').checked;
+            
             const formData = new FormData();
             formData.append('query', query);
         
             document.getElementById('loading').style.display = 'block';
+            
+            // Add debug parameter to URL if checked
+            const url = debug ? '/vdb/manual-query?debug=true' : '/vdb/manual-query';
         
-            fetch('/vdb/query', {
+            // Use the new dedicated endpoint for manual queries
+            fetch(url, {
                 method: 'POST',
                 body: formData
             })
             .then(res => res.text())
             .then(html => {
                 document.getElementById('resultadoManual').innerHTML = html;
+                document.getElementById('loading').style.display = 'none';
+            })
+            .catch(error => {
+                document.getElementById('resultadoManual').innerHTML = 
+                    '<div style="background:#fee; border:1px solid #f00; padding:10px;">Erro na requisição: ' + error.message + '</div>';
                 document.getElementById('loading').style.display = 'none';
             });
         }
@@ -133,8 +144,14 @@
         <div id="conteudo">Selecione uma tabela no menu à esquerda.</div>
         <div id="modoManual" style="display:none;">
             <h3>Executar Query Manual</h3>
-            <textarea id="queryManual" style="width:100%; height:200px; font-family:monospace;"></textarea>
+            <p style="color:#666; font-size:14px;">
+                <strong>Nota:</strong> O sistema detectará automaticamente qual VDB usar baseado no conteúdo da query.
+            </p>
+            <textarea id="queryManual" style="width:100%; height:200px; font-family:monospace;" placeholder="Digite sua query SQL aqui..."></textarea>
             <br>
+            <label style="margin-right:15px;">
+                <input type="checkbox" id="debugManual"> Mostrar debug da detecção de VDB
+            </label>
             <button onclick="executarQueryManual()">Executar</button>
             <div id="resultadoManual" style="margin-top:20px;"></div>
         </div>

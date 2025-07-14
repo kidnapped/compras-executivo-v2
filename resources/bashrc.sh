@@ -45,3 +45,9 @@ alias vdb_contratos_status="pgrep -af CloneContratosToPostgres || echo '❌ Clon
 alias vdb_sizes_compile="cd ~/py-app/vdb && javac -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar ListTableSizes.java"
 alias vdb_sizes_run="cd ~/py-app/vdb && java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar ListTableSizes"
 alias vdb_sizes_log="cat ~/py-app/vdb/tables_financeiro_sizes.txt"
+
+alias comprasexecutivo_restart="sudo systemctl restart fastapi"
+alias comprasexecutivo_status="sudo systemctl status fastapi"
+alias comprasexecutivo_logs="sudo journalctl -u fastapi -f"
+alias comprasexecutivo_start="sudo systemctl start fastapi"
+alias comprasexecutivo_stop="sudo systemctl stop fastapi"
