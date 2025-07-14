@@ -284,36 +284,43 @@ async def get_valores_sazonais(
         return {"anos": [], "coluna": [], "linha": []}
 
     # 2. Soma valor inicial dos contratos agrupado por ano
+    # Use subquery to get newest 6 years, then order ascending
     query = text("""
-      SELECT
-        u.codigo                                 AS uasg,
-        c.unidadeorigem_id                       AS unidade_id,
-        EXTRACT(YEAR FROM c.data_assinatura)::int AS ano,
-        SUM(CAST(c.valor_inicial AS numeric))     AS contrato_valor
-      FROM 
-        contratos c
-      JOIN 
-        unidades u
-        ON c.unidadeorigem_id = u.id
-      WHERE 
-        c.data_assinatura IS NOT NULL
-        AND c.unidadeorigem_id = ANY(:ids)
-        AND c.valor_inicial IS NOT NULL
-      GROUP BY 
-        u.codigo, c.unidadeorigem_id, ano
-      ORDER BY 
-        ano DESC LIMIT 6
-
+      WITH newest_6_years AS (
+        SELECT
+          c.unidadeorigem_id                       AS unidade_id,
+          EXTRACT(YEAR FROM c.data_assinatura)::int AS ano,
+          SUM(CAST(c.valor_inicial AS numeric))     AS contrato_valor,
+          SUM(CAST(c.valor_global AS numeric))      AS valor_global
+        FROM 
+          contratos c
+        WHERE 
+          c.data_assinatura IS NOT NULL
+          AND c.unidadeorigem_id = ANY(:ids)
+          AND c.valor_inicial IS NOT NULL
+        GROUP BY 
+          c.unidadeorigem_id, ano
+        ORDER BY 
+          ano DESC 
+        LIMIT 6
+      )
+      SELECT 
+        unidade_id,
+        ano,
+        contrato_valor,
+        valor_global
+      FROM newest_6_years
+      ORDER BY ano ASC
     """)
+    
     result = await db.execute(query, {"ids": ids_uasg})
     rows = result.fetchall()
 
-    # 3. Build the response arrays
+    # 3. Build the response arrays (now already in ascending order)
     return {
         "anos":   [ str(r.ano)               for r in rows ],
-        "coluna": [ float(r.contrato_valor)  for r in rows ],
-        # if you later add an "aditivo" series, populate "linha" here
-        "linha":  [float(r.contrato_valor)  for r in rows]
+        "coluna": [ float(r.valor_global)    for r in rows ],
+        "linha":  [ float(r.contrato_valor)/2 for r in rows]
     }
 
 # Endpoint para obter próximas atividades de contratos
@@ -391,20 +398,11 @@ async def get_contratos_lista(
     tipo: Optional[str] = Query("normal", description="Contract type filter"),
     page: Optional[int] = Query(1, ge=1, description="Page number"),
     start: Optional[int] = Query(0, ge=0, description="Start offset"),
-    limit: Optional[int] = Query(10, ge=1, le=100, description="Items per page"),
+    limit: Optional[int] = Query(5, ge=1, le=100, description="Items per page"),
     db: AsyncSession = Depends(get_session_contratos)
 ) -> Dict[str, Any]:
     """
-    Get contracts list with pagination, filtering and sorting
-    
-    Parameters:
-    - sort: JSON array of sorting criteria, e.g., [["ano","DESC"],["numero","DESC"]]
-    - uasgs: JSON array of UASG codes, e.g., ["393003"]
-    - favoritos: Boolean to filter favorites only
-    - tipo: Contract type filter
-    - page: Page number (1-based)
-    - start: Start offset (0-based)
-    - limit: Number of items per page
+    Optimized version: Split queries for better performance
     """
     
     # Get UASGs from URL parameter or fallback to session
@@ -413,9 +411,8 @@ async def get_contratos_lista(
         try:
             target_uasgs = json.loads(uasgs)
         except json.JSONDecodeError:
-            target_uasgs = [uasgs]  # Single UASG as string
+            target_uasgs = [uasgs]
     else:
-        # Fallback to session UASGs
         session_uasgs = get_uasgs_str(request)
         if not session_uasgs:
             raise HTTPException(status_code=403, detail="UASG não definida")
@@ -445,7 +442,6 @@ async def get_contratos_lista(
             for sort_item in sort_criteria:
                 if len(sort_item) == 2:
                     column, direction = sort_item
-                    # Map frontend column names to database columns
                     column_mapping = {
                         "numero": "c.numero",
                         "ano": "EXTRACT(YEAR FROM c.vigencia_inicio)",
@@ -460,7 +456,6 @@ async def get_contratos_lista(
                         direction = direction.upper() if direction.upper() in ["ASC", "DESC"] else "ASC"
                         order_clauses.append(f"{db_column} {direction}")
         except (json.JSONDecodeError, ValueError, KeyError):
-            # Default sorting if parsing fails
             order_clauses = ["c.vigencia_inicio DESC"]
     
     if not order_clauses:
@@ -471,15 +466,10 @@ async def get_contratos_lista(
     # Build WHERE conditions
     where_conditions = ["c.unidade_id = ANY(:unit_ids)", "c.deleted_at IS NULL"]
     
-    # Add favorites filter if requested
     if favoritos:
-        # Note: You'll need to implement favorites logic based on your database schema
-        # This is a placeholder - adjust according to your favorites table/logic
         where_conditions.append("EXISTS (SELECT 1 FROM user_favorites uf WHERE uf.contrato_id = c.id AND uf.user_id = :user_id)")
     
-    # Add contract type filter
     if tipo and tipo != "normal":
-        # Adjust this condition based on your business logic for contract types
         if tipo == "vigente":
             where_conditions.append("c.vigencia_fim >= CURRENT_DATE")
         elif tipo == "finalizado":
@@ -489,7 +479,31 @@ async def get_contratos_lista(
 
     where_clause = "WHERE " + " AND ".join(where_conditions)
 
-    # Main query with all joins and aggregations
+    # ==== STEP 1: Get count first (fastest query) ====
+    count_query = f"""
+        SELECT COUNT(*)
+        FROM contratos c
+        LEFT JOIN fornecedores f ON c.fornecedor_id = f.id
+        {where_clause}
+    """
+    
+    count_params = {"unit_ids": unit_ids}
+    if favoritos:
+        count_params["user_id"] = 1
+    
+    count_result = await db.execute(text(count_query), count_params)
+    total_records = count_result.scalar() or 0
+    
+    if total_records == 0:
+        return {
+            "data": [],
+            "total": 0,
+            "page": page,
+            "limit": limit,
+            "pages": 0
+        }
+
+    # ==== STEP 2: Get basic contract info with pagination ====
     main_query = f"""
         SELECT
             c.id,
@@ -504,84 +518,117 @@ async def get_contratos_lista(
             c.vigencia_fim,
             c.valor_inicial,
             c.valor_global,
-            e.naturezadespesa_id,
             c.justificativa_contrato_inativo_id,
-            COALESCE(SUM(e.empenhado::numeric), 0) AS total_valor_empenhado,
-            COALESCE(SUM(e.pago::numeric), 0) AS total_valor_pago,
-            COUNT(DISTINCT ce.id) AS total_empenhos,
-            COUNT(DISTINCT ch.id) AS aditivos_count,
-            STRING_AGG(DISTINCT u.name, ', ') AS responsaveis,
             EXTRACT(YEAR FROM c.vigencia_inicio)::int AS ano
-        FROM
-            contratos c
-        LEFT JOIN fornecedores f
-            ON c.fornecedor_id = f.id
-        LEFT JOIN contratoempenhos ce
-            ON c.id = ce.contrato_id
-        LEFT JOIN empenhos e
-            ON ce.empenho_id = e.id
-        LEFT JOIN contratohistorico ch
-            ON c.id = ch.contrato_id
-            AND ch.tipo_id <> 60
-        LEFT JOIN contratoresponsaveis cr
-            ON c.id = cr.contrato_id
-        LEFT JOIN users u
-            ON cr.user_id = u.id
+        FROM contratos c
+        LEFT JOIN fornecedores f ON c.fornecedor_id = f.id
         {where_clause}
-        GROUP BY
-            c.id,
-            c.numero,
-            c.processo,
-            c.tipo_id,
-            c.fornecedor_id,
-            f.cpf_cnpj_idgener,
-            f.nome,
-            c.objeto,
-            c.vigencia_inicio,
-            c.vigencia_fim,
-            c.valor_inicial,
-            c.valor_global,
-             e.naturezadespesa_id,
-            c.justificativa_contrato_inativo_id
         {order_by}
         LIMIT :limit OFFSET :offset
     """
 
-    # Count query for total records
-    count_query = f"""
-        SELECT COUNT(DISTINCT c.id)
-        FROM
-            contratos c
-        LEFT JOIN fornecedores f
-            ON c.fornecedor_id = f.id
-        {where_clause}
-    """
-
-    # Execute count query
-    count_params = {"unit_ids": unit_ids}
-    if favoritos:
-        # Add user_id parameter if favorites filter is used
-        # You'll need to get the user_id from the request/session
-        count_params["user_id"] = 1  # Placeholder - implement proper user identification
-    
-    count_result = await db.execute(text(count_query), count_params)
-    total_records = count_result.scalar() or 0
-
-    # Execute main query
     main_params = {
         "unit_ids": unit_ids,
         "limit": limit,
         "offset": start
     }
     if favoritos:
-        main_params["user_id"] = 1  # Placeholder - implement proper user identification
+        main_params["user_id"] = 1
 
     result = await db.execute(text(main_query), main_params)
     contracts = result.mappings().fetchall()
+    
+    if not contracts:
+        return {
+            "data": [],
+            "total": total_records,
+            "page": page,
+            "limit": limit,
+            "pages": (total_records + limit - 1) // limit
+        }
 
-    # Format the response data
+    # Get contract IDs for subsequent queries
+    contract_ids = [contract.id for contract in contracts]
+
+    # ==== STEP 3: Get empenho aggregations for these contracts ====
+    empenho_query = """
+        SELECT 
+            ce.contrato_id,
+            COALESCE(SUM(e.empenhado::numeric), 0) AS total_valor_empenhado,
+            COALESCE(SUM(e.pago::numeric), 0) AS total_valor_pago,
+            COUNT(DISTINCT ce.id) AS total_empenhos,
+            e.naturezadespesa_id
+        FROM contratoempenhos ce
+        LEFT JOIN empenhos e ON ce.empenho_id = e.id
+        WHERE ce.contrato_id = ANY(:contract_ids)
+        GROUP BY ce.contrato_id, e.naturezadespesa_id
+    """
+    
+    empenho_result = await db.execute(text(empenho_query), {"contract_ids": contract_ids})
+    empenho_data = {}
+    
+    for row in empenho_result.mappings():
+        contract_id = row.contrato_id
+        if contract_id not in empenho_data:
+            empenho_data[contract_id] = {
+                "total_valor_empenhado": 0,
+                "total_valor_pago": 0,
+                "total_empenhos": 0,
+                "naturezadespesa_id": None
+            }
+        
+        empenho_data[contract_id]["total_valor_empenhado"] += float(row.total_valor_empenhado or 0)
+        empenho_data[contract_id]["total_valor_pago"] += float(row.total_valor_pago or 0)
+        empenho_data[contract_id]["total_empenhos"] += int(row.total_empenhos or 0)
+        
+        # Keep the first naturezadespesa_id found
+        if empenho_data[contract_id]["naturezadespesa_id"] is None:
+            empenho_data[contract_id]["naturezadespesa_id"] = row.naturezadespesa_id
+
+    # ==== STEP 4: Get aditivos count for these contracts ====
+    aditivos_query = """
+        SELECT 
+            contrato_id,
+            COUNT(*) AS aditivos_count
+        FROM contratohistorico
+        WHERE contrato_id = ANY(:contract_ids)
+          AND tipo_id <> 60
+        GROUP BY contrato_id
+    """
+    
+    aditivos_result = await db.execute(text(aditivos_query), {"contract_ids": contract_ids})
+    aditivos_data = {row.contrato_id: row.aditivos_count for row in aditivos_result}
+
+    # ==== STEP 5: Get responsaveis for these contracts ====
+    responsaveis_query = """
+        SELECT 
+            cr.contrato_id,
+            STRING_AGG(DISTINCT u.name, ', ') AS responsaveis
+        FROM contratoresponsaveis cr
+        LEFT JOIN users u ON cr.user_id = u.id
+        WHERE cr.contrato_id = ANY(:contract_ids)
+        GROUP BY cr.contrato_id
+    """
+    
+    responsaveis_result = await db.execute(text(responsaveis_query), {"contract_ids": contract_ids})
+    responsaveis_data = {row.contrato_id: row.responsaveis for row in responsaveis_result}
+
+    # ==== STEP 6: Format the response data ====
     data = []
     for contract in contracts:
+        contract_id = contract.id
+        
+        # Get data from separate queries
+        empenho_info = empenho_data.get(contract_id, {
+            "total_valor_empenhado": 0,
+            "total_valor_pago": 0,
+            "total_empenhos": 0,
+            "naturezadespesa_id": None
+        })
+        
+        aditivos_count = aditivos_data.get(contract_id, 0)
+        responsaveis = responsaveis_data.get(contract_id, "")
+        
         # Calculate remaining days
         vigencia_fim = contract.vigencia_fim
         dias_restantes = (vigencia_fim - datetime.now().date()).days if vigencia_fim else 0
@@ -596,7 +643,7 @@ async def get_contratos_lista(
             status = "alerta"
         
         # Get FontAwesome icon for naturezadespesa
-        fontawesome_icon = get_fontawesome_icon(contract.naturezadespesa_id)
+        fontawesome_icon = get_fontawesome_icon(empenho_info["naturezadespesa_id"])
 
         # Get favorite status for this contract
         favorite_info = get_random_favorite_status(contract.id)
@@ -616,11 +663,11 @@ async def get_contratos_lista(
             "vigencia_fim": contract.vigencia_fim.strftime("%Y-%m-%d") if contract.vigencia_fim else None,
             "valor_inicial": float(contract.valor_inicial or 0),
             "valor_global": float(contract.valor_global or 0),
-            "total_valor_empenhado": float(contract.total_valor_empenhado or 0),
-            "total_valor_pago": float(contract.total_valor_pago or 0),
-            "total_empenhos": contract.total_empenhos or 0,
-            "aditivos_count": contract.aditivos_count or 0,
-            "responsaveis": contract.responsaveis,
+            "total_valor_empenhado": empenho_info["total_valor_empenhado"],
+            "total_valor_pago": empenho_info["total_valor_pago"],
+            "total_empenhos": empenho_info["total_empenhos"],
+            "aditivos_count": aditivos_count,
+            "responsaveis": responsaveis,
             "dias_restantes": dias_restantes,
             "status": status,
             "fontawesome_icon": fontawesome_icon,

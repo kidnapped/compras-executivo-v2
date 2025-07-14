@@ -6,7 +6,7 @@ export default {
   // State management for the table
   tableState: {
     currentPage: 1,
-    limit: 20,
+    limit: 10,
     totalPages: 1,
     totalItems: 0,
     filters: {
