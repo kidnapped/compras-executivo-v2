@@ -17,8 +17,56 @@ from app.utils.static_loader import collect_static_files
 from app.core import config as app_config
 
 import logging
+import os
 
 logger = logging.getLogger(__name__)
+
+# Global variable to cache the FontAwesome lookup data
+_fontawesome_lookup = None
+
+def load_fontawesome_lookup():
+    """Load the FontAwesome lookup data from JSON file"""
+    global _fontawesome_lookup
+    if _fontawesome_lookup is None:
+        try:
+            # Get the path to the JSON file
+            json_path = os.path.join(
+                os.path.dirname(__file__), 
+                "..", "..", "..", "static", "js", "contrato", "naturezadespesa_lookup_fa.json"
+            )
+            
+            with open(json_path, 'r', encoding='utf-8') as f:
+                lookup_data = json.load(f)
+            
+            # Convert to dictionary for faster lookup
+            _fontawesome_lookup = {
+                item['naturezadespesa_id']: item['FA'] 
+                for item in lookup_data
+            }
+            
+            logger.info(f"Loaded {len(_fontawesome_lookup)} FontAwesome icons from lookup file")
+            
+        except Exception as e:
+            logger.error(f"Error loading FontAwesome lookup file: {e}")
+            _fontawesome_lookup = {}
+    
+    return _fontawesome_lookup
+
+def get_fontawesome_icon(naturezadespesa_id):
+    """
+    Get FontAwesome icon class for a given naturezadespesa_id
+    
+    Args:
+        naturezadespesa_id: The ID to look up
+        
+    Returns:
+        str: FontAwesome icon class (e.g., "fas fa-coins") or default icon
+    """
+    if naturezadespesa_id is None:
+        return "fas fa-question-circle"
+    
+    lookup = load_fontawesome_lookup()
+    return lookup.get(naturezadespesa_id, "fas fa-file-contract")
 
 # Configure logging
 logging.basicConfig(
@@ -456,6 +504,7 @@ async def get_contratos_lista(
             c.vigencia_fim,
             c.valor_inicial,
             c.valor_global,
+            e.naturezadespesa_id,
             c.justificativa_contrato_inativo_id,
             COALESCE(SUM(e.empenhado::numeric), 0) AS total_valor_empenhado,
             COALESCE(SUM(e.pago::numeric), 0) AS total_valor_pago,
@@ -492,6 +541,7 @@ async def get_contratos_lista(
             c.vigencia_fim,
             c.valor_inicial,
             c.valor_global,
+             e.naturezadespesa_id,
             c.justificativa_contrato_inativo_id
         {order_by}
         LIMIT :limit OFFSET :offset
@@ -545,8 +595,8 @@ async def get_contratos_lista(
         elif dias_restantes <= 90:
             status = "alerta"
         
-        # implement call a function to get fontawsomicone from naturezadespesa_lookup_fa.json
-        # fontawesome_icon = get_fontawesome_icon(contract.naturezadespesa_id)
+        # Get FontAwesome icon for naturezadespesa
+        fontawesome_icon = get_fontawesome_icon(contract.naturezadespesa_id)
 
         # Get favorite status for this contract
         favorite_info = get_random_favorite_status(contract.id)
@@ -573,6 +623,7 @@ async def get_contratos_lista(
             "responsaveis": contract.responsaveis,
             "dias_restantes": dias_restantes,
             "status": status,
+            "fontawesome_icon": fontawesome_icon,
             # Favorite status information
             "is_favorite": favorite_info["is_favorite"],
             "favorite_icon": favorite_info["favorite_icon"],

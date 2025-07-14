@@ -1144,7 +1144,9 @@ export default {
         <td style="padding: 8px 8px !important;">
           <div style="display: flex; gap: 8px; font-family: Arial, sans-serif;">
           <div class="icon-circle" style="opacity: 0.7;">  
-          <i class="fas fa-file-contract" alt="contracto" style="font-size: 38px; color: #bbc6ea; opacity: 0.7;"></i>
+          <i class="${
+            contract.fontawesome_icon
+          }" alt="contracto" style="font-size: 38px; color: #bbc6ea; opacity: 0.7;"></i>
           </div>  
             <div style="flex: 1;">
               <div style="display: flex; align-items: flex-start; margin-bottom: 5px;">
