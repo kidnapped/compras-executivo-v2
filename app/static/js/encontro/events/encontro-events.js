@@ -1,5 +1,7 @@
 import EncontroAPI from "../api/encontro-api.js";
 import EncontroUI from "../ui/encontro-ui.js";
+import EncontroContas from "../encontro-contas.js";
+import FornecedorCard from "../components/fornecedor-card.js";
 
 /**
  * Event handlers for Encontro de Contas
@@ -146,16 +148,30 @@ const EncontroEvents = {
         parseInt(contratoId),
         unidadeEmpenhoId ? parseInt(unidadeEmpenhoId) : null
       );
-
       if (result.success) {
+        // Update Fornecedor card with the fetched data
+        FornecedorCard.updateWithContractData(result.data);
+
+        // Update KPI card with the fetched data
+        EncontroContas.updateHistoricoOrcamentarioCard(result.data);
+
+        // Update Últimos Lançamentos grid with the fetched data
+        EncontroContas.updateUltimosLancamentosGrid(result.data);
+
+        // Update Empenhos Originais grid with the fetched data
+        EncontroContas.updateEmpenhosOriginaisGrid(result.data);
+
         // Render the results
         EncontroUI.renderEmpenhos(result.data);
       } else {
+        // Show error in supplier card
+        FornecedorCard.showErrorState("Dados não encontrados");
         // Show error
         EncontroUI.showError(`Erro ao buscar empenhos: ${result.error}`);
       }
     } catch (error) {
       console.error("Unexpected error during search:", error);
+      FornecedorCard.showErrorState("Erro ao carregar dados do fornecedor");
       EncontroUI.showError(
         "Erro inesperado ao buscar empenhos. Tente novamente."
       );
@@ -173,6 +189,21 @@ const EncontroEvents = {
     if (contratoInput) contratoInput.value = "";
     if (unidadeInput) unidadeInput.value = "";
     if (resultsContainer) resultsContainer.innerHTML = "";
+
+    // Reset Fornecedor card to initial state
+    FornecedorCard.reset();
+
+    // Reset Últimos Lançamentos grid to initial state with sample data
+    EncontroContas.initializeUltimosLancamentosGrid();
+
+    // Reset Empenhos Originais grid to initial state
+    EncontroContas.initializeEmpenhosOriginaisGrid();
+
+    // Reset Financial grid to initial state (hardcoded data)
+    EncontroContas.initializeFinanceiroGrid();
+
+    // Reset Movimentações grid to initial state (hardcoded data)
+    EncontroContas.initializeMovimentacoesGrid();
 
     // Clear URL parameter
     this.updateUrlParameter(null);

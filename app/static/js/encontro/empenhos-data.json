@@ -1,0 +1,210 @@
+{
+  "empenhos": [
+    {
+      "data": "06/06/2017",
+      "empenho": "2017NE802657",
+      "especie": "Reforço",
+      "observacao": "REFORCO - DIR.2154 QD.439/2017 RDC- 023/2013-00 ITEM 1",
+      "nominal": "R$ 33.402.000,00",
+      "nominal_valor": 33402000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "07/12/2017",
+      "empenho": "2017NE805446",
+      "especie": "Reforço",
+      "observacao": "11.0.0.00.0723.2013 RDC-023/2013-00 ITEM 1 DIR.4312 QD.1047/2017",
+      "nominal": "R$ 5.000.000,00",
+      "nominal_valor": 5000000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "13/04/2017",
+      "empenho": "2017NE801572",
+      "especie": "Original",
+      "observacao": "11.0.0.00.0723.2013 - RDC 023/2013-00 (ITEM 01) - DIR.1328 - QD.237/2017 PROC ORIGEM: 99000232013",
+      "nominal": "R$ 31.000.000,00",
+      "nominal_valor": 31000000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "13/06/2017",
+      "empenho": "2017NE802777",
+      "especie": "Reforço",
+      "observacao": "REFORCO CONFORME SOLICITACAO DIR.2214 - QD.454/2017 RDC 023/2013-00 (ITEM 01)",
+      "nominal": "R$ 39.000.000,00",
+      "nominal_valor": 39000000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "14/08/2017",
+      "empenho": "2017NE803577",
+      "especie": "Anulação",
+      "observacao": "ANULACAO - DIR.2838 QD.641/2017 RDC- 023/2013-00 ITEM 1 PARA OTIMIZAR RECURSO",
+      "nominal": "R$ -1.000.000,00",
+      "nominal_valor": -1000000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "14/08/2017",
+      "empenho": "2017NE803578",
+      "especie": "Anulação",
+      "observacao": "ANULACAO - DIR.2801 QD.633/2017 RDC- 023/2013-00 ITEM 1",
+      "nominal": "R$ -2.200.000,00",
+      "nominal_valor": -2200000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "14/12/2017",
+      "empenho": "2017NE805666",
+      "especie": "Anulação",
+      "observacao": "ANULACAO PARA OTIMIZAR RECURSO - CONFORME SOLICITACAO DIR.4488 - QD.1111/2017 RDC 023/2013-00 (ITEM 01)",
+      "nominal": "R$ -9.000.000,00",
+      "nominal_valor": -9000000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "18/09/2017",
+      "empenho": "2017NE804030",
+      "especie": "Anulação",
+      "observacao": "ANULACAO PARA OTIMIZAR RECURSO - CONFORME SOLICITACAO DIR.3149 - QD.734/2017 RDC 023/2013-00 (ITEM 01)",
+      "nominal": "R$ -50.000,00",
+      "nominal_valor": -50000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "19/12/2017",
+      "empenho": "2017NE805743",
+      "especie": "Anulação",
+      "observacao": "ANULACAO - DIR.4598 QD.1134/2017 RDC -023/2013-00 ITEM 1 PARA OTIMIZAR RECURSO",
+      "nominal": "R$ -14.000.000,00",
+      "nominal_valor": -14000000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "20/09/2017",
+      "empenho": "2017NE804118",
+      "especie": "Anulação",
+      "observacao": "ANULACAO - DIR.3245 QD.754/2017 RDC- 023/2013-00 ITEM 1 PARA OTIMIZAR RECURSOS.",
+      "nominal": "R$ -6.000.000,00",
+      "nominal_valor": -6000000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "27/12/2017",
+      "empenho": "2017NE806103",
+      "especie": "Anulação",
+      "observacao": "ANULACAO - DIR.4758 QD.1166/2017 RDC- 023/2013-00 ITEM 1 PARA OTIMIZAR RECURSOS",
+      "nominal": "R$ -7.000.000,00",
+      "nominal_valor": -7000000.0,
+      "acoes": "grafico"
+    },
+    {
+      "data": "29/06/2017",
+      "empenho": "2017NE802946",
+      "especie": "Anulação",
+      "observacao": "ANULACAO - DIR.2327 QD.501/2017 RDC- 023/2013-00 ITEM 1 PARA ATENDER DESCENTRALIZACAO",
+      "nominal": "R$ -1.000.000,00",
+      "nominal_valor": -1000000.0,
+      "acoes": "grafico"
+    }
+  ],
+  "pagamentos": [
+    {
+      "data": "25/04/2017",
+      "empenho": "2017OB801572",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO PARCIAL - RDC 023/2013-00 (ITEM 01) - 1ª PARCELA",
+      "nominal": "R$ 5.500.000,00",
+      "nominal_valor": 5500000.0,
+      "acoes": "financeiro"
+    },
+    {
+      "data": "15/05/2017",
+      "empenho": "2017OB801572",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO PARCIAL - RDC 023/2013-00 (ITEM 01) - 2ª PARCELA",
+      "nominal": "R$ 8.200.000,00",
+      "nominal_valor": 8200000.0,
+      "acoes": "financeiro"
+    },
+    {
+      "data": "20/06/2017",
+      "empenho": "2017OB802657",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO PARCIAL - REFORCO DIR.2154 QD.439/2017 - 1ª PARCELA",
+      "nominal": "R$ 12.000.000,00",
+      "nominal_valor": 12000000.0,
+      "acoes": "financeiro"
+    },
+    {
+      "data": "28/06/2017",
+      "empenho": "2017OB802777",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO PARCIAL - REFORCO DIR.2214 QD.454/2017 - 1ª PARCELA",
+      "nominal": "R$ 9.850.000,00",
+      "nominal_valor": 9850000.0,
+      "acoes": "financeiro"
+    },
+    {
+      "data": "15/07/2017",
+      "empenho": "2017OB802657",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO PARCIAL - REFORCO DIR.2154 QD.439/2017 - 2ª PARCELA",
+      "nominal": "R$ 7.800.000,00",
+      "nominal_valor": 7800000.0,
+      "acoes": "financeiro"
+    },
+    {
+      "data": "05/09/2017",
+      "empenho": "2017OB802777",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO PARCIAL - REFORCO DIR.2214 QD.454/2017 - 2ª PARCELA",
+      "nominal": "R$ 6.300.000,00",
+      "nominal_valor": 6300000.0,
+      "acoes": "financeiro"
+    },
+    {
+      "data": "18/10/2017",
+      "empenho": "2017OB801572",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO PARCIAL - RDC 023/2013-00 (ITEM 01) - 3ª PARCELA",
+      "nominal": "R$ 8.500.000,00",
+      "nominal_valor": 8500000.0,
+      "acoes": "financeiro"
+    },
+    {
+      "data": "22/11/2017",
+      "empenho": "2017OB805446",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO PARCIAL - RDC-023/2013-00 DIR.4312 QD.1047/2017",
+      "nominal": "R$ 4.500.000,00",
+      "nominal_valor": 4500000.0,
+      "acoes": "financeiro"
+    },
+    {
+      "data": "15/12/2017",
+      "empenho": "2017OB802657",
+      "especie": "Pagamento",
+      "observacao": "PAGAMENTO FINAL - REFORCO DIR.2154 QD.439/2017 - LIQUIDAÇÃO",
+      "nominal": "R$ 5.500.000,00",
+      "nominal_valor": 5500000.0,
+      "acoes": "financeiro"
+    }
+  ],
+  "metadata": {
+    "total_records": 12,
+    "total_original": 1,
+    "total_reforco": 3,
+    "total_anulacao": 8,
+    "valor_total_original": 31000000.0,
+    "valor_total_reforco": 77402000.0,
+    "valor_total_anulacao": -40250000.0,
+    "valor_liquido": 68152000.0,
+    "total_pagamentos": 9,
+    "valor_total_pago": 68150000.0,
+    "saldo_a_pagar": 2000.0,
+    "data_criacao": "2025-07-13",
+    "exercicio": "2017"
+  }
+}

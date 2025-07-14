@@ -16,7 +16,7 @@ import * as kpis_kpi from "./kpi/kpis.js";
 const App = {
   ...environment,
   ...menu,
-//   ...admin,
+  //   ...admin,
   ...card_kpi,
   ...contratos_dashboard,
   ...kpis_kpi,
@@ -26,6 +26,7 @@ const App = {
 };
 
 window.App = App;
+window.EncontroContas = encontroContas;
 
 document.addEventListener("DOMContentLoaded", () => {
   modalManager.initialize();

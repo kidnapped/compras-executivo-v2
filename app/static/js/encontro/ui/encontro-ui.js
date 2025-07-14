@@ -1,4 +1,4 @@
-import EncontroAPI from '../api/encontro-api.js';
+import EncontroAPI from "../api/encontro-api.js";
 
 /**
  * UI layer for Encontro de Contas

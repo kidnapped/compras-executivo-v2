@@ -1,0 +1,134 @@
+
+- Na tela de encontro de contas queremos os seguinte itens:
+
+1) Card com KPI de um contador (copiar o contador do dashboard.hmtml)
+ - chama-lo de Histórico orçamentário, subtitulo: Total de empenhos originais
+ - Exemplo:
+	 11 Empenhos
+		Em execução 8
+		Finalizados 3
+		RAP 8
+		Críticos 0
+
+2) KPI chamada Visão Macro, subtitulo: Valores financeiro e orçamentário deste contrato, com os seguintes dados:
+	- Valor do contratado do contrato (mostrar saldo)
+	- Valor orçamentário do contrato (mostrar saldo)
+	- Valor das finanças do contrato
+
+3) KPI Grid (similar ao grid de atividades no dashboard) chamado Ultimos Lançamentos com 4 colunas, exemplo:
+	{icone de dinheirinho}	06 de Junho de 2019	{icone de "i" (informacao) quando tooltip mostra ex: "11.0.0.00.0723.2013 DIR.2275 QD.415/2019 RDC- 023/2013-00 ITEM 01 PROC ORIGEM: 99000232013"}	2019NE802656 (R$ 25.000.000,00) - Espécie ORIGINAL
+	{icone de dinheirinho}	22 de Fevereiro de 2019	{icone de "i" (informacao) quando tooltip mostra ex: "CONSTRUTORA SANCHES TRIPOLONI LTDA - ADEQUACAO DE TRECHO RODOV. - CT: 723/13 - MD: 58 - NF: 0000003963, 0000003964, 0000003965 - AP: 2019/001510-001 A 003 - OF: 263187"}	2019OB811353 (R$ 8.093,84) - Espécie OB
+	{icone de dinheirinho}	22 de Fevereiro de 2019	{icone de "i" (informacao) quando tooltip mostra ex: "CONSTRUTORA SANCHES TRIPOLONI LTDA - ADEQUACAO DE TRECHO RODOV. - CT: 723/13 - MD: 58 - NF: 0000003963, 0000003964, 0000003965 - AP: 2019/001510-001 A 003 - OF: 263187"}	2019OB811352 (R$ 16.734,37) - Espécie OB
+	{icone de dinheirinho}	22 de Fevereiro de 2019	{icone de "i" (informacao) quando tooltip mostra ex: "CONSTRUTORA SANCHES TRIPOLONI LTDA - ADEQUACAO DE TRECHO RODOV. - CT: 723/13 - MD: 58 - NF: 0000003963, 0000003964, 0000003965 - AP: 2019/001510-001 A 003 - OF: 263187"}	2019OB811351 (R$ 37.940,34) - Espécie OB
+	{icone de dinheirinho}	22 de Fevereiro de 2019	{icone de "i" (informacao) quando tooltip mostra ex: "CONSTRUTORA SANCHES TRIPOLONI LTDA - ADEQUACAO DE TRECHO RODOV. - CT: 723/13 - MD: 58 - NF: 0000003963, 0000003964, 0000003965 - AP: 2019/001510-001 A 003 - OF: 263187"}	2019OB811347 (R$ 2.504.305,18) - Espécie OB
+
+4) Grid NUMERADO com uma lista de empenhos, chamada Empenhos Originais, com o seguinte botao de filtro:
+	- Filtrar por exercício (ano)
+
+	exemplo dos dados:
+		Ícone: Bolinha cinza
+		Empenho: 2019NE802656
+		Data: 06/06/2019
+		Ícone Informação: (i) → mostra tooltip com detalhes do empenho
+		Valor: R$ 25.000.000,00
+		Espécie: ORIGINAL
+		Orçamentário: R$ 0,00
+		Finanças: R$ 0,00
+		Saldo de empenho: R$ 0,00
+		Status: 0%
+		Ícone Gráfico: 📊
+		Ícone Mapa do Brasil: 📍
+
+		Ícone: Bolinha laranja
+		Empenho: 2018NE805821
+		Data: 24/12/2018
+		Ícone Informação: (i)
+		Valor: R$ 3.000.000,00
+		Espécie: ORIGINAL
+		Orçamentário: R$ 3.000.000,00
+		Finanças: R$ 0,00
+		Saldo de empenho: R$ 3.000.000,00
+		Status: 0%
+		Ícone Gráfico: 📊
+		Ícone Mapa do Brasil: 📍
+
+		Ícone: Bolinha laranja
+		Empenho: 2018NE804703
+		Data: 13/11/2018
+		Ícone Informação: (i)
+		Valor: R$ 2.150.000,00
+		Espécie: ORIGINAL
+		Orçamentário: R$ 2.150.000,00
+		Finanças: R$ 0,00
+		Saldo de empenho: R$ 2.150.000,00
+		Status: 0%
+		Ícone Gráfico: 📊
+		Ícone Mapa do Brasil: 📍
+
+5) Um grid Numerado Orçamentário:
+	- Exemplo de dados:
+		Ícone: Bolinha cinza
+		Empenho: 2019NE802656
+		Data: 06/06/2019
+		Ícone Informação: (i) → mostra tooltip com detalhes do empenho
+		Valor: R$ 25.000.000,00
+		Espécie: ORIGINAL
+		Orçamentário: R$ 0,00
+		Finanças: R$ 0,00
+		Saldo de empenho: R$ 0,00
+		Status: 0%
+		Ícone Gráfico: 📊
+		Ícone Mapa do Brasil: 📍
+
+		Ícone: Bolinha laranja
+		Empenho: 2018NE805821
+		Data: 24/12/2018
+		Ícone Informação: (i)
+		Valor: R$ 3.000.000,00
+		Espécie: ORIGINAL
+		Orçamentário: R$ 3.000.000,00
+		Finanças: R$ 0,00
+		Saldo de empenho: R$ 3.000.000,00
+		Status: 0%
+		Ícone Gráfico: 📊
+		Ícone Mapa do Brasil: 📍
+
+		Ícone: Bolinha laranja
+		Empenho: 2018NE804703
+		Data: 13/11/2018
+		Ícone Informação: (i)
+		Valor: R$ 2.150.000,00
+		Espécie: ORIGINAL
+		Orçamentário: R$ 2.150.000,00
+		Finanças: R$ 0,00
+		Saldo de empenho: R$ 2.150.000,00
+		Status: 0%
+		Ícone Gráfico: 📊
+		Ícone Mapa do Brasil: 📍
+
+6) Um grid Numerado Financeiro:
+		Data: 06/07/2017
+		Pagamento: 2017OB836057
+		Ícone Informação: (i)
+		Tipo: OB
+		Parcial: R$ 8.500.322,84
+		Nominal: R$ 16.995.525,89
+		Ícone Mapa do Brasil: 📍
+
+		Data: 06/07/2017
+		Pagamento: 2017OB836059
+		Ícone Informação: (i)
+		Tipo: OB
+		Parcial: R$ 54.929,09
+		Nominal: R$ 54.929,09
+		Ícone Mapa do Brasil: 📍
+
+		Data: 06/07/2017
+		Pagamento: 2017OB836060
+		Ícone Informação: (i)
+		Tipo: OB
+		Parcial: R$ 113.568,23
+		Nominal: R$ 113.568,23
+		Ícone Mapa do Brasil: 📍
+
+	- onde tiver "Ícone.. alguma coisa" significa que o nome da coluna tem que ficar em branco

@@ -65,12 +65,20 @@ async def get_empenhos_por_contrato(
             
         unidade_empenho_id = ids_uasg[0]  # Usa a primeira UASG encontrada
 
-    # Query 1: Buscar detalhes do contrato
+    # Query 1: Buscar detalhes do contrato e fornecedor
     contrato_query = """
-        SELECT valor_inicial, valor_global, data_assinatura, vigencia_inicio, vigencia_fim
-        FROM contratos 
-        WHERE unidade_id = :unidade_empenho_id 
-          AND id = :contrato_id;
+        SELECT 
+            c.valor_inicial, 
+            c.valor_global, 
+            c.data_assinatura, 
+            c.vigencia_inicio, 
+            c.vigencia_fim,
+            f.nome AS fornecedor_nome,
+            f.cpf_cnpj_idgener
+        FROM contratos c
+        JOIN fornecedores f ON c.fornecedor_id = f.id
+        WHERE c.unidade_id = :unidade_empenho_id 
+          AND c.id = :contrato_id;
     """
     
     contrato_result = await db.execute(
@@ -114,6 +122,8 @@ async def get_empenhos_por_contrato(
         "data_assinatura": contrato_row.get("data_assinatura").isoformat() if contrato_row.get("data_assinatura") else None,
         "vigencia_inicio": contrato_row.get("vigencia_inicio").isoformat() if contrato_row.get("vigencia_inicio") else None,
         "vigencia_fim": contrato_row.get("vigencia_fim").isoformat() if contrato_row.get("vigencia_fim") else None,
+        "fornecedor_nome": contrato_row.get("fornecedor_nome"),
+        "cpf_cnpj_idgener": contrato_row.get("cpf_cnpj_idgener"),
     }
 
     # Processar dados dos empenhos

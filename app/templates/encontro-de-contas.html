@@ -15,73 +15,66 @@ Executivo{% endblock %} {% block content %}
   </div>
 
   <!-- Overview Cards Row -->
-  <div class="row mb-4">
-    <div class="col-md-3 col-sm-6">
-      <div class="br-card pt-3">
-        <div class="card-content">
+  <div class="row mb-4 flex-fill">
+    <div class="col-12" id="card-fornecedor-container">
+      <div
+        class="br-card pt-3 h-100 card-fornecedor d-flex justify-content-center align-items-center"
+        style="min-height: 180px"
+      >
+        <div class="card-content" id="fornecedor-card-content">
           <div class="row">
             <div class="col-12 mb-3">
               <span style="font-weight: bold"
                 ><i class="fas fa-building text-primary"></i> Fornecedor</span
               ><br />
-              <span class="text-muted">fornecedores xxxx ltda</span>
+              <span class="text-muted" id="fornecedor-nome"
+                >Aguardando consulta...</span
+              >
             </div>
             <div class="col-12 mb-3">
               <span style="font-weight: bold"
                 ><i class="fas fa-id-card text-info"></i> CNPJ / CPF</span
               ><br />
-              <span class="text-muted">53.503.652/0001-05</span>
+              <span class="text-muted" id="fornecedor-cpf-cnpj">--</span>
             </div>
             <div class="col-12 mb-3">
               <span style="font-weight: bold"
                 ><i class="fas fa-dollar-sign text-success"></i> Valor do
                 Contrato</span
               ><br />
-              <span class="text-muted">R$ 301.500.000,00</span>
+              <span class="text-muted" id="contrato-valor-global">--</span>
             </div>
             <div class="col-12 mb-3">
               <span style="font-weight: bold"
                 ><i class="fas fa-chart-bar text-warning"></i>
                 Orçamentário</span
               ><br />
-              <span class="text-muted">R$ 275.236.057,78</span>
+              <span class="text-muted" id="empenhos-total-empenhado">--</span>
             </div>
             <div class="col-12">
               <span style="font-weight: bold"
                 ><i class="fas fa-coins text-secondary"></i> Finanças</span
               ><br />
-              <span class="text-muted">R$ 0,00</span>
+              <span class="text-muted" id="empenhos-total-pago">--</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-3 col-sm-6">
-      <div class="br-card pt-3">
-        <div class="card-content text-center">
-          <i class="fas fa-chart-pie fa-3x text-info mb-3"></i>
-          <h5>Macro View</h5>
-          <p class="text-muted">
-            Visão geral dos contratos e execução orçamentária
-          </p>
-        </div>
+    <div class="col-md-6 col-sm-6" id="card-historico-orcamentario-container">
+      <div
+        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+        style="min-height: 180px"
+      >
+        <div
+          class="br-loading medium"
+          role="progressbar"
+          aria-label="carregando histórico orçamentário"
+        ></div>
       </div>
     </div>
-
-    <div class="col-md-3 col-sm-6">
-      <div class="br-card pt-3">
-        <div class="card-content text-center">
-          <i class="fas fa-history fa-3x text-warning mb-3"></i>
-          <h5>Histórico Orçamentário</h5>
-          <p class="text-muted">
-            Evolução dos gastos e empenhos ao longo do tempo
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3 col-sm-6">
+    <div class="col-md-3 col-sm-6 d-none">
       <div class="br-card">
         <div class="card-header">
           <div class="d-flex" style="width: 100%">
@@ -136,6 +129,377 @@ Executivo{% endblock %} {% block content %}
             <button class="br-button secondary" id="clear-search-btn">
               <i class="fas fa-times"></i> Limpar
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimos Lançamentos Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="br-card" id="ultimos-lancamentos-container">
+        <div class="card-header">
+          <div class="d-flex" style="width: 100%">
+            <div class="ml-3" style="flex-grow: 1">
+              <div class="titulo">
+                <img
+                  src="/static/images/doc2.png"
+                  alt="Ícone"
+                  style="height: 36px; margin: 10px 0px -10px 0px"
+                />
+                Últimos Lançamentos
+              </div>
+              <div
+                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+              ></div>
+              <div class="subtitulo">
+                Valores financeiro e orçamentário deste contrato
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" style="padding: 0">
+          <div class="table-responsive">
+            <table class="br-table table-hover">
+              <thead style="background-color: #f8f8f8">
+                <tr>
+                  <th style="width: 60px; border: none"></th>
+                  <th style="border: none">Data</th>
+                  <th style="width: 60px; border: none"></th>
+                  <th style="border: none">Detalhes</th>
+                </tr>
+              </thead>
+              <tbody id="ultimos-lancamentos-tbody">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="4" class="text-center" style="padding: 40px">
+                    <div class="text-muted">
+                      <i class="fas fa-search fa-2x mb-3"></i>
+                      <br />
+                      Realize uma busca para visualizar os últimos lançamentos
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empenhos Originais Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="br-card" id="empenhos-originais-container">
+        <div class="card-header">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex" style="width: 100%">
+              <div class="ml-3" style="flex-grow: 1">
+                <div class="titulo">
+                  <img
+                    src="/static/images/doc2.png"
+                    alt="Ícone"
+                    style="height: 36px; margin: 10px 0px -10px 0px"
+                  />
+                  Empenhos Originais
+                </div>
+                <div
+                  style="
+                    border-bottom: 1px solid #ccc;
+                    margin: -6px 0px 0px 26px;
+                  "
+                ></div>
+                <div class="subtitulo">
+                  Lista numerada de empenhos do contrato
+                </div>
+              </div>
+            </div>
+            <div
+              class="d-flex align-items-center gap-2"
+              style="margin-top: -18px"
+            >
+              <!-- Filter by year button -->
+              <div class="filter-menu-container" style="position: relative">
+                <button
+                  class="br-button small"
+                  type="button"
+                  aria-label="Filtrar por exercício"
+                  onclick="EncontroContas.toggleExercicioFilter()"
+                  id="btn-filtro-exercicio"
+                >
+                  <i class="fas fa-filter"></i> Filtrar por exercício
+                </button>
+                <div
+                  class="filter-dropdown"
+                  id="filtro-exercicio-menu"
+                  style="
+                    display: none;
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    z-index: 999;
+                    background: white;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    padding: 8px;
+                    min-width: 200px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    margin-top: 4px;
+                  "
+                >
+                  <div style="margin-bottom: 8px">
+                    <div class="br-radio" style="margin-bottom: 4px">
+                      <input
+                        id="radio-todos-exercicios"
+                        type="radio"
+                        name="exercicio"
+                        checked
+                      />
+                      <label for="radio-todos-exercicios"
+                        >Todos os exercícios</label
+                      >
+                    </div>
+                    <div id="exercicios-disponiveis">
+                      <!-- Dynamic year options will be populated here -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" style="padding: 0">
+          <div class="table-responsive">
+            <table class="br-table table-hover table-striped">
+              <thead style="background-color: #f8f8f8">
+                <tr>
+                  <th style="width: 40px; border: none">#</th>
+                  <th style="width: 50px; border: none"></th>
+                  <th style="border: none">Empenho</th>
+                  <th style="border: none">Data</th>
+                  <th style="width: 50px; border: none"></th>
+                  <th style="border: none">Valor</th>
+                  <th style="border: none">Espécie</th>
+                  <th style="border: none">Orçamentário</th>
+                  <th style="border: none">Finanças</th>
+                  <th style="border: none">Saldo de empenho</th>
+                  <th style="border: none">Status</th>
+                  <th style="width: 50px; border: none"></th>
+                  <th style="width: 50px; border: none"></th>
+                </tr>
+              </thead>
+              <tbody id="empenhos-originais-tbody">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="13" class="text-center" style="padding: 40px">
+                    <div class="text-muted">
+                      <i class="fas fa-search fa-2x mb-3"></i>
+                      <br />
+                      Realize uma busca para visualizar os empenhos originais
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid Numerado Financeiro Section -->
+  <div class="row mb-4">
+    <div class="col-lg-6 col-md-12">
+      <div class="br-card" id="financeiro-grid-container">
+        <div class="card-header">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex" style="width: 100%">
+              <div class="ml-3" style="flex-grow: 1">
+                <div class="titulo">
+                  <img
+                    src="/static/images/doc2.png"
+                    alt="Ícone"
+                    style="height: 36px; margin: 10px 0px -10px 0px"
+                  />
+                  Grid Numerado Financeiro
+                </div>
+                <div
+                  style="
+                    border-bottom: 1px solid #ccc;
+                    margin: -6px 0px 0px 26px;
+                  "
+                ></div>
+                <div class="subtitulo">
+                  Pagamentos e movimentações financeiras do contrato
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" style="padding: 0">
+          <div class="table-responsive">
+            <table class="br-table table-hover table-striped">
+              <thead style="background-color: #f8f8f8">
+                <tr>
+                  <th style="width: 40px; border: none">#</th>
+                  <th style="border: none">Data</th>
+                  <th style="border: none">Pagamento</th>
+                  <th style="width: 50px; border: none"></th>
+                  <th style="border: none">Tipo</th>
+                  <th style="border: none">Parcial</th>
+                  <th style="border: none">Nominal</th>
+                  <th style="width: 50px; border: none"></th>
+                </tr>
+              </thead>
+              <tbody id="financeiro-grid-tbody">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="8" class="text-center" style="padding: 40px">
+                    <div class="text-muted">
+                      <i class="fas fa-coins fa-2x mb-3"></i>
+                      <br />
+                      Dados financeiros carregados automaticamente
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <div class="br-card" id="movimentacoes-container">
+        <div class="card-header">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex" style="width: 100%">
+              <div class="ml-3" style="flex-grow: 1">
+                <div class="titulo">
+                  <img
+                    src="/static/images/doc2.png"
+                    alt="Ícone"
+                    style="height: 36px; margin: 10px 0px -10px 0px"
+                  />
+                  Movimentações Orçamentárias
+                </div>
+                <div
+                  style="
+                    border-bottom: 1px solid #ccc;
+                    margin: -6px 0px 0px 26px;
+                  "
+                ></div>
+                <div class="subtitulo">
+                  Lista de movimentações orçamentárias do contrato
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" style="padding: 0">
+          <div class="table-responsive">
+            <table class="br-table table-hover table-striped">
+              <thead style="background-color: #f8f8f8">
+                <tr>
+                  <th style="width: 40px; border: none">#</th>
+                  <th style="border: none">Data</th>
+                  <th style="border: none">Empenho</th>
+                  <th style="width: 50px; border: none"></th>
+                  <th style="border: none">Espécie</th>
+                  <th style="border: none">Valor</th>
+                  <th style="width: 50px; border: none"></th>
+                </tr>
+              </thead>
+              <tbody id="movimentacoes-tbody">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="7" class="text-center" style="padding: 40px">
+                    <div class="text-muted">
+                      <i class="fas fa-exchange-alt fa-2x mb-3"></i>
+                      <br />
+                      Dados de movimentações carregados automaticamente
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detalhes dos Empenhos Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="br-card" id="detalhes-empenhos-container">
+        <div class="card-header">
+          <div class="d-flex" style="width: 100%">
+            <div class="ml-3" style="flex-grow: 1">
+              <div class="titulo">
+                <img
+                  src="/static/images/doc2.png"
+                  alt="Ícone"
+                  style="height: 36px; margin: 10px 0px -10px 0px"
+                />
+                Detalhes dos Empenhos
+              </div>
+              <div
+                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+              ></div>
+              <div class="subtitulo">
+                Histórico detalhado de empenhos do contrato
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" style="padding: 0">
+          <!-- Chart Section -->
+          <div
+            id="detalhes-empenhos-chart-container"
+            style="padding: 20px; border-bottom: 1px solid #eee"
+          >
+            <div
+              id="detalhes-empenhos-chart"
+              style="
+                width: 100%;
+                height: 300px;
+                border: 1px solid #f0f0f0;
+                border-radius: 4px;
+              "
+            ></div>
+          </div>
+          <!-- Table Section -->
+          <div class="table-responsive">
+            <table class="br-table table-hover table-striped">
+              <thead style="background-color: #f8f8f8">
+                <tr>
+                  <th style="border: none">Data</th>
+                  <th style="border: none">Empenho</th>
+                  <th style="border: none">Espécie</th>
+                  <th style="border: none">Nominal</th>
+                  <th style="width: 50px; border: none"></th>
+                  <th style="width: 50px; border: none"></th>
+                </tr>
+              </thead>
+              <tbody id="detalhes-empenhos-tbody">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="6" class="text-center" style="padding: 40px">
+                    <div class="text-muted">
+                      <div
+                        class="br-loading medium"
+                        role="progressbar"
+                        aria-label="carregando detalhes dos empenhos"
+                      ></div>
+                      <br />
+                      Carregando detalhes dos empenhos...
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -199,3 +563,6 @@ Executivo{% endblock %} {% block content %}
 </div>
 
 {% endblock %}
+
+<!-- The DetalhesEmpenhos functionality is now integrated into encontro-contas.js -->
+<!-- No additional script needed here as it's initialized with the main controller -->
