@@ -442,6 +442,14 @@ export default {
     // Check if contract is finished (expired)
     if (remainingDays <= 0) {
       return {
+        // Remove all margins and padding
+        grid: {
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          containLabel: false
+        },
         tooltip: {
           show: false,
         },
@@ -477,8 +485,8 @@ export default {
           // Start date label - grey for finished
           {
             type: "text",
-            left: "10%",
-            bottom: "10%",
+            left: "5%",
+            bottom: "5%",
             style: {
               text: formatDate(startDate),
               fontSize: 12,
@@ -490,8 +498,8 @@ export default {
           // End date label - grey for finished
           {
             type: "text",
-            right: "10%",
-            bottom: "10%",
+            right: "5%",
+            bottom: "5%",
             style: {
               text: formatDate(endDate),
               fontSize: 12,
@@ -505,6 +513,8 @@ export default {
           {
             name: "Vigência",
             type: "gauge",
+            center: ['50%', '50%'],
+            radius: '100%',
             progress: {
               show: false,
             },
@@ -543,6 +553,14 @@ export default {
     }
 
     return {
+      // Remove all margins and padding
+      grid: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        containLabel: false
+      },
       tooltip: {
         formatter: "{a} <br/>{b} : {c}%",
       },
@@ -578,8 +596,8 @@ export default {
         // Start date label
         {
           type: "text",
-          left: "10%",
-          bottom: "10%",
+          left: "5%",
+          bottom: "0%",
           style: {
             text: formatDate(startDate),
             fontSize: 12,
@@ -591,8 +609,8 @@ export default {
         // End date label
         {
           type: "text",
-          right: "10%",
-          bottom: "10%",
+          right: "5%",
+          bottom: "0%",
           style: {
             text: formatDate(endDate),
             fontSize: 12,
@@ -606,6 +624,8 @@ export default {
         {
           name: "Vigência",
           type: "gauge",
+          center: ['50%', '50%'],
+          radius: '100%',
           progress: {
             show: false,
           },
@@ -629,8 +649,8 @@ export default {
             },
           },
           title: {
-            offsetCenter: [0, "60%"],
-            fontSize: 11,
+            offsetCenter: [0, "68%"],
+            fontSize: 9,
           },
           detail: {
             valueAnimation: true,
@@ -638,7 +658,7 @@ export default {
             formatter: function (value) {
               return remainingDays;
             },
-            offsetCenter: [0, "40%"],
+            offsetCenter: [0, "53%"],
           },
           data: [
             {
@@ -1143,10 +1163,10 @@ export default {
       <tr>
         <td style="padding: 8px 8px !important;" valign="top">
           <div style="display: flex; gap: 8px; font-family: Arial, sans-serif;">
-          <div class="icon-circle" style="opacity: 0.7;">  
+          <div class="icon-circle" style="opacity: 0.7; transform: scale(0.9);">  
           <i class="${
             contract.fontawesome_icon
-          }" alt="contracto" style="font-size: 38px; color: #bbc6ea; opacity: 0.7;"></i>
+          }" alt="contracto" style="font-size: 34px; color: #bbc6ea; opacity: 0.7;"></i>
           </div>  
             <div style="flex: 1;">
               <div style="display: flex; align-items: flex-start; margin-bottom: 5px;">
@@ -1288,7 +1308,7 @@ export default {
                data-contract-id="${contract.numero}/${contract.ano}" 
                data-start-date="${contract.vigencia_inicio}" 
                data-end-date="${contract.vigencia_fim}"
-               style="width: 180px; height: 180px; display: inline-block">
+               style="width: 150px; height: 150px; display: inline-block">
           </div>
         </td>
         ${
@@ -1328,59 +1348,137 @@ export default {
         `
             : ""
         }
-        <td class="hide-mobile">
+        <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           <div class="financial-bars-container" data-contract-id="${
             contract.numero
-          }/${contract.ano}" data-type="contratado">
-            <div class="financial-bar-group">
-              <div class="financial-bar-value">${formatCurrency(
-                contract.valor_global
-              )}</div>
+          }/${contract.ano}" data-type="contratado" style="height: 140px; display: flex; align-items: center; justify-content: center;">
+            <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
+              <div class="financial-bar-value" style="
+                position: absolute;
+                left: -20px;
+                top: 50%;
+                transform: translateY(-50%) rotate(180deg); 
+                writing-mode: vertical-rl; 
+                font-family: Arial, sans-serif; 
+                font-size: 10px; 
+                font-weight: bold; 
+                color: #333; 
+                white-space: nowrap;
+                line-height: 1.2;
+                z-index: 1;
+                max-width: 18px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              ">${formatCurrency(contract.valor_global)}</div>
               <div class="financial-bar" data-type="contratado" data-amount="${
                 contract.valor_inicial || 0
-              }">
-                <div class="financial-bar-fill" style="height: ${this.calculateFinancialPercentage(
-                  contract.valor_inicial,
-                  contract.valor_global
-                )}%"></div>
+              }" style="
+                width: 21px; 
+                height: 140px; 
+                background-color: #e0e0e0; 
+                position: relative;
+              ">
+                <div class="financial-bar-fill" style="
+                  position: absolute; 
+                  bottom: 0; 
+                  width: 100%; 
+                  background-color: #bbc6ea; 
+                  transition: height 0.3s ease;
+                  height: ${this.calculateFinancialPercentage(
+                    contract.valor_inicial,
+                    contract.valor_global
+                  )}%;
+                "></div>
               </div>
             </div>
           </div>
         </td>
-        <td class="hide-mobile">
+        <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           <div class="financial-bars-container" data-contract-id="${
             contract.numero
-          }/${contract.ano}" data-type="empenhado">
-            <div class="financial-bar-group">
-              <div class="financial-bar-value">${formatCurrency(
-                contract.total_valor_empenhado
-              )}</div>
+          }/${contract.ano}" data-type="empenhado" style="height: 140px; display: flex; align-items: center; justify-content: center;">
+            <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
+              <div class="financial-bar-value" style="
+                position: absolute;
+                left: -20px;
+                top: 50%;
+                transform: translateY(-50%) rotate(180deg); 
+                writing-mode: vertical-rl; 
+                font-family: Arial, sans-serif; 
+                font-size: 10px; 
+                font-weight: bold; 
+                color: #333; 
+                white-space: nowrap;
+                line-height: 1.2;
+                z-index: 1;
+                max-width: 18px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              ">${formatCurrency(contract.total_valor_empenhado)}</div>
               <div class="financial-bar" data-type="empenhado" data-amount="${
                 contract.total_valor_empenhado || 0
-              }">
-                <div class="financial-bar-fill" style="height: ${this.calculateFinancialPercentage(
-                  contract.total_valor_empenhado,
-                  contract.valor_inicial
-                )}%"></div>
+              }" style="
+                width: 21px; 
+                height: 140px; 
+                background-color: #e0e0e0; 
+                position: relative;
+              ">
+                <div class="financial-bar-fill" style="
+                  position: absolute; 
+                  bottom: 0; 
+                  width: 100%; 
+                  background-color: #8f9dd2; 
+                  transition: height 0.3s ease;
+                  height: ${this.calculateFinancialPercentage(
+                    contract.total_valor_empenhado,
+                    contract.valor_inicial
+                  )}%;
+                "></div>
               </div>
             </div>
           </div>
         </td>
-        <td class="hide-mobile">
+        <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           <div class="financial-bars-container" data-contract-id="${
             contract.numero
-          }/${contract.ano}" data-type="pagamentos">
-            <div class="financial-bar-group">
-              <div class="financial-bar-value">${formatCurrency(
-                contract.total_valor_pago
-              )}</div>
+          }/${contract.ano}" data-type="pagamentos" style="height: 140px; display: flex; align-items: center; justify-content: center;">
+            <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
+              <div class="financial-bar-value" style="
+                position: absolute;
+                left: -20px;
+                top: 50%;
+                transform: translateY(-50%) rotate(180deg); 
+                writing-mode: vertical-rl; 
+                font-family: Arial, sans-serif; 
+                font-size: 10px; 
+                font-weight: bold; 
+                color: #333; 
+                white-space: nowrap;
+                line-height: 1.2;
+                z-index: 1;
+                max-width: 18px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              ">${formatCurrency(contract.total_valor_pago)}</div>
               <div class="financial-bar" data-type="pagamentos" data-amount="${
                 contract.total_valor_pago || 0
-              }">
-                <div class="financial-bar-fill" style="height: ${this.calculateFinancialPercentage(
-                  contract.total_valor_pago,
-                  contract.total_valor_empenhado
-                )}%"></div>
+              }" style="
+                width: 21px; 
+                height: 140px; 
+                background-color: #e0e0e0; 
+                position: relative;
+              ">
+                <div class="financial-bar-fill" style="
+                  position: absolute; 
+                  bottom: 0; 
+                  width: 100%; 
+                  background-color: #93b7e3; 
+                  transition: height 0.3s ease;
+                  height: ${this.calculateFinancialPercentage(
+                    contract.total_valor_pago,
+                    contract.total_valor_empenhado
+                  )}%;
+                "></div>
               </div>
             </div>
           </div>
