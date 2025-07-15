@@ -557,11 +557,13 @@ async def get_contratos_lista(
             COALESCE(SUM(e.empenhado::numeric), 0) AS total_valor_empenhado,
             COALESCE(SUM(e.pago::numeric), 0) AS total_valor_pago,
             COUNT(DISTINCT ce.id) AS total_empenhos,
-            e.naturezadespesa_id
+            e.naturezadespesa_id,
+            nd.descricao AS naturezadespesa_descricao
         FROM contratoempenhos ce
         LEFT JOIN empenhos e ON ce.empenho_id = e.id
+        LEFT JOIN naturezadespesa nd ON e.naturezadespesa_id = nd.id
         WHERE ce.contrato_id = ANY(:contract_ids)
-        GROUP BY ce.contrato_id, e.naturezadespesa_id
+        GROUP BY ce.contrato_id, e.naturezadespesa_id, nd.descricao
     """
     
     empenho_result = await db.execute(text(empenho_query), {"contract_ids": contract_ids})
@@ -574,16 +576,18 @@ async def get_contratos_lista(
                 "total_valor_empenhado": 0,
                 "total_valor_pago": 0,
                 "total_empenhos": 0,
-                "naturezadespesa_id": None
+                "naturezadespesa_id": None,
+                "naturezadespesa_descricao": None
             }
         
         empenho_data[contract_id]["total_valor_empenhado"] += float(row.total_valor_empenhado or 0)
         empenho_data[contract_id]["total_valor_pago"] += float(row.total_valor_pago or 0)
         empenho_data[contract_id]["total_empenhos"] += int(row.total_empenhos or 0)
         
-        # Keep the first naturezadespesa_id found
+        # Keep the first naturezadespesa_id and description found
         if empenho_data[contract_id]["naturezadespesa_id"] is None:
             empenho_data[contract_id]["naturezadespesa_id"] = row.naturezadespesa_id
+            empenho_data[contract_id]["naturezadespesa_descricao"] = row.naturezadespesa_descricao
 
     # ==== STEP 4: Get aditivos count for these contracts ====
     aditivos_query = """
@@ -623,7 +627,8 @@ async def get_contratos_lista(
             "total_valor_empenhado": 0,
             "total_valor_pago": 0,
             "total_empenhos": 0,
-            "naturezadespesa_id": None
+            "naturezadespesa_id": None,
+            "naturezadespesa_descricao": None
         })
         
         aditivos_count = aditivos_data.get(contract_id, 0)
@@ -666,6 +671,8 @@ async def get_contratos_lista(
             "total_valor_empenhado": empenho_info["total_valor_empenhado"],
             "total_valor_pago": empenho_info["total_valor_pago"],
             "total_empenhos": empenho_info["total_empenhos"],
+            "naturezadespesa_id": empenho_info["naturezadespesa_id"],
+            "naturezadespesa_descricao": empenho_info["naturezadespesa_descricao"],
             "aditivos_count": aditivos_count,
             "responsaveis": responsaveis,
             "dias_restantes": dias_restantes,

@@ -31,27 +31,49 @@ Executivo{% endblock %} {% block content %}
             </div>
             <div class="col-12 mb-3">
               <span style="font-weight: bold"
-                ><i class="fas fa-id-card text-info"></i> CNPJ / CPF</span
+                ><i
+                  class="fas fa-id-card text-info"
+                  data-tooltip-text="Documento de identificação do fornecedor"
+                  data-tooltip-place="top"
+                  data-tooltip-type="info"
+                ></i>
+                CNPJ / CPF</span
               ><br />
               <span class="text-muted" id="fornecedor-cpf-cnpj">--</span>
             </div>
             <div class="col-12 mb-3">
               <span style="font-weight: bold"
-                ><i class="fas fa-dollar-sign text-success"></i> Valor do
-                Contrato</span
+                ><i
+                  class="fas fa-dollar-sign text-success"
+                  data-tooltip-text="Valor total do contrato vigente"
+                  data-tooltip-place="top"
+                  data-tooltip-type="success"
+                ></i>
+                Valor do Contrato</span
               ><br />
               <span class="text-muted" id="contrato-valor-global">--</span>
             </div>
             <div class="col-12 mb-3">
               <span style="font-weight: bold"
-                ><i class="fas fa-chart-bar text-warning"></i>
+                ><i
+                  class="fas fa-chart-bar text-warning"
+                  data-tooltip-text="Total empenhado no sistema orçamentário"
+                  data-tooltip-place="top"
+                  data-tooltip-type="warning"
+                ></i>
                 Orçamentário</span
               ><br />
               <span class="text-muted" id="empenhos-total-empenhado">--</span>
             </div>
             <div class="col-12">
               <span style="font-weight: bold"
-                ><i class="fas fa-coins text-secondary"></i> Finanças</span
+                ><i
+                  class="fas fa-coins text-secondary"
+                  data-tooltip-text="Total pago registrado no sistema financeiro"
+                  data-tooltip-place="top"
+                  data-tooltip-type="info"
+                ></i>
+                Finanças</span
               ><br />
               <span class="text-muted" id="empenhos-total-pago">--</span>
             </div>

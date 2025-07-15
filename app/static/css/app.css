@@ -2144,7 +2144,7 @@ div[class*="echarts-tooltip"] {
 #ultimos_lancamentos-container .subtitulo {
   font-size: 10px;
   color: #000;
-  margin-left: 26px;
+  margin-left: 26px !important;
 }
 
 #ultimos-lancamentos-tbody tr {
@@ -2233,7 +2233,7 @@ div[class*="echarts-tooltip"] {
 
   #ultimos-lancamentos-container .subtitulo {
     font-size: 9px;
-    margin-left: 21px;
+    margin-left: 26px !important;
   }
 
   #ultimos-lancamentos-tbody td {
@@ -2279,9 +2279,9 @@ div[class*="echarts-tooltip"] {
 }
 
 #empenhos-originais-container .subtitulo {
-  font-size: 10px;
+  font-size: 9px;
   color: #000;
-  margin-left: 26px;
+  margin-left: 26px !important;
 }
 
 #empenhos-originais-tbody tr {
@@ -2377,7 +2377,7 @@ div[class*="echarts-tooltip"] {
 
   #empenhos-originais-container .subtitulo {
     font-size: 9px;
-    margin-left: 21px;
+    margin-left: 26px !important;
   }
 
   #empenhos-originais-tbody td {
@@ -2445,9 +2445,9 @@ div[class*="echarts-tooltip"] {
 }
 
 #financeiro-grid-container .subtitulo {
-  font-size: 10px;
+  font-size: 9px;
   color: #000;
-  margin-left: 26px;
+  margin-left: 26px !important;
 }
 
 #financeiro-grid-tbody tr {
@@ -2518,7 +2518,7 @@ div[class*="echarts-tooltip"] {
 
   #financeiro-grid-container .subtitulo {
     font-size: 9px;
-    margin-left: 21px;
+    margin-left: 26px !important;
   }
 
   #financeiro-grid-tbody td {
@@ -2575,7 +2575,7 @@ div[class*="echarts-tooltip"] {
 #movimentacoes-container .subtitulo {
   font-size: 10px;
   color: #000;
-  margin-left: 26px;
+  margin-left: 26px !important;
 }
 
 #movimentacoes-tbody tr {
@@ -2645,7 +2645,7 @@ div[class*="echarts-tooltip"] {
 
   #movimentacoes-container .subtitulo {
     font-size: 9px;
-    margin-left: 21px;
+    margin-left: 26px !important;
   }
 
   #movimentacoes-tbody td {
@@ -2679,68 +2679,238 @@ div[class*="echarts-tooltip"] {
 
 /* Estilos para cards de administração */
 .admin-card-button {
-    background-color: #8f9dd2 !important;
-    border-color: #8f9dd2 !important;
-    transition: all 0.3s ease;
+  background-color: #8f9dd2 !important;
+  border-color: #8f9dd2 !important;
+  transition: all 0.3s ease;
 }
 
 .admin-card-button:hover:not(.disabled-button) {
-    background-color: #7a89c4 !important;
-    border-color: #7a89c4 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(143, 157, 210, 0.3);
+  background-color: #7a89c4 !important;
+  border-color: #7a89c4 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(143, 157, 210, 0.3);
 }
 
 .admin-card-button.disabled-button {
-    cursor: not-allowed;
-    opacity: 0.8;
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 
 .admin-card-button.disabled-button:hover {
-    background-color: #8f9dd2 !important;
-    border-color: #8f9dd2 !important;
-    transform: none;
-    box-shadow: none;
+  background-color: #8f9dd2 !important;
+  border-color: #8f9dd2 !important;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Ícones dos cards admin */
 #admin-cards .fa {
-    color: #8f9dd2 !important;
-    transition: all 0.3s ease;
+  color: #8f9dd2 !important;
+  transition: all 0.3s ease;
 }
 
 #admin-cards .br-card:hover .fa {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 #admin-cards .br-card:hover .admin-card-button.disabled-button + .fa {
-    transform: none;
+  transform: none;
 }
 
 /* Animação para a mensagem de warning */
 .br-message.feature-disabled {
-    animation: slideInRight 0.3s ease-out;
+  animation: slideInRight 0.3s ease-out;
 }
 
 @keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* Responsividade para a mensagem de warning */
 @media (max-width: 768px) {
-    .br-message.feature-disabled {
-        position: fixed !important;
-        top: 10px !important;
-        left: 10px !important;
-        right: 10px !important;
-        min-width: auto !important;
-        max-width: none !important;
-    }
+  .br-message.feature-disabled {
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    min-width: auto !important;
+    max-width: none !important;
+  }
 }
+
+/* ====================
+   TOOLTIP COMPONENT STYLES
+   ==================== */
+
+.br-tooltip {
+  background-color: #084a8a;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  max-width: 250px;
+  word-wrap: break-word;
+  white-space: normal;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Tooltip arrow styles */
+.br-tooltip::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Top placement */
+.br-tooltip.top::after {
+  top: 100%;
+  left: 50%;
+  margin-left: -4px;
+  border-width: 4px 4px 0 4px;
+  border-color: #333 transparent transparent transparent;
+}
+
+/* Bottom placement */
+.br-tooltip.bottom::after {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -4px;
+  border-width: 0 4px 4px 4px;
+  border-color: transparent transparent #333 transparent;
+}
+
+/* Left placement */
+.br-tooltip.left::after {
+  top: 50%;
+  left: 100%;
+  margin-top: -4px;
+  border-width: 4px 0 4px 4px;
+  border-color: transparent transparent transparent #333;
+}
+
+/* Right placement */
+.br-tooltip.right::after {
+  top: 50%;
+  right: 100%;
+  margin-top: -4px;
+  border-width: 4px 4px 4px 0;
+  border-color: transparent #333 transparent transparent;
+}
+
+/* Tooltip type variants */
+.br-tooltip.info {
+  background-color: #084a8a;
+  color: #fff;
+}
+
+.br-tooltip.info::after {
+  border-color: #333 transparent transparent transparent;
+}
+
+.br-tooltip.info.bottom::after {
+  border-color: transparent transparent #333 transparent;
+}
+
+.br-tooltip.info.left::after {
+  border-color: transparent transparent transparent #333;
+}
+
+.br-tooltip.info.right::after {
+  border-color: transparent #333 transparent transparent;
+}
+
+.br-tooltip.success {
+  background-color: #168821;
+  color: #fff;
+}
+
+.br-tooltip.success::after {
+  border-color: #168821 transparent transparent transparent;
+}
+
+.br-tooltip.success.bottom::after {
+  border-color: transparent transparent #168821 transparent;
+}
+
+.br-tooltip.success.left::after {
+  border-color: transparent transparent transparent #168821;
+}
+
+.br-tooltip.success.right::after {
+  border-color: transparent #168821 transparent transparent;
+}
+
+.br-tooltip.warning {
+  background-color: #ffcd07;
+  color: #333;
+}
+
+.br-tooltip.warning::after {
+  border-color: #ffcd07 transparent transparent transparent;
+}
+
+.br-tooltip.warning.bottom::after {
+  border-color: transparent transparent #ffcd07 transparent;
+}
+
+.br-tooltip.warning.left::after {
+  border-color: transparent transparent transparent #ffcd07;
+}
+
+.br-tooltip.warning.right::after {
+  border-color: transparent #ffcd07 transparent transparent;
+}
+
+.br-tooltip.error {
+  background-color: #e52207;
+  color: #fff;
+}
+
+.br-tooltip.error::after {
+  border-color: #e52207 transparent transparent transparent;
+}
+
+.br-tooltip.error.bottom::after {
+  border-color: transparent transparent #e52207 transparent;
+}
+
+.br-tooltip.error.left::after {
+  border-color: transparent transparent transparent #e52207;
+}
+
+.br-tooltip.error.right::after {
+  border-color: transparent #e52207 transparent transparent;
+}
+
+/* Responsive tooltip styles */
+@media (max-width: 768px) {
+  .br-tooltip {
+    max-width: 200px;
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .br-tooltip {
+    max-width: 150px;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}
+
+/* ====================
+   END TOOLTIP STYLES
+   ==================== */

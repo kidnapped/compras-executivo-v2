@@ -29,17 +29,17 @@ export const initKpi12 = async () => {
       style.textContent = `
         #kpi12-vigencia-media {
           line-height: 1.1 !important;
-          min-height: 60px;
+          min-height: 20px;
           display: flex;
-          align-items: center;
+          align-items: left;
           justify-content: center;
         }
         
         #kpi12-total-contratos,
         #kpi12-tempo-execucao {
-          min-height: 60px;
+          min-height: 20px;
           display: flex;
-          align-items: center;
+          align-items: lef;
           justify-content: center;
         }
         

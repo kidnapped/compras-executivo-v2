@@ -120,6 +120,10 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "shadow" },
+          backgroundColor: "#084a8a",
+          textStyle: {
+            color: "#ffffff",
+          },
           formatter: (p) =>
             `${p[0].axisValue}<br/><strong>${p[0].data} Contratos</strong>`,
         },
@@ -186,6 +190,10 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "shadow" },
+          backgroundColor: "#084a8a",
+          textStyle: {
+            color: "#ffffff",
+          },
           formatter: (p) =>
             `${
               p[0].axisValue
@@ -448,7 +456,7 @@ export default {
           right: 0,
           top: 0,
           bottom: 0,
-          containLabel: false
+          containLabel: false,
         },
         tooltip: {
           show: false,
@@ -513,8 +521,8 @@ export default {
           {
             name: "Vigência",
             type: "gauge",
-            center: ['50%', '50%'],
-            radius: '100%',
+            center: ["50%", "50%"],
+            radius: "100%",
             progress: {
               show: false,
             },
@@ -559,9 +567,13 @@ export default {
         right: 0,
         top: 0,
         bottom: 0,
-        containLabel: false
+        containLabel: false,
       },
       tooltip: {
+        backgroundColor: "#084a8a",
+        textStyle: {
+          color: "#ffffff",
+        },
         formatter: "{a} <br/>{b} : {c}%",
       },
       graphic: [
@@ -624,8 +636,8 @@ export default {
         {
           name: "Vigência",
           type: "gauge",
-          center: ['50%', '50%'],
-          radius: '100%',
+          center: ["50%", "50%"],
+          radius: "100%",
           progress: {
             show: false,
           },
@@ -1163,7 +1175,13 @@ export default {
       <tr>
         <td style="padding: 8px 8px !important;" valign="top">
           <div style="display: flex; gap: 8px; font-family: Arial, sans-serif;">
-          <div class="icon-circle" style="opacity: 0.7; transform: scale(0.9);">  
+          <div class="icon-circle" 
+            data-tooltip-text="${contract.naturezadespesa_id} - ${
+      contract.naturezadespesa_descricao || "N/A"
+    }"
+            data-tooltip-place="bottom"
+            data-tooltip-type="info"
+            style="opacity: 0.7; transform: scale(0.9);">  
           <i class="${
             contract.fontawesome_icon
           }" alt="contracto" style="font-size: 34px; color: #bbc6ea; opacity: 0.7;"></i>
@@ -1172,12 +1190,12 @@ export default {
               <div style="display: flex; align-items: flex-start; margin-bottom: 5px;">
                 <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 20px;" />
                 <div style="padding-left: 6px;">
-                  <span style="color: #929ab5; font-size: 14px; text-transform: uppercase;" title="Fornecedor do contrato"><b>${
+                  <span style="color: #929ab5; font-size: 14px; text-transform: uppercase;" data-tooltip-text="Fornecedor do contrato" data-tooltip-place="bottom" data-tooltip-type="info"><b>${
                     contract.fornecedor_nome || "N/A"
                   }</b></span><br />
                   <span style="color: #666; cursor: pointer;" onclick="detalhesFornecedor('${
                     contract.fornecedor_id || ""
-                  }');" title="Fornecedor do contrato">${
+                  }');" data-tooltip-text="Fornecedor do contrato" data-tooltip-place="bottom" data-tooltip-type="info">${
       contract.fornecedor_cnpj || "N/A"
     }</span>
                 </div>
@@ -1196,11 +1214,16 @@ export default {
 
                 <img src="static/images/ico/heart_${
                   contract.favorite_icon
-                }.png" style="cursor: pointer; margin-left: 20px;"  alt="Favorito" />
-
+                }.png" style="cursor: pointer; margin-left: 20px;"  alt="Favorito" 
+                  data-tooltip-text="Favorito"
+                  data-tooltip-place="bottom"
+                  data-tooltip-type="info" />
                 <img data-contract-id="${
                   contract.id
-                }" class="encontro-action" src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" title="Encontro de Contas" />
+                }" class="encontro-action" src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" 
+                  data-tooltip-text="Encontro de Contas"
+                  data-tooltip-place="bottom"
+                  data-tooltip-type="info" />
 
     <div class="aditivo-action" style="position: relative; display: inline-block; padding-top: 5px; margin-left: -6px;" 
       data-contract-id="${contract.id}"
@@ -1228,7 +1251,11 @@ export default {
     font-weight: bold;
     color: #666;
     padding-top: 2px;
-    font-size: 11px;" title="Termos aditivos">
+    font-size: 11px;" 
+    data-tooltip-text="Termos aditivos"
+    data-tooltip-place="bottom"
+    data-tooltip-type="info"
+    >
     ${contract.aditivos_count || 0}
   </div>
 </div>            
@@ -1251,7 +1278,10 @@ export default {
     font-weight: bold;
     color: #666;
     padding-top: 2px;
-    font-size: 11px;" title="Restrições">0</div>
+    font-size: 11px;" 
+    data-tooltip-text="Restrições"
+    data-tooltip-place="bottom"
+    data-tooltip-type="info">0</div>
 </div>
       <div style="position: relative; display: inline-block; padding-top: 5px; margin-left: -10px;">
   <svg
@@ -1275,9 +1305,13 @@ export default {
     font-weight: bold;
     color: #666;
     padding-top: 2px;
-    font-size: 11px;" title="${this.formatContractStartInfo(
+    font-size: 11px;" 
+    data-tooltip-text="${this.formatContractStartInfo(
       contract.vigencia_inicio
-    )}">${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
+    )}"
+    data-tooltip-place="bottom"
+    data-tooltip-type="info"
+    >${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
 </div>              
 
                 <span style="cursor: pointer; margin-left: 2px;">
@@ -1288,9 +1322,11 @@ export default {
 
                 <span style="color: #666; cursor: pointer; margin-left: 2px;" onclick="detalhesProcesso('${
                   contract.processo
-                }');" title="Número do processo">${
-      contract.processo || "N/A"
-    }</span>
+                }');" 
+                data-tooltip-text="Número do processo"
+                data-tooltip-place="bottom"
+                data-tooltip-type="info"
+              >${contract.processo || "N/A"}</span>
               </div>
 
               
@@ -1351,7 +1387,9 @@ export default {
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           <div class="financial-bars-container" data-contract-id="${
             contract.numero
-          }/${contract.ano}" data-type="contratado" style="height: 140px; display: flex; align-items: center; justify-content: center;">
+          }/${
+      contract.ano
+    }" data-type="contratado" style="height: 140px; display: flex; align-items: center; justify-content: center;">
             <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
               <div class="financial-bar-value" style="
                 position: absolute;
@@ -1368,11 +1406,18 @@ export default {
                 z-index: 1;
                 max-width: 18px;
                 overflow: hidden;
-                text-overflow: ellipsis;
-              ">${formatCurrency(contract.valor_global)}</div>
-              <div class="financial-bar" data-type="contratado" data-amount="${
-                contract.valor_inicial || 0
-              }" style="
+                text-overflow: ellipsis;"
+                
+                >${formatCurrency(contract.valor_global)}</div>
+              <div class="financial-bar" data-tooltip-text="Valor contratado ${formatCurrency(
+                contract.valor_global
+              )}"
+                data-tooltip-place="left"
+                data-tooltip-type="info" 
+                data-type="contratado" data-amount="${
+                  contract.valor_inicial || 0
+                }" 
+                style="
                 width: 21px; 
                 height: 140px; 
                 background-color: #e0e0e0; 
@@ -1396,7 +1441,9 @@ export default {
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           <div class="financial-bars-container" data-contract-id="${
             contract.numero
-          }/${contract.ano}" data-type="empenhado" style="height: 140px; display: flex; align-items: center; justify-content: center;">
+          }/${
+      contract.ano
+    }" data-type="empenhado" style="height: 140px; display: flex; align-items: center; justify-content: center;">
             <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
               <div class="financial-bar-value" style="
                 position: absolute;
@@ -1415,7 +1462,13 @@ export default {
                 overflow: hidden;
                 text-overflow: ellipsis;
               ">${formatCurrency(contract.total_valor_empenhado)}</div>
-              <div class="financial-bar" data-type="empenhado" data-amount="${
+              <div class="financial-bar" 
+              data-tooltip-text="Valor empenhado ${formatCurrency(
+                contract.total_valor_empenhado
+              )}"
+              data-tooltip-place="left"
+              data-tooltip-type="info"
+              data-type="empenhado" data-amount="${
                 contract.total_valor_empenhado || 0
               }" style="
                 width: 21px; 
@@ -1441,7 +1494,9 @@ export default {
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           <div class="financial-bars-container" data-contract-id="${
             contract.numero
-          }/${contract.ano}" data-type="pagamentos" style="height: 140px; display: flex; align-items: center; justify-content: center;">
+          }/${
+      contract.ano
+    }" data-type="pagamentos" style="height: 140px; display: flex; align-items: center; justify-content: center;">
             <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
               <div class="financial-bar-value" style="
                 position: absolute;
@@ -1460,7 +1515,13 @@ export default {
                 overflow: hidden;
                 text-overflow: ellipsis;
               ">${formatCurrency(contract.total_valor_pago)}</div>
-              <div class="financial-bar" data-type="pagamentos" data-amount="${
+              <div class="financial-bar" 
+              data-tooltip-text="Valor pago ${formatCurrency(
+                contract.total_valor_pago
+              )}"
+              data-tooltip-place="left"
+              data-tooltip-type="info"
+              data-type="pagamentos" data-amount="${
                 contract.total_valor_pago || 0
               }" style="
                 width: 21px; 
