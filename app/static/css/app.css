@@ -2914,3 +2914,42 @@ div[class*="echarts-tooltip"] {
 /* ====================
    END TOOLTIP STYLES
    ==================== */
+
+/* ====================
+   DEV-OPS STYLES
+   ==================== */
+
+/* Dev-Ops dropdown and search styles */
+.dropdown-item.selected {
+  background-color: #e3f2fd !important;
+}
+
+.dropdown-results {
+  border-radius: 0 0 4px 4px;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.br-input.has-icon {
+  position: relative;
+}
+
+.br-tag.info {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+#unidades-search-input:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* ====================
+   END DEV-OPS STYLES
+   ==================== */

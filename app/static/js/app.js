@@ -9,6 +9,7 @@ import modalManager from "./common/modal-manager.js";
 import tooltip from "./common/tooltip.js";
 import aditivosHandler from "./contrato/aditivos-handler.js";
 import encontroContas from "./encontro/encontro-contas.js";
+import devOps from "./dev-ops/dev-ops.js";
 
 import card_kpi from "./kpi/card.js";
 import contratos_dashboard from "./contrato/dashboard.js";
@@ -24,6 +25,7 @@ const App = {
   ...modalManager,
   ...tooltip,
   ...aditivosHandler,
+  ...devOps,
   initEncontroContas: encontroContas.init.bind(encontroContas),
 };
 
