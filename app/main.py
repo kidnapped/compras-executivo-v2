@@ -10,6 +10,7 @@ from app.api.v1.endpoints import govbr
 from app.api.v1.endpoints import kpis
 from app.api.v1.endpoints import admin as admin_routes
 from app.api.v1.endpoints import encontro_contas
+from app.api.v1.endpoints import dev_ops
 from app.middleware.auth_session_middleware import AuthSessionMiddleware
 from app.core.config import settings
 
@@ -53,3 +54,4 @@ app.include_router(govbr.router)
 app.include_router(admin_routes.router)
 app.include_router(kpis.router)
 app.include_router(encontro_contas.router)
+app.include_router(dev_ops.router)

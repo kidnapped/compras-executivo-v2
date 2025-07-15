@@ -18,11 +18,70 @@ export default {
     { texto: "Sair", url: "/logout", icone: "fas fa-sign-out-alt" },
   ],
 
+  // Development-only menu items
+  devMenuItems: [{ texto: "dev-ops", url: "/dev-ops", icone: "fas fa-tools" }],
+
+  // Check if we're in development mode
+  isDevelopmentMode() {
+    // Method 1: Check hostname
+    if (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.includes("dev")
+    ) {
+      return true;
+    }
+
+    // Method 2: Check port (development usually runs on non-standard ports)
+    if (
+      window.location.port === "8000" ||
+      window.location.port === "8001" ||
+      window.location.port === "5000"
+    ) {
+      return true;
+    }
+
+    // Method 3: Check for development flag in localStorage
+    if (localStorage.getItem("dev_mode") === "true") {
+      return true;
+    }
+
+    // Method 4: Check URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("dev") === "true") {
+      return true;
+    }
+
+    return false;
+  },
+
+  // Get menu items based on environment
+  getMenuItems() {
+    let items = [...this.menuItems];
+
+    // Add development items if in development mode
+    if (this.isDevelopmentMode()) {
+      // Insert dev items before "Sair" (last item)
+      const sairIndex = items.findIndex((item) => item.texto === "Sair");
+      if (sairIndex !== -1) {
+        items.splice(sairIndex, 0, ...this.devMenuItems);
+      } else {
+        items.push(...this.devMenuItems);
+      }
+    }
+
+    return items;
+  },
+
   menu() {
     const container = document.getElementById("menu-dinamico");
     if (container) {
       container.innerHTML = "";
-      for (const item of this.menuItems) {
+
+      // Use getMenuItems() instead of this.menuItems
+      const menuItems = this.getMenuItems();
+
+      for (const item of menuItems) {
         const link = document.createElement("a");
         link.href = item.url;
         link.className = "menu-item";
