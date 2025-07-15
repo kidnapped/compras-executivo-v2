@@ -2119,6 +2119,34 @@ div[class*="echarts-tooltip"] {
   min-height: auto !important;
 }
 
+/* detalhes-empenhos-container Styles */
+#detalhes-empenhos-container {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#detalhes-empenhos-container .card-header {
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #e9ecef;
+  min-height: 64px;
+}
+
+#detalhes-empenhos-container .titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #00366f;
+  margin: -16px 0px 0px -20px;
+}
+
+#detalhes-empenhos-container .subtitulo {
+  font-size: 10px;
+  color: #000;
+  margin-left: 26px !important;
+}
+
 /* Últimos Lançamentos Grid Styles */
 #ultimos-lancamentos-container {
   border-radius: 10px;
@@ -2141,7 +2169,7 @@ div[class*="echarts-tooltip"] {
   margin: -16px 0px 0px -20px;
 }
 
-#ultimos_lancamentos-container .subtitulo {
+#ultimos-lancamentos-container .subtitulo {
   font-size: 10px;
   color: #000;
   margin-left: 26px !important;
@@ -2935,3 +2963,30 @@ div[class*="echarts-tooltip"] {
 /* ====================
    END TOOLTIP STYLES
    ==================== */
+
+/* Financial bar segments for segmented bars */
+.financial-bar-segment {
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  border-radius: 1px;
+}
+
+.financial-bar-segment:hover {
+  transform: scaleX(1.05);
+  filter: brightness(0.9);
+  z-index: 2;
+  position: relative;
+}
+
+/* Segmented financial bar styling for contracted amounts */
+.financial-bar[data-type="contratado"] {
+  overflow: visible; /* Allow segments to expand slightly on hover */
+}
+
+.financial-bar[data-type="contratado"] .financial-bar-segment:first-child {
+  background-color: #bbc6ea !important; /* Original contract color */
+}
+
+.financial-bar[data-type="contratado"]
+  .financial-bar-segment:not(:first-child) {
+  background-color: #a8b8e8 !important; /* Aditivos color */
+}

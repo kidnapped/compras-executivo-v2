@@ -6,9 +6,9 @@ import environment from "./environment.js";
 import menu from "./menu.js";
 import admin from "./admin.js";
 import modalManager from "./common/modal-manager.js";
-import tooltipManager from "./common/tooltip-manager.js";
 import tooltip from "./common/tooltip.js";
 import aditivosHandler from "./contrato/aditivos-handler.js";
+import financialBars from "./contrato/financial-bars.js";
 import encontroContas from "./encontro/encontro-contas.js";
 
 import card_kpi from "./kpi/card.js";
@@ -23,9 +23,9 @@ const App = {
   ...contratos_dashboard,
   ...kpis_kpi,
   ...modalManager,
-  ...tooltipManager,
   ...tooltip,
   ...aditivosHandler,
+  ...financialBars,
   initEncontroContas: encontroContas.init.bind(encontroContas),
 };
 
@@ -34,8 +34,8 @@ window.EncontroContas = encontroContas;
 
 document.addEventListener("DOMContentLoaded", () => {
   modalManager.initialize();
-  tooltipManager.initialize();
   tooltip.initialize();
+  financialBars.initialize();
   encontroContas.init();
   App.init();
 });

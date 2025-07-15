@@ -1,6 +1,7 @@
 import getEcharts from "../util/echarts.js";
 import Card from "../kpi/card.js";
 import DashboardEvents from "./dashboard-events.js"; // <-- 1. IMPORT THE NEW MODULE
+import financialBars from "./financial-bars.js";
 
 export default {
   // State management for the table
@@ -778,94 +779,6 @@ export default {
     });
   },
 
-  // Financial bars functionality
-  async initFinancialBars() {
-    console.log("=== INITIALIZING FINANCIAL BARS ===");
-
-    const financialContainers = document.querySelectorAll(
-      ".financial-bars-container"
-    );
-    console.log("Found financial bar containers:", financialContainers.length);
-
-    for (const container of financialContainers) {
-      await this.createFinancialBars(container);
-    }
-  },
-
-  async createFinancialBars(container) {
-    try {
-      const contractId = container.getAttribute("data-contract-id");
-      const type = container.getAttribute("data-type");
-
-      if (!contractId || !type) {
-        console.warn(
-          `Missing attributes for financial bars: ${contractId}, ${type}`
-        );
-        return;
-      }
-
-      // For now, use static data - later this will be loaded from API
-      this.updateFinancialBars(container);
-
-      console.log(
-        `✅ Financial bars updated for contract ${contractId}, type: ${type}`
-      );
-    } catch (error) {
-      console.error("Error creating financial bars:", error);
-    }
-  },
-
-  updateFinancialBars(container) {
-    // Get the bar element and its data
-    const bar = container.querySelector(".financial-bar");
-    const fill = container.querySelector(".financial-bar-fill");
-
-    if (!bar || !fill) {
-      console.warn("Financial bar elements not found");
-      return;
-    }
-
-    const amount = parseFloat(bar.getAttribute("data-amount")) || 0;
-    const type = bar.getAttribute("data-type");
-
-    // Calculate fill percentage based on amount and type
-    let fillPercentage = 0;
-
-    if (type === "contratado") {
-      // Contratado bar is always 100% full
-      fillPercentage = 100;
-    } else {
-      // For other types, calculate based on maximum values
-      const maxValues = {
-        empenhado: 2000000, // Max committed amount
-        pagamentos: 1500000, // Max payments amount
-      };
-
-      if (maxValues[type]) {
-        fillPercentage = Math.min(100, (amount / maxValues[type]) * 100);
-      }
-    }
-
-    // Apply the fill percentage
-    if (type === "contratado") {
-      // Always set contratado bars to 100%, regardless of existing height
-      fill.style.height = "100%";
-    } else {
-      // For other types, only set if not already set
-      const currentHeight = fill.style.height;
-      if (!currentHeight || currentHeight === "0%") {
-        fill.style.height = `${fillPercentage}%`;
-      }
-    }
-
-    // Add visual indication based on type and fill percentage
-    if (type === "contratado" || fillPercentage > 10) {
-      bar.classList.add("active");
-    } else {
-      bar.classList.remove("active");
-    }
-  },
-
   // Initialize dashboard - called from DOMContentLoaded
   initDashboard() {
     console.log("Initializing dashboard...");
@@ -1052,7 +965,7 @@ export default {
         if (window.dashboardConfig?.showRenewalColumn !== false) {
           this.initRenewalBars();
         }
-        this.initFinancialBars();
+        financialBars.initialize();
       }, 100);
     } catch (error) {
       console.error("Error loading contracts table:", error);
@@ -1385,164 +1298,13 @@ export default {
             : ""
         }
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
-          <div class="financial-bars-container" data-contract-id="${
-            contract.numero
-          }/${
-      contract.ano
-    }" data-type="contratado" style="height: 140px; display: flex; align-items: center; justify-content: center;">
-            <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
-              <div class="financial-bar-value" style="
-                position: absolute;
-                left: -20px;
-                top: 50%;
-                transform: translateY(-50%) rotate(180deg); 
-                writing-mode: vertical-rl; 
-                font-family: Arial, sans-serif; 
-                font-size: 10px; 
-                font-weight: bold; 
-                color: #333; 
-                white-space: nowrap;
-                line-height: 1.2;
-                z-index: 1;
-                max-width: 18px;
-                overflow: hidden;
-                text-overflow: ellipsis;"
-                
-                >${formatCurrency(contract.valor_global)}</div>
-              <div class="financial-bar" data-tooltip-text="Valor contratado ${formatCurrency(
-                contract.valor_global
-              )}"
-                data-tooltip-place="left"
-                data-tooltip-type="info" 
-                data-type="contratado" data-amount="${
-                  contract.valor_inicial || 0
-                }" 
-                style="
-                width: 21px; 
-                height: 140px; 
-                background-color: #e0e0e0; 
-                position: relative;
-              ">
-                <div class="financial-bar-fill" style="
-                  position: absolute; 
-                  bottom: 0; 
-                  width: 100%; 
-                  background-color: #bbc6ea; 
-                  transition: height 0.3s ease;
-                  height: ${this.calculateFinancialPercentage(
-                    contract.valor_inicial,
-                    contract.valor_global
-                  )}%;
-                "></div>
-              </div>
-            </div>
-          </div>
+          ${financialBars.createContractedBar(contract)}
         </td>
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
-          <div class="financial-bars-container" data-contract-id="${
-            contract.numero
-          }/${
-      contract.ano
-    }" data-type="empenhado" style="height: 140px; display: flex; align-items: center; justify-content: center;">
-            <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
-              <div class="financial-bar-value" style="
-                position: absolute;
-                left: -20px;
-                top: 50%;
-                transform: translateY(-50%) rotate(180deg); 
-                writing-mode: vertical-rl; 
-                font-family: Arial, sans-serif; 
-                font-size: 10px; 
-                font-weight: bold; 
-                color: #333; 
-                white-space: nowrap;
-                line-height: 1.2;
-                z-index: 1;
-                max-width: 18px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-              ">${formatCurrency(contract.total_valor_empenhado)}</div>
-              <div class="financial-bar" 
-              data-tooltip-text="Valor empenhado ${formatCurrency(
-                contract.total_valor_empenhado
-              )}"
-              data-tooltip-place="left"
-              data-tooltip-type="info"
-              data-type="empenhado" data-amount="${
-                contract.total_valor_empenhado || 0
-              }" style="
-                width: 32px; 
-                height: 140px; 
-                background-color: #e0e0e0; 
-                position: relative;
-              ">
-                <div class="financial-bar-fill" style="
-                  position: absolute; 
-                  bottom: 0; 
-                  width: 100%; 
-                  background-color: #8f9dd2; 
-                  transition: height 0.3s ease;
-                  height: ${this.calculateFinancialPercentage(
-                    contract.total_valor_empenhado,
-                    contract.valor_inicial
-                  )}%;
-                "></div>
-              </div>
-            </div>
-          </div>
+          ${financialBars.createCommittedBar(contract)}
         </td>
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
-          <div class="financial-bars-container" data-contract-id="${
-            contract.numero
-          }/${
-      contract.ano
-    }" data-type="pagamentos" style="height: 140px; display: flex; align-items: center; justify-content: center;">
-            <div class="financial-bar-group" style="height: 140px; display: flex; align-items: center; position: relative;">
-              <div class="financial-bar-value" style="
-                position: absolute;
-                left: -20px;
-                top: 50%;
-                transform: translateY(-50%) rotate(180deg); 
-                writing-mode: vertical-rl; 
-                font-family: Arial, sans-serif; 
-                font-size: 10px; 
-                font-weight: bold; 
-                color: #333; 
-                white-space: nowrap;
-                line-height: 1.2;
-                z-index: 1;
-                max-width: 18px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-              ">${formatCurrency(contract.total_valor_pago)}</div>
-              <div class="financial-bar" 
-              data-tooltip-text="Valor pago ${formatCurrency(
-                contract.total_valor_pago
-              )}"
-              data-tooltip-place="left"
-              data-tooltip-type="info"
-              data-type="pagamentos" data-amount="${
-                contract.total_valor_pago || 0
-              }" style="
-                width: 32px; 
-                height: 140px; 
-                background-color: #e0e0e0; 
-                position: relative;
-              ">
-                <div class="financial-bar-fill" style="
-                  position: absolute; 
-                  bottom: 0; 
-                  width: 100%; 
-                  background-color: #93b7e3; 
-                  transition: height 0.3s ease;
-                  height: ${this.calculateFinancialPercentage(
-                    contract.total_valor_pago,
-                    contract.total_valor_empenhado
-                  )}%;
-                "></div>
-              </div>
-            </div>
-          </div>
+          ${financialBars.createPaidBar(contract)}
         </td>
         <td class="hide-mobile" valign="top" style="padding: 5px 8px;">${
           contract.responsaveis ||
@@ -1563,12 +1325,6 @@ export default {
     if (daysToEnd <= 0) return 100; // Expired
     if (daysToEnd <= targetDays) return 100; // Within target range
     return 0; // Not yet in target range
-  },
-
-  // Calculate financial percentage
-  calculateFinancialPercentage(value, total) {
-    if (!value || !total) return 0;
-    return Math.min(100, Math.max(0, (value / total) * 100));
   },
 
   // Calculate years elapsed since contract start
