@@ -1373,7 +1373,7 @@ export default {
               <div class="financial-bar" data-type="contratado" data-amount="${
                 contract.valor_inicial || 0
               }" style="
-                width: 21px; 
+                width: 32px; 
                 height: 140px; 
                 background-color: #e0e0e0; 
                 position: relative;
@@ -1418,7 +1418,7 @@ export default {
               <div class="financial-bar" data-type="empenhado" data-amount="${
                 contract.total_valor_empenhado || 0
               }" style="
-                width: 21px; 
+                width: 32px; 
                 height: 140px; 
                 background-color: #e0e0e0; 
                 position: relative;
@@ -1463,7 +1463,7 @@ export default {
               <div class="financial-bar" data-type="pagamentos" data-amount="${
                 contract.total_valor_pago || 0
               }" style="
-                width: 21px; 
+                width: 32px; 
                 height: 140px; 
                 background-color: #e0e0e0; 
                 position: relative;
