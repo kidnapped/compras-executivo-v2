@@ -2773,27 +2773,6 @@ div[class*="echarts-tooltip"] {
   }
 }
 
-/* Custom Tooltip Styles */
-#custom-tooltip {
-  line-height: 1.4;
-  white-space: pre-line;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  text-align: left;
-  font-weight: normal;
-}
-
-/* Hide default browser tooltips */
-[data-tooltip] {
-  position: relative;
-}
-
-/* Ensure tooltips appear above all other elements */
-#custom-tooltip {
-  z-index: 99999 !important;
-}
-
 /* ====================
    TOOLTIP COMPONENT STYLES
    ==================== */
@@ -2962,6 +2941,45 @@ div[class*="echarts-tooltip"] {
 
 /* ====================
    END TOOLTIP STYLES
+   ==================== */
+
+/* ====================
+   DEV-OPS STYLES
+   ==================== */
+
+/* Dev-Ops dropdown and search styles */
+.dropdown-item.selected {
+  background-color: #e3f2fd !important;
+}
+
+.dropdown-results {
+  border-radius: 0 0 4px 4px;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.br-input.has-icon {
+  position: relative;
+}
+
+.br-tag.info {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+#unidades-search-input:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* ====================
+   END DEV-OPS STYLES
    ==================== */
 
 /* Financial bar segments for segmented bars */

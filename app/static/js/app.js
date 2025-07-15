@@ -10,6 +10,7 @@ import tooltip from "./common/tooltip.js";
 import aditivosHandler from "./contrato/aditivos-handler.js";
 import financialBars from "./contrato/financial-bars.js";
 import encontroContas from "./encontro/encontro-contas.js";
+import devOps from "./dev-ops/dev-ops.js";
 
 import card_kpi from "./kpi/card.js";
 import contratos_dashboard from "./contrato/dashboard.js";
