@@ -48,15 +48,19 @@ export default {
   // Handle search input with debouncing
   handleUnidadesSearch(searchTerm) {
     const dropdown = document.getElementById('unidades-dropdown');
+    const loadingIndicator = document.getElementById('unidades-loading');
     
     // Clear previous timeout
     if (this.unidadesState.searchTimeout) {
       clearTimeout(this.unidadesState.searchTimeout);
     }
 
-    // Hide dropdown if search term is too short
+    // Hide dropdown and loading if search term is too short
     if (searchTerm.length < 2) {
       dropdown.style.display = 'none';
+      if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+      }
       this.unidadesState.lastSearchTerm = '';
       return;
     }
