@@ -89,38 +89,45 @@ endblock %} {% block content %}
                   </p>
                   
                   <!-- Searchable Select Container -->
-                  <div class="br-select" style="position: relative">
-                    <div class="br-input has-icon">
-                      <input
-                        id="unidades-search-input"
-                        type="text"
-                        placeholder="Digite para buscar unidades (ex: DNIT, Ministério)..."
-                        autocomplete="off"
-                        style="width: 100%; padding-right: 40px"
-                      />
-                      <i class="fas fa-search" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+                  <div style="display: flex; align-items: flex-start; gap: 15px;">
+                    <div class="br-select" style="position: relative; flex: 1;">
+                      <div class="br-input has-icon">
+                        <input
+                          id="unidades-search-input"
+                          type="text"
+                          placeholder="Digite para buscar unidades (ex: DNIT, Ministério)..."
+                          autocomplete="off"
+                          style="width: 100%; padding-right: 40px"
+                        />
+                        <i class="fas fa-search" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+                      </div>
+                      
+                      <!-- Dropdown with search results -->
+                      <div 
+                        id="unidades-dropdown" 
+                        class="dropdown-results" 
+                        style="
+                          display: none;
+                          position: absolute;
+                          top: 100%;
+                          left: 0;
+                          right: 0;
+                          background: white;
+                          border: 1px solid #ddd;
+                          border-top: none;
+                          max-height: 200px;
+                          overflow-y: auto;
+                          z-index: 1000;
+                          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        "
+                      >
+                        <!-- Search results will be populated here -->
+                      </div>
                     </div>
                     
-                    <!-- Dropdown with search results -->
-                    <div 
-                      id="unidades-dropdown" 
-                      class="dropdown-results" 
-                      style="
-                        display: none;
-                        position: absolute;
-                        top: 100%;
-                        left: 0;
-                        right: 0;
-                        background: white;
-                        border: 1px solid #ddd;
-                        border-top: none;
-                        max-height: 200px;
-                        overflow-y: auto;
-                        z-index: 1000;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                      "
-                    >
-                      <!-- Search results will be populated here -->
+                    <!-- Loading indicator -->
+                    <div id="unidades-loading" style="display: none; margin-top: 8px;">
+                      <span style="font-size: 12px; color: #666; white-space: nowrap;">Buscando unidades...</span>
                     </div>
                   </div>
                   
@@ -155,12 +162,6 @@ endblock %} {% block content %}
                         <span id="status-text">Ao selecionar uma unidade, ela será definida como padrão para sua sessão</span>
                       </small>
                     </div>
-                  </div>
-                  
-                  <!-- Loading indicator -->
-                  <div id="unidades-loading" style="display: none; margin-top: 10px">
-                    <div class="br-loading small" role="progressbar" aria-label="carregando unidades"></div>
-                    <span style="margin-left: 10px; font-size: 12px; color: #666">Buscando unidades...</span>
                   </div>
                 </div>
               </div>
