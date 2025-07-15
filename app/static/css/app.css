@@ -2745,6 +2745,27 @@ div[class*="echarts-tooltip"] {
   }
 }
 
+/* Custom Tooltip Styles */
+#custom-tooltip {
+  line-height: 1.4;
+  white-space: pre-line;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  text-align: left;
+  font-weight: normal;
+}
+
+/* Hide default browser tooltips */
+[data-tooltip] {
+  position: relative;
+}
+
+/* Ensure tooltips appear above all other elements */
+#custom-tooltip {
+  z-index: 99999 !important;
+}
+
 /* ====================
    TOOLTIP COMPONENT STYLES
    ==================== */
