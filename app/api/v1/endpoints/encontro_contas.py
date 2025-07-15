@@ -191,3 +191,79 @@ async def get_empenhos_por_contrato(
 
     logger.info(f"Returning empenhos and contract details for contrato {contrato_id}: {len(empenhos)} empenhos found, contract value: {contrato_info['valor_global']}")
     return data
+
+@router.get("/encontro-de-contas/historico-orcamentario/{contrato_id}")
+async def get_historico_orcamentario(
+    contrato_id: int,
+    request: Request,
+    unidade_empenho_id: int = Query(None, description="ID da unidade de empenho (opcional)"),
+    db: AsyncSession = Depends(get_session_contratos)
+):
+    """
+    Retorna dados do histórico orçamentário para um contrato específico
+    
+    - contrato_id: ID do contrato (na URL)
+    - unidade_empenho_id: ID da unidade de empenho (query parameter opcional)
+    """
+    # Se unidade_empenho_id não foi fornecido, tenta obter das UASGs da sessão
+    if unidade_empenho_id is None:
+        uasgs = get_uasgs_str(request)
+        if not uasgs:
+            raise HTTPException(status_code=403, detail="UASG não definida e unidade_empenho_id não fornecido")
+        
+        # Descobre os ID_UASG com base nos códigos
+        result = await db.execute(
+            text("SELECT id FROM unidades WHERE codigo = ANY(:uasg)"),
+            {"uasg": uasgs}
+        )
+        ids_uasg = [row.id for row in result.fetchall()]
+        
+        if not ids_uasg:
+            raise HTTPException(status_code=404, detail="Unidade não encontrada para as UASGs da sessão")
+            
+        unidade_empenho_id = ids_uasg[0]  # Usa a primeira UASG encontrada
+
+    # Query para contar empenhos do contrato
+    count_query = """
+        SELECT count(id) as total
+        FROM contratoempenhos 
+        WHERE unidadeempenho_id = :unidade_empenho_id 
+          AND contrato_id = :contrato_id
+    """
+    
+    result = await db.execute(
+        text(count_query), 
+        {
+            "unidade_empenho_id": unidade_empenho_id,
+            "contrato_id": contrato_id
+        }
+    )
+    count_row = result.mappings().first()
+    
+    if not count_row:
+        raise HTTPException(
+            status_code=404, 
+            detail=f"Nenhum dado encontrado para contrato {contrato_id} na unidade {unidade_empenho_id}"
+        )
+
+    total_empenhos = count_row.get("total", 0)
+    
+    # Calcular valores baseados no total (estimativas para demonstração)
+    em_execucao = max(0, int(total_empenhos * 0.6))  # 60% em execução
+    finalizados = max(0, int(total_empenhos * 0.3))   # 30% finalizados
+    rap = max(0, int(total_empenhos * 0.1))           # 10% RAP
+    criticos = max(0, int(total_empenhos * 0.05))     # 5% críticos
+
+    data = {
+        "contrato_id": contrato_id,
+        "unidade_empenho_id": unidade_empenho_id,
+        "quantidade_total": f"{total_empenhos} Empenhos",
+        "total_count": total_empenhos,
+        "em_execucao": em_execucao,
+        "finalizados": finalizados,
+        "rap": rap,
+        "criticos": criticos
+    }
+
+    logger.info(f"Returning historico orcamentario for contrato {contrato_id}: {total_empenhos} empenhos total")
+    return data

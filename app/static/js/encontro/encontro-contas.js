@@ -3,6 +3,7 @@ import Card from "../kpi/card.js";
 
 import DetalhesEmpenhos from "./components/detalhes-empenhos.js";
 import FornecedorCard from "./components/fornecedor-card.js";
+import HistoricoOrcamentarioCard from "./components/historico-orcamentario-card.js";
 
 /**
  * Main controller for Encontro de Contas
@@ -39,7 +40,7 @@ const EncontroContas = {
     FornecedorCard.initialize();
 
     // Initialize Histórico Orçamentário card
-    this.loadHistoricoOrcamentarioCard();
+    HistoricoOrcamentarioCard.initialize();
 
     // Initialize Últimos Lançamentos grid with default state
     this.initializeUltimosLancamentosGrid();
@@ -101,125 +102,32 @@ const EncontroContas = {
   },
 
   /**
-   * Load Histórico Orçamentário KPI card
+   * Update Histórico Orçamentário card with contract data
+   * @param {Object} data - The contract data from search results containing contract_id
    */
-  async loadHistoricoOrcamentarioCard() {
-    const container = document.getElementById(
-      "card-historico-orcamentario-container"
-    );
-    if (!container) return;
-
-    try {
-      // For now, we'll use mock data. In production, this should fetch from an API
-      const data = await this.fetchHistoricoOrcamentarioData();
-      container.outerHTML = this.renderHistoricoOrcamentarioCard(data);
-    } catch (error) {
-      console.error("Erro ao carregar histórico orçamentário:", error);
-      container.innerHTML =
-        '<div class="text-danger">Erro ao carregar dados</div>';
-    }
-  },
-
-  /**
-   * Fetch histórico orçamentário data (mock data for now)
-   */
-  async fetchHistoricoOrcamentarioData() {
-    // TODO: Replace with actual API call
-    // For now, return mock data matching the requirements
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          titulo: "Histórico Orçamentário",
-          subtitulo: "Total de empenhos originais",
-          quantidade_total: "11 Empenhos",
-          em_execucao: 8,
-          finalizados: 3,
-          rap: 8,
-          criticos: 0,
-          icone: "/static/images/doc2.png",
-        });
-      }, 500);
-    });
-  },
-
-  /**
-   * Render Histórico Orçamentário card
-   */
-  renderHistoricoOrcamentarioCard({
-    titulo = "Histórico Orçamentário",
-    subtitulo = "Total de empenhos originais",
-    quantidade_total = "11 Empenhos",
-    em_execucao = 8,
-    finalizados = 3,
-    rap = 8,
-    criticos = 0,
-    icone = "/static/images/doc2.png",
-  }) {
-    return `
-      <div class="col-md-6 col-sm-6">
-        <div class="br-card h-100 card-contratos">
-          ${Card.cardHeader({ titulo, subtitulo, icone })}
-          <div class="card-content" style="padding-top: 8px;">
-            <div class="valor-principal">${quantidade_total}</div>
-            <div class="linha">
-              <div><div>Em execução</div><div class="valor-azul">${em_execucao}</div></div>
-              <div class="divider"></div>
-              <div><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
-              <div class="divider"></div>
-              <div><div>RAP</div><div class="valor-azul">${rap}</div></div>
-              <div class="divider"></div>
-              <div><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
-            </div>
-          </div>
-        </div>
-      </div>`;
-  },
-
-  /**
-   * Update Histórico Orçamentário card with search results
-   * @param {Object} data - The empenhos data from search results
-   */
-  updateHistoricoOrcamentarioCard(data) {
-    if (!data || !data.empenhos_originais) {
-      console.log("No empenhos data available for KPI update");
+  async updateHistoricoOrcamentarioCard(data) {
+    if (!data || !data.contrato_id) {
+      console.log(
+        "No contract data available for Histórico Orçamentário update"
+      );
+      HistoricoOrcamentarioCard.showErrorState(
+        "Dados do contrato não encontrados"
+      );
       return;
     }
 
-    const empenhos = data.empenhos_originais;
-    const totalEmpenhos = empenhos.length;
+    const contratoId = data.contrato_id;
+    const unidadeEmpenhoId = data.unidade_empenho_id || null;
 
-    // Calculate statistics based on the actual data
-    let emExecucao = 0;
-    let finalizados = 0;
-    let rap = 0;
-    let criticos = 0;
-
-    empenhos.forEach((empenho) => {
-      // These calculations would depend on your actual data structure
-      // Adjust according to the actual fields available in empenho object
-      if (empenho.status === "EM_EXECUCAO") emExecucao++;
-      if (empenho.status === "FINALIZADO") finalizados++;
-      if (empenho.tipo === "RAP") rap++;
-      if (empenho.critico) criticos++;
-    });
-
-    const cardData = {
-      titulo: "Histórico Orçamentário",
-      subtitulo: "Total de empenhos originais",
-      quantidade_total: `${totalEmpenhos} Empenhos`,
-      em_execucao: emExecucao,
-      finalizados: finalizados,
-      rap: rap,
-      criticos: criticos,
-      icone: "/static/images/doc2.png",
-    };
-
-    const container = document.getElementById(
-      "card-historico-orcamentario-container"
+    console.log(
+      `Loading historico orcamentario data for contract ${contratoId}...`
     );
-    if (container) {
-      container.outerHTML = this.renderHistoricoOrcamentarioCard(cardData);
-    }
+
+    // Use the new API to load fresh data from the database
+    await HistoricoOrcamentarioCard.loadDataFromAPI(
+      contratoId,
+      unidadeEmpenhoId
+    );
   },
 
   /**
@@ -807,7 +715,7 @@ const EncontroContas = {
       const pageHeader = document.querySelector("h1");
       if (pageHeader) {
         pageHeader.innerHTML = `
-          <i class="fas fa-balance-scale text-primary"></i> Encontro de Contas
+        Encontro de Contas
           <small class="text-muted">- Contrato ${contratoId}</small>
         `;
       }

@@ -59,6 +59,56 @@ export default {
   },
 
   /**
+   * Fetch historico orcamentario data for a specific contract
+   * @param {number} contratoId - Contract ID
+   * @param {number} unidadeEmpenhoId - Optional unit ID
+   * @returns {Promise<Object>} API response with historico orcamentario data
+   */
+  async fetchHistoricoOrcamentario(contratoId, unidadeEmpenhoId = null) {
+    try {
+      let url = `/encontro-de-contas/historico-orcamentario/${contratoId}`;
+
+      // Add query parameter if unidadeEmpenhoId is provided
+      if (unidadeEmpenhoId) {
+        url += `?unidade_empenho_id=${unidadeEmpenhoId}`;
+      }
+
+      console.log(
+        `Fetching historico orcamentario data for contract ${contratoId}...`
+      );
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const data = await response.json();
+
+      console.log(`Successfully fetched historico orcamentario data:`, {
+        contractId: contratoId,
+        totalCount: data.total_count,
+        emExecucao: data.em_execucao,
+        finalizados: data.finalizados,
+        rap: data.rap,
+        criticos: data.criticos,
+      });
+
+      return {
+        success: true,
+        data: data,
+      };
+    } catch (error) {
+      console.error("Error fetching historico orcamentario data:", error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  },
+
+  /**
    * Validate API response structure
    * @param {Object} data - API response data
    * @returns {boolean} True if valid

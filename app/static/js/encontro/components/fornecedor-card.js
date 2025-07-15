@@ -25,8 +25,8 @@ const FornecedorCard = {
     container.innerHTML = `
       <div class="pl-6 pt-3 h-100 card-fornecedor br-card" style="min-height: 10px">
         <div id="fornecedor-card-content">
-          <div class="row">
-            <div class="col-2">
+          <div class="row justify-content-between">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-building text-blue-warm-vivid-80 br-avatar"></i>
@@ -38,7 +38,7 @@ const FornecedorCard = {
                 </div>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-id-card text-info br-avatar"></i>
@@ -49,7 +49,7 @@ const FornecedorCard = {
                 </div>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-dollar-sign text-success br-avatar"></i>
@@ -60,24 +60,24 @@ const FornecedorCard = {
                 </div>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-chart-bar text-warning br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">Orçamentário</div>
-                    <span class="text-muted" id="empenhos-total-empenhado">...</span>
+                    <span class="text-muted" id="empenhos-total-empenhado">guardando consulta...</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-coins text-secondary br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">Finanças</div>
-                    <span class="text-muted" id="empenhos-total-pago">...</span>
+                    <span class="text-muted" id="empenhos-total-pago">guardando consulta...</span>
                   </div>
                 </div>
               </div>
@@ -139,8 +139,8 @@ const FornecedorCard = {
     container.innerHTML = `
       <div class="pl-6 pt-3 h-100 card-fornecedor br-card" style="min-height: 10px">
         <div id="fornecedor-card-content">
-          <div class="row">
-            <div class="col-2">
+          <div class="row justify-content-between">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-building text-blue-warm-vivid-80 br-avatar"></i>
@@ -153,7 +153,7 @@ const FornecedorCard = {
                 </div>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-id-card text-info br-avatar"></i>
@@ -164,7 +164,7 @@ const FornecedorCard = {
                 </div>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-dollar-sign text-success br-avatar"></i>
@@ -175,7 +175,7 @@ const FornecedorCard = {
                 </div>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-chart-bar text-warning br-avatar"></i>
@@ -186,7 +186,7 @@ const FornecedorCard = {
                 </div>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
                   <i class="fas fa-coins text-secondary br-avatar"></i>

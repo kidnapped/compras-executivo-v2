@@ -5,9 +5,7 @@ Executivo{% endblock %} {% block content %}
   <!-- Header Section -->
   <div class="row mb-4">
     <div class="col-12">
-      <h1>
-        <i class="fas fa-balance-scale text-primary"></i> Encontro de Contas
-      </h1>
+      <h1>Encontro de Contas</h1>
       <p class="text-muted">
         Sistema de análise e reconciliação de contratos e empenhos
       </p>
@@ -62,18 +60,6 @@ Executivo{% endblock %} {% block content %}
       </div>
     </div>
 
-    <div class="col-md-6 col-sm-6" id="card-historico-orcamentario-container">
-      <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
-      >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando histórico orçamentário"
-        ></div>
-      </div>
-    </div>
     <div class="col-md-3 col-sm-6 d-none">
       <div class="br-card">
         <div class="card-header">
@@ -131,6 +117,98 @@ Executivo{% endblock %} {% block content %}
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detalhes dos Empenhos Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="br-card" id="detalhes-empenhos-container">
+        <div class="card-header">
+          <div class="d-flex" style="width: 100%">
+            <div class="ml-3" style="flex-grow: 1">
+              <div class="titulo">
+                <img
+                  src="/static/images/doc2.png"
+                  alt="Ícone"
+                  style="height: 36px; margin: 10px 0px -10px 0px"
+                />
+                Detalhes dos Empenhos
+              </div>
+              <div
+                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+              ></div>
+              <div class="subtitulo">
+                Histórico detalhado de empenhos do contrato
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" style="padding: 0">
+          <!-- Chart Section -->
+          <div
+            id="detalhes-empenhos-chart-container"
+            style="padding: 20px; border-bottom: 1px solid #eee"
+          >
+            <div
+              id="detalhes-empenhos-chart"
+              style="
+                width: 100%;
+                height: 300px;
+                border: 1px solid #f0f0f0;
+                border-radius: 4px;
+              "
+            ></div>
+          </div>
+          <!-- Table Section -->
+          <div class="table-responsive">
+            <table class="br-table table-hover table-striped">
+              <thead style="background-color: #f8f8f8">
+                <tr>
+                  <th style="border: none">Data</th>
+                  <th style="border: none">Empenho</th>
+                  <th style="border: none">Espécie</th>
+                  <th style="border: none">Nominal</th>
+                  <th style="width: 50px; border: none"></th>
+                  <th style="width: 50px; border: none"></th>
+                </tr>
+              </thead>
+              <tbody id="detalhes-empenhos-tbody">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="6" class="text-center" style="padding: 40px">
+                    <div class="text-muted">
+                      <div
+                        class="br-loading medium"
+                        role="progressbar"
+                        aria-label="carregando detalhes dos empenhos"
+                      ></div>
+                      <br />
+                      Carregando detalhes dos empenhos...
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Histórico Orçamentário Section -->
+  <div class="row mb-4">
+    <div class="col-12" id="card-historico-orcamentario-container">
+      <div
+        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+        style="min-height: 180px"
+      >
+        <div
+          class="br-loading medium"
+          role="progressbar"
+          aria-label="carregando histórico orçamentário"
+        ></div>
       </div>
     </div>
   </div>
@@ -430,82 +508,6 @@ Executivo{% endblock %} {% block content %}
     </div>
   </div>
 
-  <!-- Detalhes dos Empenhos Section -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="br-card" id="detalhes-empenhos-container">
-        <div class="card-header">
-          <div class="d-flex" style="width: 100%">
-            <div class="ml-3" style="flex-grow: 1">
-              <div class="titulo">
-                <img
-                  src="/static/images/doc2.png"
-                  alt="Ícone"
-                  style="height: 36px; margin: 10px 0px -10px 0px"
-                />
-                Detalhes dos Empenhos
-              </div>
-              <div
-                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
-              ></div>
-              <div class="subtitulo">
-                Histórico detalhado de empenhos do contrato
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card-content" style="padding: 0">
-          <!-- Chart Section -->
-          <div
-            id="detalhes-empenhos-chart-container"
-            style="padding: 20px; border-bottom: 1px solid #eee"
-          >
-            <div
-              id="detalhes-empenhos-chart"
-              style="
-                width: 100%;
-                height: 300px;
-                border: 1px solid #f0f0f0;
-                border-radius: 4px;
-              "
-            ></div>
-          </div>
-          <!-- Table Section -->
-          <div class="table-responsive">
-            <table class="br-table table-hover table-striped">
-              <thead style="background-color: #f8f8f8">
-                <tr>
-                  <th style="border: none">Data</th>
-                  <th style="border: none">Empenho</th>
-                  <th style="border: none">Espécie</th>
-                  <th style="border: none">Nominal</th>
-                  <th style="width: 50px; border: none"></th>
-                  <th style="width: 50px; border: none"></th>
-                </tr>
-              </thead>
-              <tbody id="detalhes-empenhos-tbody">
-                <!-- Loading state -->
-                <tr>
-                  <td colspan="6" class="text-center" style="padding: 40px">
-                    <div class="text-muted">
-                      <div
-                        class="br-loading medium"
-                        role="progressbar"
-                        aria-label="carregando detalhes dos empenhos"
-                      ></div>
-                      <br />
-                      Carregando detalhes dos empenhos...
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Results Section -->
   <div class="row">
     <div class="col-12">
@@ -514,48 +516,6 @@ Executivo{% endblock %} {% block content %}
         <div class="text-center text-muted" style="padding: 60px">
           <i class="fas fa-search fa-3x mb-3"></i>
           <h5>Aguardando Consulta</h5>
-          <p>
-            Digite um ID de contrato acima e clique em "Buscar Empenhos" para
-            visualizar os dados
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Help Section -->
-  <div class="row mt-5">
-    <div class="col-12">
-      <div class="br-card">
-        <div class="card-header">
-          <h5>
-            <i class="fas fa-question-circle text-info"></i> Como usar o sistema
-          </h5>
-        </div>
-        <div class="card-content">
-          <div class="row">
-            <div class="col-md-4">
-              <h6><i class="fas fa-step-forward text-primary"></i> Passo 1</h6>
-              <p>
-                Digite o ID do contrato que deseja consultar no campo "ID do
-                Contrato"
-              </p>
-            </div>
-            <div class="col-md-4">
-              <h6><i class="fas fa-step-forward text-primary"></i> Passo 2</h6>
-              <p>
-                Opcionalmente, informe o ID da unidade de empenho. Se não
-                informar, será usado sua UASG
-              </p>
-            </div>
-            <div class="col-md-4">
-              <h6><i class="fas fa-step-forward text-primary"></i> Passo 3</h6>
-              <p>
-                Clique em "Buscar Empenhos" para visualizar todos os dados do
-                contrato e empenhos relacionados
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
