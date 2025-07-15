@@ -73,28 +73,8 @@ export default {
     }
 
     const html = `
-      <div class="br-card mb-4">
-        <div class="card-header">
-          <h4>${data.titulo}</h4>
-          <p class="text-muted">${data.subtitulo}</p>
-        </div>
-        <div class="card-content">
-          <!-- Contract Information Section -->
-          ${this.renderContractInfo(data.contrato)}
-
-          <!-- Financial Overview -->
-          ${this.renderFinancialOverview(data)}
-
-          <!-- Detailed Statistics -->
-          ${this.renderDetailedStats(data)}
-
-          <!-- Empenhos Table -->
-          ${this.renderEmpenhosTable(data.empenhos)}
-
           <!-- Analysis Section -->
           ${this.renderAnalysisSection(data)}
-        </div>
-      </div>
     `;
 
     resultsContainer.innerHTML = html;
@@ -250,7 +230,7 @@ export default {
           <div class="br-card bg-primary text-white">
             <div class="card-content text-center">
               <div class="h5">${data.total_empenhos}</div>
-              <div class="small">Total de Empenhos</div>
+              <div class="small">Empenhos</div>
             </div>
           </div>
         </div>
@@ -401,10 +381,11 @@ export default {
     }
 
     return `
-      <div class="row">
+  
         <div class="col-12">
-          <h5><i class="fas fa-lightbulb text-warning"></i> Análise</h5>
+          
           <div class="br-card bg-light">
+          <h5><i class="fas fa-lightbulb text-info"></i> Análise</h5>
             <div class="card-content">
               ${
                 insights.length > 0
@@ -418,7 +399,6 @@ export default {
             </div>
           </div>
         </div>
-      </div>
     `;
   },
 };

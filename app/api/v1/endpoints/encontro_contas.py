@@ -257,7 +257,7 @@ async def get_historico_orcamentario(
     data = {
         "contrato_id": contrato_id,
         "unidade_empenho_id": unidade_empenho_id,
-        "quantidade_total": f"{total_empenhos} Empenhos",
+        "quantidade_total": f"{total_empenhos}",
         "total_count": total_empenhos,
         "em_execucao": em_execucao,
         "finalizados": finalizados,

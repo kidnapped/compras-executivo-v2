@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Picker Palette</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      h1 {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        display: inline-block;
+        min-width: 200px;
+      }
+      .palette-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 30px;
+      }
+      .palette {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .palette-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .color-row {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 10px;
+      }
+      .color-card {
+        width: 60px;
+        height: 60px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(0, 0, 0, 0.7);
+        font-size: 10px;
+        font-weight: bold;
+        text-shadow: 0 0 2px white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .color-card:hover {
+        transform: scale(1.1);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      }
+      .notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .show-notification {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="colorDisplay">Click a color</h1>
+
+    <div class="palette-container" id="paletteContainer"></div>
+
+    <div class="notification" id="notification">Color copied to clipboard!</div>
+
+    <script>
+      const palette = {
+        monochrome: ["transparent", "#FFFFFF", "#F0F0F0", "#666666"],
+        blueDark: ["#061339", "#162656", "#50608F", "#7986AC", "#2F4073"],
+        blueLight: ["#8B9ED6", "#A2B2E3", "#B9C6ED", "#D0D9F6", "#E5EBFB"],
+        camo: ["#7C4E00", "#211707", "#FFCB74", "#D8D7D5", "#AA8039"],
+        camo2: ["#E9A225", "#FFBE4C", "#FFD68F", "#FFE6BA", "#FFC96B"],
+        green: ["#2DBF1E", "#4DD23F", "#8EEC84", "#BAF7B4", "#6AE05E"],
+        greenLight: ["#95E88C", "#A9EFA2", "#D3FACF", "#E6FDE4", "#BFF5B9"],
+        orange: ["#FFD088", "#FFB444", "#FF9900", "#FFEBCC"],
+        red: ["#E93325", "#FF594C", "#FF978F", "#FFBFBA", "#FF766B"],
+        velocimetro: ["#FFEB80", "#ffbf80", "#FD7171", "#FF978F", "#FF594C"],
+        yellowDark: ["#5C5C0A", "#8A8A0F", "#b8b814", "#e6e619", "#ebeb47"],
+      };
+
+      const paletteGeneric = [
+        ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
+        ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+        [
+          "#f4cccc",
+          "#fce5cd",
+          "#fff2cc",
+          "#d9ead3",
+          "#d0e0e3",
+          "#cfe2f3",
+          "#d9d2e9",
+          "#ead1dc",
+        ],
+        [
+          "#ea9999",
+          "#f9cb9c",
+          "#ffe599",
+          "#b6d7a8",
+          "#a2c4c9",
+          "#9fc5e8",
+          "#b4a7d6",
+          "#d5a6bd",
+        ],
+        [
+          "#e06666",
+          "#f6b26b",
+          "#ffd966",
+          "#93c47d",
+          "#76a5af",
+          "#6fa8dc",
+          "#8e7cc3",
+          "#c27ba0",
+        ],
+        [
+          "#c00",
+          "#e69138",
+          "#f1c232",
+          "#6aa84f",
+          "#45818e",
+          "#3d85c6",
+          "#674ea7",
+          "#a64d79",
+        ],
+        [
+          "#900",
+          "#b45f06",
+          "#bf9000",
+          "#38761d",
+          "#134f5c",
+          "#0b5394",
+          "#351c75",
+          "#741b47",
+        ],
+        [
+          "#600",
+          "#783f04",
+          "#7f6000",
+          "#274e13",
+          "#0c343d",
+          "#073763",
+          "#20124d",
+          "#4c1130",
+        ],
+      ];
+
+      const colorDisplay = document.getElementById("colorDisplay");
+      const paletteContainer = document.getElementById("paletteContainer");
+      const notification = document.getElementById("notification");
+
+      // Render first palette
+      for (const [name, colors] of Object.entries(palette)) {
+        const paletteElement = document.createElement("div");
+        paletteElement.className = "palette";
+
+        const paletteName = document.createElement("div");
+        paletteName.className = "palette-name";
+        paletteName.textContent = name;
+        paletteElement.appendChild(paletteName);
+
+        const colorRow = document.createElement("div");
+        colorRow.className = "color-row";
+
+        colors.forEach((color) => {
+          const colorCard = document.createElement("div");
+          colorCard.className = "color-card";
+          colorCard.style.backgroundColor = color;
+          colorCard.textContent = color;
+
+          colorCard.addEventListener("click", () => {
+            copyToClipboard(color);
+            colorDisplay.textContent = color;
+            colorDisplay.style.color = getContrastColor(color);
+            showNotification();
+          });
+
+          colorRow.appendChild(colorCard);
+        });
+
+        paletteElement.appendChild(colorRow);
+        paletteContainer.appendChild(paletteElement);
+      }
+
+      // Add separator
+      const separator = document.createElement("hr");
+      separator.style.width = "80%";
+      separator.style.margin = "30px auto";
+      paletteContainer.appendChild(separator);
+
+      // Render generic palette
+      paletteGeneric.forEach((row, rowIndex) => {
+        const colorRow = document.createElement("div");
+        colorRow.className = "color-row";
+
+        row.forEach((color) => {
+          const colorCard = document.createElement("div");
+          colorCard.className = "color-card";
+          colorCard.style.backgroundColor = color;
+          colorCard.textContent = color;
+
+          colorCard.addEventListener("click", () => {
+            copyToClipboard(color);
+            colorDisplay.textContent = color;
+            colorDisplay.style.color = getContrastColor(color);
+            showNotification();
+          });
+
+          colorRow.appendChild(colorCard);
+        });
+
+        paletteContainer.appendChild(colorRow);
+      });
+
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).catch((err) => {
+          console.error("Failed to copy text: ", err);
+        });
+      }
+
+      function showNotification() {
+        notification.classList.add("show-notification");
+        setTimeout(() => {
+          notification.classList.remove("show-notification");
+        }, 2000);
+      }
+
+      function getContrastColor(hexColor) {
+        if (hexColor === "transparent") return "#000";
+
+        // If shorthand notation, expand it
+        if (hexColor.length === 4) {
+          hexColor =
+            "#" +
+            hexColor[1] +
+            hexColor[1] +
+            hexColor[2] +
+            hexColor[2] +
+            hexColor[3] +
+            hexColor[3];
+        }
+
+        // Convert hex to RGB
+        const r = parseInt(hexColor.substr(1, 2), 16);
+        const g = parseInt(hexColor.substr(3, 2), 16);
+        const b = parseInt(hexColor.substr(5, 2), 16);
+
+        // Calculate luminance
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+        // Return black for light colors, white for dark colors
+        return luminance > 0.5 ? "#000" : "#fff";
+      }
+    </script>
+  </body>
+</html>

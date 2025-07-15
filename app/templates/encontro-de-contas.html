@@ -237,7 +237,7 @@ Executivo{% endblock %} {% block content %}
 
   <!-- Últimos Lançamentos Section -->
   <div class="row mb-4">
-    <div class="col-12">
+    <div class="col-6">
       <div class="br-card" id="ultimos-lancamentos-container">
         <div class="card-header">
           <div class="d-flex" style="width: 100%">
@@ -285,6 +285,15 @@ Executivo{% endblock %} {% block content %}
             </table>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="empenhos-results" class="col-6">
+      <!-- Results will be displayed here dynamically -->
+      <div class="text-center text-muted" style="padding: 60px">
+        <i class="fas fa-search fa-3x mb-3"></i>
+        <h5>Aguardando Consulta</h5>
       </div>
     </div>
   </div>
@@ -530,21 +539,8 @@ Executivo{% endblock %} {% block content %}
     </div>
   </div>
 
-  <!-- Results Section -->
-  <div class="row">
-    <div class="col-12">
-      <div id="empenhos-results">
-        <!-- Results will be displayed here dynamically -->
-        <div class="text-center text-muted" style="padding: 60px">
-          <i class="fas fa-search fa-3x mb-3"></i>
-          <h5>Aguardando Consulta</h5>
-        </div>
-      </div>
-    </div>
-  </div>
+  {% endblock %}
+
+  <!-- The DetalhesEmpenhos functionality is now integrated into encontro-contas.js -->
+  <!-- No additional script needed here as it's initialized with the main controller -->
 </div>
-
-{% endblock %}
-
-<!-- The DetalhesEmpenhos functionality is now integrated into encontro-contas.js -->
-<!-- No additional script needed here as it's initialized with the main controller -->

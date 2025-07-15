@@ -33,9 +33,9 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-file-invoice text-primary br-avatar"></i>
+                  <i class="fas fa-file-invoice text-info  br-avatar"></i>
                   <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Total de Empenhos</div>
+                    <div class="text-weight-semi-bold text-up-01">Empenhos</div>
                     <span class="text-muted" id="total-empenhos">aguardando consulta...</span>
                   </div>
                 </div>
@@ -44,7 +44,7 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-play-circle text-success br-avatar"></i>
+                  <i class="fas fa-play-circle text-info  br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">Em Execução</div>
                     <span class="text-muted" id="empenhos-execucao">aguardando consulta...</span>
@@ -55,7 +55,7 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-check-circle text-info br-avatar"></i>
+                  <i class="fas fa-check-circle text-info  br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">Finalizados</div>
                     <span class="text-muted" id="empenhos-finalizados">aguardando consulta...</span>
@@ -66,7 +66,7 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-exclamation-triangle text-warning br-avatar"></i>
+                  <i class="fas fa-exclamation-triangle text-danger br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">Críticos</div>
                     <span class="text-muted" id="empenhos-criticos">aguardando consulta...</span>
@@ -77,7 +77,7 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-calendar-times text-secondary br-avatar"></i>
+                  <i class="fas fa-calendar-times text-info  br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">RAP</div>
                     <span class="text-muted" id="empenhos-rap">aguardando consulta...</span>
@@ -139,9 +139,9 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-file-invoice text-primary br-avatar"></i>
+                  <i class="fas fa-file-invoice text-info  br-avatar"></i>
                   <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Total de Empenhos</div>
+                    <div class="text-weight-semi-bold text-up-01">Empenhos</div>
                     <span class="text-muted" id="total-empenhos">${totalEmpenhos}</span>
                   </div>
                 </div>
@@ -150,7 +150,7 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-play-circle text-success br-avatar"></i>
+                  <i class="fas fa-play-circle text-info  br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">Em Execução</div>
                     <span class="text-muted" id="empenhos-execucao">${emExecucao}</span>
@@ -172,7 +172,7 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-exclamation-triangle text-warning br-avatar"></i>
+                  <i class="fas fa-exclamation-triangle text-danger br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">Críticos</div>
                     <span class="text-muted" id="empenhos-criticos">${criticos}</span>
@@ -183,7 +183,7 @@ const HistoricoOrcamentarioCard = {
             <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
               <div class="pt-1">
                 <div class="d-flex pb-2">
-                  <i class="fas fa-calendar-times text-secondary br-avatar"></i>
+                  <i class="fas fa-calendar-times text-info  br-avatar"></i>
                   <div class="ml-3">
                     <div class="text-weight-semi-bold text-up-01">RAP</div>
                     <span class="text-muted" id="empenhos-rap">${rap}</span>
