@@ -27,6 +27,7 @@ const App = {
   ...tooltip,
   ...aditivosHandler,
   ...financialBars,
+  ...devOps,
   initEncontroContas: encontroContas.init.bind(encontroContas),
 };
 

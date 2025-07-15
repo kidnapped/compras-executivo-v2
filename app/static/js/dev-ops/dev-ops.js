@@ -15,18 +15,31 @@ export default {
 
   // Initialize the unidades organizational selector
   initUnidadesSelector() {
+    console.log('Initializing unidades selector...');
+    
     const searchInput = document.getElementById('unidades-search-input');
     const dropdown = document.getElementById('unidades-dropdown');
     const loadingIndicator = document.getElementById('unidades-loading');
 
-    if (!searchInput || !dropdown) return;
+    console.log('Elements found:', {
+      searchInput: !!searchInput,
+      dropdown: !!dropdown,
+      loadingIndicator: !!loadingIndicator
+    });
+
+    if (!searchInput || !dropdown) {
+      console.error('Required elements not found for unidades selector');
+      return;
+    }
 
     // Setup search input event listeners
     searchInput.addEventListener('input', (e) => {
+      console.log('Search input changed:', e.target.value);
       this.handleUnidadesSearch(e.target.value);
     });
 
     searchInput.addEventListener('focus', () => {
+      console.log('Search input focused');
       if (this.unidadesState.lastSearchTerm) {
         dropdown.style.display = 'block';
       }
@@ -43,6 +56,8 @@ export default {
     searchInput.addEventListener('keydown', (e) => {
       this.handleUnidadesKeyboard(e);
     });
+
+    console.log('Unidades selector initialized successfully');
   },
 
   // Handle search input with debouncing
@@ -73,6 +88,8 @@ export default {
 
   // Perform the actual search
   async searchUnidades(searchTerm) {
+    console.log('Searching unidades for term:', searchTerm);
+    
     const dropdown = document.getElementById('unidades-dropdown');
     const loadingIndicator = document.getElementById('unidades-loading');
 
@@ -85,13 +102,21 @@ export default {
         loadingIndicator.style.display = 'block';
       }
 
-      const response = await fetch(`/dev-ops/unidades?search=${encodeURIComponent(searchTerm)}&limit=50`);
+      const url = `/dev-ops/unidades?search=${encodeURIComponent(searchTerm)}&limit=50`;
+      console.log('Fetching from URL:', url);
+      
+      const response = await fetch(url);
+      
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const unidades = await response.json();
+      console.log('Received unidades:', unidades);
+      
       this.displayUnidadesResults(unidades);
 
     } catch (error) {

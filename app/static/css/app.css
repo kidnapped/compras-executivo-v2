@@ -1428,10 +1428,6 @@ body {
 }
 
 /* Hover effects for financial bars */
-.financial-bar:hover {
-  border-color: #007bff;
-}
-
 .financial-bar-group:hover .financial-bar-value {
   color: #007bff;
 }
@@ -2978,33 +2974,82 @@ div[class*="echarts-tooltip"] {
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
 }
 
-/* ====================
-   END DEV-OPS STYLES
-   ==================== */
-
-/* Financial bar segments for segmented bars */
-.financial-bar-segment {
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  border-radius: 1px;
-}
-
-.financial-bar-segment:hover {
-  transform: scaleX(1.05);
-  filter: brightness(0.9);
-  z-index: 2;
+/* Dev-Ops Unidades Selector Styles */
+.br-select {
   position: relative;
 }
 
-/* Segmented financial bar styling for contracted amounts */
-.financial-bar[data-type="contratado"] {
-  overflow: visible; /* Allow segments to expand slightly on hover */
+.dropdown-results {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1050; /* Higher than Bootstrap modals */
+  max-height: 200px;
+  overflow-y: auto;
 }
 
-.financial-bar[data-type="contratado"] .financial-bar-segment:first-child {
-  background-color: #bbc6ea !important; /* Original contract color */
+.dropdown-results .dropdown-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+  background-color: white;
 }
 
-.financial-bar[data-type="contratado"]
-  .financial-bar-segment:not(:first-child) {
-  background-color: #a8b8e8 !important; /* Aditivos color */
+.dropdown-results .dropdown-item:hover {
+  background-color: #f8f9fa !important;
+}
+
+.dropdown-results .dropdown-item.selected {
+  background-color: #e3f2fd !important;
+}
+
+.dropdown-results .dropdown-item:last-child {
+  border-bottom: none;
+}
+
+/* Ensure the input container has proper positioning context */
+.br-input.has-icon {
+  position: relative;
+}
+
+/* Loading indicator styles */
+#unidades-loading {
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Current UASG display styles */
+#current-uasg-display {
+  margin-top: 15px;
+}
+
+#current-uasg-display .alert {
+  padding: 10px;
+  background-color: #e8f4fd;
+  border: 1px solid #bee5eb;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#current-uasg-display button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+#current-uasg-display button:hover {
+  background-color: #dee2e6;
 }

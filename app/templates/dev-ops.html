@@ -175,9 +175,25 @@ endblock %} {% block content %}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('Dev-ops page loaded, checking for window.App...');
+  console.log('window.App exists:', !!window.App);
+  console.log('window.App.initDevOps exists:', !!(window.App && window.App.initDevOps));
+  
   // Initialize dev-ops functionality
   if (window.App && window.App.initDevOps) {
+    console.log('Initializing dev-ops functionality...');
     window.App.initDevOps();
+  } else {
+    console.error('App.initDevOps not found. Available App methods:', window.App ? Object.keys(window.App) : 'App not found');
+    
+    // Fallback: Try to manually import and initialize
+    if (window.App && window.App.initUnidadesSelector) {
+      console.log('Using fallback initialization...');
+      window.App.initUnidadesSelector();
+      if (window.App.initClearUasgButton) {
+        window.App.initClearUasgButton();
+      }
+    }
   }
   
   // Listen for unit selection events
