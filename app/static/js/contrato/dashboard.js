@@ -1204,11 +1204,16 @@ export default {
               <div style="display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; white-space: nowrap; margin-top: -10px !important;">
                 <img src="${
                   this.getContratoInfo(contract.tipo_id).icon
-                }" title="${
-      this.getContratoInfo(contract.tipo_id).name
-    }" style="height: 20px;" />
+                }" 
+                data-tooltip-text="${this.getContratoInfo(contract.tipo_id).name}"
+                data-tooltip-place="bottom"
+                data-tooltip-type="info"
+                style="height: 20px;" />
 
-                <span style="font-size: 16px; color: #FF9933; white-space: nowrap;" title="Número do contrato">${
+                <span style="font-size: 16px; color: #FF9933; white-space: nowrap;" 
+                data-tooltip-text="Número do contrato"
+                data-tooltip-place="bottom"
+                data-tooltip-type="info">${
                   contract.numero
                 } <span style="color: #000">/</span> ${contract.ano}</span>
 
