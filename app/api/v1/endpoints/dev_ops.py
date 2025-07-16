@@ -14,10 +14,6 @@ router = APIRouter()
 class SetUasgRequest(BaseModel):
     codigo: int
 
-# Pydantic model for CPF validation request
-class ValidateCpfRequest(BaseModel):
-    cpf: str
-
 # Renderiza a página do dev-ops
 @router.get("/dev-ops", response_class=HTMLResponse)
 async def render_dev_ops(request: Request):
@@ -144,91 +140,6 @@ async def clear_session_uasg(request: Request):
         import logging
         logger = logging.getLogger(__name__)
         logger.error(f"Error clearing UASG from session: {e}")
-        
-        return JSONResponse(
-            status_code=500,
-            content={"success": False, "message": "Erro interno do servidor"}
-        )
-
-# Endpoint para validar CPF no banco de dados
-@router.post("/dev-ops/validate-cpf")
-async def validate_cpf_database(
-    request: Request,
-    cpf_data: ValidateCpfRequest,
-    db: AsyncSession = Depends(get_session_contratos)
-):
-    """
-    Valida CPF no banco de dados e retorna informações do usuário se encontrado.
-    """
-    try:
-        # Verifica se o usuário está logado
-        if not request.session.get("cpf"):
-            return JSONResponse(
-                status_code=401,
-                content={"success": False, "message": "Usuário não está logado"}
-            )
-        
-        # Limpa o CPF removendo caracteres não numéricos
-        clean_cpf = ''.join(filter(str.isdigit, cpf_data.cpf))
-        
-        # Valida o formato do CPF (deve ter 11 dígitos)
-        if len(clean_cpf) != 11:
-            return JSONResponse(content={
-                "success": False,
-                "valid_format": False,
-                "message": "CPF deve ter 11 dígitos",
-                "cpf": cpf_data.cpf
-            })
-        
-        # Aplica formatação padrão do CPF para busca no banco
-        formatted_cpf = f"{clean_cpf[:3]}.{clean_cpf[3:6]}.{clean_cpf[6:9]}-{clean_cpf[9:]}"
-        
-        # Query para buscar o usuário no banco de dados
-        query = text("""
-            SELECT
-                u.id,
-                u.cpf,
-                u.name,
-                u.email,
-                u.ugprimaria
-            FROM users AS u
-            LEFT JOIN unidadesusers AS uu
-                ON u.id = uu.user_id
-            WHERE
-                u.cpf = :cpf
-            LIMIT 1
-        """)
-        
-        result = await db.execute(query, {"cpf": formatted_cpf})
-        user = result.fetchone()
-        
-        if user:
-            return JSONResponse(content={
-                "success": True,
-                "valid_format": True,
-                "exists_in_database": True,
-                "cpf": formatted_cpf,
-                "user_info": {
-                    "id": user.id,
-                    "name": user.name,
-                    "email": user.email,
-                    "ugprimaria": user.ugprimaria
-                },
-                "message": f"CPF encontrado no sistema - {user.name}"
-            })
-        else:
-            return JSONResponse(content={
-                "success": True,
-                "valid_format": True,
-                "exists_in_database": False,
-                "cpf": formatted_cpf,
-                "message": "CPF válido, mas não encontrado no sistema"
-            })
-        
-    except Exception as e:
-        import logging
-        logger = logging.getLogger(__name__)
-        logger.error(f"Error validating CPF: {e}")
         
         return JSONResponse(
             status_code=500,

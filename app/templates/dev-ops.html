@@ -166,69 +166,47 @@ endblock %} {% block content %}
                 </div>
               </div>
             </div>
-            
-            <!-- CPF Validation Widget -->
-            <div class="col-12 col-lg-6">
-              <div class="br-card h-100" style="min-height: 200px">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                  <div class="d-flex align-items-center">
-                    <i class="fas fa-id-card" style="color: #00366f; font-size: 14px"></i>
-                    <span class="ml-2">Validação de CPF</span>
-                  </div>
-                </div>
-                <div class="card-body" style="padding: 20px">
-                  <p class="mb-3" style="color: #666; font-size: 14px">
-                    Valide números de CPF utilizando o algoritmo oficial
-                  </p>
-                  
-                  <!-- CPF Input Container -->
-                  <div style="margin-bottom: 15px;">
-                    <div class="br-input">
-                      <input
-                        id="cpf-input"
-                        type="text"
-                        placeholder="Digite o CPF (ex: 123.456.789-00)"
-                        autocomplete="off"
-                        maxlength="14"
-                        style="width: 100%"
-                      />
-                    </div>
-                  </div>
-                  
-                  <!-- Validation Button -->
-                  <div style="margin-bottom: 15px;">
-                    <button 
-                      id="validate-cpf-btn" 
-                      class="br-button primary"
-                      style="width: 100%"
-                    >
-                      <i class="fas fa-check-circle mr-2"></i>
-                      Validar CPF
-                    </button>
-                  </div>
-                  
-                  <!-- Result Display -->
-                  <div id="cpf-result" style="display: none; margin-top: 15px;">
-                    <!-- Result will be populated here -->
-                  </div>
-                  
-                  <!-- Info Message -->
-                  <div style="margin-top: 15px">
-                    <div class="alert alert-info" style="padding: 10px; background-color: #e3f2fd; border: 1px solid #bbdefb; border-radius: 4px">
-                      <small style="color: #1976d2">
-                        <i class="fas fa-info-circle" style="margin-right: 5px"></i>
-                        Digite um CPF com ou sem formatação para verificar sua validade
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Dev-ops page loaded, checking for window.App...');
+  console.log('window.App exists:', !!window.App);
+  console.log('window.App.initDevOps exists:', !!(window.App && window.App.initDevOps));
+  
+  // Initialize dev-ops functionality
+  if (window.App && window.App.initDevOps) {
+    console.log('Initializing dev-ops functionality...');
+    window.App.initDevOps();
+  } else {
+    console.error('App.initDevOps not found. Available App methods:', window.App ? Object.keys(window.App) : 'App not found');
+    
+    // Fallback: Try to manually import and initialize
+    if (window.App && window.App.initUnidadesSelector) {
+      console.log('Using fallback initialization...');
+      window.App.initUnidadesSelector();
+      if (window.App.initClearUasgButton) {
+        window.App.initClearUasgButton();
+      }
+    }
+  }
+  
+  // Listen for unit selection events
+  document.addEventListener('unidadeSelected', function(event) {
+    console.log('Unidade selecionada:', event.detail);
+    // You can add additional logic here when a unit is selected
+  });
+  
+  document.addEventListener('unidadeCleared', function(event) {
+    console.log('Seleção de unidade limpa');
+    // You can add additional logic here when selection is cleared
+  });
+});
+</script>
 
 {% endblock %}
