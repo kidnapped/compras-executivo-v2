@@ -15,7 +15,7 @@ export default {
       uasgs: [],
       tipo: [],
     },
-    sort: "vigencia",
+    sort: "numero",
   },
 
   // Modal popup functionality

@@ -40,7 +40,7 @@ const createFinancialBar = ({
         <div class="financial-bar-value" 
              style="
                position: absolute;
-               left: -20px;
+               left: -25px;
                top: 50%;
                transform: translateY(-50%) rotate(180deg); 
                writing-mode: vertical-rl; 
@@ -145,7 +145,7 @@ const createContractedBar = (contract) => {
         <div class="financial-bar-value" 
              style="
                position: absolute;
-               left: -20px;
+               left: -25px;
                top: 50%;
                transform: translateY(-50%) rotate(180deg); 
                writing-mode: vertical-rl; 
@@ -240,7 +240,7 @@ const createCommittedBar = (contract) => {
         <div class="financial-bar-value" 
              style="
                position: absolute;
-               left: -20px;
+               left: -25px;
                top: 50%;
                transform: translateY(-50%) rotate(180deg); 
                writing-mode: vertical-rl; 
@@ -392,7 +392,7 @@ const createPaidBar = (contract) => {
         <div class="financial-bar-value" 
              style="
                position: absolute;
-               left: -20px;
+               left: -25px;
                top: 50%;
                transform: translateY(-50%) rotate(180deg); 
                writing-mode: vertical-rl; 

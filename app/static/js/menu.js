@@ -1,16 +1,8 @@
 export default {
   menuItems: [
     { texto: "Início", url: "/inicio", icone: "fas fa-home" },
-    { texto: "Contratos", url: "/contratos", icone: "fas fa-file-contract" },
-    { texto: "Empenhos", url: "/empenhos", icone: "fas fa-file-invoice" },
-    { texto: "Dashboard", url: "/dashboard", icone: "fas fa-chart-line" },
+    { texto: "Contratos", url: "/dashboard", icone: "fas fa-chart-line" },
     { texto: "kpi's", url: "/kpis", icone: "fas fa-tachometer-alt" },
-    {
-      texto: "Encontro de Contas",
-      url: "/encontro-de-contas",
-      icone: "fas fa-balance-scale",
-    },
-    { texto: "Financeiro", url: "/financeiro", icone: "fas fa-dollar-sign" },
     { texto: "Administração", url: "/admin", icone: "fas fa-cogs" },
     { texto: "Minha Conta", url: "/minha-conta", icone: "fas fa-user-circle" },
     { texto: "Suporte", url: "/suporte", icone: "fas fa-life-ring" },
