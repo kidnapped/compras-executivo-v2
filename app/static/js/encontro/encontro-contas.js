@@ -20,6 +20,11 @@ const EncontroContas = {
     // Initialize events
     EncontroEvents.initialize();
 
+    // Initialize contract integration (new)
+    if (typeof ContractIntegration !== "undefined") {
+      ContractIntegration.initialize();
+    }
+
     // Initialize KPI cards
     this.initializeKpiCards();
 
@@ -273,7 +278,7 @@ const EncontroContas = {
             <div class="text-muted">
               <i class="fas fa-inbox fa-2x mb-3"></i>
               <br />
-              Nenhum lançamento encontrado
+              Nenhum lançamento encontrado11
             </div>
           </td>
         </tr>
@@ -697,6 +702,50 @@ const EncontroContas = {
       setTimeout(() => {
         EncontroEvents.handleSearch();
       }, 300);
+
+      // Also trigger the tudo data loading if TudoDataHandler is available
+      setTimeout(() => {
+        console.log(`Checking TudoDataHandler availability...`);
+
+        // Try multiple ways to access TudoDataHandler
+        let dataHandler = null;
+
+        if (typeof TudoDataHandler !== "undefined") {
+          dataHandler = TudoDataHandler;
+          console.log("Found TudoDataHandler in local scope");
+        } else if (window.TudoDataHandler) {
+          dataHandler = window.TudoDataHandler;
+          console.log("Found TudoDataHandler on window object");
+        } else {
+          // Try to wait a bit longer for the module to load
+          console.log(
+            "TudoDataHandler not immediately available, waiting longer..."
+          );
+          setTimeout(() => {
+            if (window.TudoDataHandler) {
+              console.log("TudoDataHandler found after delay");
+              window.TudoDataHandler.loadTudoData(parseInt(contratoId)).catch(
+                (error) => {
+                  console.error(
+                    "Error auto-loading tudo data after delay:",
+                    error
+                  );
+                }
+              );
+            } else {
+              console.error("TudoDataHandler not available even after delay");
+            }
+          }, 2000);
+          return;
+        }
+
+        if (dataHandler) {
+          console.log(`Auto-loading tudo data for contract ${contratoId}`);
+          dataHandler.loadTudoData(parseInt(contratoId)).catch((error) => {
+            console.error("Error auto-loading tudo data:", error);
+          });
+        }
+      }, 1000); // Increased delay to ensure modules are loaded
     }
   },
 

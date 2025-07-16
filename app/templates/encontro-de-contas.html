@@ -197,7 +197,7 @@ Executivo{% endblock %} {% block content %}
     </div>
     <!-- Histórico Orçamentário Section -->
     <div class="col-6">
-      <div class="br-card" id="ultimos-lancamentos-container">
+      <div class="br-card" id="historico-orcamentario-container">
         <div class="card-header">
           <div class="d-flex" style="width: 100%">
             <div class="ml-3" style="flex-grow: 1">
@@ -207,14 +207,12 @@ Executivo{% endblock %} {% block content %}
                   alt="Ícone"
                   style="height: 36px; margin: 10px 0px -10px 0px"
                 />
-                Últimos Lançamentos
+                Histórico Orçamentário
               </div>
               <div
                 style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
               ></div>
-              <div class="subtitulo">
-                Valores financeiro e orçamentário deste contrato
-              </div>
+              <div class="subtitulo">Total de empenhos originais</div>
             </div>
           </div>
         </div>
@@ -231,7 +229,7 @@ Executivo{% endblock %} {% block content %}
               <tbody id="historico-orcamentario-tbody">
                 <!-- Loading state -->
                 <tr>
-                  <td colspan="3" style="">
+                  <td colspan="3" style="min-height: 300px">
                     <div
                       class="br-loading small"
                       role="progressbar"
@@ -381,7 +379,7 @@ Executivo{% endblock %} {% block content %}
                     alt="Ícone"
                     style="height: 36px; margin: 10px 0px -10px 0px"
                   />
-                  Grid Numerado Financeiro
+                  Grid Financeiro
                 </div>
                 <div
                   style="

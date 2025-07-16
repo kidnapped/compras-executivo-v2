@@ -24,68 +24,15 @@ const HistoricoOrcamentarioCard = {
       return;
     }
 
-    container.innerHTML = `<td class="" style="min-height: 37px">
-                    <i class="fa-solid fa-file-contract text-info"></i>
-                  </td>
-                  <td class="" style="">empenhos</td>
-                  <td class="" style=""><div
-                      class="br-loading small"
+    container.innerHTML = `<tr>
+                  <td class="text-center" colspan="3" style="min-height: 300px">
+                    <div
+                      class="br-loading large"
                       role="progressbar"
                       aria-label="carregando histórico orçamentário"
-                    ></div></td>
-                </tr>
-                <tr>
-                  <td class="" style="min-height: 37px">
-                    <i class="fa-solid fa-play text-info"></i>
-                  </td>
-                  <td class="" style="">em execução</td>
-                  <td class="" style=""><div
-                      class="br-loading small"
-                      role="progressbar"
-                      aria-label="carregando histórico orçamentário"
-                    ></div></td>
-                </tr>
-                <tr>
-                  <td class="" style="min-height: 37px">
-                    <i class="fa-solid fa-circle-check text-success"></i>
-                  </td>
-                  <td class="" style="">Finalizados</td>
-                  <td class="" style=""><div
-                      class="br-loading small"
-                      role="progressbar"
-                      aria-label="carregando histórico orçamentário"
-                    ></div></td>
-                </tr>
-                <tr>
-                  <td class="" style="min-height: 37px">
-                    <i class="fa-solid fa-triangle-exclamation text-danger"></i>
-                  </td>
-                  <td class="" style="">Críticos</td>
-                  <td class="" style=""><div
-                      class="br-loading small"
-                      role="progressbar"
-                      aria-label="carregando histórico orçamentário"
-                    ></div></td>
-                </tr>
-                <tr>
-                  <td class="" style="<div
-                      class="br-loading small"
-                      role="progressbar"
-                      aria-label="carregando histórico orçamentário"
-                    ></div>">
-                    <i class="fa-solid fa-receipt text-info"></i>
-                  </td>
-                  <td class="" style="">RAP</td>
-                  <td class="" style=""><div
-                      class="br-loading small"
-                      role="progressbar"
-                      aria-label="carregando histórico orçamentário"
-                    ></div></td>
-                </tr>
-                <tr>
-                  
-                    
-                  
+                    ></div>
+                </td>
+              </tr>
     `;
   },
 
@@ -129,35 +76,35 @@ const HistoricoOrcamentarioCard = {
     }
 
     container.innerHTML = `<tr>
-                  <td class="" style="min-height: 37px">
+                  <td class="" style="min-height: 47px">
                     <i class="fa-solid fa-file-contract text-info"></i>
                   </td>
                   <td class="" style="">empenhos</td>
                   <td class="" style="">${totalEmpenhos}</td>
                 </tr>
                 <tr>
-                  <td class="" style="min-height: 37px">
+                  <td class="" style="min-height: 47px">
                     <i class="fa-solid fa-play text-info"></i>
                   </td>
                   <td class="" style="">em execução</td>
                   <td class="" style="">${emExecucao}</td>
                 </tr>
                 <tr>
-                  <td class="" style="min-height: 37px">
+                  <td class="" style="min-height: 47px">
                     <i class="fa-solid fa-circle-check text-success"></i>
                   </td>
                   <td class="" style="">Finalizados</td>
                   <td class="" style="">${finalizados}</td>
                 </tr>
                 <tr>
-                  <td class="" style="min-height: 37px">
+                  <td class="" style="min-height: 47px">
                     <i class="fa-solid fa-triangle-exclamation text-danger"></i>
                   </td>
                   <td class="" style="">Críticos</td>
                   <td class="" style="">${criticos}</td>
                 </tr>
                 <tr>
-                  <td class="" style="min-height: 37px">
+                  <td class="" style="min-height: 47px">
                     <i class="fa-solid fa-receipt text-info"></i>
                   </td>
                   <td class="" style="">RAP</td>
