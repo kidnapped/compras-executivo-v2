@@ -1,6 +1,6 @@
 export default {
   menuItems: [
-    { texto: "Início", url: "/dashboard", icone: "fas fa-home" },
+    { texto: "Início", url: "/inicio", icone: "fas fa-home" },
     { texto: "Contratos", url: "/contratos", icone: "fas fa-file-contract" },
     { texto: "Empenhos", url: "/empenhos", icone: "fas fa-file-invoice" },
     { texto: "Dashboard", url: "/dashboard", icone: "fas fa-chart-line" },

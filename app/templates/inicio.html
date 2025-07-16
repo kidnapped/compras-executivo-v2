@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="welcome-container main-content">
+    <!-- Hero Section -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <div class="welcome-hero text-center py-5">
+                <div class="welcome-icon mb-4">
+                    <img src="/static/images/comprasexecutivo_logo.png" 
+                        alt="Compras Executivo Logo" 
+                        style="height: 80px; width: auto; max-width: 100%;">
+                </div>
+                <br>
+
+                <p class="lead text-muted mb-4" style="max-width: 600px; margin: 0 auto;">
+                    Plataforma integrada para gestão inteligente de contratos, empenhos e processos financeiros do governo federal.
+                </p>
+                
+                <div class="welcome-stats row justify-content-center mb-5">
+                    <div class="col-auto">
+                        <div class="stat-item text-center px-3">
+                            <i class="fas fa-file-contract text-success mb-2" style="font-size: 2rem;"></i>
+                            <div class="fw-bold">Contratos</div>
+                            <small class="text-muted">Gestão Completa</small>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="stat-item text-center px-3">
+                            <i class="fas fa-chart-line text-info mb-2" style="font-size: 2rem;"></i>
+                            <div class="fw-bold">Analytics</div>
+                            <small class="text-muted">Insights em Tempo Real</small>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="stat-item text-center px-3">
+                            <i class="fas fa-shield-alt text-warning mb-2" style="font-size: 2rem;"></i>
+                            <div class="fw-bold">Segurança</div>
+                            <small class="text-muted">Dados Protegidos</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Call to Action Button -->
+                <div class="welcome-cta">
+                    <button 
+                        class="btn btn-primary btn-lg px-5 py-3 shadow-lg" 
+                        onclick="toggleSidebar()"
+                        style="border-radius: 50px; font-size: 1.1rem; transition: all 0.3s ease;">
+                        <i class="fas fa-rocket me-2"></i>
+                        Começar Agora
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="br-card border-0 shadow-sm">
+                <div class="br-card-content p-4">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="feature-card text-center h-100 p-4">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-tachometer-alt text-primary" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5 class="fw-bold mb-3">Dashboard Inteligente</h5>
+                                <p class="text-muted">
+                                    Visualize métricas e KPIs em tempo real com gráficos interativos e insights automáticos.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="feature-card text-center h-100 p-4">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-handshake text-success" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5 class="fw-bold mb-3">Gestão de Contratos</h5>
+                                <p class="text-muted">
+                                    Controle completo do ciclo de vida dos contratos, desde a criação até o encerramento.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="feature-card text-center h-100 p-4">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-calculator text-info" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5 class="fw-bold mb-3">Encontro de Contas</h5>
+                                <p class="text-muted">
+                                    Reconciliação automática e análise detalhada de contratos e empenhos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Info Card -->
+    <div class="row mt-4 justify-content-center">
+        <div class="col-md-6">
+            <div class="br-card border-0 shadow-sm">
+                <div class="br-card-content p-4 text-center">
+                    <div class="user-welcome mb-3">
+                        <i class="fas fa-user-circle text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Usuário Autenticado</h5>
+                    <p class="text-muted mb-3">CPF: {{ cpf }}</p>
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Use o menu lateral para navegar pelas funcionalidades do sistema
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.welcome-container {
+    min-height: calc(100vh - 200px);
+    padding: 2rem 0;
+    transition: all 0.3s ease;
+}
+
+/* Comportamento responsivo ao menu - similar ao dashboard */
+.main-content {
+    transition: margin-left 0.3s ease, max-width 0.3s ease;
+}
+
+.menu-open .main-content {
+    margin-left: 0; /* Remove margin adicional quando menu está aberto */
+    max-width: calc(100vw - 220px); /* Ajusta largura para acomodar o menu */
+}
+
+.welcome-hero {
+    background: linear-gradient(135deg, rgba(19, 81, 180, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+/* Ajustes para quando o menu está aberto */
+.menu-open .welcome-hero {
+    padding: 3rem 1.5rem; /* Reduz padding lateral */
+}
+
+.menu-open .welcome-container .row {
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.menu-open .welcome-container .col-12,
+.menu-open .welcome-container .col-lg-10,
+.menu-open .welcome-container .col-md-4,
+.menu-open .welcome-container .col-md-6 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.welcome-stats .stat-item {
+    transition: transform 0.3s ease;
+}
+
+.welcome-stats .stat-item:hover {
+    transform: translateY(-5px);
+}
+
+.feature-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(19, 81, 180, 0.3) !important;
+}
+
+.welcome-icon {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Ajustes responsivos */
+@media (max-width: 1200px) {
+    .menu-open .welcome-hero {
+        padding: 2rem 1rem;
+    }
+    
+    .menu-open .feature-card {
+        padding: 2rem 1rem !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    /* No mobile, o menu overlay não empurra o conteúdo */
+    .menu-open .main-content {
+        margin-left: 0;
+        max-width: 100vw;
+    }
+    
+    .welcome-stats {
+        flex-direction: column;
+    }
+    
+    .welcome-stats .col-auto {
+        margin-bottom: 1rem;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-container {
+        padding: 1rem 0;
+    }
+    
+    .welcome-hero {
+        padding: 2rem 1rem;
+    }
+    
+    .feature-card {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+
+<script>
+function toggleSidebar() {
+    // Usar o mesmo sistema que o dashboard - buscar pelos botões de menu existentes
+    const menuButtons = document.querySelectorAll('button[aria-label="Abrir Menu"]');
+    if (menuButtons.length > 0) {
+        // Simula o clique no primeiro botão de menu encontrado
+        menuButtons[0].click();
+    } else {
+        // Fallback: tentar o método original
+        const sidebar = document.querySelector('.br-menu');
+        const body = document.body;
+        
+        if (sidebar) {
+            const isOpen = sidebar.classList.contains('active');
+            sidebar.classList.toggle('active', !isOpen);
+            body.classList.toggle('menu-open', !isOpen);
+        }
+    }
+}
+
+// Garantir que a página responde corretamente ao estado do menu
+document.addEventListener('DOMContentLoaded', function() {
+    // Observar mudanças na classe menu-open do body
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                // Força uma repintura suave quando o menu muda de estado
+                const mainContent = document.querySelector('.main-content');
+                if (mainContent) {
+                    mainContent.style.transition = 'all 0.3s ease';
+                }
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+});
+</script>
+{% endblock %}

@@ -18,7 +18,7 @@ async def login_page(request: Request):
 async def login(request: Request, username: str = Form(...), password: str = Form(...)):
     if username == USERNAME and password == PASSWORD:
         request.session['user'] = username
-        return RedirectResponse(url="/dashboard", status_code=302)
+        return RedirectResponse(url="/inicio", status_code=302)
     return templates.TemplateResponse("login.html", {"request": request, "error": "Usuário ou senha inválidos."})
 
 @router.get("/logout")

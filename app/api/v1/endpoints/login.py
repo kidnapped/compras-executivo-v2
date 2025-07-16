@@ -1,20 +1,19 @@
 from fastapi import APIRouter, Request, Form, status
 from fastapi.responses import HTMLResponse, RedirectResponse
-from starlette.templating import Jinja2Templates
 from sqlalchemy import text
 from app.core.config import settings
+from app.core.templates import templates
 from app.db.session import get_async_session
 import time
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
 # Tentativas por IP
 login_attempts = {}
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_form(request: Request):
-    next_url = request.query_params.get("next") or "/dashboard"
+    next_url = request.query_params.get("next") or "/inicio"
     return templates.TemplateResponse("login.html", {
         "request": request,
         "next": next_url
@@ -68,7 +67,7 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
 
         login_attempts[client_ip] = []
 
-        next_url = request.query_params.get("next") or "/dashboard"
+        next_url = request.query_params.get("next") or "/inicio"
         print(f"🔁 REDIRECIONANDO PARA /login/success?next={next_url}")
         return RedirectResponse(url=f"/login/success?next={next_url}", status_code=status.HTTP_303_SEE_OTHER)
 
@@ -79,13 +78,25 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
     return templates.TemplateResponse("login.html", {
         "request": request,
         "error": "CPF ou senha incorretos.",
-        "next": request.query_params.get("next") or "/dashboard"
+        "next": request.query_params.get("next") or "/inicio"
     })
 
 @router.get("/logout")
 async def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.get("/inicio", response_class=HTMLResponse)
+async def inicio(request: Request):
+    # Check if user is logged in
+    cpf = request.session.get("cpf")
+    if not cpf:
+        return RedirectResponse(url="/login?next=/inicio")
+    
+    return templates.TemplateResponse("inicio.html", {
+        "request": request,
+        "cpf": cpf
+    })
 
 @router.get("/login/success")
 async def login_success(request: Request):
@@ -94,7 +105,7 @@ async def login_success(request: Request):
     if not cpf:
         return RedirectResponse(url="/login")
 
-    next_url = request.query_params.get("next") or "/dashboard"
+    next_url = request.query_params.get("next") or "/inicio"
 
     # Aqui futuramente colocar regras com base no CPF, perfil, etc.
     return RedirectResponse(url=next_url)
