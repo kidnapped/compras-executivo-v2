@@ -4,9 +4,9 @@ export default {
     { texto: "Contratos", url: "/dashboard", icone: "fas fa-chart-line" },
     { texto: "kpi's", url: "/kpis", icone: "fas fa-tachometer-alt" },
     { texto: "Administração", url: "/admin", icone: "fas fa-cogs" },
-    { texto: "Minha Conta", url: "/minha-conta", icone: "fas fa-user-circle" },
-    { texto: "Suporte", url: "/suporte", icone: "fas fa-life-ring" },
-    { texto: "Ajuda", url: "/ajuda", icone: "fas fa-question-circle" },
+    { texto: "Minha Conta", url: "/bloqueado", icone: "fas fa-user-circle" },
+    { texto: "Suporte", url: "/bloqueado", icone: "fas fa-life-ring" },
+    { texto: "Ajuda", url: "/bloqueado", icone: "fas fa-question-circle" },
     { texto: "Sair", url: "/logout", icone: "fas fa-sign-out-alt" },
   ],
 
