@@ -188,7 +188,7 @@ async def get_dashboard_contratos(
     # Prepare response
     data = {
         "titulo": "Contratos e Renovações",
-        "subtitulo": "Total de contratos desde 2006",
+        "subtitulo": "Total de contratos desde 2019",
         "quantidade_total": quantidade_total,
         "vigentes": vigentes,
         "finalizados": finalizados,

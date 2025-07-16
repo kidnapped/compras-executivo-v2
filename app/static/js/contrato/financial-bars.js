@@ -150,7 +150,7 @@ const createContractedBar = (contract) => {
                transform: translateY(-50%) rotate(180deg); 
                writing-mode: vertical-rl; 
                font-family: Arial, sans-serif; 
-               font-size: 10px; 
+               font-size: 12px; 
                font-weight: bold; 
                color: #333; 
                white-space: nowrap;
@@ -163,7 +163,7 @@ const createContractedBar = (contract) => {
              data-type="contratado" 
              data-amount="${value || 0}" 
              style="
-               width: 21px; 
+               width: 32px; 
                height: 140px; 
                background-color: #D0D9F6; 
                position: relative;
@@ -245,7 +245,7 @@ const createCommittedBar = (contract) => {
                transform: translateY(-50%) rotate(180deg); 
                writing-mode: vertical-rl; 
                font-family: Arial, sans-serif; 
-               font-size: 10px; 
+               font-size: 12px; 
                font-weight: bold; 
                color: #333; 
                white-space: nowrap;
@@ -397,7 +397,7 @@ const createPaidBar = (contract) => {
                transform: translateY(-50%) rotate(180deg); 
                writing-mode: vertical-rl; 
                font-family: Arial, sans-serif; 
-               font-size: 10px; 
+               font-size: 12px; 
                font-weight: bold; 
                color: #333; 
                white-space: nowrap;
