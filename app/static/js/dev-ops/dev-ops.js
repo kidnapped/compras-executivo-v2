@@ -11,6 +11,7 @@ export default {
   initDevOps() {
     this.initUnidadesSelector();
     this.initClearUasgButton();
+    this.initCpfValidator();
   },
 
   // Initialize the unidades organizational selector
@@ -462,5 +463,188 @@ export default {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  },
+
+  // Initialize CPF validator functionality
+  initCpfValidator() {
+    console.log('Initializing CPF validator...');
+    
+    const cpfInput = document.getElementById('cpf-input');
+    const validateBtn = document.getElementById('validate-cpf-btn');
+    const resultDiv = document.getElementById('cpf-result');
+
+    console.log('CPF elements found:', {
+      cpfInput: !!cpfInput,
+      validateBtn: !!validateBtn,
+      resultDiv: !!resultDiv
+    });
+
+    if (!cpfInput || !validateBtn || !resultDiv) {
+      console.error('Required CPF elements not found');
+      return;
+    }
+
+    // Add input formatting
+    cpfInput.addEventListener('input', (e) => {
+      this.formatCpfInput(e.target);
+    });
+
+    // Add validation on button click
+    validateBtn.addEventListener('click', () => {
+      this.validateCpf();
+    });
+
+    // Add validation on Enter key
+    cpfInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.validateCpf();
+      }
+    });
+
+    console.log('CPF validator initialized successfully');
+  },
+
+  // Format CPF input as user types
+  formatCpfInput(input) {
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    
+    // Clear previous result when user starts typing
+    this.clearCpfResult();
+    
+    // Apply CPF formatting
+    if (value.length <= 11) {
+      value = value.replace(/(\d{3})(\d)/, '$1.$2');
+      value = value.replace(/(\d{3})(\d)/, '$1.$2');
+      value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+    
+    input.value = value;
+  },
+
+  // Validate CPF
+  async validateCpf() {
+    const cpfInput = document.getElementById('cpf-input');
+    const validateBtn = document.getElementById('validate-cpf-btn');
+    const resultDiv = document.getElementById('cpf-result');
+
+    if (!cpfInput || !validateBtn || !resultDiv) {
+      console.error('CPF elements not found');
+      return;
+    }
+
+    const cpfValue = cpfInput.value.trim();
+    
+    if (!cpfValue) {
+      this.showCpfResult('Por favor, digite um CPF', 'error');
+      return;
+    }
+
+    // Show loading state
+    const originalBtnText = validateBtn.innerHTML;
+    validateBtn.disabled = true;
+    validateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Validando...';
+
+    try {
+      const response = await fetch('/dev-ops/validate-cpf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cpf: cpfValue })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        this.showCpfResult(result.message, result.success ? 'success' : 'error', result);
+      } else {
+        this.showCpfResult(result.message || 'Erro ao validar CPF', 'error');
+      }
+
+    } catch (error) {
+      console.error('Error validating CPF:', error);
+      this.showCpfResult('Erro ao conectar com o servidor', 'error');
+    } finally {
+      // Restore button state
+      validateBtn.disabled = false;
+      validateBtn.innerHTML = originalBtnText;
+    }
+  },
+
+  // Show CPF validation result
+  showCpfResult(message, type = 'info', resultData = null) {
+    const resultDiv = document.getElementById('cpf-result');
+    
+    if (!resultDiv) return;
+
+    let iconClass = 'fas fa-info-circle';
+    let bgColor = '#e3f2fd';
+    let borderColor = '#bbdefb';
+    let textColor = '#1976d2';
+
+    if (type === 'success') {
+      iconClass = 'fas fa-check-circle';
+      bgColor = '#d4edda';
+      borderColor = '#c3e6cb';
+      textColor = '#155724';
+    } else if (type === 'error') {
+      iconClass = 'fas fa-exclamation-triangle';
+      bgColor = '#f8d7da';
+      borderColor = '#f5c6cb';
+      textColor = '#721c24';
+    }
+
+    let content = `
+      <div style="padding: 12px; background-color: ${bgColor}; border: 1px solid ${borderColor}; border-radius: 4px;">
+        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+          <i class="${iconClass}" style="margin-right: 8px; color: ${textColor}"></i>
+          <span style="color: ${textColor}; font-weight: 500;">${this.escapeHtml(message)}</span>
+        </div>
+    `;
+
+    // Add additional information if validation was successful and user was found
+    if (resultData && resultData.exists_in_database && resultData.user_info) {
+      content += `
+        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid ${borderColor};">
+          <div style="color: ${textColor}; font-size: 14px;">
+            <strong>Informações do usuário:</strong>
+          </div>
+          <div style="margin-top: 8px; color: ${textColor}; font-size: 13px;">
+            <div><strong>Nome:</strong> ${this.escapeHtml(resultData.user_info.name)}</div>
+            <div><strong>Email:</strong> ${this.escapeHtml(resultData.user_info.email || 'Não informado')}</div>
+            <div><strong>UG Primária:</strong> ${resultData.user_info.ugprimaria || 'Não informado'}</div>
+            <div><strong>ID:</strong> ${resultData.user_info.id}</div>
+          </div>
+        </div>
+      `;
+    } else if (resultData && resultData.valid_format && !resultData.exists_in_database) {
+      content += `
+        <div style="margin-top: 8px; color: ${textColor}; font-size: 13px;">
+          <strong>CPF:</strong> ${this.escapeHtml(resultData.cpf)}
+        </div>
+      `;
+    }
+
+    content += '</div>';
+
+    resultDiv.innerHTML = content;
+    resultDiv.style.display = 'block';
+
+    // Auto-hide after 10 seconds for non-error messages
+    if (type !== 'error') {
+      setTimeout(() => {
+        resultDiv.style.display = 'none';
+      }, 10000);
+    }
+  },
+
+  // Clear CPF validation result
+  clearCpfResult() {
+    const resultDiv = document.getElementById('cpf-result');
+    if (resultDiv) {
+      resultDiv.style.display = 'none';
+      resultDiv.innerHTML = '';
+    }
   }
 };
