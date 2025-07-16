@@ -37,6 +37,7 @@ export default {
   setupHeaderScroll() {
     const header = document.querySelector(".br-header");
     const main = document.querySelector(".br-main");
+    const menu = document.querySelector("#main-navigation");
     let lastShrinkState = false;
 
     const shrinkHeader = () => {
@@ -49,6 +50,18 @@ export default {
       if (shouldShrink !== lastShrinkState) {
         header.classList.toggle("header-shrink", shouldShrink);
         main.style.paddingTop = shouldShrink ? "70px" : "130px";
+        
+        // Explicitly handle menu positioning when header shrinks
+        if (menu) {
+          if (shouldShrink) {
+            menu.style.top = "90px";
+            menu.style.height = "calc(100% - 90px)";
+          } else {
+            menu.style.top = "130px";
+            menu.style.height = "calc(100% - 130px)";
+          }
+        }
+        
         lastShrinkState = shouldShrink;
       }
     };
@@ -59,6 +72,10 @@ export default {
     if (window.innerWidth <= 768) {
       header.classList.add("header-shrink");
       main.style.paddingTop = "70px";
+      if (menu) {
+        menu.style.top = "90px";
+        menu.style.height = "calc(100% - 90px)";
+      }
     }
 
     shrinkHeader();
