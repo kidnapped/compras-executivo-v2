@@ -143,98 +143,6 @@ Executivo{% endblock %} {% block content %}
     </div>
   </div>
 
-  <!-- Detalhes dos Empenhos Section -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="br-card" id="detalhes-empenhos-container">
-        <div class="card-header">
-          <div class="d-flex" style="width: 100%">
-            <div class="ml-3" style="flex-grow: 1">
-              <div class="titulo">
-                <img
-                  src="/static/images/doc2.png"
-                  alt="Ícone"
-                  style="height: 36px; margin: 10px 0px -10px 0px"
-                />
-                Detalhes dos Empenhos
-              </div>
-              <div
-                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
-              ></div>
-              <div class="subtitulo">
-                Histórico detalhado de empenhos do contrato
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card-content" style="padding: 0">
-          <!-- Chart Section -->
-          <div
-            id="detalhes-empenhos-chart-container"
-            style="padding: 20px; border-bottom: 1px solid #eee"
-          >
-            <div
-              id="detalhes-empenhos-chart"
-              style="
-                width: 100%;
-                height: 300px;
-                border: 1px solid #f0f0f0;
-                border-radius: 4px;
-              "
-            ></div>
-          </div>
-          <!-- Table Section -->
-          <div class="table-responsive">
-            <table class="br-table table-hover table-striped">
-              <thead style="background-color: #f8f8f8">
-                <tr>
-                  <th style="border: none">Data</th>
-                  <th style="border: none">Empenho</th>
-                  <th style="border: none">Espécie</th>
-                  <th style="border: none">Nominal</th>
-                  <th style="width: 50px; border: none"></th>
-                  <th style="width: 50px; border: none"></th>
-                </tr>
-              </thead>
-              <tbody id="detalhes-empenhos-tbody">
-                <!-- Loading state -->
-                <tr>
-                  <td colspan="6" class="text-center" style="padding: 40px">
-                    <div class="text-muted">
-                      <div
-                        class="br-loading medium"
-                        role="progressbar"
-                        aria-label="carregando detalhes dos empenhos"
-                      ></div>
-                      <br />
-                      Carregando detalhes dos empenhos...
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Histórico Orçamentário Section -->
-  <div class="row mb-4">
-    <div class="col-12" id="card-historico-orcamentario-container">
-      <div
-        class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-        style="min-height: 180px"
-      >
-        <div
-          class="br-loading medium"
-          role="progressbar"
-          aria-label="carregando histórico orçamentário"
-        ></div>
-      </div>
-    </div>
-  </div>
-
   <!-- Últimos Lançamentos Section -->
   <div class="row mb-4">
     <div class="col-6">
@@ -287,13 +195,54 @@ Executivo{% endblock %} {% block content %}
         </div>
       </div>
     </div>
-
-    <!-- Results Section -->
-    <div id="empenhos-results" class="col-6">
-      <!-- Results will be displayed here dynamically -->
-      <div class="text-center text-muted" style="padding: 60px">
-        <i class="fas fa-search fa-3x mb-3"></i>
-        <h5>Aguardando Consulta</h5>
+    <!-- Histórico Orçamentário Section -->
+    <div class="col-6">
+      <div class="br-card" id="ultimos-lancamentos-container">
+        <div class="card-header">
+          <div class="d-flex" style="width: 100%">
+            <div class="ml-3" style="flex-grow: 1">
+              <div class="titulo">
+                <img
+                  src="/static/images/doc2.png"
+                  alt="Ícone"
+                  style="height: 36px; margin: 10px 0px -10px 0px"
+                />
+                Últimos Lançamentos
+              </div>
+              <div
+                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+              ></div>
+              <div class="subtitulo">
+                Valores financeiro e orçamentário deste contrato
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" style="padding: 0">
+          <div class="table-responsive">
+            <table class="br-table table-hover">
+              <thead style="background-color: #f8f8f8">
+                <tr>
+                  <th style="width: 60px; border: none"></th>
+                  <th style="border: none">Data</th>
+                  <th style="width: 60px; border: none">Valor</th>
+                </tr>
+              </thead>
+              <tbody id="historico-orcamentario-tbody">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="3" style="">
+                    <div
+                      class="br-loading small"
+                      role="progressbar"
+                      aria-label="carregando histórico orçamentário"
+                    ></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -539,8 +488,92 @@ Executivo{% endblock %} {% block content %}
     </div>
   </div>
 
-  {% endblock %}
+  <!-- Detalhes dos Empenhos Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="br-card" id="detalhes-empenhos-container">
+        <div class="card-header">
+          <div class="d-flex" style="width: 100%">
+            <div class="ml-3" style="flex-grow: 1">
+              <div class="titulo">
+                <img
+                  src="/static/images/doc2.png"
+                  alt="Ícone"
+                  style="height: 36px; margin: 10px 0px -10px 0px"
+                />
+                Detalhes dos Empenhos
+              </div>
+              <div
+                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+              ></div>
+              <div class="subtitulo">
+                Histórico detalhado de empenhos do contrato
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content" style="padding: 0">
+          <!-- Chart Section -->
+          <div
+            id="detalhes-empenhos-chart-container"
+            style="padding: 20px; border-bottom: 1px solid #eee"
+          >
+            <div
+              id="detalhes-empenhos-chart"
+              style="
+                width: 100%;
+                height: 300px;
+                border: 1px solid #f0f0f0;
+                border-radius: 4px;
+              "
+            ></div>
+          </div>
+          <!-- Table Section -->
+          <div class="table-responsive">
+            <table class="br-table table-hover table-striped">
+              <thead style="background-color: #f8f8f8">
+                <tr>
+                  <th style="border: none">Data</th>
+                  <th style="border: none">Empenho</th>
+                  <th style="border: none">Espécie</th>
+                  <th style="border: none">Nominal</th>
+                  <th style="width: 50px; border: none"></th>
+                  <th style="width: 50px; border: none"></th>
+                </tr>
+              </thead>
+              <tbody id="detalhes-empenhos-tbody">
+                <!-- Loading state -->
+                <tr>
+                  <td colspan="6" class="text-center" style="padding: 40px">
+                    <div class="text-muted">
+                      <div
+                        class="br-loading medium"
+                        role="progressbar"
+                        aria-label="carregando detalhes dos empenhos"
+                      ></div>
+                      <br />
+                      Carregando detalhes dos empenhos...
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Results Section -->
+  <div id="empenhos-results" class="col-6">
+    <!-- Results will be displayed here dynamically -->
+    <div class="text-center text-muted" style="padding: 60px">
+      <i class="fas fa-search fa-3x mb-3"></i>
+      <h5>Aguardando Consulta</h5>
+    </div>
+  </div>
   <!-- The DetalhesEmpenhos functionality is now integrated into encontro-contas.js -->
   <!-- No additional script needed here as it's initialized with the main controller -->
 </div>
+
+{% endblock %}

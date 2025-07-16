@@ -15,7 +15,7 @@ export default {
       uasgs: [],
       tipo: [],
     },
-    sort: "numero",
+    sort: "vigencia",
   },
 
   // Modal popup functionality
@@ -918,7 +918,7 @@ export default {
             sortCriteria = [["numero", "ASC"]];
             break;
           case "vigencia":
-            sortCriteria = [["vigencia_fim", "ASC"]];
+            sortCriteria = [["vigencia_fim", "DESC"]];
             break;
           case "valor":
             sortCriteria = [["valor", "DESC"]];
@@ -1115,10 +1115,10 @@ export default {
               </div>
 
               <div style="display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; white-space: nowrap; margin-top: -10px !important;">
-                <img src="${
-                  this.getContratoInfo(contract.tipo_id).icon
-                }" 
-                data-tooltip-text="${this.getContratoInfo(contract.tipo_id).name}"
+                <img src="${this.getContratoInfo(contract.tipo_id).icon}" 
+                data-tooltip-text="${
+                  this.getContratoInfo(contract.tipo_id).name
+                }"
                 data-tooltip-place="bottom"
                 data-tooltip-type="info"
                 style="height: 20px;" />

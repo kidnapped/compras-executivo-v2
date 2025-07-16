@@ -1367,7 +1367,7 @@ body {
   font-size: 9px;
   font-weight: bold;
   color: #333;
-  min-width: 20px;
+  min-width: 32px;
   writing-mode: vertical-lr;
   text-orientation: mixed;
   display: flex;
@@ -1379,6 +1379,7 @@ body {
 
 .financial-bar {
   width: 48px;
+  min-width: 32px;
   height: 100px;
   background-color: #f0f0f0;
   border: 1px solid #ddd;

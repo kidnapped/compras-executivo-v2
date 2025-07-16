@@ -18,76 +18,74 @@ const HistoricoOrcamentarioCard = {
    * Show loading state in the budget history card
    */
   showLoadingState() {
-    const container = document.getElementById(
-      "card-historico-orcamentario-container"
-    );
+    const container = document.getElementById("historico-orcamentario-tbody");
     if (!container) {
       console.warn("Histórico orçamentário card container not found");
       return;
     }
 
-    container.innerHTML = `
-      <div class="pl-6 pt-3 h-100 card-contratos br-card" style="min-height: 10px">
-        <div id="historico-orcamentario-card-content">
-          <div class="row justify-content-between">
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-file-invoice text-info  br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Empenhos</div>
-                    <span class="text-muted" id="total-empenhos">aguardando consulta...</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-play-circle text-info  br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Em Execução</div>
-                    <span class="text-muted" id="empenhos-execucao">aguardando consulta...</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-check-circle text-info  br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Finalizados</div>
-                    <span class="text-muted" id="empenhos-finalizados">aguardando consulta...</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-exclamation-triangle text-danger br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Críticos</div>
-                    <span class="text-muted" id="empenhos-criticos">aguardando consulta...</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-calendar-times text-info  br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">RAP</div>
-                    <span class="text-muted" id="empenhos-rap">aguardando consulta...</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    container.innerHTML = `<td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-file-contract text-info"></i>
+                  </td>
+                  <td class="" style="">empenhos</td>
+                  <td class="" style=""><div
+                      class="br-loading small"
+                      role="progressbar"
+                      aria-label="carregando histórico orçamentário"
+                    ></div></td>
+                </tr>
+                <tr>
+                  <td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-play text-info"></i>
+                  </td>
+                  <td class="" style="">em execução</td>
+                  <td class="" style=""><div
+                      class="br-loading small"
+                      role="progressbar"
+                      aria-label="carregando histórico orçamentário"
+                    ></div></td>
+                </tr>
+                <tr>
+                  <td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-circle-check text-success"></i>
+                  </td>
+                  <td class="" style="">Finalizados</td>
+                  <td class="" style=""><div
+                      class="br-loading small"
+                      role="progressbar"
+                      aria-label="carregando histórico orçamentário"
+                    ></div></td>
+                </tr>
+                <tr>
+                  <td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                  </td>
+                  <td class="" style="">Críticos</td>
+                  <td class="" style=""><div
+                      class="br-loading small"
+                      role="progressbar"
+                      aria-label="carregando histórico orçamentário"
+                    ></div></td>
+                </tr>
+                <tr>
+                  <td class="" style="<div
+                      class="br-loading small"
+                      role="progressbar"
+                      aria-label="carregando histórico orçamentário"
+                    ></div>">
+                    <i class="fa-solid fa-receipt text-info"></i>
+                  </td>
+                  <td class="" style="">RAP</td>
+                  <td class="" style=""><div
+                      class="br-loading small"
+                      role="progressbar"
+                      aria-label="carregando histórico orçamentário"
+                    ></div></td>
+                </tr>
+                <tr>
+                  
+                    
+                  
     `;
   },
 
@@ -124,76 +122,47 @@ const HistoricoOrcamentarioCard = {
    * @param {number} criticos - Number of critical empenhos
    */
   showCardContent(totalEmpenhos, emExecucao, finalizados, rap, criticos) {
-    const container = document.getElementById(
-      "card-historico-orcamentario-container"
-    );
+    const container = document.getElementById("historico-orcamentario-tbody");
     if (!container) {
       console.warn("Histórico orçamentário card container not found");
       return;
     }
 
-    container.innerHTML = `
-      <div class="pl-6 pt-3 h-100 card-contratos br-card" style="min-height: 10px">
-        <div id="historico-orcamentario-card-content">
-          <div class="row justify-content-between">
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-file-invoice text-info  br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Empenhos</div>
-                    <span class="text-muted" id="total-empenhos">${totalEmpenhos}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-play-circle text-info  br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Em Execução</div>
-                    <span class="text-muted" id="empenhos-execucao">${emExecucao}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-check-circle text-info br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Finalizados</div>
-                    <span class="text-muted" id="empenhos-finalizados">${finalizados}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-exclamation-triangle text-danger br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">Críticos</div>
-                    <span class="text-muted" id="empenhos-criticos">${criticos}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-6">
-              <div class="pt-1">
-                <div class="d-flex pb-2">
-                  <i class="fas fa-calendar-times text-info  br-avatar"></i>
-                  <div class="ml-3">
-                    <div class="text-weight-semi-bold text-up-01">RAP</div>
-                    <span class="text-muted" id="empenhos-rap">${rap}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    container.innerHTML = `<tr>
+                  <td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-file-contract text-info"></i>
+                  </td>
+                  <td class="" style="">empenhos</td>
+                  <td class="" style="">${totalEmpenhos}</td>
+                </tr>
+                <tr>
+                  <td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-play text-info"></i>
+                  </td>
+                  <td class="" style="">em execução</td>
+                  <td class="" style="">${emExecucao}</td>
+                </tr>
+                <tr>
+                  <td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-circle-check text-success"></i>
+                  </td>
+                  <td class="" style="">Finalizados</td>
+                  <td class="" style="">${finalizados}</td>
+                </tr>
+                <tr>
+                  <td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                  </td>
+                  <td class="" style="">Críticos</td>
+                  <td class="" style="">${criticos}</td>
+                </tr>
+                <tr>
+                  <td class="" style="min-height: 37px">
+                    <i class="fa-solid fa-receipt text-info"></i>
+                  </td>
+                  <td class="" style="">RAP</td>
+                  <td class="" style="">${rap}</td>
+                </tr>
     `;
   },
 
