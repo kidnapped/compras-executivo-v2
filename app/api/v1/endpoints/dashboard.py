@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.templates import templates
 from app.utils.session_utils import get_uasgs_str
-from app.db.session import get_session_contratos
+from app.db.session import get_session_contratos, get_session_blocok
 from app.utils.static_loader import collect_static_files
 from app.core import config as app_config
 
@@ -398,7 +398,8 @@ async def get_contratos_lista(
     page: Optional[int] = Query(1, ge=1, description="Page number"),
     start: Optional[int] = Query(0, ge=0, description="Start offset"),
     limit: Optional[int] = Query(5, ge=1, le=100, description="Items per page"),
-    db: AsyncSession = Depends(get_session_contratos)
+    db_contratos: AsyncSession = Depends(get_session_contratos),
+    db_blocok: AsyncSession = Depends(get_session_blocok)
 ) -> Dict[str, Any]:
     """
     Optimized version: Split queries for better performance
@@ -418,7 +419,7 @@ async def get_contratos_lista(
         target_uasgs = session_uasgs
 
     # Get unit IDs from UASG codes
-    result = await db.execute(
+    result = await db_contratos.execute(
         text("SELECT id FROM unidades WHERE codigo = ANY(:uasgs)"),
         {"uasgs": target_uasgs}
     )
@@ -432,6 +433,27 @@ async def get_contratos_lista(
             "limit": limit,
             "pages": 0
         }
+
+    # If filtering by favorites, get favorite contract IDs first from blocok database
+    favorite_contract_ids = []
+    if favoritos:
+        cpf_session = request.session.get('cpf')
+        if cpf_session:
+            favorite_result = await db_blocok.execute(
+                text("SELECT id_contrato FROM contrato_favorito WHERE cpf = :cpf"),
+                {"cpf": cpf_session}
+            )
+            favorite_contract_ids = [row.id_contrato for row in favorite_result.fetchall()]
+        
+        # If no favorites found or no CPF, return empty result
+        if not favorite_contract_ids:
+            return {
+                "data": [],
+                "total": 0,
+                "page": page,
+                "limit": limit,
+                "pages": 0
+            }
 
     # Parse sorting parameters
     order_clauses = []
@@ -465,8 +487,9 @@ async def get_contratos_lista(
     # Build WHERE conditions
     where_conditions = ["c.unidade_id = ANY(:unit_ids)", "c.deleted_at IS NULL"]
     
-    if favoritos:
-        where_conditions.append("EXISTS (SELECT 1 FROM user_favorites uf WHERE uf.contrato_id = c.id AND uf.user_id = :user_id)")
+    # Add favorites filter if needed
+    if favoritos and favorite_contract_ids:
+        where_conditions.append("c.id = ANY(:favorite_ids)")
     
     if tipo and tipo != "normal":
         if tipo == "vigente":
@@ -487,10 +510,10 @@ async def get_contratos_lista(
     """
     
     count_params = {"unit_ids": unit_ids}
-    if favoritos:
-        count_params["user_id"] = 1
+    if favoritos and favorite_contract_ids:
+        count_params["favorite_ids"] = favorite_contract_ids
     
-    count_result = await db.execute(text(count_query), count_params)
+    count_result = await db_contratos.execute(text(count_query), count_params)
     total_records = count_result.scalar() or 0
     
     if total_records == 0:
@@ -531,10 +554,10 @@ async def get_contratos_lista(
         "limit": limit,
         "offset": start
     }
-    if favoritos:
-        main_params["user_id"] = 1
+    if favoritos and favorite_contract_ids:
+        main_params["favorite_ids"] = favorite_contract_ids
 
-    result = await db.execute(text(main_query), main_params)
+    result = await db_contratos.execute(text(main_query), main_params)
     contracts = result.mappings().fetchall()
     
     if not contracts:
@@ -565,7 +588,7 @@ async def get_contratos_lista(
         GROUP BY ce.contrato_id, e.naturezadespesa_id, nd.descricao
     """
     
-    empenho_result = await db.execute(text(empenho_query), {"contract_ids": contract_ids})
+    empenho_result = await db_contratos.execute(text(empenho_query), {"contract_ids": contract_ids})
     empenho_data = {}
     
     for row in empenho_result.mappings():
@@ -599,7 +622,7 @@ async def get_contratos_lista(
         GROUP BY contrato_id
     """
     
-    aditivos_result = await db.execute(text(aditivos_query), {"contract_ids": contract_ids})
+    aditivos_result = await db_contratos.execute(text(aditivos_query), {"contract_ids": contract_ids})
     aditivos_data = {row.contrato_id: row.aditivos_count for row in aditivos_result}
 
     # ==== STEP 5: Get responsaveis for these contracts ====
@@ -613,10 +636,22 @@ async def get_contratos_lista(
         GROUP BY cr.contrato_id
     """
     
-    responsaveis_result = await db.execute(text(responsaveis_query), {"contract_ids": contract_ids})
+    responsaveis_result = await db_contratos.execute(text(responsaveis_query), {"contract_ids": contract_ids})
     responsaveis_data = {row.contrato_id: row.responsaveis for row in responsaveis_result}
 
-    # ==== STEP 6: Format the response data ====
+    # ==== STEP 6: Get favorite status for these contracts ====
+    favorite_contracts = set()
+    cpf = request.session.get('cpf')
+    if cpf:
+        favorite_query = """
+            SELECT id_contrato
+            FROM contrato_favorito
+            WHERE cpf = :cpf AND id_contrato = ANY(:contract_ids)
+        """
+        favorite_result = await db_blocok.execute(text(favorite_query), {"cpf": cpf, "contract_ids": contract_ids})
+        favorite_contracts = {row.id_contrato for row in favorite_result.fetchall()}
+
+    # ==== STEP 7: Format the response data ====
     data = []
     for contract in contracts:
         contract_id = contract.id
@@ -650,7 +685,14 @@ async def get_contratos_lista(
         fontawesome_icon = get_fontawesome_icon(empenho_info["naturezadespesa_id"])
 
         # Get favorite status for this contract
-        favorite_info = get_random_favorite_status(contract.id)
+        is_favorite = contract.id in favorite_contracts
+        favorite_info = {
+            "is_favorite": is_favorite,
+            "favorite_icon": "red" if is_favorite else "gray", 
+            "favorite_status": "red" if is_favorite else "gray",
+            "favorite_action": "Remove" if is_favorite else "Adicionar",
+            "favorite_title": "Remover dos favoritos" if is_favorite else "Adicionar aos favoritos"
+        }
         
         data.append({
             "id": contract.id,
@@ -703,24 +745,30 @@ async def get_contratos_lista(
         }
     }
 
-def get_random_favorite_status(contract_id: int) -> Dict[str, Any]:
+def get_favorite_status(contract_id: int, cpf: str = None) -> Dict[str, Any]:
     """
-    Generate random favorite status for a contract.
-    Later this will be replaced with actual database lookup.
+    Get favorite status for a contract based on CPF.
     
     Returns:
         Dict containing favorite status information
     """
-    # Use contract_id as seed for consistent results per contract
-    random.seed(contract_id)
-    is_favorite = random.choice([True, False, False, False])  # 25% chance of being favorite
+    if not cpf:
+        return {
+            "is_favorite": False,
+            "favorite_icon": "gray", 
+            "favorite_status": "gray",
+            "favorite_action": "Adicionar",
+            "favorite_title": "Adicionar aos favoritos"
+        }
     
+    # This will be checked in the main query - for now return False as default
+    # The actual check is done in the main endpoint function
     return {
-        "is_favorite": is_favorite,
-        "favorite_icon": "red" if is_favorite else "gray", 
-        "favorite_status": "red" if is_favorite else "gray",
-        "favorite_action": "Remove" if is_favorite else "Adicionar",
-        "favorite_title": "Remover dos favoritos" if is_favorite else "Adicionar aos favoritos"
+        "is_favorite": False,
+        "favorite_icon": "gray", 
+        "favorite_status": "gray",
+        "favorite_action": "Adicionar",
+        "favorite_title": "Adicionar aos favoritos"
     }
 
 @router.get("/dashboard/contrato/{contract_id}/aditivos")
@@ -804,5 +852,78 @@ async def get_contract_aditivos(
         })
 
     return aditivos_list
+
+@router.post("/dashboard/contrato/{contract_id}/favorito")
+async def toggle_contrato_favorito(
+    contract_id: int,
+    request: Request,
+    db_contratos: AsyncSession = Depends(get_session_contratos),
+    db_blocok: AsyncSession = Depends(get_session_blocok)
+) -> Dict[str, Any]:
+    """
+    Toggle favorite status for a contract.
+    
+    Returns the new favorite status.
+    """
+    # Get CPF from session
+    cpf = request.session.get('cpf')
+    if not cpf:
+        raise HTTPException(status_code=401, detail="CPF não encontrado na sessão")
+    
+    # Check if contract exists and user has access to it
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida para o usuário")
+
+    # Get unit IDs for the user's UASGs
+    user_units_result = await db_contratos.execute(
+        text("SELECT id FROM unidades WHERE codigo = ANY(:uasgs)"),
+        {"uasgs": uasgs}
+    )
+    user_unit_ids = [row.id for row in user_units_result.fetchall()]
+    if not user_unit_ids:
+        raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário")
+
+    # Check if contract exists and user has access
+    contract_check = await db_contratos.execute(
+        text("SELECT 1 FROM contratos WHERE id = :contract_id AND unidade_id = ANY(:unit_ids)"),
+        {"contract_id": contract_id, "unit_ids": user_unit_ids}
+    )
+    if not contract_check.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="Contrato não encontrado ou sem acesso")
+    
+    # Check if already favorited (using blocok database)
+    existing_favorite = await db_blocok.execute(
+        text("SELECT 1 FROM contrato_favorito WHERE cpf = :cpf AND id_contrato = :contract_id"),
+        {"cpf": cpf, "contract_id": contract_id}
+    )
+    
+    is_favorite = existing_favorite.scalar_one_or_none() is not None
+    
+    if is_favorite:
+        # Remove from favorites (using blocok database)
+        await db_blocok.execute(
+            text("DELETE FROM contrato_favorito WHERE cpf = :cpf AND id_contrato = :contract_id"),
+            {"cpf": cpf, "contract_id": contract_id}
+        )
+        await db_blocok.commit()
+        new_status = False
+    else:
+        # Add to favorites (using blocok database)
+        await db_blocok.execute(
+            text("INSERT INTO contrato_favorito (cpf, id_contrato) VALUES (:cpf, :contract_id)"),
+            {"cpf": cpf, "contract_id": contract_id}
+        )
+        await db_blocok.commit()
+        new_status = True
+    
+    return {
+        "success": True,
+        "is_favorite": new_status,
+        "favorite_icon": "red" if new_status else "gray",
+        "favorite_status": "red" if new_status else "gray",
+        "favorite_action": "Remove" if new_status else "Adicionar",
+        "favorite_title": "Remover dos favoritos" if new_status else "Adicionar aos favoritos"
+    }
 
 

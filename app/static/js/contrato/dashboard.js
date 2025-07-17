@@ -1031,9 +1031,10 @@ export default {
                 <img src="static/images/ico/heart_${
                   contract.favorite_icon
                 }.png" style="cursor: pointer; margin-left: 20px;"  alt="Favorito" 
-                  data-tooltip-text="Favorito"
+                  data-tooltip-text="${contract.favorite_title}"
                   data-tooltip-place="bottom"
-                  data-tooltip-type="info" />
+                  data-tooltip-type="info"
+                  onclick="App.toggleFavorite(${contract.id}, this)" />
                 <img data-contract-id="${
                   contract.id
                 }" class="encontro-action" src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" 
@@ -1522,5 +1523,46 @@ export default {
   escapeQuotes(str) {
     if (!str) return "";
     return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+  },
+
+  // Toggle favorite status for a contract
+  async toggleFavorite(contractId, imgElement) {
+    try {
+      // Show loading state
+      const originalSrc = imgElement.src;
+      imgElement.style.opacity = '0.5';
+      
+      const response = await fetch(`/dashboard/contrato/${contractId}/favorito`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Update the image
+        imgElement.src = `static/images/ico/heart_${data.favorite_icon}.png`;
+        imgElement.title = data.favorite_title;
+        imgElement.setAttribute('data-tooltip-text', data.favorite_title);
+        
+        console.log('Favorite status updated:', data);
+      } else {
+        throw new Error('Failed to update favorite status');
+      }
+      
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      // Optionally show an error message to the user
+      alert('Erro ao atualizar favorito. Tente novamente.');
+    } finally {
+      // Restore opacity
+      imgElement.style.opacity = '1';
+    }
   },
 };
