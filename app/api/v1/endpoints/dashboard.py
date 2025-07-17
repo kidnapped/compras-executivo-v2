@@ -2,6 +2,7 @@ from datetime import date, timedelta, datetime
 from typing import Any, Dict, List, Optional
 import json
 import random
+import logging
 
 from babel.dates import format_date
 from fastapi import APIRouter, Depends, Request, HTTPException, Query
@@ -13,6 +14,8 @@ from app.core.config import settings
 from app.core.templates import templates
 from app.utils.session_utils import get_uasgs_str
 from app.db.session import get_session_contratos
+
+logger = logging.getLogger(__name__)
 from app.utils.static_loader import collect_static_files
 from app.core import config as app_config
 
@@ -81,10 +84,47 @@ router = APIRouter()
 
 # Renderiza a página do dashboard
 @router.get("/dashboard", response_class=HTMLResponse)
-async def render_dashboard(request: Request):
+async def render_dashboard(
+    request: Request, 
+    db: AsyncSession = Depends(get_session_contratos)
+):
+    # Get UASG information from session
+    uasgs = get_uasgs_str(request)
+    uasg_info = None
+    
+    if uasgs:
+        # Get UASG details for all user's UASGs
+        try:
+            query = text("SELECT codigo, nomeresumido FROM unidades WHERE codigo = ANY(:uasg) ORDER BY codigo")
+            result = await db.execute(query, {"uasg": uasgs})
+            rows = result.fetchall()
+            
+            if rows:
+                if len(rows) == 1:
+                    # Single UASG
+                    uasg_info = {
+                        "codigo": rows[0][0],
+                        "nome": rows[0][1],
+                        "display": f"{rows[0][0]} - {rows[0][1]}",
+                        "multiple": False
+                    }
+                else:
+                    # Multiple UASGs - show count
+                    codes = [str(row[0]) for row in rows]
+                    uasg_info = {
+                        "codigo": codes[0],  # Primary UASG
+                        "nome": rows[0][1],
+                        "display": f"{len(rows)} UASGs ({', '.join(codes[:2])}{'...' if len(codes) > 2 else ''})",
+                        "multiple": True,
+                        "all_uasgs": [{"codigo": row[0], "nome": row[1]} for row in rows]
+                    }
+        except Exception as e:
+            logger.warning(f"Error fetching UASG info: {e}")
+    
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
-        "show_renewal_column": settings.DASHBOARD_SHOW_RENEWAL_COLUMN
+        "show_renewal_column": settings.DASHBOARD_SHOW_RENEWAL_COLUMN,
+        "uasg_info": uasg_info
     })
 
 # Endpoints do dashboard para contratos
