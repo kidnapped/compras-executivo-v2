@@ -105,7 +105,7 @@ body {
   background-color: #fff;
   padding: 1rem;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  z-index: 999;
+  z-index: 999 !important;
   transform: translateX(-100%);
   transition: transform 0.3s ease, top 0.3s ease, height 0.3s ease;
 }
@@ -142,8 +142,8 @@ body {
 /* CARD */
 .br-card {
   border-radius: 10px;
-  padding-bottom: 20px;
   box-sizing: border-box;
+  z-index: 1 !important;
 }
 
 .br button {
@@ -174,7 +174,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 9999 !important;
   background-color: #fff; /* evita que o conteúdo apareça atrás */
 }
 
@@ -2006,6 +2006,7 @@ body.modal-open {
   min-height: 120px;
   width: 100%;
   position: relative;
+  z-index: 10 !important;
 }
 
 /* Garantir que tooltips dos gráficos apareçam acima de tudo */
@@ -2039,7 +2040,6 @@ div[class*="echarts-tooltip"] {
 
 /* Garantir que não há margem extra no final do grid */
 .row-tight .br-card.card-contratos-grid {
-  min-height: calc(100vh - 320px) !important;
   max-height: none !important;
   height: auto !important;
   overflow: visible !important;
@@ -2059,11 +2059,6 @@ div[class*="echarts-tooltip"] {
 .pagination-container .d-flex {
   margin: 0;
   padding: 0;
-}
-
-/* Garantir que o card do grid não tenha margem inferior */
-.card-contratos-grid {
-  margin-bottom: 0 !important;
 }
 
 /* Loading overlay independente da tabela */
@@ -3054,3 +3049,4 @@ div[class*="echarts-tooltip"] {
 #current-uasg-display button:hover {
   background-color: #dee2e6;
 }
+

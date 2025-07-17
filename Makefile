@@ -91,6 +91,14 @@ run-mac: build-static-if-needed
 run-win: build-static-if-needed
 	@set PYTHONPATH=. && python -m uvicorn app.main:app --host=0.0.0.0 --port=8001 --reload
 
+run-prod: build-static-if-needed
+	@echo "Gerando bundle.js com webpack (produção)..."
+	npx webpack
+	@echo "Compilando arquivos Java..."
+	javac -cp vdb/jboss-dv-6.3.0-teiid-jdbc.jar vdb/QueryContratos.java
+	javac -cp vdb/jboss-dv-6.3.0-teiid-jdbc.jar vdb/QueryFinanceiro.java
+	PYTHONPATH=. python3.12 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
+
 migrate:
 	alembic revision --autogenerate -m "nova migration"
 

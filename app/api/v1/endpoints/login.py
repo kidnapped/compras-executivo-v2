@@ -98,6 +98,12 @@ async def inicio(request: Request):
         "cpf": cpf
     })
 
+@router.get("/bloqueado", response_class=HTMLResponse)
+async def render_dashboard(request: Request):
+    return templates.TemplateResponse("bloqueado.html", {
+        "request": request
+    })
+
 @router.get("/login/success")
 async def login_success(request: Request):
     print("🔍 LOGIN SUCCESS - SESSION ATUAL:", request.session)

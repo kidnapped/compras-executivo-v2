@@ -684,101 +684,6 @@ export default {
     };
   },
 
-  // Renewal bars functionality
-  async initRenewalBars() {
-    console.log("=== INITIALIZING RENEWAL BARS ===");
-
-    const renewalContainers = document.querySelectorAll(
-      ".renewal-bars-container"
-    );
-    console.log("Found renewal bar containers:", renewalContainers.length);
-
-    for (const container of renewalContainers) {
-      await this.createRenewalBars(container);
-    }
-  },
-
-  async createRenewalBars(container) {
-    try {
-      // Find the contract row to get the dates
-      const row = container.closest("tr");
-      const gaugeContainer = row.querySelector(".vigencia-gauge-container");
-
-      if (!gaugeContainer) {
-        console.warn("No gauge container found for renewal bars");
-        return;
-      }
-
-      const contractId = gaugeContainer.getAttribute("data-contract-id");
-      const startDate = gaugeContainer.getAttribute("data-start-date");
-      const endDate = gaugeContainer.getAttribute("data-end-date");
-
-      if (!startDate || !endDate) {
-        console.warn(`Missing date attributes for contract ${contractId}`);
-        return;
-      }
-
-      const vigenciaData = this.calculateVigenciaData(startDate, endDate);
-      this.updateRenewalBars(container, vigenciaData);
-
-      console.log(
-        `✅ Renewal bars updated for contract ${contractId}:`,
-        vigenciaData
-      );
-    } catch (error) {
-      console.error("Error creating renewal bars:", error);
-    }
-  },
-
-  updateRenewalBars(container, vigenciaData) {
-    const { remainingDays } = vigenciaData;
-
-    // Get all renewal bar groups in this container
-    const barGroups = container.querySelectorAll(".renewal-bar-group");
-
-    barGroups.forEach((group) => {
-      const bar = group.querySelector(".renewal-bar");
-      const fill = group.querySelector(".renewal-bar-fill");
-      const days = parseInt(bar.getAttribute("data-days"));
-
-      // Calculate fill percentage based on remaining days
-      let fillPercentage = 0;
-
-      if (remainingDays <= days) {
-        // Contract is within this renewal period
-        if (days === 120) {
-          // For 120 days: fill when <= 120 days remaining
-          fillPercentage = Math.max(
-            0,
-            Math.min(100, ((120 - remainingDays) / 120) * 100)
-          );
-        } else if (days === 90) {
-          // For 90 days: fill when <= 90 days remaining
-          fillPercentage = Math.max(
-            0,
-            Math.min(100, ((90 - remainingDays) / 90) * 100)
-          );
-        } else if (days === 45) {
-          // For 45 days: fill when <= 45 days remaining
-          fillPercentage = Math.max(
-            0,
-            Math.min(100, ((45 - remainingDays) / 45) * 100)
-          );
-        }
-      }
-
-      // Apply the fill percentage
-      fill.style.height = `${fillPercentage}%`;
-
-      // Add visual indication if this period is active
-      if (fillPercentage > 0) {
-        bar.classList.add("active");
-      } else {
-        bar.classList.remove("active");
-      }
-    });
-  },
-
   // Initialize dashboard - called from DOMContentLoaded
   initDashboard() {
     console.log("Initializing dashboard...");
@@ -962,9 +867,6 @@ export default {
       // Initialize visual elements after render
       setTimeout(() => {
         this.initVigenciaGauges();
-        if (window.dashboardConfig?.showRenewalColumn !== false) {
-          this.initRenewalBars();
-        }
         financialBars.initialize();
       }, 100);
     } catch (error) {
@@ -1044,10 +946,6 @@ export default {
 
   // Render a single contract row
   renderContractRow(contract) {
-    // Check if renewal column should be shown
-    const showRenewalColumn =
-      window.dashboardConfig?.showRenewalColumn !== false;
-
     const formatCurrency = (value) => {
       if (!value) return "R$ 0,00";
       return new Intl.NumberFormat("pt-BR", {
@@ -1133,9 +1031,10 @@ export default {
                 <img src="static/images/ico/heart_${
                   contract.favorite_icon
                 }.png" style="cursor: pointer; margin-left: 20px;"  alt="Favorito" 
-                  data-tooltip-text="Favorito"
+                  data-tooltip-text="${contract.favorite_title}"
                   data-tooltip-place="bottom"
-                  data-tooltip-type="info" />
+                  data-tooltip-type="info"
+                  onclick="App.toggleFavorite(${contract.id}, this)" />
                 <img data-contract-id="${
                   contract.id
                 }" class="encontro-action" src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" 
@@ -1265,43 +1164,6 @@ export default {
                style="width: 150px; height: 150px; display: inline-block">
           </div>
         </td>
-        ${
-          showRenewalColumn
-            ? `
-        <td class="hide-mobile">
-          <div class="renewal-bars-container" style="display: flex; gap: 8px; align-items: center">
-            <div class="renewal-bar-group">
-              <div class="renewal-bar-value">120</div>
-              <div class="renewal-bar" data-days="120">
-                <div class="renewal-bar-fill" style="height: ${this.calculateRenewalPercentage(
-                  contract.vigencia_fim,
-                  120
-                )}%"></div>
-              </div>
-            </div>
-            <div class="renewal-bar-group">
-              <div class="renewal-bar-value">90</div>
-              <div class="renewal-bar" data-days="90">
-                <div class="renewal-bar-fill" style="height: ${this.calculateRenewalPercentage(
-                  contract.vigencia_fim,
-                  90
-                )}%"></div>
-              </div>
-            </div>
-            <div class="renewal-bar-group">
-              <div class="renewal-bar-value">45</div>
-              <div class="renewal-bar" data-days="45">
-                <div class="renewal-bar-fill" style="height: ${this.calculateRenewalPercentage(
-                  contract.vigencia_fim,
-                  45
-                )}%"></div>
-              </div>
-            </div>
-          </div>
-        </td>
-        `
-            : ""
-        }
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           ${financialBars.createContractedBar(contract)}
         </td>
@@ -1317,19 +1179,6 @@ export default {
         }</td>  
       </tr>
     `;
-  },
-
-  // Calculate renewal percentage based on days to expiration
-  calculateRenewalPercentage(endDate, targetDays) {
-    if (!endDate) return 0;
-
-    const end = new Date(endDate);
-    const now = new Date();
-    const daysToEnd = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
-
-    if (daysToEnd <= 0) return 100; // Expired
-    if (daysToEnd <= targetDays) return 100; // Within target range
-    return 0; // Not yet in target range
   },
 
   // Calculate years elapsed since contract start
@@ -1674,5 +1523,46 @@ export default {
   escapeQuotes(str) {
     if (!str) return "";
     return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+  },
+
+  // Toggle favorite status for a contract
+  async toggleFavorite(contractId, imgElement) {
+    try {
+      // Show loading state
+      const originalSrc = imgElement.src;
+      imgElement.style.opacity = '0.5';
+      
+      const response = await fetch(`/dashboard/contrato/${contractId}/favorito`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Update the image
+        imgElement.src = `static/images/ico/heart_${data.favorite_icon}.png`;
+        imgElement.title = data.favorite_title;
+        imgElement.setAttribute('data-tooltip-text', data.favorite_title);
+        
+        console.log('Favorite status updated:', data);
+      } else {
+        throw new Error('Failed to update favorite status');
+      }
+      
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      // Optionally show an error message to the user
+      alert('Erro ao atualizar favorito. Tente novamente.');
+    } finally {
+      // Restore opacity
+      imgElement.style.opacity = '1';
+    }
   },
 };

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="welcome-container main-content">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+            <div class="br-card border-0 shadow-sm">
+                <div class="br-card-content p-4 text-center">
+                    <!-- Logo -->
+                    <div class="mb-3">
+                        <img src="/static/images/comprasexecutivo_logo.png" 
+                            alt="Compras Executivo Logo" 
+                            style="height: 60px; width: auto; max-width: 100%;">
+                    </div>
+
+                    <!-- Ícone e Título -->
+                    <div class="mb-3">
+                        <i class="fas fa-lock text-danger" style="font-size: 2.5rem;"></i>
+                    </div>
+                    
+                    <h5 class="text-danger mb-3">Acesso Bloqueado</h5>
+                    
+                    <!-- Mensagem Principal -->
+                    <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                        Seu acesso foi temporariamente suspenso devido a múltiplas tentativas de login incorretas.
+                    </p>
+                    
+                    <!-- Instruções -->
+                    <div class="mb-4">
+                        <small class="text-muted" style="font-size: 0.8rem;">
+                            Aguarde alguns minutos antes de tentar novamente ou entre em contato com o suporte.
+                        </small>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="/login" class="btn btn-primary btn-sm px-3">
+                            <i class="fas fa-sign-in-alt me-1"></i>
+                            Tentar Novamente
+                        </a>
+                        <a href="/disabled" class="btn btn-outline-secondary btn-sm px-3">
+                            <i class="fas fa-headset me-1"></i>
+                            Suporte
+                        </a>
+                    </div>
+                    
+                    <!-- Informações de Contato -->
+                    <div class="mt-4 pt-3 border-top">
+                        <small class="text-muted" style="font-size: 0.75rem;">
+                            <i class="fas fa-envelope me-1"></i>
+                            suporte@comprasexecutivo.gov.br
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.welcome-container {
+    min-height: calc(100vh - 200px);
+    padding: 2rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-content {
+    transition: margin-left 0.3s ease, max-width 0.3s ease;
+}
+
+.menu-open .main-content {
+    margin-left: 0;
+    max-width: calc(100vw - 220px);
+}
+
+.br-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.br-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-sm {
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(19, 81, 180, 0.3);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+}
+
+@media (max-width: 991.98px) {
+    .menu-open .main-content {
+        margin-left: 0;
+        max-width: 100vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-container {
+        padding: 1rem 0;
+    }
+    
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: 0.5rem !important;
+    }
+}
+</style>
+{% endblock %}

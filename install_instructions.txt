@@ -12,6 +12,24 @@ Deploy:
     sudo pip install fastapi
     sudo pip install -r requirements.txt
 
+    sudo yum groupinstall "Development Tools" -y
+    sudo yum install gcc openssl-devel bzip2-devel libffi-devel -y
+
+    // tive que atualizar o python
+    cd /usr/src
+    sudo curl -O https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tgz
+    sudo tar xzf Python-3.12.3.tgz
+    cd Python-3.12.3
+    sudo ./configure --enable-optimizations
+    sudo make altinstall
+
+    // voltar o python pro 3.9
+    sudo alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
+    sudo alternatives --config python3
+    python3 --version
+    python3.12 --version
+    dnf --version
+
     export PATH="$HOME/Library/Python/3.13/bin:$PATH"
 
     make install
@@ -62,3 +80,5 @@ Sincronizar Financeiro
 
     pkill -f 'CloneFinanceiroTabelaData\|reprocessar_datas_puladas.sh\|flock -n /tmp/lock_reprocessar_datas.lock'
     rm -f /tmp/lock_reprocessar_datas.lock
+
+
