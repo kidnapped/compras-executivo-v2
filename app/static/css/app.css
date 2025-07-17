@@ -2040,7 +2040,6 @@ div[class*="echarts-tooltip"] {
 
 /* Garantir que não há margem extra no final do grid */
 .row-tight .br-card.card-contratos-grid {
-  min-height: calc(100vh - 320px) !important;
   max-height: none !important;
   height: auto !important;
   overflow: visible !important;
@@ -2060,11 +2059,6 @@ div[class*="echarts-tooltip"] {
 .pagination-container .d-flex {
   margin: 0;
   padding: 0;
-}
-
-/* Garantir que o card do grid não tenha margem inferior */
-.card-contratos-grid {
-  margin-bottom: 0 !important;
 }
 
 /* Loading overlay independente da tabela */
