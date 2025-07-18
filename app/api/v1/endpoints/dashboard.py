@@ -925,5 +925,3 @@ async def toggle_contrato_favorito(
         "favorite_action": "Remove" if new_status else "Adicionar",
         "favorite_title": "Remover dos favoritos" if new_status else "Adicionar aos favoritos"
     }
-
-
