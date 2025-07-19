@@ -186,6 +186,23 @@ export default {
           },
         ],
       });
+
+      chart.off && chart.off('click');
+      chart.on('click', (params) => {
+        if (params.componentType === 'series' && params.seriesType === 'bar') {
+          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+          const filter = params.name;
+          const idx = window._dashboardVisualFilters.indexOf(filter);
+          if (idx === -1) {
+            window._dashboardVisualFilters.push(filter);
+          } else {
+            window._dashboardVisualFilters.splice(idx, 1);
+          }
+          if (typeof App !== 'undefined' && App.renderActiveFilters) {
+            App.renderActiveFilters();
+          }
+        }
+      });
     } catch (err) {
       console.error("Erro ao carregar gráfico:", err);
     }
