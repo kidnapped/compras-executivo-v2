@@ -2167,6 +2167,12 @@ div[class*="echarts-tooltip"] {
   margin-left: 26px !important;
 }
 
+#ultimos-lancamentos-container .table-responsive {
+  overflow: scroll;
+  min-height: 230px !important;
+  max-height: 230px !important;
+}
+
 #ultimos-lancamentos-tbody tr {
   border-bottom: 1px solid #f0f0f0;
   transition: background-color 0.2s ease;
@@ -2272,6 +2278,109 @@ div[class*="echarts-tooltip"] {
   /* Hide info column on mobile to save space */
   #ultimos-lancamentos-container th:nth-child(3),
   #ultimos-lancamentos-tbody td:nth-child(3) {
+    display: none;
+  }
+}
+
+/* Histórico Orçamentário Grid Styles */
+#historico-orcamentario-container {
+  border-radius: 10px;
+  overflow: scroll;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#historico-orcamentario-container .card-header {
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #e9ecef;
+  min-height: 64px;
+}
+
+#historico-orcamentario-container .titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #00366f;
+  margin: -16px 0px 0px -20px;
+}
+
+#historico-orcamentario-container .subtitulo {
+  font-size: 10px;
+  color: #000;
+  margin-left: 26px !important;
+}
+#historico-orcamentario-container .table-responsive {
+  overflow: scroll;
+  min-height: 230px !important;
+  max-height: 230px !important;
+}
+
+#historico-orcamentario-tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+#historico-orcamentario-tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+#historico-orcamentario-tbody tr:last-child {
+  border-bottom: none;
+}
+
+#historico-orcamentario-tbody td {
+  padding: 12px 8px;
+  vertical-align: middle;
+  border: none;
+}
+
+#historico-orcamentario-tbody .fa-money-bill-wave {
+  color: #28a745;
+  font-size: 16px;
+}
+
+#historico-orcamentario-tbody .fa-info-circle {
+  color: #17a2b8;
+  font-size: 16px;
+  cursor: help;
+  transition: color 0.2s ease;
+}
+
+#historico-orcamentario-tbody .fa-info-circle:hover {
+  color: #138496;
+}
+
+/* Empty state styling for Histórico Orçamentário */
+#historico-orcamentario-tbody .text-muted {
+  color: #6c757d !important;
+}
+
+#historico-orcamentario-tbody .fa-search,
+#historico-orcamentario-tbody .fa-inbox {
+  color: #6c757d;
+  margin-bottom: 10px;
+}
+
+/* Responsive adjustments for Histórico Orçamentário */
+@media (max-width: 768px) {
+  #historico-orcamentario-container .titulo {
+    font-size: 12px;
+    margin: -16px 0px 0px -15px;
+  }
+
+  #historico-orcamentario-container .subtitulo {
+    font-size: 9px;
+    margin-left: 26px !important;
+  }
+
+  #historico-orcamentario-tbody td {
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+
+  /* Hide info column on mobile to save space */
+  #historico-orcamentario-container th:nth-child(3),
+  #historico-orcamentario-tbody td:nth-child(3) {
     display: none;
   }
 }
@@ -2471,6 +2580,12 @@ div[class*="echarts-tooltip"] {
 }
 
 #financeiro-grid-tbody tr {
+  min-height: 201px !important ;
+  max-height: 201px !important;
+  overflow: scroll !important;
+}
+
+#financeiro-grid-tbody tr {
   border-bottom: 1px solid #f0f0f0;
   transition: background-color 0.2s ease;
 }
@@ -2596,6 +2711,11 @@ div[class*="echarts-tooltip"] {
   font-size: 10px;
   color: #000;
   margin-left: 26px !important;
+}
+#movimentacoes-tbody {
+  min-height: 201px !important;
+  max-height: 201px !important;
+  overflow: scroll !important;
 }
 
 #movimentacoes-tbody tr {
@@ -3049,4 +3169,3 @@ div[class*="echarts-tooltip"] {
 #current-uasg-display button:hover {
   background-color: #dee2e6;
 }
-
