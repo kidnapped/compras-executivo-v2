@@ -1,9 +1,44 @@
 import getEcharts from "../util/echarts.js";
 import Card from "../kpi/card.js";
-import DashboardEvents from "./dashboard-events.js"; // <-- 1. IMPORT THE NEW MODULE
+import DashboardEvents from "./dashboard-events.js";
 import financialBars from "./financial-bars.js";
 
 export default {
+  // Renderiza os chips de filtro visual
+  renderActiveFilters() {
+    const container = document.getElementById('active-filters-container');
+    if (!container) return;
+    const filterNames = {
+      vigentes: 'Vigentes',
+      finalizados: 'Finalizados',
+      criticos: 'Críticos',
+      '120dias': '120 dias',
+      '90dias': '90 dias',
+      '45dias': '45 dias',
+      outros: 'Outros',
+      todos: 'Todos',
+      mais120: 'Mais de 120 dias',
+      pf: 'Pessoa Física',
+      pj: 'Pessoa Jurídica',
+    };
+    const filtros = window._dashboardVisualFilters || [];
+    container.innerHTML = filtros.map(filtro => `
+      <span class="filter-chip" style="background:#e3eaf3; color:#084a8a; border-radius:16px; padding:4px 12px; display:inline-flex; align-items:center; font-size:13px; margin-bottom:2px;">
+        ${filterNames[filtro] || filtro}
+        <button type="button" aria-label="Remover filtro" style="background:none; border:none; color:#084a8a; margin-left:6px; font-size:15px; cursor:pointer; line-height:1;" onclick="App.removeActiveFilter('${filtro}')">&times;</button>
+      </span>
+    `).join('');
+  },
+
+  // Remove chip de filtro visual
+  removeActiveFilter(filtro) {
+    if (!window._dashboardVisualFilters) return;
+    const idx = window._dashboardVisualFilters.indexOf(filtro);
+    if (idx !== -1) {
+      window._dashboardVisualFilters.splice(idx, 1);
+      this.renderActiveFilters();
+    }
+  },
   // State management for the table
   tableState: {
     currentPage: 1,
@@ -349,35 +384,41 @@ export default {
   // Add event listeners to dashboard card filter fields
   setupDashboardCardFilterClicks() {
     document.querySelectorAll('.dashboard-card-filter.clickable').forEach(el => {
-      el.removeEventListener('click', this._dashboardCardFilterClickHandler, false); // Remove previous
-      el.removeEventListener('keydown', this._dashboardCardFilterKeyHandler, false);
-      // Use arrow functions to preserve 'this'
+      // Remove listeners para evitar múltiplos handlers
+      el.replaceWith(el.cloneNode(true));
+    });
+    // Re-seleciona após replaceWith
+    document.querySelectorAll('.dashboard-card-filter.clickable').forEach(el => {
       el.addEventListener('click', (e) => {
+        if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
         const filter = el.getAttribute('data-filter');
-        this.toggleDashboardCardFilter(filter, el);
+        const idx = window._dashboardVisualFilters.indexOf(filter);
+        if (idx === -1) {
+          window._dashboardVisualFilters.push(filter);
+        } else {
+          window._dashboardVisualFilters.splice(idx, 1);
+        }
+        this.renderActiveFilters();
       });
       el.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
+          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
           const filter = el.getAttribute('data-filter');
-          this.toggleDashboardCardFilter(filter, el);
+          const idx = window._dashboardVisualFilters.indexOf(filter);
+          if (idx === -1) {
+            window._dashboardVisualFilters.push(filter);
+          } else {
+            window._dashboardVisualFilters.splice(idx, 1);
+          }
+          this.renderActiveFilters();
         }
       });
     });
   },
 
   // Toggle filter in tableState.filters.tipo and update dashboard
-  toggleDashboardCardFilter(filter, el) {
-    if (!this.tableState.filters.tipo) this.tableState.filters.tipo = [];
-    const idx = this.tableState.filters.tipo.indexOf(filter);
-    if (idx === -1) {
-      this.tableState.filters.tipo.push(filter);
-      el.classList.add('active');
-    } else {
-      this.tableState.filters.tipo.splice(idx, 1);
-      el.classList.remove('active');
-    }
-    this.updateDashboardFilters();
-  },
+  // Não faz mais nada, só para compatibilidade
+  toggleDashboardCardFilter(filter, el) {},
 
   // Reload all dashboard cards, grids, and charts using the new filters
   updateDashboardFilters() {
@@ -743,6 +784,9 @@ export default {
 
   // Initialize dashboard - called from DOMContentLoaded
   initDashboard() {
+    if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+    this.renderActiveFilters();
+    // ...existing code...
     console.log("Initializing dashboard...");
     this.loadContractsTable();
     //this.setupTableEventListeners();
@@ -1049,7 +1093,7 @@ export default {
     }"
             data-tooltip-place="bottom"
             data-tooltip-type="info"
-            style="opacity: 0.7; transform: scale(0.9);">  
+            style="opacity: 0.7; transform: scale(0.8);">  
           <i class="${
             contract.fontawesome_icon
           }" alt="contracto" style="font-size: 34px; color: #bbc6ea; opacity: 0.7;"></i>
