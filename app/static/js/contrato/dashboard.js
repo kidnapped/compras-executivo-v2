@@ -1,9 +1,44 @@
 import getEcharts from "../util/echarts.js";
 import Card from "../kpi/card.js";
-import DashboardEvents from "./dashboard-events.js"; // <-- 1. IMPORT THE NEW MODULE
+import DashboardEvents from "./dashboard-events.js";
 import financialBars from "./financial-bars.js";
 
 export default {
+  // Renderiza os chips de filtro visual
+  renderActiveFilters() {
+    const container = document.getElementById('active-filters-container');
+    if (!container) return;
+    const filterNames = {
+      vigentes: 'Vigentes',
+      finalizados: 'Finalizados',
+      criticos: 'Críticos',
+      '120dias': '120 dias',
+      '90dias': '90 dias',
+      '45dias': '45 dias',
+      outros: 'Outros',
+      todos: 'Todos',
+      mais120: 'Mais de 120 dias',
+      pf: 'Pessoa Física',
+      pj: 'Pessoa Jurídica',
+    };
+    const filtros = window._dashboardVisualFilters || [];
+    container.innerHTML = filtros.map(filtro => `
+      <span class="filter-chip" style="background:#e3eaf3; color:#084a8a; border-radius:16px; padding:4px 12px; display:inline-flex; align-items:center; font-size:13px; margin-bottom:2px;">
+        ${filterNames[filtro] || filtro}
+        <button type="button" aria-label="Remover filtro" style="background:none; border:none; color:#084a8a; margin-left:6px; font-size:15px; cursor:pointer; line-height:1;" onclick="App.removeActiveFilter('${filtro}')">&times;</button>
+      </span>
+    `).join('');
+  },
+
+  // Remove chip de filtro visual
+  removeActiveFilter(filtro) {
+    if (!window._dashboardVisualFilters) return;
+    const idx = window._dashboardVisualFilters.indexOf(filtro);
+    if (idx !== -1) {
+      window._dashboardVisualFilters.splice(idx, 1);
+      this.renderActiveFilters();
+    }
+  },
   // State management for the table
   tableState: {
     currentPage: 1,
@@ -151,6 +186,23 @@ export default {
           },
         ],
       });
+
+      chart.off && chart.off('click');
+      chart.on('click', (params) => {
+        if (params.componentType === 'series' && params.seriesType === 'bar') {
+          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+          const filter = params.name;
+          const idx = window._dashboardVisualFilters.indexOf(filter);
+          if (idx === -1) {
+            window._dashboardVisualFilters.push(filter);
+          } else {
+            window._dashboardVisualFilters.splice(idx, 1);
+          }
+          if (typeof App !== 'undefined' && App.renderActiveFilters) {
+            App.renderActiveFilters();
+          }
+        }
+      });
     } catch (err) {
       console.error("Erro ao carregar gráfico:", err);
     }
@@ -262,12 +314,19 @@ export default {
             const dia = atividade.dias_restantes === 1 ? "dia" : "dias";
 
             return `
-        <div class="widget-atividades-item">
-          <i class="fas fa-clock"></i>
-          <a href="#">${atividade.data}</a>
-          <span>em ${atividade.dias_restantes} ${dia}</span><br>
-          Renovação de <b>${diasExibir} dias</b> para o contrato ${atividade.numero}
-        </div>`;
+                <div class="widget-atividades-item" style="display:flex; align-items:flex-start;">
+                    <img src="/static/images/clock-icon.png" alt="clock" style="width:18px;height:18px;vertical-align:top; margin:-2px 8px 0px 0px;">
+                    <div>
+                        <div>
+                        <a href="#">${atividade.data}</a>
+                        <span>em ${atividade.dias_restantes} ${dia}</span>
+                        </div>
+                        <div style="margin-top:-4px;font-size:10px;">
+                        Renovação de <b>${diasExibir} dias</b> para o contrato <b>${atividade.numero}</b>
+                        </div>
+                    </div>
+                </div>
+            `;
           })
           .join("");
 
@@ -303,31 +362,87 @@ export default {
     outros = 0,
     icone = "/static/images/doc2.png",
   }) {
-    return `
+    // Helper to check if filter is active
+    const isActive = (filter) =>
+      this.tableState && this.tableState.filters && this.tableState.filters.tipo && this.tableState.filters.tipo.includes(filter) ? 'active' : '';
+    // Card HTML with clickable/filterable fields
+    const html = `
       <div class="col-12 col-lg-3">
         <div class="br-card h-100 card-contratos">
           ${this.cardHeader({ titulo, subtitulo, icone })}
           <div class="card-content" style="padding-top: 8px;">
             <div class="valor-principal">${quantidade_total}</div>
             <div class="linha">
-              <div><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('vigentes')}" data-filter="vigentes" tabindex="0"><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
               <div class="divider"></div>
-              <div><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('finalizados')}" data-filter="finalizados" tabindex="0"><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
               <div class="divider"></div>
-              <div><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('criticos')}" data-filter="criticos" tabindex="0"><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
             </div>
             <div class="linha" style="gap: 8px;">
-              <div><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('120dias')}" data-filter="120dias" tabindex="0"><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
               <div class="divider"></div>
-              <div><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('90dias')}" data-filter="90dias" tabindex="0"><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
               <div class="divider"></div>
-              <div><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('45dias')}" data-filter="45dias" tabindex="0"><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
               <div class="divider"></div>
-              <div><div>Outros</div><div class="valor-azul">${outros}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('outros')}" data-filter="outros" tabindex="0"><div>Outros</div><div class="valor-azul">${outros}</div></div>
             </div>
           </div>
         </div>
       </div>`;
+    // After rendering, setup event listeners
+    setTimeout(() => {
+      this.setupDashboardCardFilterClicks && this.setupDashboardCardFilterClicks();
+    }, 0);
+    return html;
+  },
+
+  // Add event listeners to dashboard card filter fields
+  setupDashboardCardFilterClicks() {
+    document.querySelectorAll('.dashboard-card-filter.clickable').forEach(el => {
+      // Remove listeners para evitar múltiplos handlers
+      el.replaceWith(el.cloneNode(true));
+    });
+    // Re-seleciona após replaceWith
+    document.querySelectorAll('.dashboard-card-filter.clickable').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+        const filter = el.getAttribute('data-filter');
+        const idx = window._dashboardVisualFilters.indexOf(filter);
+        if (idx === -1) {
+          window._dashboardVisualFilters.push(filter);
+        } else {
+          window._dashboardVisualFilters.splice(idx, 1);
+        }
+        this.renderActiveFilters();
+      });
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+          const filter = el.getAttribute('data-filter');
+          const idx = window._dashboardVisualFilters.indexOf(filter);
+          if (idx === -1) {
+            window._dashboardVisualFilters.push(filter);
+          } else {
+            window._dashboardVisualFilters.splice(idx, 1);
+          }
+          this.renderActiveFilters();
+        }
+      });
+    });
+  },
+
+  // Toggle filter in tableState.filters.tipo and update dashboard
+  // Não faz mais nada, só para compatibilidade
+  toggleDashboardCardFilter(filter, el) {},
+
+  // Reload all dashboard cards, grids, and charts using the new filters
+  updateDashboardFilters() {
+    this.loadContractsTable();
+    this.dashboardContratosPorExercicioCard();
+    this.dashboardRepresentacaoAnualValores();
+    this.dashboardProximasAtividades();
   },
 
   // Contract vigencia gauge functionality
@@ -686,9 +801,12 @@ export default {
 
   // Initialize dashboard - called from DOMContentLoaded
   initDashboard() {
+    if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+    this.renderActiveFilters();
+    // ...existing code...
     console.log("Initializing dashboard...");
     this.loadContractsTable();
-    //this.setupTableEventListeners();
+    this.setupTableEventListeners();
     DashboardEvents.initialize();
     this.initCards();
   },
@@ -703,17 +821,26 @@ export default {
 
   // Setup event listeners for table interactions
   setupTableEventListeners() {
-    // Search input
+    // Filtro de texto do input pesquisa-contratos
     const searchInput = document.getElementById("pesquisa-contratos");
     if (searchInput) {
-      let searchTimeout;
-      searchInput.addEventListener("input", (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          this.tableState.search = e.target.value;
-          this.tableState.currentPage = 1;
-          this.loadContractsTable();
-        }, 500);
+      let lastSearch = "";
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const value = e.target.value.trim();
+          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+          // Remove o filtro anterior se existir
+          if (lastSearch) {
+            const idx = window._dashboardVisualFilters.indexOf(lastSearch);
+            if (idx !== -1) window._dashboardVisualFilters.splice(idx, 1);
+          }
+          // Adiciona o novo filtro se não vazio
+          if (value) {
+            window._dashboardVisualFilters.push(value);
+          }
+          lastSearch = value;
+          this.renderActiveFilters();
+        }
       });
     }
 
@@ -942,6 +1069,45 @@ export default {
       .map((contract) => this.renderContractRow(contract))
       .join("");
     tbody.innerHTML = rows;
+
+    // Adiciona funcionalidade de filtro visual para número do processo
+    setTimeout(() => {
+      document.querySelectorAll('.processo-filter').forEach(el => {
+        el.replaceWith(el.cloneNode(true));
+      });
+      document.querySelectorAll('.processo-filter').forEach(el => {
+        el.addEventListener('click', (e) => {
+          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+          const processo = el.getAttribute('data-processo');
+          if (!processo) return;
+          const idx = window._dashboardVisualFilters.indexOf(processo);
+          if (idx === -1) {
+            window._dashboardVisualFilters.push(processo);
+          } else {
+            window._dashboardVisualFilters.splice(idx, 1);
+          }
+          if (typeof App !== 'undefined' && App.renderActiveFilters) {
+            App.renderActiveFilters();
+          }
+        });
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+            const processo = el.getAttribute('data-processo');
+            if (!processo) return;
+            const idx = window._dashboardVisualFilters.indexOf(processo);
+            if (idx === -1) {
+              window._dashboardVisualFilters.push(processo);
+            } else {
+              window._dashboardVisualFilters.splice(idx, 1);
+            }
+            if (typeof App !== 'undefined' && App.renderActiveFilters) {
+              App.renderActiveFilters();
+            }
+          }
+        });
+      });
+    }, 0);
   },
 
   // Render a single contract row
@@ -992,7 +1158,7 @@ export default {
     }"
             data-tooltip-place="bottom"
             data-tooltip-type="info"
-            style="opacity: 0.7; transform: scale(0.9);">  
+            style="opacity: 0.7; transform: scale(0.8);">  
           <i class="${
             contract.fontawesome_icon
           }" alt="contracto" style="font-size: 34px; color: #bbc6ea; opacity: 0.7;"></i>
@@ -1131,19 +1297,17 @@ export default {
     >${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
 </div>              
 
-                <span style="cursor: pointer; margin-left: 2px;">
-                  <img src="static/images/sei_icone.png" style="margin-left: 10px;" />
-                </span>
-
                 <img src="static/images/ico/ico-processos.png" style="margin-left: 10px;" />
 
-                <span style="color: #666; cursor: pointer; margin-left: 2px;" onclick="detalhesProcesso('${
-                  contract.processo
-                }');" 
-                data-tooltip-text="Número do processo"
-                data-tooltip-place="bottom"
-                data-tooltip-type="info"
-              >${contract.processo || "N/A"}</span>
+                <span 
+                  class="processo-filter"
+                  style="color: #666; cursor: pointer; margin-left: 2px;" 
+                  tabindex="0"
+                  data-processo="${contract.processo || ''}"
+                  data-tooltip-text="Número do processo"
+                  data-tooltip-place="bottom"
+                  data-tooltip-type="info"
+                >${contract.processo || "N/A"}</span>
               </div>
 
               
@@ -1173,10 +1337,25 @@ export default {
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           ${financialBars.createPaidBar(contract)}
         </td>
-        <td class="hide-mobile" valign="top" style="padding: 5px 8px;">${
-          contract.responsaveis ||
-          "Nenhuma designação atribuída para este contrato"
-        }</td>  
+        <td class="hide-mobile" valign="top" style="padding: 5px 8px; min-width: ${Array.isArray(contract.responsaveis) && contract.responsaveis.length > 0 ? '180px' : '120px'};">
+          ${
+            Array.isArray(contract.responsaveis) && contract.responsaveis.length > 0
+              ? contract.responsaveis
+                  .map(
+                    (resp) => `
+                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                        <i class=\"fas fa-user\" style=\"color: #003366; font-size: 16px; opacity: 0.85;\"></i>
+                        <span style=\"font-size: 14px; color: #222; word-break: break-word;\">${resp}</span>
+                      </div>
+                    `
+                  )
+                  .join("")
+              : `<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px;\">
+                    <i class=\"fas fa-exclamation-triangle\" style=\"color: #e52207; font-size: 22px; margin-bottom: 4px;\"></i>
+                    <span style=\"color: #888; font-size: 13px; text-align: center;\">Nenhuma designação atribuída para este contrato</span>
+                 </div>`
+          }
+        </td>
       </tr>
     `;
   },

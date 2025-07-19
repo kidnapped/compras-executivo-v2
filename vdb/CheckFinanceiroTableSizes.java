@@ -1,3 +1,24 @@
+/*
+ * ───────────────────────────────────────────────────────────────────────────────
+ * 📄 CheckFinanceiroTableSizes.java
+ *
+ * Conta o número de registros de todas as tabelas no schema `DWTG_Colunar_Afinco_VBL`
+ * do DaaS SERPRO (via Teiid JDBC) e grava os resultados no arquivo `tables_financeiro_sizes.txt`.
+ *
+ * 🔧 Compilação:
+ *   javac -cp .:jboss-dv-6.3.0-teiid-jdbc.jar CheckFinanceiroTableSizes.java
+ *
+ * ▶️ Execução em segundo plano:
+ *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar CheckFinanceiroTableSizes </dev/null &>/dev/null & disown
+ *
+ * 📂 Log:
+ *   tail -f tables_financeiro_sizes.txt
+ *
+ * 🛑 Parar o processo:
+ *   pkill -f CheckFinanceiroTableSizes
+ * ───────────────────────────────────────────────────────────────────────────────
+ */
+
 import java.sql.*;
 import java.util.*;
 import java.io.*;

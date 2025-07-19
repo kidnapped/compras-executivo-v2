@@ -16,6 +16,7 @@ contratofaturas_itens
 contratohistorico
 contratohistorico_fornecedores_pivot
 contratohistoricoqualificacao
+contrato_item_minuta_empenho
 contrato_minuta_empenho_pivot
 contratoresponsaveis
 contratoterceirizados

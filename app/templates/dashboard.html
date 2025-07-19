@@ -1,6 +1,9 @@
 {% extends "base.html" %} {% block title %}Dashboard - Compras Executivo{%
 endblock %} {% block content %}
 
+<!-- Filtros ativos visuais -->
+<div id="active-filters-container" class="mb-2" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+
 <div class="row row-tight">
   <!-- CONTRATOS E RENOVAÇÕES -->
   <div class="col-12 col-lg-3" id="card-contratos-container">
@@ -148,84 +151,26 @@ endblock %} {% block content %}
                       cursor: pointer;
                       font-weight: bold;
                       margin-bottom: 4px;
-                    "
-                  >
-                    Minhas UASGS
-                  </summary>
-                  <div style="margin-left: 16px">
-                    <div class="br-checkbox" style="margin-bottom: 4px">
-                      <input id="check-todas-uasgs" type="checkbox" />
-                      <label for="check-todas-uasgs">Todas</label>
-                    </div>
-                    {% if uasg_info %} {% if uasg_info.multiple %} {% for uasg
-                    in uasg_info.all_uasgs %}
-                    <div class="br-checkbox" style="margin-bottom: 4px">
-                      <input
-                        id="check-uasg-{{ uasg.codigo }}"
-                        type="checkbox"
-                      />
-                      <label for="check-uasg-{{ uasg.codigo }}"
-                        >{{ uasg.codigo }} - {{ uasg.nome }}</label
-                      >
-                    </div>
-                    {% endfor %} {% else %}
-                    <div class="br-checkbox" style="margin-bottom: 4px">
-                      <input
-                        id="check-uasg-{{ uasg_info.codigo }}"
-                        type="checkbox"
-                      />
-                      <label for="check-uasg-{{ uasg_info.codigo }}"
-                        >{{ uasg_info.codigo }} - {{ uasg_info.nome }}</label
-                      >
-                    </div>
-                    {% endif %} {% else %}
-                    <div class="br-checkbox" style="margin-bottom: 4px">
-                      <input id="check-uasg-default" type="checkbox" />
-                      <label for="check-uasg-default">UASG Principal</label>
-                    </div>
-                    {% endif %}
-                    <div style="margin-top: 4px">
-                      <button class="br-button circle small" title="Atualizar">
-                        <i class="fas fa-sync-alt"></i>
-                      </button>
-                    </div>
-                  </div>
-                </details>
-              </div>
-
-              <div style="margin-bottom: 8px">
-                <details>
-                  <summary
-                    style="
-                      cursor: pointer;
-                      font-weight: bold;
-                      margin-bottom: 4px;
-                    "
-                  >
-                    Exibir por página
-                  </summary>
-                  <div style="margin-left: 16px">
-                    <div
-                      style="cursor: pointer; padding: 2px 0"
-                      onclick="App.setPageSize(5)"
-                    >
-                      5
-                    </div>
-                    <div
-                      style="cursor: pointer; padding: 2px 0"
-                      onclick="App.setPageSize(10)"
-                    >
-                      10
-                    </div>
-                    <div
-                      style="cursor: pointer; padding: 2px 0"
-                      onclick="App.setPageSize(20)"
-                    >
-                      20
-                    </div>
-                  </div>
-                </details>
-              </div>
+                    ">
+                                        Minhas UASGS
+                                    </summary>
+                                    <div style="margin-left: 16px">
+                                        <div class="br-checkbox" style="margin-bottom: 4px">
+                                            <input id="check-todas-uasgs" type="checkbox" />
+                                            <label for="check-todas-uasgs">Todas</label>
+                                        </div>
+                                        <div class="br-checkbox" style="margin-bottom: 4px">
+                                            <input id="check-dnit-sede" type="checkbox" />
+                                            <label for="check-dnit-sede">393003 - DNIT Sede</label>
+                                        </div>
+                                        <div style="margin-top: 4px">
+                                            <button class="br-button circle small" title="Atualizar">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
 
               <div style="margin-bottom: 8px">
                 <details>
@@ -282,6 +227,21 @@ endblock %} {% block content %}
                   </div>
                 </details>
               </div>
+                    ">
+                                        Filtrar contratos
+                                    </summary>
+                                    <div style="margin-left: 16px">
+                                        <div class="br-checkbox" style="margin-bottom: 4px">
+                                            <input id="check-pf" type="checkbox" />
+                                            <label for="check-pf">Pessoa Física</label>
+                                        </div>
+                                        <div class="br-checkbox" style="margin-bottom: 4px">
+                                            <input id="check-pj" type="checkbox" />
+                                            <label for="check-pj">Pessoa Jurídica</label>
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
 
               <div style="margin-bottom: 8px">
                 <details>

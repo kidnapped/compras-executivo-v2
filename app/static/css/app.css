@@ -1,3 +1,14 @@
+/* Dashboard card filter clickable fields */
+.dashboard-card-filter.clickable {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.dashboard-card-filter.clickable:hover,
+.dashboard-card-filter.active {
+  background: #e6f0fa;
+  box-shadow: 0 0 0 2px #8f9dd2;
+}
 /* Media querys */
 :root {
   --h1-size: 2.5rem;

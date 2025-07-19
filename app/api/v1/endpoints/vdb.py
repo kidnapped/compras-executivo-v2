@@ -1,10 +1,29 @@
-from fastapi import APIRouter, Request, Query, Form
+from fastapi import APIRouter, Request, Query, Form, HTTPException, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import subprocess
+import secrets
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+security = HTTPBasic()
+
+# Basic Auth credentials
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "Z4s8p!rTq9@bLm7K"
+
+def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
+    """Verify Basic Auth credentials"""
+    is_correct_username = secrets.compare_digest(credentials.username, ADMIN_USERNAME)
+    is_correct_password = secrets.compare_digest(credentials.password, ADMIN_PASSWORD)
+    if not (is_correct_username and is_correct_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
 
 # JAVA_DIR = "/Users/leo/Development/ws-blocok/comprasexecutivo/vdb"
 JAVA_DIR = "/home/ec2-user/py-app/vdb"
@@ -17,12 +36,12 @@ def executar_java(vdb_tipo: str, query: str):
 
 # Página principal
 @router.get("/vdb", response_class=HTMLResponse)
-def render_vdb_page(request: Request):
+def render_vdb_page(request: Request, current_user: str = Depends(get_current_user)):
     return templates.TemplateResponse("vdb.html", {"request": request})
 
 # Menu lateral
 @router.get("/vdb/menu", response_class=HTMLResponse)
-def listar_menu(request: Request, vdb: str = Query(default=None)):
+def listar_menu(request: Request, vdb: str = Query(default=None), current_user: str = Depends(get_current_user)):
     vdb = vdb or "QueryContratos"
 
     query = (
@@ -60,6 +79,7 @@ def executar_query_automatica(
     tabela: str = Query(...),
     vdb: str = Query(default=None),
     debug: bool = Query(default=False),
+    current_user: str = Depends(get_current_user),
 ):
     vdb = vdb or "QueryContratos"
     filtros = {
@@ -214,7 +234,8 @@ def detect_vdb_from_query(query: str) -> str:
 def executar_query_manual(
     request: Request,
     query: str = Form(...),
-    debug: bool = Query(default=False)
+    debug: bool = Query(default=False),
+    current_user: str = Depends(get_current_user)
 ):
     # Intelligently detect which VDB to use based on query content
     vdb_detectado = detect_vdb_from_query(query)
