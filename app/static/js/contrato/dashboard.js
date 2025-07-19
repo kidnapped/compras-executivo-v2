@@ -806,7 +806,7 @@ export default {
     // ...existing code...
     console.log("Initializing dashboard...");
     this.loadContractsTable();
-    //this.setupTableEventListeners();
+    this.setupTableEventListeners();
     DashboardEvents.initialize();
     this.initCards();
   },
@@ -821,17 +821,26 @@ export default {
 
   // Setup event listeners for table interactions
   setupTableEventListeners() {
-    // Search input
+    // Filtro de texto do input pesquisa-contratos
     const searchInput = document.getElementById("pesquisa-contratos");
     if (searchInput) {
-      let searchTimeout;
-      searchInput.addEventListener("input", (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          this.tableState.search = e.target.value;
-          this.tableState.currentPage = 1;
-          this.loadContractsTable();
-        }, 500);
+      let lastSearch = "";
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const value = e.target.value.trim();
+          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+          // Remove o filtro anterior se existir
+          if (lastSearch) {
+            const idx = window._dashboardVisualFilters.indexOf(lastSearch);
+            if (idx !== -1) window._dashboardVisualFilters.splice(idx, 1);
+          }
+          // Adiciona o novo filtro se não vazio
+          if (value) {
+            window._dashboardVisualFilters.push(value);
+          }
+          lastSearch = value;
+          this.renderActiveFilters();
+        }
       });
     }
 
@@ -1060,6 +1069,45 @@ export default {
       .map((contract) => this.renderContractRow(contract))
       .join("");
     tbody.innerHTML = rows;
+
+    // Adiciona funcionalidade de filtro visual para número do processo
+    setTimeout(() => {
+      document.querySelectorAll('.processo-filter').forEach(el => {
+        el.replaceWith(el.cloneNode(true));
+      });
+      document.querySelectorAll('.processo-filter').forEach(el => {
+        el.addEventListener('click', (e) => {
+          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+          const processo = el.getAttribute('data-processo');
+          if (!processo) return;
+          const idx = window._dashboardVisualFilters.indexOf(processo);
+          if (idx === -1) {
+            window._dashboardVisualFilters.push(processo);
+          } else {
+            window._dashboardVisualFilters.splice(idx, 1);
+          }
+          if (typeof App !== 'undefined' && App.renderActiveFilters) {
+            App.renderActiveFilters();
+          }
+        });
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+            const processo = el.getAttribute('data-processo');
+            if (!processo) return;
+            const idx = window._dashboardVisualFilters.indexOf(processo);
+            if (idx === -1) {
+              window._dashboardVisualFilters.push(processo);
+            } else {
+              window._dashboardVisualFilters.splice(idx, 1);
+            }
+            if (typeof App !== 'undefined' && App.renderActiveFilters) {
+              App.renderActiveFilters();
+            }
+          }
+        });
+      });
+    }, 0);
   },
 
   // Render a single contract row
@@ -1251,19 +1299,21 @@ export default {
 
                 <img src="static/images/ico/ico-processos.png" style="margin-left: 10px;" />
 
-                <span style="color: #666; cursor: pointer; margin-left: 2px;" onclick="detalhesProcesso('${
-                  contract.processo
-                }');" 
-                data-tooltip-text="Número do processo"
-                data-tooltip-place="bottom"
-                data-tooltip-type="info"
-              >${contract.processo || "N/A"}</span>
+                <span 
+                  class="processo-filter"
+                  style="color: #666; cursor: pointer; margin-left: 2px;" 
+                  tabindex="0"
+                  data-processo="${contract.processo || ''}"
+                  data-tooltip-text="Número do processo"
+                  data-tooltip-place="bottom"
+                  data-tooltip-type="info"
+                >${contract.processo || "N/A"}</span>
               </div>
 
               
             </div>
           </div>
-          <div class="capitalize capitalizeBig" style="margin-top: 5px; letter-spacing: 0.25px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px; line-height: 1.2;width:500px;">
+          <div class="capitalize capitalizeBig" style="margin-top: 5px; letter-spacing: 0.25px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px; line-height: 1.2;">
                 <span style="font-size: 12px;">${
                   contract.objeto || "Objeto não informado"
                 }</span>
@@ -1287,10 +1337,25 @@ export default {
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           ${financialBars.createPaidBar(contract)}
         </td>
-        <td class="hide-mobile" valign="top" style="padding: 5px 8px;">${
-          contract.responsaveis ||
-          "Nenhuma designação atribuída para este contrato"
-        }</td>  
+        <td class="hide-mobile" valign="top" style="padding: 5px 8px; min-width: ${Array.isArray(contract.responsaveis) && contract.responsaveis.length > 0 ? '180px' : '120px'};">
+          ${
+            Array.isArray(contract.responsaveis) && contract.responsaveis.length > 0
+              ? contract.responsaveis
+                  .map(
+                    (resp) => `
+                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                        <i class=\"fas fa-user\" style=\"color: #003366; font-size: 16px; opacity: 0.85;\"></i>
+                        <span style=\"font-size: 14px; color: #222; word-break: break-word;\">${resp}</span>
+                      </div>
+                    `
+                  )
+                  .join("")
+              : `<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px;\">
+                    <i class=\"fas fa-exclamation-triangle\" style=\"color: #e52207; font-size: 22px; margin-bottom: 4px;\"></i>
+                    <span style=\"color: #888; font-size: 13px; text-align: center;\">Nenhuma designação atribuída para este contrato</span>
+                 </div>`
+          }
+        </td>
       </tr>
     `;
   },
