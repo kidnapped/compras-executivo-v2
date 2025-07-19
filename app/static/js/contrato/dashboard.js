@@ -262,12 +262,19 @@ export default {
             const dia = atividade.dias_restantes === 1 ? "dia" : "dias";
 
             return `
-        <div class="widget-atividades-item">
-          <i class="fas fa-clock"></i>
-          <a href="#">${atividade.data}</a>
-          <span>em ${atividade.dias_restantes} ${dia}</span><br>
-          Renovação de <b>${diasExibir} dias</b> para o contrato ${atividade.numero}
-        </div>`;
+                <div class="widget-atividades-item" style="display:flex; align-items:flex-start;">
+                    <img src="/static/images/clock-icon.png" alt="clock" style="width:18px;height:18px;vertical-align:top; margin:-2px 8px 0px 0px;">
+                    <div>
+                        <div>
+                        <a href="#">${atividade.data}</a>
+                        <span>em ${atividade.dias_restantes} ${dia}</span>
+                        </div>
+                        <div style="margin-top:-4px;font-size:10px;">
+                        Renovação de <b>${diasExibir} dias</b> para o contrato <b>${atividade.numero}</b>
+                        </div>
+                    </div>
+                </div>
+            `;
           })
           .join("");
 
@@ -303,31 +310,81 @@ export default {
     outros = 0,
     icone = "/static/images/doc2.png",
   }) {
-    return `
+    // Helper to check if filter is active
+    const isActive = (filter) =>
+      this.tableState && this.tableState.filters && this.tableState.filters.tipo && this.tableState.filters.tipo.includes(filter) ? 'active' : '';
+    // Card HTML with clickable/filterable fields
+    const html = `
       <div class="col-12 col-lg-3">
         <div class="br-card h-100 card-contratos">
           ${this.cardHeader({ titulo, subtitulo, icone })}
           <div class="card-content" style="padding-top: 8px;">
             <div class="valor-principal">${quantidade_total}</div>
             <div class="linha">
-              <div><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('vigentes')}" data-filter="vigentes" tabindex="0"><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
               <div class="divider"></div>
-              <div><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('finalizados')}" data-filter="finalizados" tabindex="0"><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
               <div class="divider"></div>
-              <div><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('criticos')}" data-filter="criticos" tabindex="0"><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
             </div>
             <div class="linha" style="gap: 8px;">
-              <div><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('120dias')}" data-filter="120dias" tabindex="0"><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
               <div class="divider"></div>
-              <div><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('90dias')}" data-filter="90dias" tabindex="0"><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
               <div class="divider"></div>
-              <div><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('45dias')}" data-filter="45dias" tabindex="0"><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
               <div class="divider"></div>
-              <div><div>Outros</div><div class="valor-azul">${outros}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive('outros')}" data-filter="outros" tabindex="0"><div>Outros</div><div class="valor-azul">${outros}</div></div>
             </div>
           </div>
         </div>
       </div>`;
+    // After rendering, setup event listeners
+    setTimeout(() => {
+      this.setupDashboardCardFilterClicks && this.setupDashboardCardFilterClicks();
+    }, 0);
+    return html;
+  },
+
+  // Add event listeners to dashboard card filter fields
+  setupDashboardCardFilterClicks() {
+    document.querySelectorAll('.dashboard-card-filter.clickable').forEach(el => {
+      el.removeEventListener('click', this._dashboardCardFilterClickHandler, false); // Remove previous
+      el.removeEventListener('keydown', this._dashboardCardFilterKeyHandler, false);
+      // Use arrow functions to preserve 'this'
+      el.addEventListener('click', (e) => {
+        const filter = el.getAttribute('data-filter');
+        this.toggleDashboardCardFilter(filter, el);
+      });
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          const filter = el.getAttribute('data-filter');
+          this.toggleDashboardCardFilter(filter, el);
+        }
+      });
+    });
+  },
+
+  // Toggle filter in tableState.filters.tipo and update dashboard
+  toggleDashboardCardFilter(filter, el) {
+    if (!this.tableState.filters.tipo) this.tableState.filters.tipo = [];
+    const idx = this.tableState.filters.tipo.indexOf(filter);
+    if (idx === -1) {
+      this.tableState.filters.tipo.push(filter);
+      el.classList.add('active');
+    } else {
+      this.tableState.filters.tipo.splice(idx, 1);
+      el.classList.remove('active');
+    }
+    this.updateDashboardFilters();
+  },
+
+  // Reload all dashboard cards, grids, and charts using the new filters
+  updateDashboardFilters() {
+    this.loadContractsTable();
+    this.dashboardContratosPorExercicioCard();
+    this.dashboardRepresentacaoAnualValores();
+    this.dashboardProximasAtividades();
   },
 
   // Contract vigencia gauge functionality
@@ -1131,10 +1188,6 @@ export default {
     >${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
 </div>              
 
-                <span style="cursor: pointer; margin-left: 2px;">
-                  <img src="static/images/sei_icone.png" style="margin-left: 10px;" />
-                </span>
-
                 <img src="static/images/ico/ico-processos.png" style="margin-left: 10px;" />
 
                 <span style="color: #666; cursor: pointer; margin-left: 2px;" onclick="detalhesProcesso('${
@@ -1149,7 +1202,7 @@ export default {
               
             </div>
           </div>
-          <div class="capitalize capitalizeBig" style="margin-top: 5px; letter-spacing: 0.25px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px; line-height: 1.2;">
+          <div class="capitalize capitalizeBig" style="margin-top: 5px; letter-spacing: 0.25px; text-align: justify; text-justify: inter-word; color: #666; text-transform: lowercase; font-size: 14px; line-height: 1.2;width:500px;">
                 <span style="font-size: 12px;">${
                   contract.objeto || "Objeto não informado"
                 }</span>
