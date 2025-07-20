@@ -1,0 +1,431 @@
+{% extends "base.html" %} {% block title %}Filtro UASG - Compras Executivo{%
+endblock %} {% block content %}
+
+<div class="container-fluid">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1>Filtro UASG</h1>
+      <p class="text-muted">
+        Sistema de filtro e busca de Unidades Administrativas de Serviços Gerais
+      </p>
+    </div>
+  </div>
+
+  <!-- Search Section  -->
+  <div class="row m-4">
+    <div class="col-12">
+      <form id="uasg-filter-form" method="GET" action="/uasg-filter">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            name="search_term"
+            placeholder="Digite o nome ou código da UASG"
+            aria-label="Pesquisar UASG"
+          />
+          <button class="btn btn-primary" type="submit">Pesquisar</button>
+        </div>
+        <div>
+          <button class="btn btn-secondary" type="button">Gestão</button>
+          <button class="btn btn-secondary" type="button">
+            Órgão superior
+          </button>
+          <button class="btn btn-secondary" type="button">
+            salvar seleção
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- UASG List Section -->
+  <div class="row">
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+      <div class="br-card">
+        <div class="card-content p-1">
+          <table class="br-table table-hover">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="border: none; text-align: left">
+                  <span>393003</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+              </tr>
+              <tr>
+                <td>789012</td>
+              </tr>
+              <tr>
+                <td>345678</td>
+              </tr>
+              <tr>
+                <td>901234</td>
+              </tr>
+              <tr>
+                <td>567890</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

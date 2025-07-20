@@ -1900,6 +1900,24 @@ body.modal-open {
   color: #198754;
 }
 
+.data-badge-blue {
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.2rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.data-badge-red {
+  background-color: #dc3545;
+  color: #fff;
+  padding: 0.2rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
 .data-badge {
   background-color: #ffc107;
   color: #000;

@@ -2,6 +2,12 @@ export default {
   menuItems: [
     { texto: "Início", url: "/inicio", icone: "fas fa-home" },
     { texto: "Contratos", url: "/dashboard", icone: "fas fa-chart-line" },
+    {
+      texto: "Encontro de Contas",
+      url: "/encontro-de-contas",
+      icone: "fas fa-balance-scale",
+    },
+    { texto: "Filtro UASG", url: "/uasg-filter", icone: "fas fa-filter" },
     { texto: "kpi's", url: "/kpis", icone: "fas fa-tachometer-alt" },
     { texto: "Administração", url: "/admin", icone: "fas fa-cogs" },
     { texto: "Minha Conta", url: "/bloqueado", icone: "fas fa-user-circle" },

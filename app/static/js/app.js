@@ -9,12 +9,11 @@ import modalManager from "./common/modal-manager.js";
 import tooltip from "./common/tooltip.js";
 import aditivosHandler from "./contrato/aditivos-handler.js";
 import financialBars from "./contrato/financial-bars.js";
-import encontroContas from "./encontro/encontro-contas.js";
 import devOps from "./dev-ops/dev-ops.js";
-
 import card_kpi from "./kpi/card.js";
 import contratos_dashboard from "./contrato/dashboard.js";
 import * as kpis_kpi from "./kpi/kpis.js";
+import encontroInit from "./encontro/encontro-init.js";
 
 const App = {
   ...environment,
@@ -28,16 +27,15 @@ const App = {
   ...aditivosHandler,
   ...financialBars,
   ...devOps,
-  initEncontroContas: encontroContas.init.bind(encontroContas),
+  encontro: encontroInit,
 };
 
 window.App = App;
-window.EncontroContas = encontroContas;
 
 document.addEventListener("DOMContentLoaded", () => {
   modalManager.initialize();
   tooltip.initialize();
   financialBars.initialize();
-  encontroContas.init();
+  encontroInit.init();
   App.init();
 });
