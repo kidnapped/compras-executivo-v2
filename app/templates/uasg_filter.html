@@ -2,430 +2,1707 @@
 endblock %} {% block content %}
 
 <div class="container-fluid">
-  <!-- Header Section -->
+  <!-- Filter Section -->
+  <style>
+    /* Grid-specific group styles */
+    .group-item-grid {
+      margin-left: 1rem;
+      border-left: 3px solid #e9ecef;
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Group Header Selection Styles */
+    .group-header-card {
+      transition: all 0.3s ease;
+    }
+
+    .group-header-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-left-color: #007bff !important;
+    }
+
+    .group-selection-indicator .badge {
+      animation: pulse 2s infinite;
+    }
+
+    /* Group collapse button styles */
+    .group-collapse-btn {
+      transition: all 0.3s ease;
+    }
+
+    .group-collapse-btn:hover {
+      background-color: rgba(19, 81, 180, 0.1) !important;
+      border-radius: 50%;
+      transform: scale(1.1);
+    }
+
+    .group-collapse-btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(19, 81, 180, 0.3);
+      border-radius: 50%;
+    }
+
+    .group-collapse-icon {
+      transition: transform 0.3s ease;
+    }
+
+    /* Group items container styles */
+    .group-items-container {
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .group-items-container.collapsed {
+      max-height: 0 !important;
+      opacity: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.7;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* UASG Card Selection Styles */
+    .uasg-card {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .uasg-card:hover .br-card {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-color: #007bff !important;
+      border-width: 1px !important;
+      border-style: solid !important;
+    }
+
+    .uasg-card.selected .br-card {
+      background-color: #e8f5e8 !important;
+      border-color: #28a745 !important;
+      border-width: 2px !important;
+      border-style: solid !important;
+    }
+
+    .selection-indicator {
+      margin-top: 0.25rem;
+    }
+
+    .selection-counter {
+      background-color: #28a745;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .selection-counter:hover {
+      background-color: #218838;
+      transform: translateY(-1px);
+    }
+
+    .selection-counter-close {
+      margin-left: 8px;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .selection-counter-close:hover {
+      opacity: 1;
+      color: #ff6b6b !important;
+    }
+
+    /* Saved Filters Styles */
+    .saved-filter-item {
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .saved-filter-item:hover {
+      border-color: #1351b4;
+      box-shadow: 0 2px 4px rgba(19, 81, 180, 0.1);
+    }
+
+    .saved-filter-header {
+      padding: 0.75rem;
+      background-color: #f8f9fa;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .saved-filter-header:hover {
+      background-color: #e9ecef;
+    }
+
+    .saved-filter-content {
+      padding: 0.75rem;
+      border-top: 1px solid #e9ecef;
+      font-size: 0.875rem;
+    }
+
+    .filter-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .filter-actions .br-button {
+      flex: 1;
+      min-width: calc(50% - 0.25rem);
+    }
+
+    @media (max-width: 576px) {
+      .filter-actions .br-button {
+        min-width: 100%;
+      }
+    }
+
+    .w-100 {
+      width: 100% !important;
+    }
+  </style>
+
   <div class="row mb-4">
-    <div class="col-12">
-      <h1>Filtro UASG</h1>
-      <p class="text-muted">
-        Sistema de filtro e busca de Unidades Administrativas de Serviços Gerais
-      </p>
+    <div class="col-12 col-lg-8">
+      <div class="br-card">
+        <div class="card-header">
+          <div class="d-flex align-items-center">
+            <i
+              class="fas fa-filter"
+              style="color: #1351b4; font-size: 14px"
+            ></i>
+            <span class="ml-2 font-weight-bold">Filtros de Busca</span>
+          </div>
+        </div>
+        <div class="card-content" id="filters-content">
+          <form id="uasg-filter-form">
+            <!-- Row 1: Search and User ID -->
+            <div class="row mb-3">
+              <div class="col-12 col-md-8">
+                <div class="br-input" data-trigger="input">
+                  <label for="search_term">Buscar UASG</label>
+                  <input
+                    id="search_term"
+                    name="search_term"
+                    type="text"
+                    placeholder="Digite o nome, código ou SIAFI da UASG"
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="br-input" data-trigger="input">
+                  <label for="user_id">ID do Usuário</label>
+                  <input
+                    id="user_id"
+                    name="user_id"
+                    type="number"
+                    placeholder="Ex: 198756"
+                    value="198756"
+                    min="1"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Value Filters -->
+            <div class="row mb-3">
+              <div class="col-12 col-md-6">
+                <div class="br-input" data-trigger="input">
+                  <label for="valor_min">Valor Mínimo dos Contratos</label>
+                  <input
+                    id="valor_min"
+                    name="valor_min"
+                    type="number"
+                    placeholder="Ex: 100000"
+                    min="0"
+                    step="0.01"
+                  />
+                  <small class="form-text text-muted"
+                    >Valor em reais (R$)</small
+                  >
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="br-input" data-trigger="input">
+                  <label for="valor_max">Valor Máximo dos Contratos</label>
+                  <input
+                    id="valor_max"
+                    name="valor_max"
+                    type="number"
+                    placeholder="Ex: 1000000"
+                    min="0"
+                    step="0.01"
+                  />
+                  <small class="form-text text-muted"
+                    >Valor em reais (R$)</small
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 3: Contract Filters -->
+            <div class="row mb-3">
+              <div class="col-12 col-md-4">
+                <div class="br-input" data-trigger="input">
+                  <label for="interval_days">Dias até o Fim do Contrato</label>
+                  <input
+                    id="interval_days"
+                    name="interval_days"
+                    type="number"
+                    placeholder="40"
+                    value="40"
+                    min="1"
+                    max="365"
+                  />
+                  <small class="form-text text-muted"
+                    >Contratos que vencem em até X dias (futuros)</small
+                  >
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="br-checkbox mt-4">
+                  <input
+                    id="has_contracts"
+                    name="has_contracts"
+                    type="checkbox"
+                    checked
+                  />
+                  <label for="has_contracts">Com Contratos</label>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="br-checkbox mt-4">
+                  <input
+                    id="active_contracts"
+                    name="active_contracts"
+                    type="checkbox"
+                  />
+                  <label for="active_contracts">Com Contratos Ativos</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 4: Action Buttons -->
+            <div class="row">
+              <div class="col-12">
+                <div
+                  class="d-flex flex-wrap gap-2 justify-content-between align-items-center"
+                >
+                  <div class="d-flex flex-wrap gap-2">
+                    <button
+                      type="submit"
+                      class="br-button primary"
+                      id="btn-pesquisar"
+                    >
+                      <i class="fas fa-search mr-1"></i>
+                      Pesquisar
+                    </button>
+                    <button
+                      type="button"
+                      class="br-button secondary"
+                      id="btn-limpar"
+                    >
+                      <i class="fas fa-eraser mr-1"></i>
+                      Limpar Filtros
+                    </button>
+                    <button
+                      type="button"
+                      class="br-button secondary"
+                      id="btn-salvar-selecao"
+                    >
+                      <i class="fas fa-save mr-1"></i>
+                      Salvar Seleção
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div class="br-card">
+        <div class="card-header">
+          <div class="d-flex align-items-center">
+            <i
+              class="fas fa-bookmark"
+              style="color: #1351b4; font-size: 14px"
+            ></i>
+            <span class="ml-2 font-weight-bold">Filtros Salvos</span>
+          </div>
+        </div>
+        <div class="card-content" id="saved-filters-content">
+          <!-- Save Current Filter Section -->
+          <div class="mb-3">
+            <div class="br-input" data-trigger="input">
+              <label for="filter_name">Nome do Filtro</label>
+              <input
+                id="filter_name"
+                type="text"
+                placeholder="Ex: Contratos Urgentes"
+                autocomplete="off"
+              />
+            </div>
+            <button
+              type="button"
+              class="br-button primary small mt-2 w-100"
+              id="btn-save-filter"
+              onclick="saveCurrentFilter()"
+            >
+              <i class="fas fa-save mr-1"></i>
+              Salvar Filtro Atual
+            </button>
+          </div>
+
+          <!-- Saved Filters List -->
+          <div id="saved-filters-list">
+            <h6 class="mb-2">Filtros Salvos:</h6>
+            <div id="filters-accordion">
+              <p class="text-muted text-center" id="no-saved-filters">
+                Nenhum filtro salvo ainda
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Search Section  -->
-  <div class="row m-4">
-    <div class="col-12">
-      <form id="uasg-filter-form" method="GET" action="/uasg-filter">
-        <div class="input-group">
-          <input
-            type="text"
-            class="form-control"
-            name="search_term"
-            placeholder="Digite o nome ou código da UASG"
-            aria-label="Pesquisar UASG"
-          />
-          <button class="btn btn-primary" type="submit">Pesquisar</button>
-        </div>
-        <div>
-          <button class="btn btn-secondary" type="button">Gestão</button>
-          <button class="btn btn-secondary" type="button">
-            Órgão superior
-          </button>
-          <button class="btn btn-secondary" type="button">
-            salvar seleção
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- UASG List Section -->
+  <!-- Results Section -->
   <div class="row">
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
+    <div class="col-12">
       <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="card-header">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              <i
+                class="fas fa-list"
+                style="color: #1351b4; font-size: 14px"
+              ></i>
+              <span class="ml-2 font-weight-bold">Resultados</span>
+              <span
+                id="results-count"
+                class="badge badge-primary ml-2"
+                style="display: none"
+                >0</span
+              >
+              <span
+                id="selection-counter"
+                class="selection-counter ml-2"
+                style="display: none; cursor: pointer; position: relative"
+                >0 UASGs selecionadas
+                <i
+                  class="fas fa-times selection-counter-close"
+                  onclick="clearAllSelections()"
+                  style="margin-left: 8px; cursor: pointer; opacity: 0.8"
+                  title="Limpar seleção"
+                ></i>
+              </span>
+            </div>
+            <div class="d-flex gap-2">
+              <button
+                type="button"
+                class="br-button secondary small"
+                id="btn-collapse-all"
+                onclick="collapseAllGroups()"
+                style="display: none"
+              >
+                <i class="fas fa-compress-alt mr-1"></i>
+                Colapsar Todos
+              </button>
+              <button
+                type="button"
+                class="br-button secondary small"
+                id="btn-expand-all"
+                onclick="expandAllGroups()"
+                style="display: none"
+              >
+                <i class="fas fa-expand-alt mr-1"></i>
+                Expandir Todos
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-1 col-md-2 col-sm-2 col-6 mb-3">
-      <div class="br-card">
-        <div class="card-content p-1">
-          <table class="br-table table-hover">
-            <thead style="background-color: #f8f8f8">
-              <tr>
-                <th style="border: none; text-align: left">
-                  <span>393003</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>123456</td>
-              </tr>
-              <tr>
-                <td>789012</td>
-              </tr>
-              <tr>
-                <td>345678</td>
-              </tr>
-              <tr>
-                <td>901234</td>
-              </tr>
-              <tr>
-                <td>567890</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="card-content" id="results-content">
+          <!-- Loading State -->
+          <div
+            id="loading-state"
+            class="text-center py-5"
+            style="display: none"
+          >
+            <div
+              class="br-loading medium"
+              role="progressbar"
+              aria-label="carregando resultados"
+            ></div>
+            <p class="mt-3 text-muted">Carregando resultados...</p>
+          </div>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">Nenhum resultado encontrado</h5>
+            <p class="text-muted">
+              Use os filtros acima para buscar UASGs ou ajuste os critérios de
+              pesquisa.
+            </p>
+          </div>
+
+          <!-- Results Container -->
+          <div id="results-container" style="display: none">
+            <!-- Grid View -->
+            <div id="grid-view">
+              <div class="row" id="grid-container">
+                <!-- Grid items will be dynamically inserted here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            id="pagination-container"
+            class="d-flex justify-content-center mt-4"
+            style="display: none"
+          >
+            <!-- Pagination will be dynamically inserted here -->
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Floating Action Button for Quick Search -->
+<div
+  class="floating-action"
+  style="position: fixed; bottom: 20px; right: 20px; z-index: 1000"
+>
+  <button
+    type="button"
+    class="br-button primary circle"
+    id="btn-quick-search"
+    title="Busca Rápida"
+  >
+    <i class="fas fa-chevron-up"></i>
+  </button>
+</div>
+
+<style>
+  /* Custom styles for UASG Filter */
+  .gap-2 {
+    gap: 0.5rem !important;
+  }
+
+  .gap-1 {
+    gap: 0.25rem !important;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+  }
+
+  .badge-primary {
+    color: #fff;
+    background-color: #1351b4;
+  }
+
+  .badge-success {
+    color: #fff;
+    background-color: #28a745;
+  }
+
+  .badge-info {
+    color: #fff;
+    background-color: #17a2b8;
+  }
+
+  .badge-warning {
+    color: #212529;
+    background-color: #ffc107;
+  }
+
+  .floating-action .br-button.circle {
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .floating-action .br-button.circle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  .card-content H6 {
+    font-size: 1.25rem;
+    margin-top: 0.1rem;
+    color: #495057;
+  }
+
+  .br-card {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .br-card .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .d-flex.justify-content-between {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .floating-action {
+      bottom: 80px;
+      right: 15px;
+    }
+
+    .gap-2 {
+      gap: 0.75rem !important;
+    }
+  }
+
+  /* Animation for filter toggle */
+  #filters-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  #filters-content.collapsed {
+    max-height: 0;
+    padding: 0 1.5rem;
+  }
+
+  /* Loading animation */
+  .br-loading {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #1351b4;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Group header styles for all views */
+  .group-header {
+    background-color: #f8f9fa;
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #1351b4;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #495057;
+  }
+
+  .group-count {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 400;
+  }
+
+  /* Grid-specific group styles */
+  .group-item-grid {
+    margin-left: 1rem;
+    border-left: 3px solid #e9ecef;
+    border-radius: 0 8px 8px 0;
+  }
+</style>
+<script>
+  // Global array to store selected UASG codes
+  let selectedUASGs = [];
+
+  // Global array to store saved filters
+  let savedFilters = [];
+
+  // Load selections from localStorage on page load
+  function loadSelectionsFromStorage() {
+    const stored = localStorage.getItem("selectedUASGs");
+    if (stored) {
+      try {
+        selectedUASGs = JSON.parse(stored);
+      } catch (e) {
+        console.warn("Error loading selections from storage:", e);
+        selectedUASGs = [];
+      }
+    }
+  }
+
+  // Save selections to localStorage
+  function saveSelectionsToStorage() {
+    try {
+      localStorage.setItem("selectedUASGs", JSON.stringify(selectedUASGs));
+    } catch (e) {
+      console.warn("Error saving selections to storage:", e);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // Load saved selections
+    loadSelectionsFromStorage();
+    // Load saved filters
+    loadSavedFilters();
+    // Initialize form handlers
+    initializeFilterHandlers();
+
+    // Auto-load user's session UASGs if available
+    loadSessionUASGs();
+  });
+
+  function initializeFilterHandlers() {
+    const form = document.getElementById("uasg-filter-form");
+    const clearBtn = document.getElementById("btn-limpar");
+    const quickSearchBtn = document.getElementById("btn-quick-search");
+
+    // Form submit handler
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      performSearch();
+    });
+
+    // Clear filters handler
+    clearBtn.addEventListener("click", function () {
+      form.reset();
+      document.getElementById("interval_days").value = "120"; // Reset to default
+      document.getElementById("user_id").value = "198756"; // Reset to default
+      document.getElementById("has_contracts").checked = true; // Reset to default
+
+      // Clear selected UASGs
+      clearAllSelections();
+
+      clearResults();
+    });
+
+    // Quick search handler
+    quickSearchBtn.addEventListener("click", function () {
+      const searchTerm = document.getElementById("search_term");
+      if (searchTerm.value.trim()) {
+        performSearch();
+      } else {
+        searchTerm.focus();
+      }
+    });
+
+    // Real-time search on search term input (debounced)
+    let searchTimeout;
+    document
+      .getElementById("search_term")
+      .addEventListener("input", function () {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          if (this.value.length >= 3 || this.value.length === 0) {
+            performSearch();
+          }
+        }, 500);
+      });
+  }
+
+  function performSearch() {
+    showLoading();
+
+    const formData = new FormData(document.getElementById("uasg-filter-form"));
+    const params = new URLSearchParams();
+
+    // Build query parameters
+    for (let [key, value] of formData.entries()) {
+      if (value.trim()) {
+        params.append(key, value);
+      }
+    }
+
+    // Always group by agency
+    params.append("group_by_agency", "true");
+
+    // Call the backend endpoint
+    fetch(`/uasg-filter/data?${params.toString()}`)
+      .then((response) => response.json())
+      .then((data) => {
+        hideLoading();
+        if (data.success) {
+          displayResults(data.data, data.grouped);
+        } else {
+          showError(data.message || "Erro ao buscar dados");
+        }
+      })
+      .catch((error) => {
+        hideLoading();
+        showError("Erro de conexão: " + error.message);
+      });
+  }
+
+  function loadSessionUASGs() {
+    // Get UASGs from session data
+    const bodyUasgs = document.body.getAttribute("data-uasgs");
+    if (bodyUasgs && bodyUasgs.trim()) {
+      fetch("/uasg-filter/search?codes=" + bodyUasgs)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success && data.data.length > 0) {
+            displayResults(data.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error loading session UASGs:", error);
+        });
+    }
+  }
+
+  function showLoading() {
+    document.getElementById("loading-state").style.display = "block";
+    document.getElementById("empty-state").style.display = "none";
+    document.getElementById("results-container").style.display = "none";
+  }
+
+  function hideLoading() {
+    document.getElementById("loading-state").style.display = "none";
+  }
+
+  function displayResults(data, isGrouped = false) {
+    if (data.length === 0) {
+      showEmptyState();
+      return;
+    }
+
+    document.getElementById("empty-state").style.display = "none";
+    document.getElementById("results-container").style.display = "block";
+
+    // Update result count based on view type
+    if (isGrouped) {
+      const totalUasgs = data.reduce(
+        (sum, group) => sum + group.uasgs.length,
+        0
+      );
+      updateResultsCount(totalUasgs, data.length);
+    } else {
+      updateResultsCount(data.length);
+    }
+
+    // Display in grid view mode
+    populateGridView(data, isGrouped);
+  }
+
+  function showEmptyState() {
+    document.getElementById("empty-state").style.display = "block";
+    document.getElementById("results-container").style.display = "none";
+    updateResultsCount(0);
+  }
+
+  function showError(message) {
+    console.error("Search error:", message);
+    // You can implement a toast notification here
+    alert("Erro: " + message);
+  }
+
+  function populateGridView(data, isGrouped = true) {
+    const container = document.getElementById("grid-container");
+    container.innerHTML = "";
+
+    // Always expect grouped data
+    data.forEach((group) => {
+      // Create group header for grid
+      const groupHeader = createGroupHeader(group, "grid");
+      container.appendChild(groupHeader);
+
+      // Create a container for the group's UASG items
+      const groupItemsContainer = document.createElement("div");
+      groupItemsContainer.className = "row group-items-container";
+      groupItemsContainer.setAttribute("data-group-gestao", group.gestao);
+      groupItemsContainer.style.transition = "all 0.3s ease";
+      groupItemsContainer.style.overflow = "hidden";
+
+      // Start all groups collapsed by default
+      groupItemsContainer.style.maxHeight = "0px";
+      groupItemsContainer.style.display = "none";
+      groupItemsContainer.style.opacity = "0";
+
+      group.uasgs.forEach((item) => {
+        const gridItem = createUASGGridItem(item, true);
+        groupItemsContainer.appendChild(gridItem);
+      });
+
+      // Wrap the group items container in a col-12 div
+      const groupItemsWrapper = document.createElement("div");
+      groupItemsWrapper.className = "col-12";
+      groupItemsWrapper.appendChild(groupItemsContainer);
+
+      container.appendChild(groupItemsWrapper);
+    });
+
+    // Update all collapse icons to show collapsed state
+    setTimeout(() => {
+      const allCollapseButtons = document.querySelectorAll(
+        ".group-collapse-btn"
+      );
+      allCollapseButtons.forEach((button) => {
+        const icon = button.querySelector(".group-collapse-icon");
+        if (icon) {
+          icon.style.transform = "rotate(-90deg)";
+          icon.classList.remove("fa-chevron-down");
+          icon.classList.add("fa-chevron-right");
+        }
+      });
+
+      // Update collapse/expand buttons visibility
+      updateCollapseButtons();
+    }, 100);
+
+    // Restore selection state for newly loaded cards
+    restoreSelectionState();
+  }
+
+  function createGroupHeader(group, viewType = "cards") {
+    const col = document.createElement("div");
+    col.className = "col-12 mb-3";
+
+    col.innerHTML = `
+      <div class="br-card group-header-card" 
+           style="background-color: #f8f9fa; border-left: 4px solid #1351b4; transition: all 0.3s ease;" 
+           data-group-gestao="${group.gestao}">
+        <div class="card-content p-1">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="d-flex align-items-start flex-grow-1">
+              <button class="btn btn-link p-0 mr-2 group-collapse-btn" 
+                      onclick="toggleGroupCollapse('${group.gestao}', this)" 
+                      style="border: none; background: none; color: #1351b4; font-size: 1.2rem; margin-top: 0.25rem;">
+                <i class="fas fa-chevron-down group-collapse-icon" style="transition: transform 0.3s ease;"></i>
+              </button>
+              <div onclick="toggleGroupSelection('${
+                group.gestao
+              }', this.closest('.group-header-card'))" 
+                   style="cursor: pointer; flex-grow: 1;">
+                <h5 class="mb-1" style="color: #1351b4;">
+                  <i class="fas fa-sitemap mr-2"></i>
+                  ${group.agency_name}
+                </h5>
+                <small class="text-muted d-block mb-2">Gestão: ${
+                  group.gestao
+                }</small>
+                <!-- Mobile badges - shown on smaller screens under title -->
+                <div class="d-flex d-md-none flex-wrap gap-1 mb-2">
+                  <span class="badge badge-info">R$ ${formatCurrency(
+                    group.total_value
+                  )}</span>
+                  <span class="badge badge-success">${
+                    group.total_contracts
+                  } contratos</span>
+                  <span class="badge badge-primary">${
+                    group.uasg_count
+                  } UASGs</span>
+                </div>
+              </div>
+            </div>
+            <!-- Desktop badges - shown on larger screens on the right -->
+            <div class="text-right d-none d-md-block">
+              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem;">
+                <span class="badge badge-info">R$ ${formatCurrency(
+                  group.total_value
+                )}</span>
+                <span class="badge badge-success">${
+                  group.total_contracts
+                } contratos</span>
+                <span class="badge badge-primary">${
+                  group.uasg_count
+                } UASGs</span>
+              </div>
+              <div class="group-selection-indicator mt-2" style="display: none;">
+                <span class="badge badge-warning">
+                  <i class="fas fa-check-double mr-1"></i>
+                  Grupo Selecionado
+                </span>
+              </div>
+            </div>
+            <!-- Mobile selection indicator -->
+            <div class="group-selection-indicator d-md-none mt-2" style="display: none;">
+              <span class="badge badge-warning">
+                <i class="fas fa-check-double mr-1"></i>
+                Grupo Selecionado
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return col;
+  }
+
+  function createUASGGridItem(item, isInGroup = false) {
+    const col = document.createElement("div");
+    col.className = isInGroup
+      ? "col-3 col-md-3 col-lg-2 mb-2"
+      : "col-3 col-md-3 col-lg-2 mb-3";
+
+    const cardStyle = isInGroup
+      ? "margin-left: 10px; border-left: 2px solid #dee2e6;"
+      : "";
+
+    col.innerHTML = `
+    <div class="br-card text-center uasg-card" 
+         style="${cardStyle} cursor: pointer; transition: all 0.3s ease;" 
+         data-uasg-code="${item.codigo}"
+         data-uasg-id="${item.unidade_id}"
+         onclick="toggleUASGSelection('${item.codigo}', '${
+      item.unidade_id
+    }', this)">
+      <div class="card-content p-1">
+        <h6 class="mb-1">${item.codigo || "N/A"}</h6>
+        <small class="text-muted d-block mb-1">${
+          item.nomeresumido ? item.nomeresumido.substring(0, 20) + "..." : "N/A"
+        }</small>
+        <span class="badge badge-success">${item.contract_count || 0}</span>
+      </div>
+    </div>
+  `;
+
+    return col;
+  }
+
+  function updateResultsCount(count, groupCount = null) {
+    const badge = document.getElementById("results-count");
+
+    if (groupCount !== null) {
+      // Grouped view: show both group count and total UASG count
+      badge.textContent = `${groupCount} grupos (${count} UASGs)`;
+    } else {
+      // Regular view: show just the count
+      badge.textContent = count;
+    }
+
+    badge.style.display = count > 0 ? "inline-block" : "none";
+  }
+
+  function clearResults() {
+    document.getElementById("results-container").style.display = "none";
+    document.getElementById("empty-state").style.display = "block";
+    updateResultsCount(0);
+  }
+
+  function formatCurrency(value) {
+    return new Intl.NumberFormat("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  }
+
+  function viewDetails(unidadeId) {
+    // Implementation for viewing UASG details
+    console.log("View details for unidade:", unidadeId);
+  }
+
+  // UASG Selection Management Functions
+  function toggleUASGSelection(codigo, unidadeId, cardElement) {
+    // cardElement is the .uasg-card div, we need its parent column
+    const columnElement = cardElement.closest(".col-3, .col-md-3, .col-lg-2");
+
+    if (!columnElement) {
+      console.error("Could not find column element for card selection");
+      return;
+    }
+
+    const isSelected = selectedUASGs.some((uasg) => uasg.codigo === codigo);
+
+    if (isSelected) {
+      // Remove from selection
+      selectedUASGs = selectedUASGs.filter((uasg) => uasg.codigo !== codigo);
+      removeCardSelection(columnElement);
+    } else {
+      // Add to selection
+      selectedUASGs.push({
+        codigo: codigo,
+        unidade_id: unidadeId,
+        timestamp: new Date().toISOString(),
+      });
+      addCardSelection(columnElement);
+    }
+
+    updateSelectionCounter();
+    updateGroupSelectionIndicators();
+    saveSelectionsToStorage();
+    console.log("Selected UASGs:", selectedUASGs);
+  }
+
+  function toggleGroupSelection(gestao, groupHeaderElement) {
+    // Find all UASGs in this group using the group items container
+    const groupItemsContainer = document.querySelector(
+      `[data-group-gestao="${gestao}"].group-items-container`
+    );
+    const groupCards = [];
+
+    if (groupItemsContainer) {
+      const uasgCards =
+        groupItemsContainer.querySelectorAll("[data-uasg-code]");
+      uasgCards.forEach((card) => {
+        const cardColumn = card.closest(".col-3, .col-md-3, .col-lg-2");
+        if (cardColumn) {
+          groupCards.push({
+            element: cardColumn,
+            codigo: card.getAttribute("data-uasg-code"),
+            unidadeId: card.getAttribute("data-uasg-id"),
+          });
+        }
+      });
+    }
+
+    // Check if all cards in this group are selected
+    const allSelected = groupCards.every((card) =>
+      selectedUASGs.some((uasg) => uasg.codigo === card.codigo)
+    );
+
+    if (allSelected) {
+      // Deselect all cards in this group
+      groupCards.forEach((card) => {
+        selectedUASGs = selectedUASGs.filter(
+          (uasg) => uasg.codigo !== card.codigo
+        );
+        removeCardSelection(card.element);
+      });
+    } else {
+      // Select all cards in this group (including any already selected)
+      groupCards.forEach((card) => {
+        if (!selectedUASGs.some((uasg) => uasg.codigo === card.codigo)) {
+          selectedUASGs.push({
+            codigo: card.codigo,
+            unidade_id: card.unidadeId,
+            timestamp: new Date().toISOString(),
+          });
+          addCardSelection(card.element);
+        }
+      });
+    }
+
+    updateSelectionCounter();
+    updateGroupSelectionIndicators();
+    saveSelectionsToStorage();
+    console.log(
+      "Group selection toggled for gestao:",
+      gestao,
+      "Selected UASGs:",
+      selectedUASGs
+    );
+  }
+
+  function toggleGroupCollapse(gestao, buttonElement) {
+    // Prevent event bubbling to avoid triggering group selection
+    event.stopPropagation();
+
+    // Find the group items container for this gestao
+    const groupItemsContainer = document.querySelector(
+      `[data-group-gestao="${gestao}"].group-items-container`
+    );
+    const icon = buttonElement.querySelector(".group-collapse-icon");
+
+    if (groupItemsContainer && icon) {
+      const isCollapsed =
+        groupItemsContainer.style.maxHeight === "0px" ||
+        groupItemsContainer.style.display === "none";
+
+      if (isCollapsed) {
+        // Expand the group
+        groupItemsContainer.style.maxHeight = "none";
+        groupItemsContainer.style.display = "flex";
+        groupItemsContainer.style.opacity = "1";
+        icon.style.transform = "rotate(0deg)";
+        icon.classList.remove("fa-chevron-right");
+        icon.classList.add("fa-chevron-down");
+      } else {
+        // Collapse the group
+        groupItemsContainer.style.maxHeight = "0px";
+        groupItemsContainer.style.display = "none";
+        groupItemsContainer.style.opacity = "0";
+        icon.style.transform = "rotate(-90deg)";
+        icon.classList.remove("fa-chevron-down");
+        icon.classList.add("fa-chevron-right");
+      }
+
+      // Update collapse/expand buttons visibility
+      updateCollapseButtons();
+    }
+  }
+
+  function updateGroupSelectionIndicators() {
+    // Update group selection indicators based on individual selections
+    document.querySelectorAll(".group-header-card").forEach((groupHeader) => {
+      const gestao = groupHeader.getAttribute("data-group-gestao");
+      const indicator = groupHeader.querySelector(".group-selection-indicator");
+
+      // Find all UASGs in this group using the group items container
+      const groupItemsContainer = document.querySelector(
+        `[data-group-gestao="${gestao}"].group-items-container`
+      );
+      const groupUasgs = [];
+
+      if (groupItemsContainer) {
+        const uasgCards =
+          groupItemsContainer.querySelectorAll("[data-uasg-code]");
+        uasgCards.forEach((card) => {
+          groupUasgs.push(card.getAttribute("data-uasg-code"));
+        });
+      }
+
+      // Check if all UASGs in this group are selected
+      const allSelected =
+        groupUasgs.length > 0 &&
+        groupUasgs.every((codigo) =>
+          selectedUASGs.some((uasg) => uasg.codigo === codigo)
+        );
+
+      if (allSelected && groupUasgs.length > 0) {
+        indicator.style.display = "block";
+        groupHeader.style.backgroundColor = "#e8f5e8";
+      } else {
+        indicator.style.display = "none";
+        groupHeader.style.backgroundColor = "#f8f9fa";
+      }
+    });
+  }
+
+  function addCardSelection(cardElement) {
+    const card = cardElement.querySelector(".br-card");
+
+    if (card) {
+      // Add selected styling
+      card.style.backgroundColor = "#e8f5e8";
+      card.style.borderColor = "#28a745";
+      card.style.borderWidth = "2px";
+      card.style.borderStyle = "solid";
+    }
+  }
+
+  function removeCardSelection(cardElement) {
+    const card = cardElement.querySelector(".br-card");
+
+    if (card) {
+      // Remove selected styling
+      card.style.backgroundColor = "";
+      card.style.borderColor = "";
+      card.style.borderWidth = "";
+      card.style.borderStyle = "";
+    }
+  }
+
+  function clearAllSelections() {
+    selectedUASGs = [];
+
+    // Remove visual selection from all cards
+    document.querySelectorAll(".uasg-card").forEach((cardDiv) => {
+      // cardDiv is the .br-card element, so we need its parent (the column)
+      const columnElement = cardDiv.closest(".col-3, .col-md-3, .col-lg-2");
+      if (columnElement) {
+        removeCardSelection(columnElement);
+      }
+    });
+
+    updateSelectionCounter();
+    updateGroupSelectionIndicators();
+    saveSelectionsToStorage();
+  }
+
+  function updateSelectionCounter() {
+    const counter = document.getElementById("selection-counter");
+    const count = selectedUASGs.length;
+
+    if (!counter) {
+      console.error("Selection counter element not found");
+      return;
+    }
+
+    if (count > 0) {
+      counter.innerHTML = `${count} UASG${count > 1 ? "s" : ""} selecionada${
+        count > 1 ? "s" : ""
+      } <i class="fas fa-times selection-counter-close" 
+         onclick="clearAllSelections()" 
+         style="margin-left: 8px; cursor: pointer; opacity: 0.8;"
+         title="Limpar seleção"></i>`;
+      counter.style.display = "inline-block";
+    } else {
+      counter.style.display = "none";
+    }
+  }
+
+  function getSelectedUASGs() {
+    return selectedUASGs;
+  }
+
+  function restoreSelectionState() {
+    // Restore visual selection for cards that are in the selectedUASGs array
+    selectedUASGs.forEach((selectedUasg) => {
+      const cardElement = document.querySelector(
+        `[data-uasg-code="${selectedUasg.codigo}"]`
+      );
+      if (cardElement) {
+        // The cardElement is the div with .br-card class, so we need its parent (the column)
+        const columnElement = cardElement.closest(
+          ".col-3, .col-md-3, .col-lg-2"
+        );
+        if (columnElement) {
+          addCardSelection(columnElement);
+        }
+      }
+    });
+
+    updateSelectionCounter();
+    updateGroupSelectionIndicators();
+  }
+
+  // Collapse All Groups Function
+  function collapseAllGroups() {
+    const allGroupContainers = document.querySelectorAll(
+      ".group-items-container"
+    );
+    const allCollapseButtons = document.querySelectorAll(".group-collapse-btn");
+
+    allGroupContainers.forEach((container) => {
+      container.style.maxHeight = "0px";
+      container.style.display = "none";
+      container.style.opacity = "0";
+    });
+
+    allCollapseButtons.forEach((button) => {
+      const icon = button.querySelector(".group-collapse-icon");
+      if (icon) {
+        icon.style.transform = "rotate(-90deg)";
+        icon.classList.remove("fa-chevron-down");
+        icon.classList.add("fa-chevron-right");
+      }
+    });
+
+    updateCollapseButtons();
+  }
+
+  // Expand All Groups Function
+  function expandAllGroups() {
+    const allGroupContainers = document.querySelectorAll(
+      ".group-items-container"
+    );
+    const allCollapseButtons = document.querySelectorAll(".group-collapse-btn");
+
+    allGroupContainers.forEach((container) => {
+      container.style.maxHeight = "none";
+      container.style.display = "flex";
+      container.style.opacity = "1";
+    });
+
+    allCollapseButtons.forEach((button) => {
+      const icon = button.querySelector(".group-collapse-icon");
+      if (icon) {
+        icon.style.transform = "rotate(0deg)";
+        icon.classList.remove("fa-chevron-right");
+        icon.classList.add("fa-chevron-down");
+      }
+    });
+
+    updateCollapseButtons();
+  }
+
+  // Update the visibility of collapse/expand buttons
+  function updateCollapseButtons() {
+    const allGroupContainers = document.querySelectorAll(
+      ".group-items-container"
+    );
+    const collapseAllBtn = document.getElementById("btn-collapse-all");
+    const expandAllBtn = document.getElementById("btn-expand-all");
+
+    if (allGroupContainers.length > 0) {
+      // Check if any groups are expanded
+      const hasExpandedGroups = Array.from(allGroupContainers).some(
+        (container) =>
+          container.style.display !== "none" &&
+          container.style.maxHeight !== "0px"
+      );
+
+      // Check if any groups are collapsed
+      const hasCollapsedGroups = Array.from(allGroupContainers).some(
+        (container) =>
+          container.style.display === "none" ||
+          container.style.maxHeight === "0px"
+      );
+
+      // Show/hide buttons based on state
+      collapseAllBtn.style.display = hasExpandedGroups
+        ? "inline-block"
+        : "none";
+      expandAllBtn.style.display = hasCollapsedGroups ? "inline-block" : "none";
+    } else {
+      // No groups, hide both buttons
+      collapseAllBtn.style.display = "none";
+      expandAllBtn.style.display = "none";
+    }
+  }
+
+  // ==================== SAVED FILTERS FUNCTIONALITY ====================
+
+  // Load saved filters from localStorage
+  function loadSavedFilters() {
+    const stored = localStorage.getItem("savedFilters");
+    if (stored) {
+      try {
+        savedFilters = JSON.parse(stored);
+        console.log("Loaded saved filters:", savedFilters);
+        renderSavedFilters();
+      } catch (e) {
+        console.warn("Error loading saved filters:", e);
+        savedFilters = [];
+      }
+    } else {
+      console.log("No saved filters found in localStorage");
+    }
+  }
+
+  // Save filters to localStorage
+  function saveSavedFilters() {
+    try {
+      localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
+    } catch (e) {
+      console.warn("Error saving filters to storage:", e);
+    }
+  }
+
+  // Get current filter values including selected UASGs
+  function getCurrentFilterValues() {
+    const form = document.getElementById("uasg-filter-form");
+    const formData = new FormData(form);
+    const filters = {};
+
+    // Get all form values
+    for (let [key, value] of formData.entries()) {
+      if (value.trim()) {
+        filters[key] = value;
+      }
+    }
+
+    // Handle checkboxes separately (they only appear in FormData if checked)
+    filters.has_contracts = document.getElementById("has_contracts").checked;
+    filters.active_contracts =
+      document.getElementById("active_contracts").checked;
+
+    // Include selected UASGs array
+    filters.selectedUASGs = [...selectedUASGs];
+
+    return filters;
+  }
+
+  // Apply saved filter values to form including selected UASGs
+  function applyFilterValues(filters) {
+    // Clear form first
+    document.getElementById("uasg-filter-form").reset();
+
+    // Clear current selections
+    clearAllSelections();
+
+    // Apply each filter value
+    Object.keys(filters).forEach((key) => {
+      if (key === "selectedUASGs") {
+        // Restore selected UASGs array
+        if (Array.isArray(filters.selectedUASGs)) {
+          selectedUASGs = [...filters.selectedUASGs];
+          saveSelectionsToStorage();
+          updateSelectionCounter();
+        }
+        return;
+      }
+
+      const element = document.getElementById(key);
+      if (element) {
+        if (element.type === "checkbox") {
+          element.checked = filters[key];
+        } else {
+          element.value = filters[key];
+        }
+      }
+    });
+
+    // Set default value for interval_days if not in saved filters
+    if (!filters.interval_days) {
+      document.getElementById("interval_days").value = "40";
+    }
+
+    // Set default user_id if not in saved filters
+    if (!filters.user_id) {
+      document.getElementById("user_id").value = "198756";
+    }
+  }
+
+  // Save current filter configuration
+  function saveCurrentFilter() {
+    const filterName = document.getElementById("filter_name").value.trim();
+
+    if (!filterName) {
+      alert("Por favor, digite um nome para o filtro.");
+      return;
+    }
+
+    // Check if name already exists
+    if (savedFilters.some((filter) => filter.name === filterName)) {
+      if (
+        !confirm(
+          `Já existe um filtro com o nome "${filterName}". Deseja substituí-lo?`
+        )
+      ) {
+        return;
+      }
+      // Remove existing filter with same name
+      savedFilters = savedFilters.filter(
+        (filter) => filter.name !== filterName
+      );
+    }
+
+    const currentFilters = getCurrentFilterValues();
+
+    const savedFilter = {
+      id: Date.now().toString(),
+      name: filterName,
+      filters: currentFilters,
+      createdAt: new Date().toISOString(),
+      lastUsed: new Date().toISOString(),
+    };
+
+    savedFilters.push(savedFilter);
+    console.log("Saving filter:", savedFilter);
+    console.log("All saved filters:", savedFilters);
+
+    saveSavedFilters();
+    renderSavedFilters();
+
+    // Clear the name input
+    document.getElementById("filter_name").value = "";
+
+    alert(`Filtro "${filterName}" salvo com sucesso!`);
+  }
+
+  // Load a saved filter
+  function loadSavedFilter(filterId) {
+    const filter = savedFilters.find((f) => f.id === filterId);
+    if (filter) {
+      applyFilterValues(filter.filters);
+
+      // Update last used timestamp
+      filter.lastUsed = new Date().toISOString();
+      saveSavedFilters();
+
+      // Automatically perform search to load the results
+      performSearch();
+
+      // After search completes and results are displayed, restore selection state
+      setTimeout(() => {
+        restoreSelectionState();
+        updateGroupSelectionIndicators();
+      }, 1000); // Wait for search results to load
+    }
+  }
+
+  // Delete a saved filter
+  function deleteSavedFilter(filterId, filterName) {
+    if (confirm(`Tem certeza que deseja excluir o filtro "${filterName}"?`)) {
+      savedFilters = savedFilters.filter((f) => f.id !== filterId);
+      saveSavedFilters();
+      renderSavedFilters();
+    }
+  }
+
+  // Update an existing saved filter with current form values
+  function updateSavedFilter(filterId, filterName) {
+    if (
+      confirm(
+        `Tem certeza que deseja atualizar o filtro "${filterName}" com as configurações atuais?`
+      )
+    ) {
+      const filter = savedFilters.find((f) => f.id === filterId);
+      if (filter) {
+        const currentFilters = getCurrentFilterValues();
+
+        // Update the filter with current form values
+        filter.filters = currentFilters;
+        filter.lastUsed = new Date().toISOString();
+
+        console.log("Updating filter:", filter);
+
+        saveSavedFilters();
+        renderSavedFilters();
+
+        alert(`Filtro "${filterName}" atualizado com sucesso!`);
+      } else {
+        alert("Erro: Filtro não encontrado.");
+      }
+    }
+  }
+
+  // Format filter summary for display
+  function formatFilterSummary(filters) {
+    const summary = [];
+
+    if (filters.search_term) summary.push(`Busca: "${filters.search_term}"`);
+    if (filters.user_id) summary.push(`Usuário: ${filters.user_id}`);
+    if (filters.valor_min)
+      summary.push(
+        `Valor mín: R$ ${parseFloat(filters.valor_min).toLocaleString("pt-BR")}`
+      );
+    if (filters.valor_max)
+      summary.push(
+        `Valor máx: R$ ${parseFloat(filters.valor_max).toLocaleString("pt-BR")}`
+      );
+    if (filters.interval_days)
+      summary.push(`Vence em: ${filters.interval_days} dias`);
+    if (filters.has_contracts) summary.push("Com contratos");
+    if (filters.active_contracts) summary.push("Contratos ativos");
+
+    // Add selected UASGs count if any
+    if (filters.selectedUASGs && filters.selectedUASGs.length > 0) {
+      summary.push(
+        `${filters.selectedUASGs.length} UASG${
+          filters.selectedUASGs.length > 1 ? "s" : ""
+        } selecionada${filters.selectedUASGs.length > 1 ? "s" : ""}`
+      );
+    }
+
+    return summary.length > 0 ? summary.join(" • ") : "Filtros básicos";
+  }
+
+  // Render saved filters in the accordion
+  function renderSavedFilters() {
+    const container = document.getElementById("filters-accordion");
+    const noFiltersMsg = document.getElementById("no-saved-filters");
+
+    if (savedFilters.length === 0) {
+      if (noFiltersMsg) {
+        noFiltersMsg.style.display = "block";
+      }
+      container.innerHTML =
+        '<p class="text-muted text-center" id="no-saved-filters">Nenhum filtro salvo ainda</p>';
+      return;
+    }
+
+    if (noFiltersMsg) {
+      noFiltersMsg.style.display = "none";
+    }
+
+    // Sort by last used (most recent first)
+    const sortedFilters = [...savedFilters].sort(
+      (a, b) => new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime()
+    );
+
+    container.innerHTML = sortedFilters
+      .map(
+        (filter) => `
+      <div class="saved-filter-item">
+        <div class="saved-filter-header" onclick="toggleFilterDetails('${
+          filter.id
+        }')">
+          <div>
+            <strong>${filter.name}</strong>
+            <small class="text-muted d-block">
+              Usado: ${new Date(filter.lastUsed).toLocaleDateString("pt-BR")}
+            </small>
+          </div>
+          <i class="fas fa-chevron-down filter-toggle-icon" id="icon-${
+            filter.id
+          }"></i>
+        </div>
+        <div class="saved-filter-content" id="content-${
+          filter.id
+        }" style="display: none;">
+          <div class="mb-2">
+            <small class="text-muted">${formatFilterSummary(
+              filter.filters
+            )}</small>
+          </div>
+          <div class="filter-actions">
+            <button class="br-button primary small" onclick="loadSavedFilter('${
+              filter.id
+            }')">
+              <i class="fas fa-play mr-1"></i>
+              Aplicar
+            </button>
+            <button class="br-button secondary small" onclick="updateSavedFilter('${
+              filter.id
+            }', '${filter.name}')">
+              <i class="fas fa-sync mr-1"></i>
+              Atualizar
+            </button>
+            <button class="br-button danger small" onclick="deleteSavedFilter('${
+              filter.id
+            }', '${filter.name}')">
+              <i class="fas fa-trash mr-1"></i>
+              Excluir
+            </button>
+          </div>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+
+    console.log("Rendered filters:", savedFilters.length, "filters");
+  }
+
+  // Toggle filter details visibility
+  function toggleFilterDetails(filterId) {
+    const content = document.getElementById(`content-${filterId}`);
+    const icon = document.getElementById(`icon-${filterId}`);
+
+    if (content.style.display === "none") {
+      content.style.display = "block";
+      icon.classList.remove("fa-chevron-down");
+      icon.classList.add("fa-chevron-up");
+    } else {
+      content.style.display = "none";
+      icon.classList.remove("fa-chevron-up");
+      icon.classList.add("fa-chevron-down");
+    }
+  }
+</script>
 
 {% endblock %}

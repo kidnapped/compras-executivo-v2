@@ -339,31 +339,31 @@ async def get_tudo_data(
         # Step 4: Prepare document ID-only queries
         dar_query = text("""
             SELECT id_documento_dar
-            FROM t_export_wd_deta_orca_fina_dar
+            FROM wd_deta_orca_fina_dar
             WHERE id_documento_ne = :numero_empenho
         """)
         darf_query = text("""
             SELECT id_documento_darf
-            FROM t_export_wd_deta_orca_fina_darf
+            FROM wd_deta_orca_fina_darf
             WHERE id_documento_ne = :numero_empenho
         """)
         gps_query = text("""
             SELECT id_documento_gps
-            FROM t_export_wd_deta_orca_fina_gps
+            FROM wd_deta_orca_fina_gps
             WHERE id_documento_ne = :numero_empenho
         """)
 
         # Step 5: Prepare full document queries
         dar_full_query = text("""
-            SELECT * FROM t_export_wd_documento 
+            SELECT * FROM wd_doc_dar
             WHERE id_doc_dar = ANY(:dar_ids)
         """)
         darf_full_query = text("""
-            SELECT * FROM t_export_wd_doc_darf 
+            SELECT * FROM wd_doc_darf
             WHERE id_doc_darf = ANY(:darf_ids)
         """)
         gps_full_query = text("""
-            SELECT * FROM t_export_wd_doc_gps 
+            SELECT * FROM wd_doc_gps
             WHERE id_doc_gps = ANY(:gps_ids)
         """)
 

@@ -12,199 +12,247 @@ endblock %} {% block content %}
     </div>
   </div>
 
-  <container>
-
-  
-    <!-- KPI Summary Cards - Combined in Single Card -->
-    <div class="row">
-      <div class="col-3">
-        <section class="br-card" style="padding: 0.8rem;">
-          <!-- KPI 12 Card: Total Contratos -->
-          <div class="text-center" style="border-bottom: 1px solid #5470c6;">
-            <p
-              class=""
-              style="
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 1rem;
-                font-weight: bold;
-              "
-            >
-            Contratos analisados
-            </p>
-            <a href="#" class="text-decoration-none">
-              <p
-                id="kpi12-total-contratos"
-                style="font-weight: 700; color: #5470c6; margin: 0;"
-              >
-                &nbsp;
-              </p>
-            </a>
-          </div>
-
-          <!-- KPI 12 Card: Vigência Média -->
-          <div class="text-center mb-3" style="border-bottom: 1px solid #5470c6; padding-bottom: 0.75rem;">
-            <p
-              class="mb-2"
-              style="
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 1rem;
-                font-weight: bold;
-              "
-            >
-              Vigência Média
-            </p>
-            <a href="#" class="text-decoration-none">
-              <p
-                id="kpi12-vigencia-media"
-                style="font-weight: 700; color: #5470c6; font-size: 1.2rem; margin: 0;"
-              >
-                &nbsp;
-              </p>
-            </a>
-          </div>
-
-          <!-- KPI 12 Card: Tempo Execução -->
-          <div class="text-center mb-3" style="border-bottom: 1px solid #5470c6; padding-bottom: 0.75rem;">
-            <p
-              class="mb-2"
-              style="
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 1rem;
-                font-weight: bold;
-              "
-            >
-              Tempo Média Execução
-            </p>
-            <a href="#" class="text-decoration-none">
-              <p
-                id="kpi12-tempo-execucao"
-                style="font-weight: 700; color: #5470c6; font-size: 1.2rem; margin: 0;"
-              >
-                &nbsp;
-              </p>
-            </a>
-          </div>
-
-          <!-- Summary Card: Em Execução -->
-          <div class="text-center mb-3" style="border-bottom: 1px solid #5470c6; padding-bottom: 0.75rem;">
-            <p
-              class="mb-2"
-              style="
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 1rem;
-                font-weight: bold;
-              "
-            >
-              Em Execução
-            </p>
-            <a href="#" class="text-decoration-none">
-              <p
-                id="outros-value-container"
-                style="font-weight: 700; color: #5470c6; font-size: 1.2rem; margin: 0;"
-              >
-                &nbsp;
-              </p>
-            </a>
-          </div>
-
-          <!-- Summary Card: Críticos -->
-          <div class="text-center mb-3" style="border-bottom: 1px solid #5470c6; padding-bottom: 0.75rem;">
-            <p
-              class="mb-2"
-              style="
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 1rem;
-                font-weight: bold;
-              "
-            >
-              Críticos
-            </p>
-            <a href="#" class="text-decoration-none">
-              <p
-                id="criticos"
-                style="font-weight: 700; color: #e30808; font-size: 1.2rem; margin: 0;"
-              >
-                &nbsp;
-              </p>
-            </a>
-          </div>
-
-          <!-- Summary Card: Com Aditivos -->
-          <div class="text-center mb-3" style="border-bottom: 1px solid #5470c6; padding-bottom: 0.75rem;">
-            <p
-              class="mb-2"
-              style="
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 1rem;
-                font-weight: bold;
-              "
-            >
-              Com Aditivos
-            </p>
-            <a href="#" class="text-decoration-none">
-              <p
-                id="percentual-com-aditivos"
-                style="font-weight: 700; color: #5470c6; font-size: 1.2rem; margin: 0;"
-              >
-                &nbsp;
-              </p>
-            </a>
-          </div>
-
-          <!-- Summary Card: Com Cláusulas -->
-          <div class="text-center" style="padding-bottom: 0.75rem;">
-            <p
-              class="mb-2"
-              style="
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 1rem;
-                font-weight: bold;
-              "
-            >
-              Com Cláusulas
-            </p>
-            <a href="#" class="text-decoration-none">
-              <p
-                id="percentual-com-clausulas"
-                style="font-weight: 700; color: #5470c6; font-size: 1.2rem; margin: 0;"
-              >
-                &nbsp;
-              </p>
-            </a>
-          </div>
-        </section>
+  <!-- KPI Summary Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="br-divider mb-4">
+        <div class="br-divider-content">
+          <h3 class="br-divider-text">
+            <i class="fas fa-chart-line me-2"></i>
+            Indicadores Principais
+          </h3>
+        </div>
       </div>
-      <div class="col-4">
-        
-        <!-- KPI 2: Sem Licitação -->
-        <section class="br-card list-card mb-3 col-12">
-          <div id="card-kpi-sem-licitacao" style="width: 100%; height: 350px">
-            <div
-            class="br-loading medium"
-            style="width: 100%; height: 350px"
-            role="progressbar"
-            aria-label="carregando contratos"
-            >
-            carregando data
+    </div>
+  </div>
+
+  <!-- KPI Cards Row - Responsive Grid -->
+  <div class="row mb-5">
+    <!-- KPI Card: Total Contratos -->
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+      <div class="br-card h-100">
+        <div class="br-card-header text-center">
+          <div class="br-card-title">
+            <i
+              class="fas fa-file-contract text-primary-default mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <h6 class="mb-0 text-truncate">Contratos Analisados</h6>
           </div>
         </div>
-      </section>
+        <div class="br-card-content text-center py-3">
+          <div class="br-highlight">
+            <span
+              id="kpi12-total-contratos"
+              class="h2 text-primary-default mb-0 fw-bold"
+              >&nbsp;</span
+            >
+          </div>
+          <small class="text-muted">Total de contratos</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Card: Vigência Média -->
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+      <div class="br-card h-100">
+        <div class="br-card-header text-center">
+          <div class="br-card-title">
+            <i
+              class="fas fa-calendar-alt text-info mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <h6 class="mb-0 text-truncate">Vigência Média</h6>
+          </div>
+        </div>
+        <div class="br-card-content text-center py-3">
+          <div class="br-highlight">
+            <span id="kpi12-vigencia-media" class="h3 text-info mb-0 fw-bold"
+              >&nbsp;</span
+            >
+          </div>
+          <small class="text-muted">Tempo médio</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Card: Tempo Execução -->
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+      <div class="br-card h-100">
+        <div class="br-card-header text-center">
+          <div class="br-card-title">
+            <i
+              class="fas fa-clock text-info mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <h6 class="mb-0 text-truncate">Tempo Médio Execução</h6>
+          </div>
+        </div>
+        <div class="br-card-content text-center py-3">
+          <div class="br-highlight">
+            <span id="kpi12-tempo-execucao" class="h3 text-info mb-0 fw-bold"
+              >&nbsp;</span
+            >
+          </div>
+          <small class="text-muted">Duração média</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Card: Em Execução -->
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+      <div class="br-card h-100">
+        <div class="br-card-header text-center">
+          <div class="br-card-title">
+            <i
+              class="fas fa-play-circle text-success mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <h6 class="mb-0 text-truncate">Em Execução</h6>
+          </div>
+        </div>
+        <div class="br-card-content text-center py-3">
+          <div class="br-highlight success">
+            <span
+              id="outros-value-container"
+              class="h3 text-success mb-0 fw-bold"
+              >&nbsp;</span
+            >
+          </div>
+          <small class="text-muted">Contratos ativos</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Card: Críticos -->
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+      <div class="br-card h-100">
+        <div class="br-card-header text-center">
+          <div class="br-card-title">
+            <i
+              class="fas fa-exclamation-triangle text-danger mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <h6 class="mb-0 text-truncate">Críticos</h6>
+          </div>
+        </div>
+        <div class="br-card-content text-center py-3">
+          <div class="br-highlight danger">
+            <span id="criticos" class="h3 text-danger mb-0 fw-bold"
+              >&nbsp;</span
+            >
+          </div>
+          <small class="text-muted">Necessitam atenção</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Card: Com Aditivos -->
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+      <div class="br-card h-100">
+        <div class="br-card-header text-center">
+          <div class="br-card-title">
+            <i
+              class="fas fa-plus-circle text-warning mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <h6 class="mb-0 text-truncate">Com Aditivos</h6>
+          </div>
+        </div>
+        <div class="br-card-content text-center py-3">
+          <div class="br-highlight warning">
+            <span
+              id="percentual-com-aditivos"
+              class="h3 text-warning mb-0 fw-bold"
+              >&nbsp;</span
+            >
+          </div>
+          <small class="text-muted">Percentual</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Row for Additional Cards if needed -->
+  <div class="row mb-5">
+    <!-- Status Card: Com Cláusulas -->
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+      <div class="br-card h-100">
+        <div class="br-card-header text-center">
+          <div class="br-card-title">
+            <i
+              class="fas fa-list-alt text-secondary mb-2"
+              style="font-size: 1.5rem"
+            ></i>
+            <h6 class="mb-0 text-truncate">Com Cláusulas</h6>
+          </div>
+        </div>
+        <div class="br-card-content text-center py-3">
+          <div class="br-highlight secondary">
+            <span
+              id="percentual-com-clausulas"
+              class="h3 text-secondary mb-0 fw-bold"
+              >&nbsp;</span
+            >
+          </div>
+          <small class="text-muted">Percentual</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics Section Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="br-divider mb-4">
+        <div class="br-divider-content">
+          <h3 class="br-divider-text">
+            <i class="fas fa-chart-bar me-2"></i>
+            Análises Detalhadas
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart Cards Section -->
+  <div class="row">
+    <div class="col-lg-7 col-md-12 mb-4">
+      <!-- KPI 2: Sem Licitação -->
+      <div class="br-card mb-4">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-ban me-2 text-warning"></i>
+              Contratos Sem Licitação
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
+          <div id="card-kpi-sem-licitacao" style="width: 100%; height: 350px">
+            <div
+              class="br-loading medium"
+              style="width: 100%; height: 350px"
+              role="progressbar"
+              aria-label="carregando contratos"
+            >
+              carregando data
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- KPI 6: Contratos com Aditivos -->
-        <section class="br-card list-card mb-3">
+      <div class="br-card">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-chart-pie me-2 text-primary"></i>
+              Contratos com Aditivos
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div
             id="card-kpi-contratos-com-aditivos"
             style="width: 100%; height: 350px"
@@ -218,14 +266,69 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
+      </div>
     </div>
+
+    <!-- Sidebar or Additional Content -->
+    <div class="col-lg-5 col-md-12 mb-4">
+      <div class="br-card h-100">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-info-circle me-2 text-info"></i>
+              Resumo Executivo
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
+          <div class="br-list">
+            <div class="br-item">
+              <div class="br-item-content">
+                <div class="text-weight-semi-bold">Análise em Tempo Real</div>
+                <div class="text-muted">Dados atualizados automaticamente</div>
+              </div>
+            </div>
+            <div class="br-item">
+              <div class="br-item-content">
+                <div class="text-weight-semi-bold">Filtros Aplicados</div>
+                <div class="text-muted">Visualização personalizada ativa</div>
+              </div>
+            </div>
+            <div class="br-item">
+              <div class="br-item-content">
+                <div class="text-weight-semi-bold">Última Atualização</div>
+                <div class="text-muted">Dados em tempo real</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </container>
-    <!-- KPI 8: Full Page Width Map -->
-    <div class="row mt-1 mb-1 kpi-full-width-section">
-      <div class="col-12">
-        <section class="br-card list-card">
+  </div>
+
+  <!-- Geographic Analysis Section -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="br-divider mb-4">
+        <div class="br-divider-content">
+          <h3 class="br-divider-text">
+            <i class="fas fa-map-marked-alt me-2"></i>
+            Análise Geográfica
+          </h3>
+        </div>
+      </div>
+
+      <div class="br-card">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-globe-americas me-2 text-success"></i>
+              Contratos por Estado
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div
             id="card-kpi-por-estado"
             style="
@@ -244,16 +347,40 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- All Other KPIs in Two-Column Layout -->
-    <div class="row kpi-content-section kpi-two-column-layout">
-      <!-- Column 1: Left Side KPIs -->
-      <div class="col-lg-6 col-md-12">
-        <!-- KPI 1: Exercício Container -->
-        <section class="br-card list-card mb-3">
+  <!-- Detailed Analytics Section -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="br-divider mb-4">
+        <div class="br-divider-content">
+          <h3 class="br-divider-text">
+            <i class="fas fa-chart-area me-2"></i>
+            Análises Detalhadas por Categoria
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-Column Analytics Layout -->
+  <div class="row">
+    <!-- Column 1: Left Side KPIs -->
+    <div class="col-lg-6 col-md-12">
+      <!-- KPI 1: Exercício Container -->
+      <div class="br-card mb-4">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-calendar-check me-2 text-primary"></i>
+              Contratos por Exercício
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div
             id="card-kpi-exercicio-container"
             style="width: 100%; height: 350px"
@@ -267,10 +394,20 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <!-- KPI 3: Contratos por Área -->
-        <section class="br-card list-card mb-3">
+      <!-- KPI 3: Contratos por Área -->
+      <div class="br-card mb-4">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-building me-2 text-info"></i>
+              Contratos por Área
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div
             id="card-kpi-contratos-por-area"
             style="width: 100%; height: 350px"
@@ -284,10 +421,20 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <!-- KPI 5: Contratos por Região -->
-        <section class="br-card list-card mb-3">
+      <!-- KPI 5: Contratos por Região -->
+      <div class="br-card mb-4">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-map me-2 text-success"></i>
+              Contratos por Região
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div
             id="card-kpi-contratos-por-regiao"
             style="width: 100%; height: 350px"
@@ -301,10 +448,20 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <!-- KPI 7: Contratos com Cláusulas -->
-        <section class="br-card list-card mb-3">
+      <!-- KPI 7: Contratos com Cláusulas -->
+      <div class="br-card mb-4">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-file-alt me-2 text-warning"></i>
+              Contratos com Cláusulas
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div
             id="card-kpi-contratos-com-clausulas"
             style="width: 100%; height: 350px"
@@ -318,15 +475,23 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
       </div>
+    </div>
 
-      <!-- Column 2: Right Side KPIs -->
-      <div class="col-lg-6 col-md-12">
-       
-
-        <!-- KPI 4: Top Fornecedores -->
-        <section class="br-card list-card mb-3">
+    <!-- Column 2: Right Side KPIs -->
+    <div class="col-lg-6 col-md-12">
+      <!-- KPI 4: Top Fornecedores -->
+      <div class="br-card mb-4">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-award me-2 text-primary"></i>
+              Top Fornecedores
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div
             id="card-kpi-top-fornecedores"
             style="width: 100%; height: 350px"
@@ -340,12 +505,20 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
+      </div>
 
-        
-
-        <!-- Additional KPIs: Stacked Bar & Total Vigentes -->
-        <section class="br-card list-card mb-3">
+      <!-- Additional KPIs: Stacked Bar -->
+      <div class="br-card mb-4">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-chart-bar me-2 text-info"></i>
+              Análise Comparativa
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div id="card-kpi-stacked-bar" style="width: 100%; height: 350px">
             <div
               class="br-loading medium"
@@ -356,9 +529,20 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <section class="br-card list-card mb-3">
+      <!-- Total Vigentes -->
+      <div class="br-card mb-4">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-clock me-2 text-success"></i>
+              Contratos Vigentes
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div id="card-kpi-total-vigentes" style="width: 100%; height: 350px">
             <div
               class="br-loading medium"
@@ -369,14 +553,33 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- KPI 9: Full Width Calendar Section -->
-    <div class="row mb-4 kpi-full-width-section">
-      <div class="col-12">
-        <section class="br-card list-card">
+  <!-- Calendar Analysis Section -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="br-divider mb-4">
+        <div class="br-divider-content">
+          <h3 class="br-divider-text">
+            <i class="fas fa-calendar-alt me-2"></i>
+            Cronograma de Vencimentos
+          </h3>
+        </div>
+      </div>
+
+      <div class="br-card">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-calendar-times me-2 text-danger"></i>
+              Calendário de Vencimentos
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div
             id="card-kpi-calendar-vencimentos"
             style="
@@ -395,14 +598,33 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- KPI 10: Contratos com Aditivos de Valor - Stacked Bar Chart -->
-    <div class="row mb-4 kpi-full-width-section">
-      <div class="col-12">
-        <section class="br-card list-card">
+  <!-- Financial Analysis Section -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="br-divider mb-4">
+        <div class="br-divider-content">
+          <h3 class="br-divider-text">
+            <i class="fas fa-dollar-sign me-2"></i>
+            Análise Financeira
+          </h3>
+        </div>
+      </div>
+
+      <div class="br-card">
+        <div class="br-card-header">
+          <div class="br-card-title">
+            <h5 class="mb-0">
+              <i class="fas fa-chart-line me-2 text-success"></i>
+              Contratos com Aditivos de Valor
+            </h5>
+          </div>
+        </div>
+        <div class="br-card-content">
           <div id="card-kpi10-stacked-bar" style="width: 100%; height: 450px">
             <div
               class="br-loading medium"
@@ -413,10 +635,10 @@ endblock %} {% block content %}
               carregando data
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </div>
   </div>
-  </div>
-  {% endblock %}
+</div>
 
+{% endblock %}

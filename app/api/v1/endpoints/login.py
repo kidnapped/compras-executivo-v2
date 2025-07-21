@@ -60,6 +60,7 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
         print("✅ LOGIN VALIDADO NO BANCO")
         request.session["cpf"] = row[0]
         request.session["uasgs"] = [393003]
+        request.session["usuario_id"] = [198756]
         # print("💾 SESSÃO GRAVADA:")
         # print(f"  cpf={request.session.get('cpf')}")
         # print(f"  uasgs={request.session.get('uasgs')}")
