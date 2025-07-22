@@ -1,3 +1,19 @@
+let CardGenerator;
+
+async function loadCardGenerator() {
+  try {
+    const module = await import(
+      "/static/js/encontro/component/card-generator.js"
+    );
+    CardGenerator = module.default || window.CardGenerator;
+    return CardGenerator;
+  } catch (error) {
+    console.error("Failed to load CardGenerator:", error);
+    // Fallback to global
+    return window.CardGenerator;
+  }
+}
+
 /**
  * Encontro de Contas - Initialization Module
  * Handles page load, card creation, and data fetching orchestration
@@ -7,14 +23,27 @@ const EncontroInit = {
   /**
    * Initialize the encontro page
    */
-  init() {
-    console.log("🚀 Initializing Encontro de Contas...");
+  async init() {
+    try {
+      console.log("🚀 Initializing Encontro de Contas...");
 
-    // Wait for DOM to be ready
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", () => this.onDOMReady());
-    } else {
-      this.onDOMReady();
+      // Load CardGenerator first
+      CardGenerator = await loadCardGenerator();
+
+      if (!CardGenerator) {
+        throw new Error("CardGenerator could not be loaded");
+      }
+
+      console.log("✅ CardGenerator loaded successfully");
+
+      // Wait for DOM to be ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => this.onDOMReady());
+      } else {
+        this.onDOMReady();
+      }
+    } catch (error) {
+      console.error("❌ Error initializing encontro:", error);
     }
   },
 
@@ -56,6 +85,12 @@ const EncontroInit = {
   createPageCards() {
     console.log("🎨 Creating page cards...");
 
+    // Verify CardGenerator is available
+    if (!CardGenerator) {
+      console.error("❌ CardGenerator not available for createPageCards");
+      return;
+    }
+
     // 1. Replace "Últimos Lançamentos" card
     this.createUltimosLancamentosCard();
 
@@ -73,6 +108,13 @@ const EncontroInit = {
    * Creates the "Últimos Lançamentos" card
    */
   createUltimosLancamentosCard() {
+    if (!CardGenerator) {
+      console.error(
+        "❌ CardGenerator not available for createUltimosLancamentosCard"
+      );
+      return;
+    }
+
     const container = document.querySelector("#ultimos-lancamentos-container");
     if (!container) {
       console.warn("Container #ultimos-lancamentos-container not found");
@@ -122,6 +164,13 @@ const EncontroInit = {
    * Creates the "Histórico Orçamentário" card
    */
   createHistoricoOrcamentarioCard() {
+    if (!CardGenerator) {
+      console.error(
+        "❌ CardGenerator not available for createHistoricoOrcamentarioCard"
+      );
+      return;
+    }
+
     const container = document.querySelector(
       "#historico-orcamentario-container"
     );
@@ -170,6 +219,13 @@ const EncontroInit = {
    * Creates the "Empenhos Originais" card
    */
   createEmpenhosOriginaisCard() {
+    if (!CardGenerator) {
+      console.error(
+        "❌ CardGenerator not available for createEmpenhosOriginaisCard"
+      );
+      return;
+    }
+
     const container = document.querySelector("#empenhos-originais-container");
     if (!container) {
       console.warn("Container #empenhos-originais-container not found");
@@ -228,6 +284,11 @@ const EncontroInit = {
    * Creates additional test cards in empty containers
    */
   createTestCards() {
+    if (!CardGenerator) {
+      console.error("❌ CardGenerator not available for createTestCards");
+      return;
+    }
+
     // Create test card in the financeiro grid container
     this.createFinanceiroGridCard();
 
@@ -239,6 +300,8 @@ const EncontroInit = {
    * Creates a card for the financeiro grid container
    */
   createFinanceiroGridCard() {
+    if (!CardGenerator) return;
+
     const container = document.querySelector("#financeiro-grid-container");
     if (!container) return;
 
@@ -284,6 +347,8 @@ const EncontroInit = {
    * Creates a card for the movimentacoes container
    */
   createMovimentacoesCard() {
+    if (!CardGenerator) return;
+
     const container = document.querySelector("#movimentacoes-container");
     if (!container) return;
 

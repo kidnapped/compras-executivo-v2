@@ -2417,7 +2417,6 @@ div[class*="echarts-tooltip"] {
 /* Empenhos Originais Grid Styles */
 #empenhos-originais-container {
   border-radius: 10px;
-  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -2440,6 +2439,12 @@ div[class*="echarts-tooltip"] {
   font-size: 9px;
   color: #000;
   margin-left: 26px !important;
+}
+
+#empenhos-originais-container .table-responsive {
+  overflow: scroll;
+  min-height: 430px !important;
+  max-height: 430px !important;
 }
 
 #empenhos-originais-tbody tr {
@@ -2538,6 +2543,11 @@ div[class*="echarts-tooltip"] {
     margin-left: 26px !important;
   }
 
+  #empenhos-originais-tbody tr {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+
   #empenhos-originais-tbody td {
     padding: 6px 4px;
     font-size: 11px;
@@ -2608,7 +2618,7 @@ div[class*="echarts-tooltip"] {
   margin-left: 26px !important;
 }
 
-#financeiro-grid-tbody tr {
+#financeiro-grid-tbody {
   min-height: 201px !important ;
   max-height: 201px !important;
   overflow: scroll !important;
@@ -3197,4 +3207,95 @@ div[class*="echarts-tooltip"] {
 
 #current-uasg-display button:hover {
   background-color: #dee2e6;
+}
+
+/* Equal height layout for Encontro de Contas cards */
+.encontro-cards-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.encontro-cards-row .col-lg-8,
+.encontro-cards-row .col-lg-4 {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make the main empenhos card fill the available height */
+#empenhos-originais-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#empenhos-originais-container .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#empenhos-originais-container .table-responsive {
+  flex: 1;
+  height: 100%;
+}
+
+/* Right column with equal height cards */
+.encontro-right-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.encontro-right-column > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make financial and movimentacoes cards equal height */
+#financeiro-grid-container,
+#movimentacoes-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#financeiro-grid-container .card-content,
+#movimentacoes-container .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#financeiro-grid-container .table-responsive,
+#movimentacoes-container .table-responsive {
+  flex: 1;
+  height: 100%;
+}
+
+/* Ensure spacing between the right column cards */
+.encontro-right-column > .mb-4 {
+  margin-bottom: 1rem !important;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 991.98px) {
+  .encontro-cards-row {
+    display: block;
+  }
+
+  .encontro-cards-row .col-lg-8,
+  .encontro-cards-row .col-lg-4 {
+    display: block;
+  }
+
+  #empenhos-originais-container,
+  #financeiro-grid-container,
+  #movimentacoes-container {
+    height: auto;
+  }
+
+  .encontro-right-column {
+    height: auto;
+  }
 }

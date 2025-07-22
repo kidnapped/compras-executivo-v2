@@ -44,7 +44,7 @@ async def get_uasg_data(
     valor_max: Optional[float] = Query(None, description="Maximum contract value"), 
     has_contracts: Optional[bool] = Query(None, description="Filter units with any contracts"),
     active_contracts: Optional[bool] = Query(None, description="Filter units with active contracts"),
-    interval_days: Optional[int] = Query(40, description="Days until contract end"),
+    interval_days: Optional[int] = Query(None, description="Days until contract end"),
     search_term: Optional[str] = Query(None, description="Search term for UASG name or code"),
     group_by_agency: Optional[bool] = Query(False, description="Group results by superior agency"),
     db: AsyncSession = Depends(get_session_contratos)
@@ -53,6 +53,7 @@ async def get_uasg_data(
     Busca dados de UASG com filtros aplicados
     
     Filtros disponíveis:
+    - user_id: ID do usuário (se não fornecido, usa o da sessão)
     - valor_min/valor_max: Filtro por valor dos contratos
     - has_contracts: Apenas unidades que têm contratos (qualquer período)
     - active_contracts: Apenas unidades com contratos ativos (vigentes hoje)
@@ -61,6 +62,13 @@ async def get_uasg_data(
     - group_by_agency: Agrupa resultados por órgão superior
     """
     try:
+        # Always get user_id from session
+        session_user_id = get_usuario_id(request)
+        if session_user_id is None:
+            # Fallback to hardcoded value for development/testing
+            session_user_id = request.session.get("usuario_id", 198756)
+        user_id = session_user_id
+        logger.info(f"Using user_id from session: {user_id}")
         # Base query structure
         base_query = """
             SELECT 
@@ -81,19 +89,18 @@ async def get_uasg_data(
         where_conditions = []
         params = {}
         
-        # User ID filter (if provided)
-        if user_id:
-            where_conditions.append("u.id = :user_id")
-            params["user_id"] = user_id
+        # Always apply user ID filter (from session or provided)
+        where_conditions.append("u.id = :user_id")
+        params["user_id"] = user_id
         
         # Contract join condition based on filters
-        if has_contracts or active_contracts or valor_min is not None or valor_max is not None or interval_days:
+        if has_contracts or active_contracts or valor_min is not None or valor_max is not None or interval_days is not None:
             base_query += " JOIN contratos c ON c.unidade_id = u3.id"
             
             # Filter for any contracts (has_contracts)
             if has_contracts and not active_contracts:
                 # If interval_days is specified with has_contracts, filter by contracts ending within the interval
-                if interval_days:
+                if interval_days is not None:
                     where_conditions.append("c.vigencia_fim IS NOT NULL")
                     where_conditions.append(f"c.vigencia_fim <= CURRENT_DATE + INTERVAL '{interval_days} days'")
                     where_conditions.append("c.vigencia_fim >= CURRENT_DATE")  # Only future contracts
@@ -105,11 +112,11 @@ async def get_uasg_data(
                 where_conditions.append("c.vigencia_inicio <= CURRENT_DATE")
                 
                 # If interval_days is specified with active_contracts, limit to contracts ending soon
-                if interval_days:
+                if interval_days is not None:
                     where_conditions.append(f"c.vigencia_fim <= CURRENT_DATE + INTERVAL '{interval_days} days'")
             
             # If only interval_days is specified (without other contract filters)
-            if interval_days and not has_contracts and not active_contracts:
+            if interval_days is not None and not has_contracts and not active_contracts:
                 where_conditions.append("c.vigencia_fim IS NOT NULL")
                 where_conditions.append(f"c.vigencia_fim <= CURRENT_DATE + INTERVAL '{interval_days} days'")
                 where_conditions.append("c.vigencia_fim >= CURRENT_DATE")  # Only future contracts

@@ -143,14 +143,17 @@ const CardGenerator = {
     const table = document.createElement("table");
     table.className = "br-table table-hover";
 
+    // Determine column count
+    const columnCount = headers.length > 0 ? headers.length : 1;
+
     // Create thead if headers are provided
     if (headers.length > 0) {
       const thead = this._createTableHeader(headers);
       table.appendChild(thead);
     }
 
-    // Create tbody with the specified ID
-    const tbody = this._createTableBody(tbodyId);
+    // Create tbody with the specified ID and column count
+    const tbody = this._createTableBody(tbodyId, columnCount);
     table.appendChild(tbody);
 
     return table;
@@ -182,17 +185,18 @@ const CardGenerator = {
   /**
    * Creates the table body element with specified ID
    * @param {string} tbodyId - ID for the tbody element
+   * @param {number} columnCount - Number of columns for proper colspan
    * @returns {HTMLElement} Tbody element
    * @private
    */
-  _createTableBody(tbodyId) {
+  _createTableBody(tbodyId, columnCount = 1) {
     const tbody = document.createElement("tbody");
     tbody.id = tbodyId;
 
-    // Add a default empty state row
+    // Add a default empty state row with proper colspan
     tbody.innerHTML = `
       <tr>
-        <td colspan="100%" class="text-center" style="padding: 40px;">
+        <td colspan="${columnCount}" class="text-center" style="padding: 40px;">
           <div class="text-muted">
             <i class="fas fa-inbox fa-2x mb-3"></i>
             <br />
@@ -258,18 +262,34 @@ const CardGenerator = {
    * @param {string} tbodyId - ID of the tbody element to populate
    * @param {Array} data - Array of row data objects
    * @param {Function} [rowRenderer] - Optional custom row renderer function
+   * @param {number} [columnCount] - Number of columns for proper empty state (auto-detected if not provided)
    */
-  populateTable(tbodyId, data, rowRenderer = null) {
+  populateTable(tbodyId, data, rowRenderer = null, columnCount = null) {
     const tbody = document.getElementById(tbodyId);
     if (!tbody) {
       console.warn(`Table body with ID '${tbodyId}' not found`);
       return;
     }
 
+    // Auto-detect column count if not provided
+    if (columnCount === null) {
+      // Try to get column count from the table header
+      const table = tbody.closest("table");
+      const headerRow = table?.querySelector("thead tr");
+      if (headerRow) {
+        columnCount = headerRow.children.length;
+      } else if (data && data.length > 0) {
+        // Fallback: use the number of properties in the first data object
+        columnCount = Object.keys(data[0]).length;
+      } else {
+        columnCount = 1; // Default fallback
+      }
+    }
+
     if (!data || data.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="100%" class="text-center" style="padding: 40px;">
+          <td colspan="${columnCount}" class="text-center" style="padding: 40px;">
             <div class="text-muted">
               <i class="fas fa-inbox fa-2x mb-3"></i>
               <br />

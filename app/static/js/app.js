@@ -27,7 +27,7 @@ const App = {
   ...aditivosHandler,
   ...financialBars,
   ...devOps,
-  encontro: encontroInit,
+  // Don't spread encontroInit since it's an object with its own init method
 };
 
 window.App = App;
@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   modalManager.initialize();
   tooltip.initialize();
   financialBars.initialize();
-  encontroInit.init();
+  // Fix: Call the init method on the EncontroInit object
+  // encontroInit.init(); // Remove this line - EncontroInit already auto-initializes
   App.init();
 });

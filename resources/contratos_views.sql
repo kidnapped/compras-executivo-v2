@@ -20,3 +20,4 @@ CREATE INDEX idx_deta_orca_fina_gps_id_documento_ne ON wd_deta_orca_fina_gps (id
 CREATE INDEX idx_wd_doc_darf_id_doc_darf ON wd_doc_darf (id_doc_darf);
 CREATE INDEX idx_wd_doc_gps_id_doc_gps ON wd_doc_gps (id_doc_gps);
 CREATE INDEX idx_wf_doc_ne_id_documento ON wf_doc_ne (id_documento);
+CREATE INDEX idx_wd_doc_dar_id_doc_dar ON wd_doc_dar (id_doc_dar);

@@ -15,6 +15,9 @@ endblock %} {% block content %}
     .group-header-card {
       transition: all 0.3s ease;
     }
+    .group-header-card H5 {
+      margin-top: 0.25rem !important;
+    }
 
     .group-header-card:hover {
       transform: translateY(-1px);
@@ -193,9 +196,9 @@ endblock %} {% block content %}
         </div>
         <div class="card-content" id="filters-content">
           <form id="uasg-filter-form">
-            <!-- Row 1: Search and User ID -->
+            <!-- Row 1: Search -->
             <div class="row mb-3">
-              <div class="col-12 col-md-8">
+              <div class="col-12">
                 <div class="br-input" data-trigger="input">
                   <label for="search_term">Buscar UASG</label>
                   <input
@@ -204,19 +207,6 @@ endblock %} {% block content %}
                     type="text"
                     placeholder="Digite o nome, código ou SIAFI da UASG"
                     autocomplete="off"
-                  />
-                </div>
-              </div>
-              <div class="col-12 col-md-4">
-                <div class="br-input" data-trigger="input">
-                  <label for="user_id">ID do Usuário</label>
-                  <input
-                    id="user_id"
-                    name="user_id"
-                    type="number"
-                    placeholder="Ex: 198756"
-                    value="198756"
-                    min="1"
                   />
                 </div>
               </div>
@@ -260,35 +250,33 @@ endblock %} {% block content %}
 
             <!-- Row 3: Contract Filters -->
             <div class="row mb-3">
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-3">
                 <div class="br-input" data-trigger="input">
                   <label for="interval_days">Dias até o Fim do Contrato</label>
                   <input
                     id="interval_days"
                     name="interval_days"
                     type="number"
-                    placeholder="40"
-                    value="40"
+                    placeholder="Ex: 365"
                     min="1"
-                    max="365"
+                    max="3650"
                   />
                   <small class="form-text text-muted"
-                    >Contratos que vencem em até X dias (futuros)</small
+                    >Contratos que vencem em até X dias (opcional)</small
                   >
                 </div>
               </div>
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-3">
                 <div class="br-checkbox mt-4">
                   <input
                     id="has_contracts"
                     name="has_contracts"
                     type="checkbox"
-                    checked
                   />
                   <label for="has_contracts">Com Contratos</label>
                 </div>
               </div>
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-3">
                 <div class="br-checkbox mt-4">
                   <input
                     id="active_contracts"
@@ -329,7 +317,7 @@ endblock %} {% block content %}
                       id="btn-salvar-selecao"
                     >
                       <i class="fas fa-save mr-1"></i>
-                      Salvar Seleção
+                      Usar No Painel
                     </button>
                   </div>
                 </div>
@@ -699,9 +687,38 @@ endblock %} {% block content %}
     // Initialize form handlers
     initializeFilterHandlers();
 
-    // Auto-load user's session UASGs if available
-    loadSessionUASGs();
+    // Auto-load data using session usuario_id
+    loadUserData();
   });
+
+  function loadUserData() {
+    // Automatically load data using the session usuario_id (from request.session)
+    showLoading();
+
+    // Build basic query parameters for initial load
+    const params = new URLSearchParams();
+    params.append("group_by_agency", "true");
+    // Don't filter by contracts initially to show all UASGs
+
+    // Call the backend endpoint (user_id will be automatically retrieved from session)
+    fetch(`/uasg-filter/data?${params.toString()}`)
+      .then((response) => response.json())
+      .then((data) => {
+        hideLoading();
+        if (data.success) {
+          displayResults(data.data, data.grouped);
+          // Don't check has_contracts since we want to show all UASGs initially
+        } else {
+          showError(data.message || "Erro ao carregar dados do usuário");
+        }
+      })
+      .catch((error) => {
+        hideLoading();
+        showError("Erro de conexão: " + error.message);
+        // Fallback to session UASGs if user data loading fails
+        loadSessionUASGs();
+      });
+  }
 
   function initializeFilterHandlers() {
     const form = document.getElementById("uasg-filter-form");
@@ -717,14 +734,15 @@ endblock %} {% block content %}
     // Clear filters handler
     clearBtn.addEventListener("click", function () {
       form.reset();
-      document.getElementById("interval_days").value = "120"; // Reset to default
-      document.getElementById("user_id").value = "198756"; // Reset to default
-      document.getElementById("has_contracts").checked = true; // Reset to default
 
       // Clear selected UASGs
       clearAllSelections();
 
+      // Clear results and reload data with no filters
       clearResults();
+
+      // Automatically reload all data after clearing filters
+      loadUserData();
     });
 
     // Quick search handler
@@ -1467,12 +1485,8 @@ endblock %} {% block content %}
 
     // Set default value for interval_days if not in saved filters
     if (!filters.interval_days) {
-      document.getElementById("interval_days").value = "40";
-    }
-
-    // Set default user_id if not in saved filters
-    if (!filters.user_id) {
-      document.getElementById("user_id").value = "198756";
+      // Leave interval_days empty by default
+      document.getElementById("interval_days").value = "";
     }
   }
 
