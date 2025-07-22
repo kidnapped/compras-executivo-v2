@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processando Login - gov.br</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1351B4 0%, #0747A6 100%);
+        }
+        
+        .loading-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1351B4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        h2 {
+            color: #1351B4;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <h2>Processando autenticação...</h2>
+        <p>Aguarde enquanto validamos suas credenciais com o gov.br.</p>
+    </div>
+
+    <script>
+        // Extrair parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        const error = urlParams.get('error');
+        const error_description = urlParams.get('error_description');
+        
+        // Enviar dados para a janela pai (popup)
+        if (window.opener) {
+            // Se foi aberto em popup
+            window.opener.postMessage({
+                code: code,
+                state: state,
+                error: error,
+                error_description: error_description
+            }, window.location.origin);
+            
+            // Fechar popup
+            window.close();
+        } else {
+            // Se não há janela pai, redirecionar com os dados
+            const parentUrl = new URL('/login', window.location.origin);
+            if (code) {
+                parentUrl.searchParams.set('govbr_code', code);
+                parentUrl.searchParams.set('govbr_state', state);
+            }
+            if (error) {
+                parentUrl.searchParams.set('govbr_error', error);
+                if (error_description) {
+                    parentUrl.searchParams.set('govbr_error_description', error_description);
+                }
+            }
+            
+            // Redirecionar para a página de login principal
+            setTimeout(() => {
+                window.location.href = parentUrl.toString();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

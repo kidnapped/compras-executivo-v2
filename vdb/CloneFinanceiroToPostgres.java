@@ -11,7 +11,7 @@
  *
  * ▶️ Execução em segundo plano:
  *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres </dev/null &>/dev/null & disown
- *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres --ignore-delete </dev/null &>/dev/null & disown
+ *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres --ignore-delete </dev/null &>/dev/null & disown ; tail -f clone_financeiro.log
  *
  * 📂 Log:
  *   tail -f clone_financeiro.log

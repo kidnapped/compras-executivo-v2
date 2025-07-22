@@ -22,8 +22,7 @@ class AuthSessionMiddleware(BaseHTTPMiddleware):
             or path.startswith("/logout")
             or path.startswith("/vdb")
             or path.startswith("/login/success")
-            or path.startswith("/login/govbr")
-            or path.startswith("/login/govbr/callback")
+            or path.startswith("/login/callback")
         )
 
         if settings.REPAIR_MODE and not (public_paths or path.startswith("/admin")):
@@ -39,5 +38,16 @@ class AuthSessionMiddleware(BaseHTTPMiddleware):
 
             if not session.get("cpf"):
                 return RedirectResponse(url="/login")
+
+        if settings.USE_GOVBR_LOGIN and path == "/login":
+            response = templates.TemplateResponse("login_gov.html", {"request": request, "settings": settings})
+            response.headers["X-Internal-Redirect"] = "true"
+            return response
+
+        # Forçar login gov.br mesmo quando USE_GOVBR_LOGIN = False
+        if path == "/login" and request.query_params.get("force_govbr"):
+            response = templates.TemplateResponse("login_gov.html", {"request": request, "settings": settings})
+            response.headers["X-Internal-Redirect"] = "true"
+            return response
 
         return await call_next(request)

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Gov.br - Compras Executivo</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/govbr-ds/core.min.css">
+    <script defer src="/static/govbr-ds/core.min.js"></script>
+    <link rel="stylesheet" href="/static/css/rawline.css">
+    <link rel="stylesheet" href="/static/fonts/font-awesome/css/all.min.css">
+    <style>
+        :root {
+            --gov-blue: #1351B4;
+            --gov-green: #2E7D32;
+            --gov-orange: #FE7F2D;
+            --gov-red: #E52207;
+            --gov-gray: #636363;
+            --gov-light-gray: #F8F8F8;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gov-blue) 0%, #0747A6 100%);
+            font-family: Rawline, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 8px 16px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gov-blue), var(--gov-green), var(--gov-orange));
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 2rem auto;
+            max-width: 220px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .welcome-text {
+            color: var(--gov-gray);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .welcome-text strong {
+            color: var(--gov-blue);
+        }
+
+        .govbr-button {
+            background: linear-gradient(135deg, var(--gov-blue) 0%, #0747A6 100%);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(19, 81, 180, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .govbr-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .govbr-button:hover::before {
+            left: 100%;
+        }
+
+        .govbr-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(19, 81, 180, 0.4);
+        }
+
+        .govbr-button:active {
+            transform: translateY(0);
+        }
+
+        .govbr-button i {
+            font-size: 1.3rem;
+        }
+
+        .status-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+            text-align: left;
+        }
+
+        .status-success {
+            background-color: #E8F5E8;
+            border: 1px solid var(--gov-green);
+            color: var(--gov-green);
+        }
+
+        .status-error {
+            background-color: #FFEBEE;
+            border: 1px solid var(--gov-red);
+            color: var(--gov-red);
+        }
+
+        .status-loading {
+            background-color: #E3F2FD;
+            border: 1px solid var(--gov-blue);
+            color: var(--gov-blue);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--gov-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .security-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: var(--gov-light-gray);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--gov-gray);
+        }
+
+        .security-info i {
+            color: var(--gov-green);
+            margin-right: 8px;
+        }
+
+        .user-info {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #F3F4F6;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .user-info h4 {
+            margin: 0 0 1rem 0;
+            color: var(--gov-blue);
+        }
+
+        .user-info p {
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .welcome-text {
+                font-size: 1rem;
+            }
+            
+            .govbr-button {
+                font-size: 1rem;
+                padding: 14px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="/static/images/comprasexecutivo_logo.png" alt="Compras Executivo" class="logo">
+        
+        <p class="welcome-text">
+            Faça login de forma <strong>segura</strong> utilizando sua conta <strong>gov.br</strong> para acessar o sistema Compras Executivo.
+        </p>
+
+        <button id="loginButton" class="govbr-button" onclick="iniciarLoginGovBr()">
+            <i class="fas fa-shield-alt" aria-hidden="true"></i>
+            Entrar com <strong>gov.br</strong>
+        </button>
+
+        <div id="statusContainer" class="status-container">
+            <div id="statusContent"></div>
+        </div>
+
+        <div id="userInfo" class="user-info">
+            <h4>Informações do Usuário</h4>
+            <div id="userDetails"></div>
+        </div>
+
+        <div class="security-info">
+            <i class="fas fa-lock"></i>
+            <strong>Conexão segura:</strong> Seus dados são protegidos através de criptografia e protocolos de segurança gov.br.
+        </div>
+    </div>
+
+    <script>
+        // Configurações do gov.br vindas do backend
+        const GOVBR_CONFIG = {
+            BASE_URL: '{{ settings.GOVBR_BASE_URL }}',
+            CLIENT_ID: '{{ settings.GOVBR_CLIENT_ID }}',
+            REDIRECT_URI: 'https://www.comprasexecutivo.sistema.gov.br/login/callback',
+            SCOPES: 'openid email profile govbr_confiabilidades'
+        };
+
+        let codeVerifier, codeChallenge, state, nonce;
+
+        // Função para gerar string aleatória
+        function generateRandomString(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Função para gerar SHA256 hash
+        async function sha256(plain) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(plain);
+            return await crypto.subtle.digest('SHA-256', data);
+        }
+
+        // Função para converter para base64url
+        function base64urlencode(str) {
+            return btoa(String.fromCharCode.apply(null, new Uint8Array(str)))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+        }
+
+        // Gerar code challenge para PKCE
+        async function generateCodeChallenge(codeVerifier) {
+            const hashed = await sha256(codeVerifier);
+            return base64urlencode(hashed);
+        }
+
+        // Mostrar status
+        function mostrarStatus(tipo, mensagem) {
+            const container = document.getElementById('statusContainer');
+            const content = document.getElementById('statusContent');
+            
+            container.className = `status-container status-${tipo}`;
+            container.style.display = 'block';
+            
+            if (tipo === 'loading') {
+                content.innerHTML = `<div class="loading-spinner"></div>${mensagem}`;
+            } else {
+                const icon = tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+                content.innerHTML = `<i class="fas ${icon}"></i> ${mensagem}`;
+            }
+        }
+
+        // Iniciar processo de login
+        async function iniciarLoginGovBr() {
+            try {
+                mostrarStatus('loading', 'Preparando autenticação segura...');
+                
+                // Gerar parâmetros PKCE
+                codeVerifier = generateRandomString(128);
+                codeChallenge = await generateCodeChallenge(codeVerifier);
+                state = generateRandomString(32);
+                nonce = generateRandomString(32);
+                
+                // Salvar no sessionStorage para recuperar depois
+                sessionStorage.setItem('codeVerifier', codeVerifier);
+                sessionStorage.setItem('state', state);
+                
+                // Construir URL de autorização
+                const authUrl = new URL(`${GOVBR_CONFIG.BASE_URL}/authorize`);
+                authUrl.searchParams.set('response_type', 'code');
+                authUrl.searchParams.set('client_id', GOVBR_CONFIG.CLIENT_ID);
+                authUrl.searchParams.set('scope', GOVBR_CONFIG.SCOPES);
+                authUrl.searchParams.set('redirect_uri', GOVBR_CONFIG.REDIRECT_URI);
+                authUrl.searchParams.set('state', state);
+                authUrl.searchParams.set('nonce', nonce);
+                authUrl.searchParams.set('code_challenge', codeChallenge);
+                authUrl.searchParams.set('code_challenge_method', 'S256');
+                
+                mostrarStatus('loading', 'Redirecionando para gov.br...');
+                
+                // Calcular posição central do popup
+                const popupWidth = 600;
+                const popupHeight = 700;
+                const screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+                const screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+                const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+                const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+                
+                const left = ((width / 2) - (popupWidth / 2)) + screenLeft;
+                const top = ((height / 2) - (popupHeight / 2)) + screenTop;
+                
+                // Abrir popup centralizado para autenticação
+                const popup = window.open(
+                    authUrl.toString(),
+                    'govbrLogin',
+                    `width=${popupWidth},height=${popupHeight},left=${left},top=${top},scrollbars=yes,resizable=yes,status=yes`
+                );
+                
+                // Monitorar o popup
+                const checkClosed = setInterval(() => {
+                    if (popup.closed) {
+                        clearInterval(checkClosed);
+                        // Se o popup foi fechado sem sucesso
+                        if (!sessionStorage.getItem('authSuccess')) {
+                            mostrarStatus('error', 'Login cancelado pelo usuário.');
+                        }
+                    }
+                }, 1000);
+                
+                // Escutar mensagens do popup (callback)
+                window.addEventListener('message', handleAuthCallback, false);
+                
+            } catch (error) {
+                console.error('Erro ao iniciar login:', error);
+                mostrarStatus('error', 'Erro ao iniciar processo de autenticação. Tente novamente.');
+            }
+        }
+
+        // Tratar retorno da autenticação
+        async function handleAuthCallback(event) {
+            if (event.origin !== window.location.origin) {
+                return;
+            }
+            
+            const { code, state: returnedState, error } = event.data;
+            
+            if (error) {
+                mostrarStatus('error', `Erro na autenticação: ${error}`);
+                return;
+            }
+            
+            if (!code) {
+                mostrarStatus('error', 'Código de autorização não recebido.');
+                return;
+            }
+            
+            // Verificar state
+            const savedState = sessionStorage.getItem('state');
+            if (returnedState !== savedState) {
+                mostrarStatus('error', 'Erro de segurança: state inválido.');
+                return;
+            }
+            
+            try {
+                mostrarStatus('loading', 'Validando credenciais...');
+                
+                // Trocar código por tokens
+                const result = await trocarCodigoPorTokens(code);
+                
+                if (result.success && result.user_info) {
+                    sessionStorage.setItem('authSuccess', 'true');
+                    mostrarStatus('success', 'Login realizado com sucesso!');
+                    
+                    // Exibir informações do usuário
+                    exibirInformacoesUsuario(result.user_info);
+                    
+                    // Redirecionar após alguns segundos
+                    setTimeout(() => {
+                        window.location.href = result.redirect_url || '/inicio';
+                    }, 3000);
+                } else {
+                    mostrarStatus('error', 'Erro ao processar login.');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao processar callback:', error);
+                mostrarStatus('error', 'Erro ao processar autenticação. Tente novamente.');
+            }
+        }
+
+        // Trocar código por tokens
+        async function trocarCodigoPorTokens(code) {
+            const codeVerifier = sessionStorage.getItem('codeVerifier');
+            
+            const response = await fetch('/api/govbr/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    code: code,
+                    code_verifier: codeVerifier,
+                    redirect_uri: GOVBR_CONFIG.REDIRECT_URI
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Erro ao trocar código por tokens');
+            }
+            
+            return await response.json();
+        }
+
+        // Exibir informações do usuário
+        function exibirInformacoesUsuario(userInfo) {
+            const userInfoDiv = document.getElementById('userInfo');
+            const userDetails = document.getElementById('userDetails');
+            
+            let html = '';
+            
+            if (userInfo.name) {
+                html += `<p><strong>Nome:</strong> ${userInfo.name}</p>`;
+            }
+            
+            if (userInfo.email) {
+                html += `<p><strong>E-mail:</strong> ${userInfo.email}</p>`;
+            }
+            
+            if (userInfo.cpf) {
+                html += `<p><strong>CPF:</strong> ${userInfo.cpf}</p>`;
+            }
+            
+            if (userInfo.phone_number) {
+                html += `<p><strong>Telefone:</strong> ${userInfo.phone_number}</p>`;
+            }
+            
+            userDetails.innerHTML = html;
+            userInfoDiv.style.display = 'block';
+        }
+
+        // Verificar se há parâmetros de retorno na URL (para o callback)
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            
+            // Se esta é uma página de callback, enviar dados para a janela pai
+            if (code || error) {
+                if (window.opener) {
+                    window.opener.postMessage({ code, state, error }, window.location.origin);
+                    window.close();
+                } else {
+                    // Se não há janela pai, processar aqui mesmo
+                    handleAuthCallback({ 
+                        data: { code, state, error }, 
+                        origin: window.location.origin 
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

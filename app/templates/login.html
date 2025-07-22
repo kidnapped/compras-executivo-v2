@@ -20,6 +20,16 @@
                 cpfInput.value = v;
             });
         });
+
+        // Forçar redirecionamento para tela gov.br
+        function forcarLoginGovBr() {
+            // Adiciona parâmetro para indicar que é login gov.br
+            const currentUrl = new URL(window.location.href);
+            const nextUrl = currentUrl.searchParams.get('next') || '/inicio';
+            
+            // Redireciona para a mesma URL mas com indicação de que é gov.br
+            window.location.href = `/login?force_govbr=1&next=${nextUrl}`;
+        }
     </script>
     <style>
         body {
@@ -79,11 +89,11 @@
             </div>
             <button type="submit" class="br-button primary">Entrar</button>
         </form>
-        <!-- Botão abre modal -->
-        <a href="/login/govbr" class="br-button primary mt-2">
+        <!-- Botão para forçar login gov.br -->
+        <button onclick="forcarLoginGovBr()" class="br-button primary mt-2">
             <i class="fas fa-user-shield mr-1" aria-hidden="true"></i>
             Entrar com&nbsp;<strong>gov.br</strong>
-        </a>
+        </button>
 
     </div>
 

@@ -40,7 +40,9 @@ class Settings(BaseSettings):
     GOVBR_PROD_CLIENT_ID: str = "SEU_CLIENT_ID_PRODUCAO"
     GOVBR_PROD_SECRET: str = "SEU_CLIENT_SECRET_PRODUCAO"
 
-    REDIRECT_URI: str = "https://afinco.serpro.gov.br/login/callback"
+    REDIRECT_URI: str = "https://www.comprasexecutivo.sistema.gov.br/login/callback"
+
+    USE_GOVBR_LOGIN: bool = False
 
     @property
     def GOVBR_BASE_URL(self):

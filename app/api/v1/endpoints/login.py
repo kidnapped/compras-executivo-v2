@@ -116,3 +116,13 @@ async def login_success(request: Request):
 
     # Aqui futuramente colocar regras com base no CPF, perfil, etc.
     return RedirectResponse(url=next_url)
+
+@router.get("/login/callback", response_class=HTMLResponse)
+async def govbr_callback(request: Request):
+    """
+    Endpoint de callback para o retorno da autenticação gov.br
+    """
+    return templates.TemplateResponse("govbr_callback.html", {
+        "request": request,
+        "settings": settings
+    })
