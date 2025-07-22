@@ -16,6 +16,7 @@ contratofaturas_itens
 contratohistorico
 contratohistorico_fornecedores_pivot
 contratohistoricoqualificacao
+contratoitens
 contrato_item_minuta_empenho
 contrato_minuta_empenho_pivot
 contratoresponsaveis
@@ -26,12 +27,16 @@ empenhos
 envia_dados_pncp
 fornecedores
 minutaempenhos
+model_has_roles
 municipios
 naturezadespesa
 orgaos
 orgaossuperiores
 orgaosubcategorias
 ordens_bancarias
+paises
+planointerno
+roles
 unidades
 users
 unidadesusers
