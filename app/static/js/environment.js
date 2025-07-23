@@ -49,6 +49,7 @@ export default {
 
       if (shouldShrink !== lastShrinkState) {
         header.classList.toggle("header-shrink", shouldShrink);
+        document.body.classList.toggle("header-shrinked", shouldShrink);
         main.style.paddingTop = shouldShrink ? "70px" : "130px";
         
         // Explicitly handle menu positioning when header shrinks
@@ -71,6 +72,7 @@ export default {
     // Aplica header shrink direto no mobile
     if (window.innerWidth <= 768) {
       header.classList.add("header-shrink");
+      document.body.classList.add("header-shrinked");
       main.style.paddingTop = "70px";
       if (menu) {
         menu.style.top = "90px";

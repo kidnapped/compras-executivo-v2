@@ -2,17 +2,12 @@ export default {
   menuItems: [
     { texto: "Início", url: "/inicio", icone: "fas fa-home" },
     { texto: "Contratos", url: "/dashboard", icone: "fas fa-chart-line" },
-    {
-      texto: "Encontro de Contas",
-      url: "/encontro-de-contas",
-      icone: "fas fa-balance-scale",
-    },
     { texto: "Filtro UASG", url: "/uasg-filter", icone: "fas fa-filter" },
-    { texto: "kpi's", url: "/kpis", icone: "fas fa-tachometer-alt" },
+    { texto: "Indicadores", url: "/kpis", icone: "fas fa-tachometer-alt" },
     { texto: "Administração", url: "/admin", icone: "fas fa-cogs" },
-    { texto: "Minha Conta", url: "/bloqueado", icone: "fas fa-user-circle" },
-    { texto: "Suporte", url: "/bloqueado", icone: "fas fa-life-ring" },
-    { texto: "Ajuda", url: "/bloqueado", icone: "fas fa-question-circle" },
+    { texto: "Minha Conta", url: "/minha-conta", icone: "fas fa-user-circle" },
+    { texto: "Suporte", url: "/suporte", icone: "fas fa-headset" },
+    { texto: "Ajuda", url: "/ajuda", icone: "fas fa-question-circle" },
     { texto: "Sair", url: "/logout", icone: "fas fa-sign-out-alt" },
   ],
 
@@ -97,18 +92,57 @@ export default {
     const menu = document.getElementById("main-navigation");
     const body = document.body;
     const menuButtons = document.querySelectorAll(
-      'button[aria-label="Abrir Menu"]'
+      'button[aria-label="Abrir Menu"], button[aria-label="Fechar Menu"]'
     );
 
+    // Funções para gerenciar cookies
+    function setCookie(name, value, days = 365) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    }
+    
+    function getCookie(name) {
+      const nameEQ = name + "=";
+      const ca = document.cookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+
     if (menuButtons.length && menu) {
+      // Verifica estado inicial do cookie
+      const menuState = getCookie('menu');
+      const shouldOpen = menuState === '1';
+      
+      if (shouldOpen) {
+        menu.classList.add("active");
+        body.classList.add("menu-open");
+        menuButtons.forEach((btn) => {
+          btn.innerHTML = "<span>&times;</span>";
+          btn.setAttribute('aria-label', 'Fechar Menu');
+        });
+      }
+
       menuButtons.forEach((menuButton) => {
         menuButton.addEventListener("click", () => {
           const isOpen = menu.classList.contains("active");
           menu.classList.toggle("active", !isOpen);
           body.classList.toggle("menu-open", !isOpen);
-          menuButton.innerHTML = isOpen
-            ? "<span>&#9776;</span>"
-            : "<span>&times;</span>";
+          
+          // Salva estado no cookie
+          setCookie('menu', !isOpen ? '1' : '0');
+          
+          // Atualiza todos os botões
+          menuButtons.forEach((btn) => {
+            btn.innerHTML = isOpen
+              ? "<span>&#9776;</span>"
+              : "<span>&times;</span>";
+            btn.setAttribute('aria-label', isOpen ? 'Abrir Menu' : 'Fechar Menu');
+          });
         });
       });
     }

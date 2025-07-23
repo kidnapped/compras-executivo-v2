@@ -1,0 +1,1917 @@
+{% extends "base.html" %}
+
+{% block title %}Ajuda e Manual - Compras Executivo{% endblock %}
+
+{% block content %}
+<div class="help-page">
+    <div class="container-fluid">
+        <!-- Header da Página -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="breadcrumb-modern">
+                    <div class="breadcrumb-items">
+                        <div class="breadcrumb-item">
+                            <a href="/inicio">
+                                <i class="fas fa-home"></i>
+                                <span>Página Inicial</span>
+                            </a>
+                        </div>
+                        <div class="breadcrumb-separator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="breadcrumb-item active">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Ajuda e Manual</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header Card -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="header-card">
+                    <div class="header-content">
+                        <div class="header-info">
+                            <div class="header-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="header-text">
+                                <h1>Manual do Sistema Compras Executivo</h1>
+                                <p>Guia completo de utilização da plataforma</p>
+                            </div>
+                        </div>
+                        <div class="header-actions">
+                            <button class="action-btn secondary" onclick="imprimirManual()">
+                                <i class="fas fa-print"></i>
+                                <span>Imprimir</span>
+                            </button>
+                            <button class="action-btn primary" onclick="downloadManual()">
+                                <i class="fas fa-download"></i>
+                                <span>Download PDF</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Índice Lateral -->
+            <div class="col-lg-3">
+                <div class="sidebar-card sticky-sidebar">
+                    <div class="card-header-modern">
+                        <div class="header-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="header-text">
+                            <h3>Índice</h3>
+                            <p>Navegação rápida</p>
+                        </div>
+                    </div>
+                    <div class="card-body-modern">
+                        <nav class="help-nav">
+                            <div class="nav-items">
+                                <a class="nav-item" href="#introducao" onclick="scrollToSection('introducao')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>1. Introdução</span>
+                                        <small>Visão geral do sistema</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#acesso" onclick="scrollToSection('acesso')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>2. Acesso ao Sistema</span>
+                                        <small>Como fazer login</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#dashboard" onclick="scrollToSection('dashboard')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>3. Dashboard Inicial</span>
+                                        <small>Página principal</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#contratos" onclick="scrollToSection('contratos')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-file-contract"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>4. Módulo Contratos</span>
+                                        <small>Gestão de contratos</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#encontro" onclick="scrollToSection('encontro')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-balance-scale"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>5. Encontro de Contas</span>
+                                        <small>Compensação financeira</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#uasg" onclick="scrollToSection('uasg')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-filter"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>6. Filtros UASG</span>
+                                        <small>Configuração de filtros</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#kpis" onclick="scrollToSection('kpis')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>7. KPIs e Indicadores</span>
+                                        <small>Métricas e relatórios</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#admin" onclick="scrollToSection('admin')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>8. Administração</span>
+                                        <small>Gestão do sistema</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#conta" onclick="scrollToSection('conta')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>9. Minha Conta</span>
+                                        <small>Perfil do usuário</small>
+                                    </div>
+                                </a>
+                                <a class="nav-item" href="#faq" onclick="scrollToSection('faq')">
+                                    <div class="nav-icon">
+                                        <i class="fas fa-question"></i>
+                                    </div>
+                                    <div class="nav-content">
+                                        <span>10. FAQ</span>
+                                        <small>Perguntas frequentes</small>
+                                    </div>
+                                </a>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conteúdo do Manual -->
+            <div class="col-lg-9">
+                <div class="manual-content">
+                    <!-- 1. Introdução -->
+                    <section id="introducao" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-primary">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>1. Introdução</h3>
+                                <p>Conhecendo o sistema</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <p>O Sistema <strong>Compras Executivo</strong> é uma plataforma integrada desenvolvida para facilitar o acompanhamento e gestão de contratos e processos de compras do governo federal.</p>
+                            
+                            <div class="section-content">
+                                <h6>Objetivos do Sistema</h6>
+                                <div class="feature-grid">
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-success">
+                                            <i class="fas fa-database"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Centralizar informações</span>
+                                            <small>Contratos e compras em um só lugar</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-info">
+                                            <i class="fas fa-handshake"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Encontro de contas</span>
+                                            <small>Facilita compensação entre órgãos</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-warning">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Indicadores KPIs</span>
+                                            <small>Métricas de gestão estratégica</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-primary">
+                                            <i class="fas fa-cog"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Otimização de processos</span>
+                                            <small>Melhoria da eficiência administrativa</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-content">
+                                <h6>Principais Funcionalidades</h6>
+                                <div class="functionality-grid">
+                                    <div class="functionality-group">
+                                        <h6>Análise e Consulta</h6>
+                                        <ul>
+                                            <li>Dashboard com visão geral</li>
+                                            <li>Consulta avançada de contratos</li>
+                                            <li>Filtros por UASG</li>
+                                            <li>Indicadores de performance</li>
+                                        </ul>
+                                    </div>
+                                    <div class="functionality-group">
+                                        <h6>Gestão e Relatórios</h6>
+                                        <ul>
+                                            <li>Encontro de contas automatizado</li>
+                                            <li>Relatórios gerenciais</li>
+                                            <li>Gestão de usuários</li>
+                                            <li>Integração com gov.br</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. Acesso ao Sistema -->
+                    <section id="acesso" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-success">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>2. Acesso ao Sistema</h3>
+                                <p>Como fazer login no sistema</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="section-content">
+                                <h6>Autenticação via gov.br</h6>
+                                <p>O sistema utiliza a autenticação única do gov.br para garantir segurança e praticidade.</p>
+                                
+                                <div class="alert-modern info">
+                                    <div class="alert-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div class="alert-content">
+                                        <strong>Pré-requisito:</strong> É necessário ter uma conta ativa no portal gov.br para acessar o sistema.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-content">
+                                <h6>Passo a Passo para Login</h6>
+                                <div class="step-list">
+                                    <div class="step-item">
+                                        <div class="step-number">1</div>
+                                        <div class="step-content">
+                                            <span>Acesse a URL do sistema</span>
+                                            <small>Digite o endereço no seu navegador</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">2</div>
+                                        <div class="step-content">
+                                            <span>Clique em "Entrar com gov.br"</span>
+                                            <small>Botão azul na página de login</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">3</div>
+                                        <div class="step-content">
+                                            <span>Insira suas credenciais</span>
+                                            <small>CPF e senha do portal gov.br</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">4</div>
+                                        <div class="step-content">
+                                            <span>Complete a autenticação</span>
+                                            <small>Siga os passos do multifator, se solicitado</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">5</div>
+                                        <div class="step-content">
+                                            <span>Aguarde o redirecionamento</span>
+                                            <small>Você será levado ao dashboard principal</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-content">
+                                <h6>Problemas de Acesso</h6>
+                                <div class="help-items">
+                                    <div class="help-item">
+                                        <div class="help-icon">
+                                            <i class="fas fa-user-check"></i>
+                                        </div>
+                                        <div class="help-content">
+                                            <span>Verifique se seu CPF está cadastrado no sistema</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-item">
+                                        <div class="help-icon">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </div>
+                                        <div class="help-content">
+                                            <span>Confirme se possui as permissões necessárias</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-item">
+                                        <div class="help-icon">
+                                            <i class="fas fa-headset"></i>
+                                        </div>
+                                        <div class="help-content">
+                                            <span>Entre em contato com o <a href="/suporte">suporte técnico</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. Dashboard Inicial -->
+                    <section id="dashboard" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-info">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>3. Dashboard Inicial</h3>
+                                <p>Sua página principal</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <p>O dashboard é a página inicial do sistema, oferecendo uma visão geral dos principais indicadores.</p>
+
+                            <div class="section-content">
+                                <h6>Elementos do Dashboard</h6>
+                                <div class="feature-grid">
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-primary">
+                                            <i class="fas fa-bars"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Menu lateral</span>
+                                            <small>Navegação principal do sistema</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-success">
+                                            <i class="fas fa-th-large"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Indicadores resumidos</span>
+                                            <small>Cards com métricas principais</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-info">
+                                            <i class="fas fa-chart-pie"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Gráficos interativos</span>
+                                            <small>Visualizações dos dados</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-warning">
+                                            <i class="fas fa-sliders-h"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Filtros contextuais</span>
+                                            <small>Refinamento por período, UASG, etc.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-content">
+                                <h6>Personalização</h6>
+                                <p>O dashboard pode ser personalizado de acordo com o perfil do usuário:</p>
+                                <div class="help-items">
+                                    <div class="help-item">
+                                        <div class="help-icon">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </div>
+                                        <div class="help-content">
+                                            <span>Indicadores mais relevantes para seu órgão</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-item">
+                                        <div class="help-icon">
+                                            <i class="fas fa-filter"></i>
+                                        </div>
+                                        <div class="help-content">
+                                            <span>Filtros pré-configurados por UASG</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-item">
+                                        <div class="help-icon">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                        <div class="help-content">
+                                            <span>Período de análise preferencial</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 4. Módulo Contratos -->
+                    <!-- 4. Módulo Contratos -->
+                    <section id="contratos" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-warning">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>4. Módulo Contratos</h3>
+                                <p>Gestão completa de contratos</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <p>O módulo de contratos permite consultar, analisar e acompanhar contratos administrativos.</p>
+
+                            <div class="section-content">
+                                <h6>Funcionalidades Principais</h6>
+                                <div class="feature-grid">
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-primary">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Busca avançada</span>
+                                            <small>Localização rápida de contratos</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-success">
+                                            <i class="fas fa-filter"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Filtros múltiplos</span>
+                                            <small>Refinamento por critérios</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-info">
+                                            <i class="fas fa-chart-area"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Visualização gráfica</span>
+                                            <small>Dados em gráficos interativos</small>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon icon-warning">
+                                            <i class="fas fa-download"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <span>Exportação</span>
+                                            <small>Download de dados e relatórios</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-content">
+                                <h6>Como Usar</h6>
+                                <div class="step-list">
+                                    <div class="step-item">
+                                        <div class="step-number">1</div>
+                                        <div class="step-content">
+                                            <span>Acesse o menu "Contratos"</span>
+                                            <small>Clique na opção do menu lateral</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">2</div>
+                                        <div class="step-content">
+                                            <span>Configure os filtros desejados</span>
+                                            <small>Use os campos de filtro disponíveis</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">3</div>
+                                        <div class="step-content">
+                                            <span>Clique em "Buscar"</span>
+                                            <small>Execute a consulta</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">4</div>
+                                        <div class="step-content">
+                                            <span>Analise os resultados</span>
+                                            <small>Visualize em tabela ou gráficos</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">5</div>
+                                        <div class="step-content">
+                                            <span>Exporte se necessário</span>
+                                            <small>Baixe os dados em Excel/PDF</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 5. Encontro de Contas -->
+                    <section id="encontro" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-success">
+                                <i class="fas fa-balance-scale"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>5. Encontro de Contas</h3>
+                                <p>Compensação financeira entre órgãos</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <p>O módulo de Encontro de Contas permite a compensação financeira entre órgãos federais, identificando débitos e créditos recíprocos.</p>
+
+                            <div class="section-content">
+                                <h6>Conceitos Importantes</h6>
+                                <div class="concept-grid">
+                                    <div class="concept-item">
+                                        <div class="concept-icon debt">
+                                            <i class="fas fa-arrow-down"></i>
+                                        </div>
+                                        <div class="concept-content">
+                                            <span>Débito</span>
+                                            <small>Valor que um órgão deve a outro</small>
+                                        </div>
+                                    </div>
+                                    <div class="concept-item">
+                                        <div class="concept-icon credit">
+                                            <i class="fas fa-arrow-up"></i>
+                                        </div>
+                                        <div class="concept-content">
+                                            <span>Crédito</span>
+                                            <small>Valor que um órgão tem a receber</small>
+                                        </div>
+                                    </div>
+                                    <div class="concept-item">
+                                        <div class="concept-icon compensation">
+                                            <i class="fas fa-exchange-alt"></i>
+                                        </div>
+                                        <div class="concept-content">
+                                            <span>Compensação</span>
+                                            <small>Cancelamento mútuo de débitos e créditos</small>
+                                        </div>
+                                    </div>
+                                    <div class="concept-item">
+                                        <div class="concept-icon balance">
+                                            <i class="fas fa-calculator"></i>
+                                        </div>
+                                        <div class="concept-content">
+                                            <span>Saldo</span>
+                                            <small>Diferença após compensação</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert-modern warning">
+                                <div class="alert-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <strong>Importante:</strong> O processo de encontro de contas deve ser executado com cuidado, pois afeta diretamente a situação financeira dos órgãos envolvidos.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 6. Filtros UASG -->
+                    <section id="uasg" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-info">
+                                <i class="fas fa-filter"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>6. Filtros UASG</h3>
+                                <p>Configuração de unidades administrativas</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <p>As UASGs (Unidades Administrativas de Serviços Gerais) são fundamentais para a organização dos dados no sistema.</p>
+
+                            <div class="section-content">
+                                <h6>O que é UASG</h6>
+                                <p>UASG é o código que identifica unicamente cada unidade administrativa responsável por atividades de administração geral no âmbito do SISG (Sistema de Serviços Gerais).</p>
+                            </div>
+
+                            <div class="alert-modern info">
+                                <div class="alert-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="alert-content">
+                                    As configurações de UASG determinam quais dados você pode visualizar no sistema. Entre em contato com o administrador para alterar suas permissões.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 7. KPIs e Indicadores -->
+                    <section id="kpis" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-warning">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>7. KPIs e Indicadores</h3>
+                                <p>Métricas estratégicas de gestão</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <p>O módulo de KPIs oferece indicadores estratégicos para apoio à gestão e tomada de decisões.</p>
+                        </div>
+                    </section>
+
+                    <!-- 8. Administração -->
+                    <section id="admin" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-primary">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>8. Administração</h3>
+                                <p>Gestão e configuração do sistema</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <p>O módulo de administração é destinado aos gestores do sistema.</p>
+                            
+                            <div class="alert-modern warning">
+                                <div class="alert-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <strong>Acesso Restrito:</strong> Este módulo é disponível apenas para usuários com perfil de administrador.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 9. Minha Conta -->
+                    <section id="conta" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-success">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>9. Minha Conta</h3>
+                                <p>Gerenciamento do perfil pessoal</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <p>Na seção "Minha Conta" você pode visualizar e gerenciar suas informações pessoais e configurações.</p>
+                        </div>
+                    </section>
+
+                    <!-- 10. FAQ -->
+                    <section id="faq" class="content-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-info">
+                                <i class="fas fa-question"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>10. FAQ</h3>
+                                <p>Perguntas frequentes</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="faq-accordion">
+                                <div class="faq-item">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span>Como recuperar minha senha?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Para recuperar sua senha, acesse o portal gov.br e utilize a opção "Esqueci minha senha".</p>
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span>Por que não consigo ver todos os contratos?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Sua visualização está limitada às UASGs configuradas para seu usuário. Entre em contato com o administrador.</p>
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span>Como exportar relatórios?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Use os botões de exportação disponíveis em cada módulo para baixar dados em Excel ou PDF.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Demais seções já foram adicionadas anteriormente nas edições -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer do Manual -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="footer-card">
+                    <div class="footer-content">
+                        <div class="footer-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="footer-text">
+                            <h6>Precisa de Mais Ajuda?</h6>
+                            <p>Nossa equipe está pronta para ajudá-lo</p>
+                        </div>
+                        <div class="footer-actions">
+                            <a href="/suporte" class="action-btn primary">
+                                <i class="fas fa-headset"></i>
+                                <span>Contatar Suporte</span>
+                            </a>
+                            <button class="action-btn secondary" onclick="downloadManual()">
+                                <i class="fas fa-file-pdf"></i>
+                                <span>Manual Completo</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="footer-note">
+                        <small>
+                            <i class="fas fa-calendar-alt"></i>
+                            Última atualização: Janeiro 2024 | 
+                            <i class="fas fa-code"></i>
+                            Versão do Sistema: 2.1.0
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Reset e base styles */
+.help-page {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+/* Breadcrumb Moderno */
+.breadcrumb-modern {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+}
+
+.breadcrumb-items {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1351b4;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #0f4394;
+    transform: translateX(2px);
+}
+
+.breadcrumb-item.active {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.breadcrumb-separator {
+    color: #cbd5e1;
+    font-size: 0.8rem;
+}
+
+/* Header Card */
+.header-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+.header-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1351b4, #10b981);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.header-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    box-shadow: 0 12px 24px rgba(19, 81, 180, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.header-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+.header-text h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.header-text p {
+    margin: 0;
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+/* Action Buttons */
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: linear-gradient(135deg, #0f4394, #0d3875);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(19, 81, 180, 0.3);
+}
+
+.action-btn.secondary {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    color: #1351b4;
+    border: 1px solid #e2e8f0;
+}
+
+.action-btn.secondary:hover {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Sidebar Card */
+.sidebar-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+.sidebar-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1351b4, #10b981);
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: 20px;
+}
+
+/* Modern Cards */
+.content-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.content-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1351b4, #10b981);
+}
+
+.content-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.card-header-modern {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 2rem 1rem;
+}
+
+.header-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.header-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+.icon-primary {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+}
+
+.icon-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.icon-info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.icon-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.header-text h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.header-text p {
+    margin: 0.25rem 0 0 0;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.card-body-modern {
+    padding: 0 2rem 2rem;
+}
+
+/* Section Content */
+.section-content {
+    margin-bottom: 2rem;
+}
+
+.section-content:last-child {
+    margin-bottom: 0;
+}
+
+.section-content h6 {
+    color: #1351b4;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.section-content p {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* Feature Grid */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #e6f7ff 100%);
+    border-color: #1351b4;
+    transform: translateY(-2px);
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.feature-content {
+    flex: 1;
+}
+
+.feature-content span {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+.feature-content small {
+    display: block;
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+/* Help Navigation */
+.help-nav {
+    padding: 0;
+}
+
+.nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 8px 16px rgba(19, 81, 180, 0.3);
+}
+
+.nav-item.active {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+    box-shadow: 0 8px 16px rgba(19, 81, 180, 0.3);
+}
+
+.nav-icon {
+    width: 36px;
+    height: 36px;
+    background: #1351b4;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover .nav-icon,
+.nav-item.active .nav-icon {
+    background: white;
+    color: #1351b4;
+}
+
+.nav-content {
+    flex: 1;
+}
+
+.nav-content span {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.nav-content small {
+    display: block;
+    opacity: 0.7;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+/* Alert Modern */
+.alert-modern {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid;
+    margin: 1.5rem 0;
+}
+
+.alert-modern.info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-color: #3b82f6;
+    color: #1e40af;
+}
+
+.alert-modern.warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-color: #f59e0b;
+    color: #92400e;
+}
+
+.alert-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.alert-modern.info .alert-icon {
+    background: #3b82f6;
+    color: white;
+}
+
+.alert-modern.warning .alert-icon {
+    background: #f59e0b;
+    color: white;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+/* Step List */
+.step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.step-number {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-content span {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+.step-content small {
+    display: block;
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+/* Help Items */
+.help-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.help-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.help-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #1351b4, #10b981);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.help-content {
+    flex: 1;
+}
+
+.help-content span {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+.help-content a {
+    color: #1351b4;
+    text-decoration: none;
+}
+
+.help-content a:hover {
+    text-decoration: underline;
+}
+
+/* Concept Grid */
+.concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.concept-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.concept-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.concept-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.concept-icon.debt {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.concept-icon.credit {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.concept-icon.compensation {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.concept-icon.balance {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.concept-content span {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.concept-content small {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+/* Functionality Grid */
+.functionality-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.functionality-group {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.functionality-group h6 {
+    color: #1351b4 !important;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.functionality-group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.functionality-group li {
+    padding: 0.5rem 0;
+    color: #64748b;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.functionality-group li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #10b981;
+    font-weight: bold;
+}
+
+/* FAQ Accordion */
+.faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.faq-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+}
+
+.faq-question {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: #1e293b;
+    transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #e6f7ff 100%);
+    color: #1351b4;
+}
+
+.faq-question i {
+    transition: transform 0.3s ease;
+}
+
+.faq-question.active i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    padding: 0 1.5rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-answer.active {
+    padding: 1.5rem;
+    max-height: 200px;
+}
+
+/* Footer Card */
+.footer-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+.footer-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1351b4, #10b981);
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.footer-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.footer-text {
+    flex: 1;
+}
+
+.footer-text h6 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.footer-text p {
+    margin: 0;
+    color: #64748b;
+}
+
+.footer-actions {
+    display: flex;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.footer-note {
+    padding: 1rem 2rem;
+    background: #f8fafc;
+    text-align: center;
+    color: #64748b;
+    border-top: 1px solid #e2e8f0;
+}
+
+.footer-note i {
+    margin-right: 0.5rem;
+    color: #1351b4;
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.content-card:nth-child(1) { animation-delay: 0.1s; }
+.content-card:nth-child(2) { animation-delay: 0.2s; }
+.content-card:nth-child(3) { animation-delay: 0.3s; }
+.content-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .header-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .header-text h1 {
+        font-size: 2rem;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .concept-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    
+    .functionality-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-header-modern {
+        padding: 1.5rem 1.5rem 1rem;
+    }
+    
+    .card-body-modern {
+        padding: 0 1.5rem 1.5rem;
+    }
+    
+    .sticky-sidebar {
+        position: relative;
+        top: auto;
+        margin-bottom: 2rem;
+    }
+}
+
+@media print {
+    .help-nav,
+    .breadcrumb-modern,
+    .action-btn,
+    .alert-modern {
+        display: none !important;
+    }
+    
+    .help-page {
+        padding: 0;
+    }
+    
+    .content-card {
+        page-break-inside: avoid;
+        margin-bottom: 2rem;
+        box-shadow: none;
+        border: 1px solid #e2e8f0;
+    }
+}
+</style>
+
+<script>
+function scrollToSection(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Update active nav link
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.classList.remove('active');
+        });
+        const activeLink = document.querySelector(`a[href="#${sectionId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    }
+}
+
+function downloadManual() {
+    // Simular download do manual completo
+    const link = document.createElement('a');
+    link.href = '/static/docs/manual-completo-compras-executivo.pdf';
+    link.download = 'Manual Completo - Sistema Compras Executivo.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Notificação moderna
+    showNotification('Download do manual completo iniciado!', 'success');
+}
+
+function imprimirManual() {
+    window.print();
+}
+
+function toggleFaq(element) {
+    const faqItem = element.parentElement;
+    const answer = faqItem.querySelector('.faq-answer');
+    const isActive = element.classList.contains('active');
+    
+    // Close all other FAQ items
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.classList.remove('active');
+        q.parentElement.querySelector('.faq-answer').classList.remove('active');
+    });
+    
+    // Toggle current item
+    if (!isActive) {
+        element.classList.add('active');
+        answer.classList.add('active');
+    }
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-icon">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+        </div>
+        <div class="notification-content">
+            <span>${message}</span>
+        </div>
+        <div class="notification-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </div>
+    `;
+    
+    // Add notification styles if not exist
+    if (!document.querySelector('#notification-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'notification-styles';
+        styles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+                border-left: 4px solid #1351b4;
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                z-index: 9999;
+                min-width: 300px;
+                animation: slideIn 0.3s ease-out;
+            }
+            .notification.success {
+                border-left-color: #10b981;
+            }
+            .notification-icon {
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                background: #1351b4;
+                font-size: 1rem;
+            }
+            .notification.success .notification-icon {
+                background: #10b981;
+            }
+            .notification-content {
+                flex: 1;
+                font-weight: 500;
+                color: #1e293b;
+            }
+            .notification-close {
+                cursor: pointer;
+                padding: 0.25rem;
+                border-radius: 4px;
+                color: #64748b;
+                transition: all 0.2s;
+            }
+            .notification-close:hover {
+                background: #f1f5f9;
+                color: #1e293b;
+            }
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Scroll spy para destacar seção ativa
+document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                document.querySelectorAll('.nav-item').forEach(link => {
+                    link.classList.remove('active');
+                });
+                const activeLink = document.querySelector(`a[href="#${id}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+        });
+    }, { 
+        rootMargin: '-100px 0px -50% 0px',
+        threshold: 0.1
+    });
+
+    document.querySelectorAll('.manual-content section').forEach(section => {
+        observer.observe(section);
+    });
+
+    // Animate cards on scroll
+    const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // Observe all cards
+    document.querySelectorAll('.content-card, .sidebar-card, .header-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.6s ease-out';
+        cardObserver.observe(card);
+    });
+
+    // Add hover effects to navigation items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = 'translateX(4px)';
+            }
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = 'translateX(0)';
+            }
+        });
+    });
+
+    // Add loading animation
+    setTimeout(() => {
+        document.querySelectorAll('.content-card, .sidebar-card, .header-card').forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    }, 100);
+});
+</script>
+{% endblock %}

@@ -27,6 +27,7 @@ empenhos
 envia_dados_pncp
 fornecedores
 minutaempenhos
+minutaempenhos_remessa
 model_has_roles
 municipios
 naturezadespesa

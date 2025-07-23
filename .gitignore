@@ -83,6 +83,9 @@ temp/
 app/static/dist/bundle.js
 app/static/dist/bundle.js.map
 
+# Release builds
+build/
+
 ### React
 # Logs
 logs
