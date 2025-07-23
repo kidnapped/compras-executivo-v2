@@ -68,6 +68,8 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
             request.session["usuario_id"] = 198756  # Valor único
             request.session["usuario_role"] = "Consulta Global"  # Valor único
             request.session["usuario_scope"] = "global"  # Valor único
+            request.session["usuario_name"] = "Desenvolvedor"  # Nome padrão
+            request.session["usuario_email"] = "teste@comprasexecutivo.sistema.gov.br"  # Email padrão
             print(f"✅ SESSÃO CONFIGURADA: uasgs={request.session['uasgs']}, usuario_id={request.session['usuario_id']}")
         else:
             print(f"🔍 BUSCANDO DADOS PARA CPF: {cpf_logged}")
@@ -107,15 +109,27 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
                 # Buscar usuario_id - usar mesmo CPF que funcionou acima
                 cpf_for_search = cpf_formatted if uasgs else cpf_logged
                 stmt_user_id = text("""
-                    SELECT id FROM users WHERE cpf = :cpf LIMIT 1
+                    SELECT id, name, email FROM users WHERE cpf = :cpf LIMIT 1
                 """)
                 result_user_id = await contratos_session.execute(stmt_user_id, {
                     "cpf": cpf_for_search
                 })
                 user_id_row = result_user_id.fetchone()
-                usuario_id = user_id_row[0] if user_id_row else None
+                if user_id_row:
+                    usuario_id = user_id_row[0]
+                    usuario_name = user_id_row[1]
+                    usuario_email = user_id_row[2]
+                else:
+                    usuario_id = None
+                    usuario_name = None
+                    usuario_email = None
+                
                 request.session["usuario_id"] = usuario_id  # Valor único, não array
+                request.session["usuario_name"] = usuario_name
+                request.session["usuario_email"] = usuario_email
                 print(f"👤 Usuario ID encontrado: {usuario_id}")
+                print(f"👤 Nome do usuário: {usuario_name}")
+                print(f"📧 Email do usuário: {usuario_email}")
                 
                 # Buscar roles
                 stmt_roles = text("""
@@ -159,6 +173,8 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
         print(f"  cpf={request.session.get('cpf')}")
         print(f"  uasgs={request.session.get('uasgs')}")
         print(f"  usuario_id={request.session.get('usuario_id')}")
+        print(f"  usuario_name={request.session.get('usuario_name')}")
+        print(f"  usuario_email={request.session.get('usuario_email')}")
         print(f"  usuario_role={request.session.get('usuario_role')}")
         print(f"  usuario_scope={request.session.get('usuario_scope')}")
         print(f"📦 SESSÃO COMPLETA: {dict(request.session)}")
@@ -199,6 +215,18 @@ async def inicio(request: Request):
 @router.get("/bloqueado", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
     return templates.TemplateResponse("bloqueado.html", {
+        "request": request
+    })
+
+@router.get("/suporte", response_class=HTMLResponse)
+async def render_suporte(request: Request):
+    return templates.TemplateResponse("suporte.html", {
+        "request": request
+    })
+
+@router.get("/ajuda", response_class=HTMLResponse)
+async def render_ajuda(request: Request):
+    return templates.TemplateResponse("ajuda.html", {
         "request": request
     })
 

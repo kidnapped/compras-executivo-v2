@@ -1,0 +1,1593 @@
+{% extends "base.html" %}
+
+{% block title %}Suporte Técnico - Compras Executivo{% endblock %}
+
+{% block content %}
+<div class="support-page">
+    <div class="container-fluid">
+        <!-- Header da Página -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <!-- Breadcrumb Moderno -->
+                <div class="breadcrumb-modern">
+                    <div class="breadcrumb-items">
+                        <div class="breadcrumb-item">
+                            <a href="/">
+                                <i class="fas fa-home"></i>
+                                Início
+                            </a>
+                        </div>
+                        <div class="breadcrumb-separator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="breadcrumb-item active">
+                            <i class="fas fa-headset"></i>
+                            Suporte Técnico
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header Card -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="header-card">
+                    <div class="header-content">
+                        <div class="header-info">
+                            <div class="header-icon">
+                                <i class="fas fa-life-ring"></i>
+                            </div>
+                            <div class="header-text">
+                                <h1>Central de Suporte</h1>
+                                <p>Estamos aqui para ajudar você com qualquer dúvida ou problema</p>
+                            </div>
+                        </div>
+                        <div class="header-actions">
+                            <button class="action-btn primary" onclick="toggleNovoTicket()">
+                                <i class="fas fa-plus"></i>
+                                Novo Ticket
+                            </button>
+                            <button class="action-btn secondary" onclick="toggleMeusTickets()">
+                                <i class="fas fa-list-alt"></i>
+                                Meus Tickets
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Conteúdo Principal -->
+            <div class="col-12 col-lg-8">
+                <!-- Ações Rápidas -->
+                <div class="content-card">
+                    <div class="card-header-modern">
+                        <div class="header-icon icon-primary">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="header-text">
+                            <h3>Ações Rápidas</h3>
+                            <p>Acesso direto às principais funcionalidades de suporte</p>
+                        </div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="feature-grid">
+                            <div class="feature-item" onclick="toggleNovoTicket()">
+                                <div class="feature-icon icon-success">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <span>Novo Ticket</span>
+                                    <small>Abra um novo chamado de suporte</small>
+                                </div>
+                            </div>
+                            <div class="feature-item" onclick="toggleMeusTickets()">
+                                <div class="feature-icon icon-info">
+                                    <i class="fas fa-list-alt"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <span>Meus Tickets</span>
+                                    <small>Acompanhe seus chamados</small>
+                                </div>
+                            </div>
+                            <div class="feature-item" onclick="scrollToSection('status-sistema')">
+                                <div class="feature-icon icon-warning">
+                                    <i class="fas fa-heartbeat"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <span>Status do Sistema</span>
+                                    <small>Veja o status dos serviços</small>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon icon-primary">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <span>FAQ</span>
+                                    <small>Perguntas frequentes</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulário Novo Ticket -->
+                <div id="novoTicketSection" class="content-card" style="display: none;">
+                    <div class="card-header-modern">
+                        <div class="header-icon icon-success">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="header-text">
+                            <h3>Abrir Novo Ticket</h3>
+                            <p>Preencha as informações abaixo para criar seu chamado</p>
+                        </div>
+                    </div>
+                    <div class="card-body-modern">
+                        <form id="ticketForm" class="needs-validation" novalidate>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="prioridade" class="form-label">Prioridade *</label>
+                                    <select class="form-select" id="prioridade" required>
+                                        <option value="">Selecione a prioridade</option>
+                                        <option value="baixa">🟢 Baixa - Não urgente</option>
+                                        <option value="media">🟡 Média - Importante</option>
+                                        <option value="alta">🟠 Alta - Urgente</option>
+                                        <option value="critica">🔴 Crítica - Sistema inoperante</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="categoria" class="form-label">Categoria *</label>
+                                    <select class="form-select" id="categoria" required>
+                                        <option value="">Selecione uma categoria</option>
+                                        <option value="acesso">🔐 Problema de Acesso</option>
+                                        <option value="erro">🐛 Erro no Sistema</option>
+                                        <option value="lentidao">🐌 Lentidão</option>
+                                        <option value="dados">📊 Dados Incorretos</option>
+                                        <option value="feature">💡 Nova Funcionalidade</option>
+                                        <option value="integracao">🔗 Integração</option>
+                                        <option value="relatorio">📋 Relatórios</option>
+                                        <option value="outros">❓ Outros</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="assunto" class="form-label">Assunto *</label>
+                                    <input type="text" class="form-control" id="assunto" required maxlength="100" placeholder="Descreva o problema em uma linha">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="descricao" class="form-label">Descrição Detalhada *</label>
+                                    <textarea class="form-control" id="descricao" rows="6" required placeholder="Descreva detalhadamente:
+• O que você estava fazendo quando o problema ocorreu?
+• Qual era o resultado esperado?
+• O que realmente aconteceu?
+• Passos para reproduzir o problema
+• Mensagens de erro (se houver)"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="navegador" class="form-label">Navegador</label>
+                                    <input type="text" class="form-control" id="navegador" placeholder="Ex: Chrome 120">
+                                </div>
+                                <div class="form-group">
+                                    <label for="sistema_operacional" class="form-label">Sistema Operacional</label>
+                                    <input type="text" class="form-control" id="sistema_operacional" placeholder="Ex: Windows 11">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="anexos" class="form-label">Anexos (opcional)</label>
+                                    <input type="file" class="form-control" id="anexos" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.txt">
+                                    <small class="form-text">Formatos aceitos: JPG, PNG, PDF, DOC, DOCX, TXT (máx. 10MB cada)</small>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="action-btn primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Abrir Ticket
+                                </button>
+                                <button type="button" class="action-btn secondary" onclick="toggleNovoTicket()">
+                                    <i class="fas fa-times"></i>
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Lista de Tickets -->
+                <div id="meusTicketsSection" class="content-card" style="display: none;">
+                    <div class="card-header-modern">
+                        <div class="header-icon icon-info">
+                            <i class="fas fa-list-alt"></i>
+                        </div>
+                        <div class="header-text">
+                            <h3>Meus Tickets de Suporte</h3>
+                            <p>Acompanhe o andamento dos seus chamados</p>
+                        </div>
+                    </div>
+                    <div class="card-body-modern">
+                        <!-- Filtros -->
+                        <div class="filters-section">
+                            <div class="filter-item">
+                                <select class="form-select" id="filtroStatus">
+                                    <option value="">Todos os Status</option>
+                                    <option value="aberto">🟢 Aberto</option>
+                                    <option value="em_andamento">🔄 Em Andamento</option>
+                                    <option value="aguardando">⏳ Aguardando Usuário</option>
+                                    <option value="resolvido">✅ Resolvido</option>
+                                    <option value="fechado">🔒 Fechado</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <select class="form-select" id="filtroPrioridade">
+                                    <option value="">Todas as Prioridades</option>
+                                    <option value="critica">🔴 Crítica</option>
+                                    <option value="alta">🟠 Alta</option>
+                                    <option value="media">🟡 Média</option>
+                                    <option value="baixa">🟢 Baixa</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <input type="text" class="form-control" id="filtroAssunto" placeholder="🔍 Buscar por assunto...">
+                            </div>
+                            <div class="filter-item">
+                                <button class="action-btn primary" onclick="filtrarTickets()">
+                                    <i class="fas fa-search"></i>
+                                    Filtrar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tickets List -->
+                        <div class="tickets-list" id="ticketsList">
+                            <div class="ticket-item">
+                                <div class="ticket-header">
+                                    <div class="ticket-number">#2024001</div>
+                                    <div class="ticket-status status-em-andamento">🔄 Em Andamento</div>
+                                    <div class="ticket-priority priority-alta">🟠 Alta</div>
+                                </div>
+                                <div class="ticket-content">
+                                    <h5>Erro ao gerar relatório de contratos</h5>
+                                    <p class="ticket-category">🐛 Erro no Sistema</p>
+                                    <p class="ticket-date">Criado em: 22/07/2025 09:15</p>
+                                </div>
+                                <div class="ticket-actions">
+                                    <button class="action-btn secondary small" onclick="verTicket('2024001')">
+                                        <i class="fas fa-eye"></i>
+                                        Ver Detalhes
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="ticket-item">
+                                <div class="ticket-header">
+                                    <div class="ticket-number">#2024002</div>
+                                    <div class="ticket-status status-resolvido">✅ Resolvido</div>
+                                    <div class="ticket-priority priority-media">🟡 Média</div>
+                                </div>
+                                <div class="ticket-content">
+                                    <h5>Lentidão no carregamento de dados</h5>
+                                    <p class="ticket-category">🐌 Lentidão</p>
+                                    <p class="ticket-date">Criado em: 20/07/2025 14:30</p>
+                                </div>
+                                <div class="ticket-actions">
+                                    <button class="action-btn secondary small" onclick="verTicket('2024002')">
+                                        <i class="fas fa-eye"></i>
+                                        Ver Detalhes
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="ticket-item">
+                                <div class="ticket-header">
+                                    <div class="ticket-number">#2024003</div>
+                                    <div class="ticket-status status-fechado">🔒 Fechado</div>
+                                    <div class="ticket-priority priority-baixa">🟢 Baixa</div>
+                                </div>
+                                <div class="ticket-content">
+                                    <h5>Solicitação de nova funcionalidade</h5>
+                                    <p class="ticket-category">💡 Nova Funcionalidade</p>
+                                    <p class="ticket-date">Criado em: 18/07/2025 11:20</p>
+                                </div>
+                                <div class="ticket-actions">
+                                    <button class="action-btn secondary small" onclick="verTicket('2024003')">
+                                        <i class="fas fa-eye"></i>
+                                        Ver Detalhes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="content-card">
+                    <div class="card-header-modern">
+                        <div class="header-icon icon-info">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="header-text">
+                            <h3>Perguntas Frequentes</h3>
+                            <p>Respostas para as dúvidas mais comuns</p>
+                        </div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="faq-accordion">
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    Como posso redefinir minha senha?
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Para redefinir sua senha, entre em contato com o administrador do sistema através dos canais oficiais. Por questões de segurança, a redefinição de senha não pode ser feita diretamente pelo usuário.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    O sistema está lento, o que posso fazer?
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Tente limpar o cache do navegador, verificar sua conexão de internet e fechar outras abas desnecessárias. Se o problema persistir, abra um ticket de suporte.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    Como gerar relatórios do sistema?
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Acesse o menu "Relatórios" no dashboard principal, selecione o tipo de relatório desejado, configure os filtros necessários e clique em "Gerar Relatório".</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-12 col-lg-4">
+                <div class="sidebar-cards">
+                    <!-- Status do Sistema -->
+                    <div class="sidebar-card sticky-sidebar">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-success">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Status do Sistema</h3>
+                                <p>Monitoramento em tempo real</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern" id="status-sistema">
+                            <div class="status-items">
+                                <div class="status-item">
+                                    <div class="status-indicator online"></div>
+                                    <div class="status-content">
+                                        <span>Aplicação Principal</span>
+                                        <small>Operacional</small>
+                                    </div>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-indicator online"></div>
+                                    <div class="status-content">
+                                        <span>Base de Dados</span>
+                                        <small>Operacional</small>
+                                    </div>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-indicator online"></div>
+                                    <div class="status-content">
+                                        <span>Relatórios</span>
+                                        <small>Operacional</small>
+                                    </div>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-indicator warning"></div>
+                                    <div class="status-content">
+                                        <span>Integrações</span>
+                                        <small>Manutenção programada</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="status-footer">
+                                <small>
+                                    <i class="fas fa-clock"></i>
+                                    Última atualização: <span id="lastUpdate"></span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Links Úteis -->
+                    <div class="sidebar-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-primary">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Links Úteis</h3>
+                                <p>Recursos adicionais</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="help-items">
+                                <div class="help-item">
+                                    <div class="help-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div class="help-content">
+                                        <span><a href="/ajuda">Manual do Sistema</a></span>
+                                    </div>
+                                </div>
+                                <div class="help-item">
+                                    <div class="help-icon">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <div class="help-content">
+                                        <span><a href="https://www.gov.br/compras/pt-br" target="_blank">Portal Compras</a></span>
+                                    </div>
+                                </div>
+                                <div class="help-item">
+                                    <div class="help-icon">
+                                        <i class="fas fa-gavel"></i>
+                                    </div>
+                                    <div class="help-content">
+                                        <span><a href="https://www.gov.br/compras/pt-br/acesso-a-informacao/legislacao" target="_blank">Legislação</a></span>
+                                    </div>
+                                </div>
+                                <div class="help-item">
+                                    <div class="help-icon">
+                                        <i class="fas fa-download"></i>
+                                    </div>
+                                    <div class="help-content">
+                                        <span><a href="#" onclick="downloadManual()">Download Manual</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contatos -->
+                    <div class="sidebar-card">
+                        <div class="card-header-modern">
+                            <div class="header-icon icon-warning">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Contatos de Emergência</h3>
+                                <p>Para casos críticos</p>
+                            </div>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="alert-modern info">
+                                <div class="alert-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <strong>Suporte Técnico</strong><br>
+                                    <small>Para problemas críticos que impeçam o funcionamento do sistema, entre em contato através dos canais oficiais da instituição.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Reset e base styles */
+.support-page {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+/* Breadcrumb Moderno */
+.breadcrumb-modern {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+}
+
+.breadcrumb-items {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1351b4;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #0f4394;
+    transform: translateX(2px);
+}
+
+.breadcrumb-item.active {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.breadcrumb-separator {
+    color: #cbd5e1;
+    font-size: 0.8rem;
+}
+
+/* Header Card */
+.header-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+.header-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1351b4, #10b981);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.header-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    box-shadow: 0 12px 24px rgba(19, 81, 180, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.header-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+.header-text h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.header-text p {
+    margin: 0;
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+/* Action Buttons */
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: linear-gradient(135deg, #0f4394, #0d3875);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(19, 81, 180, 0.3);
+}
+
+.action-btn.secondary {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    color: #1351b4;
+    border: 1px solid #e2e8f0;
+}
+
+.action-btn.secondary:hover {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.action-btn.small {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* Sidebar Card */
+.sidebar-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.sidebar-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1351b4, #10b981);
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: 20px;
+}
+
+/* Modern Cards */
+.content-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.content-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1351b4, #10b981);
+}
+
+.content-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.card-header-modern {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 2rem 1rem;
+}
+
+.header-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.header-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+.icon-primary {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+}
+
+.icon-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.icon-info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.icon-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.header-text h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.header-text p {
+    margin: 0.25rem 0 0 0;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.card-body-modern {
+    padding: 0 2rem 2rem;
+}
+
+/* Feature Grid */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.feature-item:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #e6f7ff 100%);
+    border-color: #1351b4;
+    transform: translateY(-2px);
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.feature-content {
+    flex: 1;
+}
+
+.feature-content span {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+.feature-content small {
+    display: block;
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.form-control, .form-select {
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: #1351b4;
+    box-shadow: 0 0 0 3px rgba(19, 81, 180, 0.1);
+}
+
+.form-text {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Filters Section */
+.filters-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tickets List */
+.tickets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ticket-item {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.ticket-item:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #e6f7ff 100%);
+    border-color: #1351b4;
+    transform: translateY(-2px);
+}
+
+.ticket-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.ticket-number {
+    font-weight: 700;
+    color: #1351b4;
+    font-size: 1.1rem;
+}
+
+.ticket-status, .ticket-priority {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-em-andamento {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-resolvido {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-fechado {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.priority-alta {
+    background: #fed7aa;
+    color: #9a3412;
+}
+
+.priority-media {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.priority-baixa {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.ticket-content h5 {
+    margin: 0 0 0.5rem 0;
+    color: #1e293b;
+    font-size: 1.1rem;
+}
+
+.ticket-category {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
+}
+
+.ticket-date {
+    color: #9ca3af;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.ticket-actions {
+    margin-top: 1rem;
+}
+
+/* Status Items */
+.status-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-indicator.online {
+    background: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.status-indicator.warning {
+    background: #f59e0b;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.status-indicator.offline {
+    background: #ef4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.status-content {
+    flex: 1;
+}
+
+.status-content span {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.status-content small {
+    display: block;
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+.status-footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.status-footer small {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+/* Help Items */
+.help-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.help-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.help-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #1351b4, #10b981);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.help-content {
+    flex: 1;
+}
+
+.help-content span {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+.help-content a {
+    color: #1351b4;
+    text-decoration: none;
+}
+
+.help-content a:hover {
+    text-decoration: underline;
+}
+
+/* FAQ Accordion */
+.faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.faq-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+}
+
+.faq-question {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: #1e293b;
+    transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #e6f7ff 100%);
+    color: #1351b4;
+}
+
+.faq-question i {
+    transition: transform 0.3s ease;
+}
+
+.faq-question.active i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    padding: 0 1.5rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-answer.active {
+    padding: 1.5rem;
+    max-height: 200px;
+}
+
+/* Alert Modern */
+.alert-modern {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid;
+    margin: 1.5rem 0;
+}
+
+.alert-modern.info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-color: #3b82f6;
+    color: #1e40af;
+}
+
+.alert-modern.warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-color: #f59e0b;
+    color: #92400e;
+}
+
+.alert-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.alert-modern.info .alert-icon {
+    background: #3b82f6;
+    color: white;
+}
+
+.alert-modern.warning .alert-icon {
+    background: #f59e0b;
+    color: white;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.content-card:nth-child(1) { animation-delay: 0.1s; }
+.content-card:nth-child(2) { animation-delay: 0.2s; }
+.content-card:nth-child(3) { animation-delay: 0.3s; }
+.content-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .header-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .header-text h1 {
+        font-size: 2rem;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .ticket-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .card-header-modern {
+        padding: 1.5rem;
+    }
+    
+    .card-body-modern {
+        padding: 0 1.5rem 1.5rem;
+    }
+    
+    .sticky-sidebar {
+        position: static;
+    }
+    
+    .action-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+
+@media print {
+    .support-page {
+        background: white;
+    }
+    
+    .content-card, .sidebar-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .header-actions,
+    .action-btn,
+    .ticket-actions {
+        display: none;
+    }
+}
+</style>
+
+<script>
+function scrollToSection(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+        element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+function toggleNovoTicket() {
+    const novoTicketSection = document.getElementById('novoTicketSection');
+    const meusTicketsSection = document.getElementById('meusTicketsSection');
+    
+    if (novoTicketSection.style.display === 'none' || !novoTicketSection.style.display) {
+        novoTicketSection.style.display = 'block';
+        meusTicketsSection.style.display = 'none';
+        scrollToSection('novoTicketSection');
+    } else {
+        novoTicketSection.style.display = 'none';
+    }
+}
+
+function toggleMeusTickets() {
+    const meusTicketsSection = document.getElementById('meusTicketsSection');
+    const novoTicketSection = document.getElementById('novoTicketSection');
+    
+    if (meusTicketsSection.style.display === 'none' || !meusTicketsSection.style.display) {
+        meusTicketsSection.style.display = 'block';
+        novoTicketSection.style.display = 'none';
+        scrollToSection('meusTicketsSection');
+    } else {
+        meusTicketsSection.style.display = 'none';
+    }
+}
+
+function verTicket(ticketId) {
+    // Simular abertura de modal ou nova página
+    showNotification(`Abrindo detalhes do ticket #${ticketId}...`, 'info');
+}
+
+function filtrarTickets() {
+    const status = document.getElementById('filtroStatus').value.toLowerCase();
+    const prioridade = document.getElementById('filtroPrioridade').value.toLowerCase();
+    const assunto = document.getElementById('filtroAssunto').value.toLowerCase();
+    
+    const tickets = document.querySelectorAll('.ticket-item');
+    
+    tickets.forEach(ticket => {
+        let visible = true;
+        const ticketText = ticket.textContent.toLowerCase();
+        
+        if (status && !ticketText.includes(status)) {
+            visible = false;
+        }
+        
+        if (prioridade && !ticketText.includes(prioridade)) {
+            visible = false;
+        }
+        
+        if (assunto && !ticketText.includes(assunto)) {
+            visible = false;
+        }
+        
+        ticket.style.display = visible ? 'block' : 'none';
+    });
+    
+    showNotification('Filtros aplicados com sucesso!', 'success');
+}
+
+function toggleFaq(element) {
+    const faqItem = element.parentElement;
+    const answer = faqItem.querySelector('.faq-answer');
+    const isActive = element.classList.contains('active');
+    
+    // Close all other FAQ items
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.classList.remove('active');
+        q.parentElement.querySelector('.faq-answer').classList.remove('active');
+    });
+    
+    // Toggle current item
+    if (!isActive) {
+        element.classList.add('active');
+        answer.classList.add('active');
+    }
+}
+
+function downloadManual() {
+    // Simular download do manual
+    const link = document.createElement('a');
+    link.href = '/static/docs/manual-suporte-tecnico.pdf';
+    link.download = 'Manual Suporte Técnico - Sistema Compras Executivo.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showNotification('Download do manual iniciado!', 'success');
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    // Add notification styles if not exist
+    if (!document.querySelector('#notification-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'notification-styles';
+        styles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+                padding: 1rem 1.5rem;
+                z-index: 10000;
+                transform: translateX(400px);
+                transition: all 0.3s ease;
+                min-width: 300px;
+            }
+            
+            .notification.success {
+                border-left: 4px solid #10b981;
+            }
+            
+            .notification.error {
+                border-left: 4px solid #ef4444;
+            }
+            
+            .notification.info {
+                border-left: 4px solid #3b82f6;
+            }
+            
+            .notification.show {
+                transform: translateX(0);
+            }
+            
+            .notification-content {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .notification-content i {
+                font-size: 1.2rem;
+            }
+            
+            .notification.success i {
+                color: #10b981;
+            }
+            
+            .notification.error i {
+                color: #ef4444;
+            }
+            
+            .notification.info i {
+                color: #3b82f6;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Show with animation
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    // Atualizar timestamp do status
+    const now = new Date();
+    const timestamp = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+    const lastUpdateElement = document.getElementById('lastUpdate');
+    if (lastUpdateElement) {
+        lastUpdateElement.textContent = timestamp;
+    }
+    
+    // Validação do formulário de ticket
+    const ticketForm = document.getElementById('ticketForm');
+    if (ticketForm) {
+        ticketForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            if (ticketForm.checkValidity()) {
+                // Simular criação do ticket
+                const ticketNumber = Math.floor(Math.random() * 1000) + 2024000;
+                showNotification(`Ticket #${ticketNumber} criado com sucesso! Você receberá atualizações por e-mail.`, 'success');
+                ticketForm.reset();
+                ticketForm.classList.remove('was-validated');
+                setTimeout(() => {
+                    toggleNovoTicket();
+                }, 2000);
+            }
+            
+            ticketForm.classList.add('was-validated');
+        });
+    }
+    
+    // Auto-detectar navegador e SO
+    const navegadorField = document.getElementById('navegador');
+    const soField = document.getElementById('sistema_operacional');
+    
+    if (navegadorField) {
+        const userAgent = navigator.userAgent;
+        let browser = 'Desconhecido';
+        
+        if (userAgent.includes('Chrome')) browser = 'Chrome';
+        else if (userAgent.includes('Firefox')) browser = 'Firefox';
+        else if (userAgent.includes('Safari')) browser = 'Safari';
+        else if (userAgent.includes('Edge')) browser = 'Edge';
+        
+        navegadorField.value = browser;
+    }
+    
+    if (soField) {
+        const platform = navigator.platform;
+        let os = 'Desconhecido';
+        
+        if (platform.includes('Win')) os = 'Windows';
+        else if (platform.includes('Mac')) os = 'macOS';
+        else if (platform.includes('Linux')) os = 'Linux';
+        
+        soField.value = os;
+    }
+    
+    // Animação de entrada dos cards
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // Observe all cards
+    document.querySelectorAll('.content-card, .sidebar-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+    });
+    
+    // Adicionar efeitos de hover aos botões
+    document.querySelectorAll('.action-btn, .feature-item').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %}

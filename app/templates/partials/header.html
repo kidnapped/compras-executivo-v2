@@ -8,7 +8,13 @@
           <!-- LOGO -->
           <img src="/static/images/govbr-logo.png" alt="gov.br" style="margin-bottom: 0.25rem;">
           <!-- BOTÃO HAMBURGUER -->
-          <button id="menu-toggle-button" class="br-button small circle" type="button" aria-label="Abrir Menu">
+          <button id="menu-toggle-button" 
+                  class="br-button small circle" 
+                  type="button" 
+                  aria-label="Abrir Menu"
+                  data-tooltip-text="Menu" 
+                  data-tooltip-place="bottom" 
+                  data-tooltip-type="info">
             <span>&#9776;</span>
           </button>
         </div>
@@ -27,8 +33,23 @@
       <!-- VERSÃO DESKTOP -->
       <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop" style="align-items: center; gap: 10px;">
         {% if request.session.get('cpf') %}
-          <span style="color: #1351b4; font-weight: bold;" id="cpf-display">{{ request.session.cpf }}</span>
-          <a href="/logout" class="br-button small circle" title="Sair" aria-label="Sair">
+          <div style="display: flex; flex-direction: column; align-items: flex-end; margin-right: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="color: #1351b4; font-weight: bold; font-size: 14px;" id="cpf-display">{{ request.session.cpf }}</span>
+              {% if request.session.get('usuario_name') %}
+                <span style="color: #555; font-weight: 600; font-size: 14px;">{{ request.session.usuario_name }}</span>
+              {% endif %}
+            </div>
+            {% if request.session.get('usuario_role') %}
+              <span style="color: #666; font-size: 12px; font-style: italic;">{{ request.session.usuario_role }}</span>
+            {% endif %}
+          </div>
+          <a href="/logout" 
+             class="br-button small circle" 
+             data-tooltip-text="Sair do sistema" 
+             data-tooltip-place="bottom" 
+             data-tooltip-type="info"
+             aria-label="Sair">
             <i class="fas fa-sign-out-alt"></i>
           </a>
         {% else %}
@@ -38,10 +59,15 @@
         <!-- Separador vertical -->
         <div style="height: 24px; width: 1px; background-color: #ccc; margin: 0 1rem;"></div>
 
-        <!-- Botão menu direito -->
-        <button id="menu-toggle-button-direita" class="br-button small circle" type="button" aria-label="Abrir Menu">
-          <span>&#9776;</span>
-        </button>
+        <!-- Botão Minha Conta -->
+        <a href="/minha-conta" 
+           class="br-button small circle" 
+           data-tooltip-text="Minha conta" 
+           data-tooltip-place="bottom" 
+           data-tooltip-type="info"
+           aria-label="Minha Conta">
+          <i class="fas fa-user-circle"></i>
+        </a>
       </div>
 
       <!-- VERSÃO MOBILE -->

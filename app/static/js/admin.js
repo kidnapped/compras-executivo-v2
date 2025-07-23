@@ -75,7 +75,8 @@ export default {
             col.className = "col-12 col-md-6 col-lg-3 mb-3";
             
             // Apenas "Usuários" está funcional
-            const isDisabled = card.titulo !== "Usuários";
+            // const isDisabled = card.titulo !== "Usuários";
+            const isDisabled = true;
             
             col.innerHTML = `
                 <div class="br-card h-100">
