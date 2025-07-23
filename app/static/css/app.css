@@ -2176,9 +2176,8 @@ div[class*="echarts-tooltip"] {
 }
 
 #ultimos-lancamentos-container .card-header {
-  background-color: #f8f8f8;
-  border-bottom: 1px solid #e9ecef;
-  min-height: 64px;
+  background-color: #ffffff;
+  min-height: 46px;
 }
 
 #ultimos-lancamentos-container .titulo {
@@ -2198,8 +2197,8 @@ div[class*="echarts-tooltip"] {
 
 #ultimos-lancamentos-container .table-responsive {
   overflow: scroll;
-  min-height: 230px !important;
-  max-height: 230px !important;
+  min-height: 103px !important;
+  max-height: 103px !important;
 }
 
 #ultimos-lancamentos-tbody tr {
@@ -2461,7 +2460,7 @@ div[class*="echarts-tooltip"] {
 }
 
 #empenhos-originais-tbody td {
-  padding: 8px 6px;
+  padding: 0px;
   vertical-align: middle;
   border: none;
   font-size: 12px;
@@ -2469,7 +2468,7 @@ div[class*="echarts-tooltip"] {
 
 /* Empenho row styling */
 .empenho-row {
-  font-family: "Rawline", sans-serif;
+  font-family: "Arial", Tahoma;
 }
 
 .empenho-row td:first-child {
@@ -2549,15 +2548,15 @@ div[class*="echarts-tooltip"] {
   }
 
   #empenhos-originais-tbody td {
-    padding: 6px 4px;
+    padding: 0px;
     font-size: 11px;
   }
 
   /* Hide some columns on medium screens */
-  #empenhos-originais-container th:nth-child(8),
-  #empenhos-originais-tbody td:nth-child(8),
-  #empenhos-originais-container th:nth-child(9),
-  #empenhos-originais-tbody td:nth-child(9) {
+  #empenhos-originais-container th:nth-child(5),
+  #empenhos-originais-tbody td:nth-child(5),
+  #empenhos-originais-container th:nth-child(11),
+  #empenhos-originais-tbody td:nth-child(11) {
     display: none;
   }
 }
@@ -2566,6 +2565,10 @@ div[class*="echarts-tooltip"] {
   /* Hide more columns on mobile */
   #empenhos-originais-container th:nth-child(5),
   #empenhos-originais-tbody td:nth-child(5),
+  #empenhos-originais-container th:nth-child(4),
+  #empenhos-originais-tbody td:nth-child(4),
+  #empenhos-originais-container th:nth-child(6),
+  #empenhos-originais-tbody td:nth-child(6),
   #empenhos-originais-container th:nth-child(7),
   #empenhos-originais-tbody td:nth-child(7),
   #empenhos-originais-container th:nth-child(10),
@@ -2580,20 +2583,20 @@ div[class*="echarts-tooltip"] {
   /* Stack filter button on mobile */
   #empenhos-originais-container .card-header .d-flex {
     flex-direction: column;
-    align-items: flex-start !important;
     gap: 10px;
   }
 
   #empenhos-originais-container .card-header .d-flex > div:last-child {
     margin-top: 0 !important;
-    align-self: flex-end;
   }
 }
 
 /* Grid Numerado Financeiro Styles */
 #financeiro-grid-container {
+  min-height: 201px !important;
+  max-height: 201px !important;
+  overflow: hidden !important;
   border-radius: 10px;
-  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -2612,6 +2615,12 @@ div[class*="echarts-tooltip"] {
   margin: -16px 0px 0px -20px;
 }
 
+#financeiro-grid-container .card-content {
+  display: block;
+  font-size: 10px;
+  max-height: 90%;
+}
+
 #financeiro-grid-container .subtitulo {
   font-size: 9px;
   color: #000;
@@ -2619,8 +2628,8 @@ div[class*="echarts-tooltip"] {
 }
 
 #financeiro-grid-tbody {
-  min-height: 201px !important ;
-  max-height: 201px !important;
+  max-height: 100% !important;
+  max-width: 100% !important;
   overflow: scroll !important;
 }
 
@@ -2638,7 +2647,7 @@ div[class*="echarts-tooltip"] {
 }
 
 #financeiro-grid-tbody td {
-  padding: 8px 6px;
+  padding: 0px;
   vertical-align: middle;
   border: none;
   font-size: 12px;
@@ -2841,8 +2850,10 @@ div[class*="echarts-tooltip"] {
 
 @media (max-width: 768px) {
   /* Hide more columns on mobile */
-  #movimentacoes-container th:nth-child(5),
-  #movimentacoes-tbody td:nth-child(5),
+  #movimentacoes-container th:nth-child(4),
+  #movimentacoes-tbody td:nth-child(4),
+  #movimentacoes-container th:nth-child(3),
+  #movimentacoes-tbody td:nth-child(3),
   #movimentacoes-container th:nth-child(7),
   #movimentacoes-tbody td:nth-child(7) {
     display: none;
@@ -3236,7 +3247,6 @@ div[class*="echarts-tooltip"] {
 
 #empenhos-originais-container .table-responsive {
   flex: 1;
-  height: 100%;
 }
 
 /* Right column with equal height cards */

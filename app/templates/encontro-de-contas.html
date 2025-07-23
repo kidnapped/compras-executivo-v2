@@ -5,16 +5,171 @@ Executivo{% endblock %} {% block content %}
   <!-- Header Section -->
   <div class="row mb-4">
     <div class="col-12">
-      <h1>Encontro de Contas</h1>
-      <p class="text-muted">
-        Sistema de análise e reconciliação de contratos e empenhos
-      </p>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1>Encontro de Contas</h1>
+          <p class="text-muted">
+            Sistema de análise e reconciliação de contratos e empenhos
+          </p>
+        </div>
+        <div>
+          <button
+            id="btn-export-excel"
+            class="br-button primary small"
+            type="button"
+            style="display: none"
+            onclick="exportToExcel()"
+          >
+            <i class="fas fa-file-excel"></i> Exportar
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-
-  <!-- Últimos Lançamentos Section -->
   <div class="row mb-4">
-    <div class="col-6">
+    <div class="col-12 col-md-4 col-lg-3 p-1">
+      <div class="br-card h-100 card-contratos">
+        <div class="card-header">
+          <div class="d-flex" style="width: 100%">
+            <div class="ml-3" style="flex-grow: 1">
+              <div class="titulo">
+                <img
+                  src="/static/images/doc2.png"
+                  alt="Ícone"
+                  style="height: 36px; margin: 10px 0px -10px 0px"
+                />
+                Empenhos
+              </div>
+              <div
+                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+              ></div>
+              <div class="subtitulo">Total de empenhos desde 2019</div>
+            </div>
+
+            <div
+              class="ml-auto"
+              style="margin: -10px -10px 0px 0px; position: relative"
+            >
+              <button
+                class="br-button circle kpi-dropdown-btn"
+                type="button"
+                aria-label="Opções de visualização"
+                data-dashlane-label="true"
+                data-dashlane-rid="de64c6a3f21bc3b5"
+                data-dashlane-classification="other"
+              >
+                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-content" style="padding-top: 8px">
+          <div class="valor-principal">804</div>
+          <div class="linha">
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="vigentes"
+              tabindex="0"
+            >
+              <div>Vigentes</div>
+              <div class="valor-azul">375</div>
+            </div>
+            <div class="divider"></div>
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="finalizados"
+              tabindex="0"
+            >
+              <div>Finalizados</div>
+              <div class="valor-azul">429</div>
+            </div>
+            <div class="divider"></div>
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="criticos"
+              tabindex="0"
+            >
+              <div>Críticos</div>
+              <div class="valor-vermelho">36</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-3 p-1">
+      <div class="br-card h-100 card-contratos">
+        <div class="card-header">
+          <div class="d-flex" style="width: 100%">
+            <div class="ml-3" style="flex-grow: 1">
+              <div class="titulo">
+                <img
+                  src="/static/images/doc2.png"
+                  alt="Ícone"
+                  style="height: 36px; margin: 10px 0px -10px 0px"
+                />
+                Empenhos
+              </div>
+              <div
+                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+              ></div>
+              <div class="subtitulo">Total de empenhos desde 2019</div>
+            </div>
+
+            <div
+              class="ml-auto"
+              style="margin: -10px -10px 0px 0px; position: relative"
+            >
+              <button
+                class="br-button circle kpi-dropdown-btn"
+                type="button"
+                aria-label="Opções de visualização"
+                data-dashlane-label="true"
+                data-dashlane-rid="de64c6a3f21bc3b5"
+                data-dashlane-classification="other"
+              >
+                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-content" style="padding-top: 8px">
+          <div class="valor-principal">804</div>
+          <div class="linha">
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="vigentes"
+              tabindex="0"
+            >
+              <div>Vigentes</div>
+              <div class="valor-azul">375</div>
+            </div>
+            <div class="divider"></div>
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="finalizados"
+              tabindex="0"
+            >
+              <div>Finalizados</div>
+              <div class="valor-azul">429</div>
+            </div>
+            <div class="divider"></div>
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="criticos"
+              tabindex="0"
+            >
+              <div>Críticos</div>
+              <div class="valor-vermelho">36</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Últimos Lançamentos Section -->
+
+    <div class="col-12 col-md-4 col-lg-4 p-1">
       <div class="br-card" id="ultimos-lancamentos-container">
         <div class="card-header">
           <div class="d-flex" style="width: 100%">
@@ -38,77 +193,25 @@ Executivo{% endblock %} {% block content %}
         </div>
         <div class="card-content" style="padding: 0">
           <div class="table-responsive">
-            <table class="br-table table-hover">
-              <thead style="background-color: #f8f8f8">
-                <tr>
-                  <th style="width: 60px; border: none">1</th>
-                  <th style="border: none">Data</th>
-                  <th style="width: 60px; border: none">2</th>
-                  <th style="border: none">Detalhes</th>
-                </tr>
-              </thead>
-              <tbody id="ultimos-lancamentos-tbody">
-                <!-- Loading state -->
-                <tr>
-                  <td><i class="fa fa-file-invoice"></i></td>
-                  <td>2025NE001235</td>
-                  <td><i class="fas fa-money-bill-wave"></i></td>
-                  <td>R$ 1.000,00</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Histórico Orçamentário Section -->
-    <div class="col-6">
-      <div class="br-card" id="historico-orcamentario-container">
-        <div class="card-header">
-          <div class="d-flex" style="width: 100%">
-            <div class="ml-3" style="flex-grow: 1">
-              <div class="titulo">
-                <img
-                  src="/static/images/doc2.png"
-                  alt="Ícone"
-                  style="height: 36px; margin: 10px 0px -10px 0px"
-                />
-                Histórico Orçamentário
-              </div>
-              <div
-                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
-              ></div>
-              <div class="subtitulo">Total de empenhos originais</div>
+            <div class="text-muted">
+              <span
+                class="br-spinner small"
+                role="status"
+                aria-label="Carregando"
+              ></span>
             </div>
           </div>
         </div>
-        <div class="card-content" style="padding: 0">
-          <div class="table-responsive">
-            <table class="br-table table-hover">
-              <thead style="background-color: #f8f8f8">
-                <tr>
-                  <th style="width: 60px; border: none"></th>
-                  <th style="border: none">Data</th>
-                  <th style="width: 60px; border: none">Valor</th>
-                </tr>
-              </thead>
-              <tbody id="historico-orcamentario-tbody">
-                <!-- Loading state -->
-                <tr>
-                  <td colspan="3" style="min-height: 300px">
-                    <div
-                      class="br-loading small"
-                      role="progressbar"
-                      aria-label="carregando histórico orçamentário"
-                    ></div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
+  </div>
+
+  <!-- Full-width 12-col chart container above the empenhos list -->
+  <div class="col-12 mb-4">
+    <div
+      id="grafico-financeiro-container"
+      style="width: 100%; height: 400px"
+    ></div>
   </div>
 
   <!-- Empenhos Originais Section with Grid Financeiro and Movimentações -->
@@ -142,55 +245,7 @@ Executivo{% endblock %} {% block content %}
             <div
               class="d-flex align-items-center gap-2"
               style="margin-top: -18px"
-            >
-              <!-- Filter by year button -->
-              <div class="filter-menu-container" style="position: relative">
-                <button
-                  class="br-button small"
-                  type="button"
-                  aria-label="Filtrar por exercício"
-                  onclick="EncontroContas.toggleExercicioFilter()"
-                  id="btn-filtro-exercicio"
-                >
-                  <i class="fas fa-filter"></i> Filtrar por exercício
-                </button>
-                <div
-                  class="filter-dropdown"
-                  id="filtro-exercicio-menu"
-                  style="
-                    display: none;
-                    position: absolute;
-                    top: 100%;
-                    right: 0;
-                    z-index: 999;
-                    background: white;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    padding: 8px;
-                    min-width: 200px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                    margin-top: 4px;
-                  "
-                >
-                  <div style="margin-bottom: 8px">
-                    <div class="br-radio" style="margin-bottom: 4px">
-                      <input
-                        id="radio-todos-exercicios"
-                        type="radio"
-                        name="exercicio"
-                        checked
-                      />
-                      <label for="radio-todos-exercicios"
-                        >Todos os exercícios</label
-                      >
-                    </div>
-                    <div id="exercicios-disponiveis">
-                      <!-- Dynamic year options will be populated here -->
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ></div>
           </div>
         </div>
         <div class="card-content" style="padding: 0">
@@ -198,19 +253,17 @@ Executivo{% endblock %} {% block content %}
             <table class="br-table table-hover table-striped">
               <thead style="background-color: #f8f8f8">
                 <tr>
-                  <th style="width: 40px; border: none">#</th>
-                  <th style="width: 50px; border: none"></th>
+                  <th style="width: 10px; border: none">#</th>
+                  <th style="width: 10px; border: none"></th>
                   <th style="border: none">Empenho</th>
                   <th style="border: none">Data</th>
-                  <th style="width: 50px; border: none"></th>
                   <th style="border: none">Valor</th>
-                  <th style="border: none">Espécie</th>
                   <th style="border: none">Orçamentário</th>
                   <th style="border: none">Finanças</th>
-                  <th style="border: none">Saldo de empenho</th>
+                  <th style="border: none">Saldo</th>
                   <th style="border: none">Status</th>
-                  <th style="width: 50px; border: none"></th>
-                  <th style="width: 50px; border: none"></th>
+                  <th style="width: 10px; border: none"></th>
+                  <th style="width: 10px; border: none"></th>
                 </tr>
               </thead>
               <tbody id="empenhos-originais-tbody">
@@ -247,7 +300,7 @@ Executivo{% endblock %} {% block content %}
                         alt="Ícone"
                         style="height: 36px; margin: 10px 0px -10px 0px"
                       />
-                      Grid Financeiro
+                      Finanças
                     </div>
                     <div
                       style="
@@ -274,7 +327,6 @@ Executivo{% endblock %} {% block content %}
                       <th style="border: none">Tipo</th>
                       <th style="border: none">Parcial</th>
                       <th style="border: none">Nominal</th>
-                      <th style="width: 50px; border: none"></th>
                     </tr>
                   </thead>
                   <tbody id="financeiro-grid-tbody">
@@ -308,7 +360,7 @@ Executivo{% endblock %} {% block content %}
                         alt="Ícone"
                         style="height: 36px; margin: 10px 0px -10px 0px"
                       />
-                      Movimentações Orçamentárias
+                      Orçamentário
                     </div>
                     <div
                       style="
@@ -369,5 +421,12 @@ Executivo{% endblock %} {% block content %}
   <!-- The DetalhesEmpenhos functionality is now integrated into encontro-contas.js -->
   <!-- No additional script needed here as it's initialized with the main controller -->
 </div>
+
+<script type="module">
+  import EncontroContas from "/static/js/encontro/encontro-contas.js";
+</script>
+
+<!-- Include SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 {% endblock %}
