@@ -107,13 +107,9 @@ run-mac: build-static-if-needed
 run-win: build-static-if-needed
 	@set PYTHONPATH=. && python -m uvicorn app.main:app --host=0.0.0.0 --port=8001 --reload
 
-run-prod: build-static-if-needed
-	@echo "Gerando bundle.js com webpack (produção)..."
-	npx webpack
-	@echo "Compilando arquivos Java..."
-	javac -cp vdb/jboss-dv-6.3.0-teiid-jdbc.jar vdb/QueryContratos.java
-	javac -cp vdb/jboss-dv-6.3.0-teiid-jdbc.jar vdb/QueryFinanceiro.java
-	PYTHONPATH=. python3.12 -c "import uvicorn; from app.core.config import settings; uvicorn.run('app.main:app', host='0.0.0.0', port=settings.APP_PORT, reload=True)"
+run-prod:
+	@echo "Iniciando FastAPI com Uvicorn (produção com SSL)..."
+	python3 -m uvicorn app.main:app --host 0.0.0.0 --port 443 --ssl-keyfile /etc/pki/tls/private/server.key --ssl-certfile /etc/pki/tls/certs/server.crt --workers 4 --log-level info
 
 migrate:
 	alembic revision --autogenerate -m "nova migration"
@@ -251,6 +247,9 @@ create-release-package: prepare-release build-static java-build
 	@echo "📦 Preparando release $(VERSION)..."
 	@mkdir -p $(RELEASE_DIR)/{app,config,scripts,docs}
 	
+	# Remove arquivos .DS_Store antes de continuar
+	@find . -name '.DS_Store' -delete 2>/dev/null || true
+	
 	# Arquivos da aplicação
 	@rsync -av --exclude='__pycache__' --exclude='*.pyc' --exclude='.DS_Store' \
 		app/ $(RELEASE_DIR)/app/
@@ -261,8 +260,7 @@ create-release-package: prepare-release build-static java-build
 	@cp alembic.ini $(RELEASE_DIR)/
 	
 	# Copia o .env atual como base e ajusta para produção
-	@cp .env $(RELEASE_DIR)/config/.env
-	@sed -i '' 's/ENVIRONMENT=development/ENVIRONMENT=production/' $(RELEASE_DIR)/config/.env
+	@echo 'ENVIRONMENT=production' > $(RELEASE_DIR)/config/.env
 	
 	# README de configuração
 	@echo "# Configuração de Produção" > $(RELEASE_DIR)/config/README.md
@@ -328,6 +326,8 @@ create-deploy-scripts:
 	@echo '# Backup da versão anterior (renomeia para .<versao>)' >> $(RELEASE_DIR)/scripts/deploy.sh
 	@echo 'if [ -d "$(INSTALL_DIR)" ]; then' >> $(RELEASE_DIR)/scripts/deploy.sh
 	@echo '    echo "📦 Fazendo backup da versão anterior..."' >> $(RELEASE_DIR)/scripts/deploy.sh
+	@echo '    echo "💾 Fazendo dump da tabela blocok..."' >> $(RELEASE_DIR)/scripts/deploy.sh
+	@echo '    pg_dump -h localhost -U postgres -t blocok compras > $(INSTALL_DIR)/backup_blocok_$$(date +%Y%m%d_%H%M%S).sql || echo "⚠️  Erro no dump da tabela blocok"' >> $(RELEASE_DIR)/scripts/deploy.sh
 	@echo '    sudo mv $(INSTALL_DIR) $(INSTALL_DIR).$(VERSION)' >> $(RELEASE_DIR)/scripts/deploy.sh
 	@echo 'fi' >> $(RELEASE_DIR)/scripts/deploy.sh
 	@echo '' >> $(RELEASE_DIR)/scripts/deploy.sh
@@ -417,17 +417,19 @@ create-server-scripts:
 	
 	# Script de systemd
 	@echo '[Unit]' > $(RELEASE_DIR)/scripts/compras-executivo.service
-	@echo 'Description=Compras Executivo FastAPI' >> $(RELEASE_DIR)/scripts/compras-executivo.service
+	@echo 'Description=FastAPI com Uvicorn (root via python3 -m)' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo 'After=network.target' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo '' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo '[Service]' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo 'Type=simple' >> $(RELEASE_DIR)/scripts/compras-executivo.service
-	@echo 'User=ec2-user' >> $(RELEASE_DIR)/scripts/compras-executivo.service
+	@echo 'User=root' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo 'WorkingDirectory=$(INSTALL_DIR)' >> $(RELEASE_DIR)/scripts/compras-executivo.service
-	@echo 'EnvironmentFile=$(INSTALL_DIR)/.env' >> $(RELEASE_DIR)/scripts/compras-executivo.service
-	@echo 'ExecStart=/usr/bin/python3 -m uvicorn app.main:app --host 0.0.0.0 --port 80 --workers 4' >> $(RELEASE_DIR)/scripts/compras-executivo.service
+	@echo 'ExecStartPre=/usr/bin/make -C $(INSTALL_DIR) run-prod' >> $(RELEASE_DIR)/scripts/compras-executivo.service
+	@echo 'ExecStart=/usr/bin/python3 -m uvicorn app.main:app --host 0.0.0.0 --port 443 \' >> $(RELEASE_DIR)/scripts/compras-executivo.service
+	@echo '  --ssl-keyfile /etc/pki/tls/private/server.key \' >> $(RELEASE_DIR)/scripts/compras-executivo.service
+	@echo '  --ssl-certfile /etc/pki/tls/certs/server.crt \' >> $(RELEASE_DIR)/scripts/compras-executivo.service
+	@echo '  --workers 4 --log-level info' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo 'Restart=always' >> $(RELEASE_DIR)/scripts/compras-executivo.service
-	@echo 'RestartSec=10' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo '' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo '[Install]' >> $(RELEASE_DIR)/scripts/compras-executivo.service
 	@echo 'WantedBy=multi-user.target' >> $(RELEASE_DIR)/scripts/compras-executivo.service
@@ -463,7 +465,7 @@ validate-env:
 
 clean-build:
 	@echo "🧹 Limpando diretório de build..."
-	@rm -rf build/*
+	@rm -rf build
 
 # Target principal para release
 release: create-release-package

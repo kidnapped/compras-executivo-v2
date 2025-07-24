@@ -58,6 +58,11 @@ Deploy:
 
     install views SQL
 
+    sudo yum install postgresql15-contrib
+    python3 -m pip install httpx
+    sudo setcap cap_net_bind_service=+ep /usr/bin/python3.9
+    getcap /usr/bin/python3.9
+
 Sincronizar Contratos
     nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneContratosToPostgres </dev/null &>/dev/null & disown
 

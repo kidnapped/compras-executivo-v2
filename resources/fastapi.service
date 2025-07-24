@@ -5,13 +5,12 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/home/ec2-user/py-app
-ExecStartPre=/usr/bin/make -C /home/ec2-user/py-app run-prod
-ExecStart=/usr/bin/python3 -m uvicorn app.main:app \
-  --host 0.0.0.0 \
-  --port 443 \
+WorkingDirectory=/home/ec2-user/compras-executivo
+ExecStartPre=/usr/bin/make -C /home/ec2-user/compras-executivo run-prod
+ExecStart=/usr/bin/python3 -m uvicorn app.main:app --host 0.0.0.0 --port 443 \
   --ssl-keyfile /etc/pki/tls/private/server.key \
-  --ssl-certfile /etc/pki/tls/certs/server.crt
+  --ssl-certfile /etc/pki/tls/certs/server.crt \
+  --workers 4 --log-level info
 Restart=always
 
 [Install]
