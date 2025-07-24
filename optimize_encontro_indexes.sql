@@ -38,6 +38,3 @@ CREATE INDEX idx_wd_doc_darf_id_doc_darf ON wd_doc_darf (id_doc_darf);
 CREATE INDEX idx_wd_doc_gps_id_doc_gps ON wd_doc_gps (id_doc_gps);
 CREATE INDEX idx_wf_doc_ne_id_documento ON wf_doc_ne (id_documento);
 CREATE INDEX idx_wd_doc_dar_id_doc_dar ON wd_doc_dar (id_doc_dar);
-
-CREATE INDEX IF NOT EXISTS idx_contratoempenhos_lookup 
-ON contratoempenhos (contrato_id, unidadeempenho_id, empenho_id, fornecedor_id);
