@@ -2253,8 +2253,7 @@ footer:last-child {
 
 #ultimos-lancamentos-container .table-responsive {
   overflow: scroll;
-  min-height: 103px !important;
-  max-height: 103px !important;
+  height: 100%;
 }
 
 #ultimos-lancamentos-tbody tr {
@@ -2516,7 +2515,7 @@ footer:last-child {
 }
 
 #empenhos-originais-tbody td {
-  padding: 0px;
+  padding: 4px 0px;
   vertical-align: middle;
   border: none;
   font-size: 12px;
@@ -2604,7 +2603,7 @@ footer:last-child {
   }
 
   #empenhos-originais-tbody td {
-    padding: 0px;
+    padding: 4px 0px;
     font-size: 11px;
   }
 
@@ -2703,10 +2702,10 @@ footer:last-child {
 }
 
 #financeiro-grid-tbody td {
-  padding: 0px;
+  padding: 4px 0px;
   vertical-align: middle;
   border: none;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 /* Financial row styling */
@@ -2761,7 +2760,7 @@ footer:last-child {
   }
 
   #financeiro-grid-tbody td {
-    padding: 6px 4px;
+    padding: 4px 0px;
     font-size: 11px;
   }
 
@@ -2836,10 +2835,10 @@ footer:last-child {
 }
 
 #movimentacoes-tbody td {
-  padding: 8px 6px;
+  padding: 4px 0px;
   vertical-align: middle;
   border: none;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 /* Movimentação row styling */
@@ -2893,7 +2892,7 @@ footer:last-child {
   }
 
   #movimentacoes-tbody td {
-    padding: 6px 4px;
+    padding: 4px 0px;
     font-size: 11px;
   }
 

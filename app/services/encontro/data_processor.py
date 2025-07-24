@@ -191,38 +191,105 @@ class DataProcessor:
         
         logger.info(f"Document counts - DAR: {total_dar_docs}, DARF: {total_darf_docs}, GPS: {total_gps_docs}, OB: {total_ob_docs}")
         
+        # Calculate total empenhado value from all empenhos
+        total_empenhado = 0.0
+        for item in contract_data:
+            empenho_data = item.get('empenho', {})
+            empenhado_value = empenho_data.get('empenhado', 0)
+            if empenhado_value:
+                total_empenhado += float(empenhado_value)
+        
+        logger.info(f"Total empenhado calculated: {total_empenhado}")
+        
+        # Calculate total Orçamentário value from all operations with RP logic
+        total_orcamentario = 0.0
+        for item in contract_data:
+            orcamentario_data = item.get('Orçamentário', {})
+            operacoes = orcamentario_data.get('operacoes', [])
+            
+            if operacoes:
+                # Apply the same RP logic as in _process_financial_data
+                # First pass: Find the oldest operation date
+                oldest_operation = None
+                oldest_date = None
+                
+                for op in operacoes:
+                    if op.get('dt_operacao'):
+                        operation_date = self._parse_date_for_comparison(op.get('dt_operacao'))
+                        if operation_date and (oldest_date is None or operation_date < oldest_date):
+                            oldest_date = operation_date
+                            oldest_operation = op
+                
+                # Second pass: Calculate total with RP logic
+                for op in operacoes:
+                    if op.get('va_operacao') is not None:
+                        value = float(op.get('va_operacao', 0))
+                        operation_type = op.get('no_operacao', '').upper()
+                        
+                        # Check if this is an RP operation
+                        is_rp_operation = 'RP' in operation_type
+                        
+                        # Check if this is the oldest operation
+                        is_oldest_operation = (oldest_operation is not None and op is oldest_operation)
+                        
+                        # Apply RP logic: If it's an RP operation and NOT the oldest, count as 0
+                        if is_rp_operation and not is_oldest_operation:
+                            value = 0  # Count as zero to avoid double-counting budget
+                        
+                        # Apply negative value for cancellation/annulment operations
+                        if 'ANULACAO' in operation_type or 'CANCELAMENTO' in operation_type:
+                            value = -value
+                        
+                        total_orcamentario += value
+        
+        logger.info(f"Total Orçamentário calculated: {total_orcamentario}")
+        
         # Calculate total financial value from documents
         total_value = 0.0
+        total_dar_value = 0.0
+        total_darf_value = 0.0
+        total_gps_value = 0.0
+        total_ob_value = 0.0
         
         for item in contract_data:
             financas = item.get('Finanças', {})
             
             # Sum DAR documents
             for dar_doc in financas.get('documentos_dar', []):
-                total_value += float(dar_doc.get('va_principal', 0) or 0)
-                total_value += float(dar_doc.get('va_juros', 0) or 0)
-                total_value += float(dar_doc.get('va_multa', 0) or 0)
+                dar_value = (float(dar_doc.get('va_principal', 0) or 0) + 
+                           float(dar_doc.get('va_juros', 0) or 0) + 
+                           float(dar_doc.get('va_multa', 0) or 0))
+                total_dar_value += dar_value
+                total_value += dar_value
             
             # Sum DARF documents
             for darf_doc in financas.get('documentos_darf', []):
-                total_value += float(darf_doc.get('va_receita', 0) or 0)
-                total_value += float(darf_doc.get('va_juros', 0) or 0)
-                total_value += float(darf_doc.get('va_multa', 0) or 0)
+                darf_value = (float(darf_doc.get('va_receita', 0) or 0) + 
+                            float(darf_doc.get('va_juros', 0) or 0) + 
+                            float(darf_doc.get('va_multa', 0) or 0))
+                total_darf_value += darf_value
+                total_value += darf_value
             
             # Sum GPS documents
             for gps_doc in financas.get('documentos_gps', []):
-                total_value += float(gps_doc.get('va_inss', 0) or 0)
+                gps_value = float(gps_doc.get('va_inss', 0) or 0)
+                total_gps_value += gps_value
+                total_value += gps_value
             
             # Sum OB documents
             for ob_doc in financas.get('linha_evento_ob', []):
-                total_value += float(ob_doc.get('va_linha_evento', 0) or 0)
+                ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
+                total_ob_value += ob_value
+                total_value += ob_value
         
-        logger.info(f"Total financial value calculated: {total_value}")
+        logger.info(f"Total financial values - DAR: {total_dar_value}, DARF: {total_darf_value}, GPS: {total_gps_value}, OB: {total_ob_value}, Total: {total_value}")
         
         return {
             'data': contract_data,
             'summary': {
                 'total_empenhos': total_empenhos,
+                'total_empenhado': total_empenhado,
+                'total_orcamentario': total_orcamentario,
                 'total_documents': {
                     'dar': total_dar_docs,
                     'darf': total_darf_docs,
@@ -230,7 +297,13 @@ class DataProcessor:
                     'ob': total_ob_docs,
                     'total': total_dar_docs + total_darf_docs + total_gps_docs + total_ob_docs
                 },
-                'total_financial_value': total_value
+                'total_financial_value': total_value,
+                'total_financial_by_type': {
+                    'dar': total_dar_value,
+                    'darf': total_darf_value,
+                    'gps': total_gps_value,
+                    'ob': total_ob_value
+                }
             }
         }
 

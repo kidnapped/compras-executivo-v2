@@ -26,9 +26,14 @@ Executivo{% endblock %} {% block content %}
       </div>
     </div>
   </div>
-  <div class="row mb-4">
-    <div class="col-12 col-md-4 col-lg-3 p-1">
-      <div class="br-card h-100 card-contratos" id="empenhos-card">
+  <div class="row mb-4" style="min-height: 250px">
+    <!-- Empenhos Card -->
+    <div class="col-12 col-md-6 col-lg-4 p-1">
+      <div
+        class="br-card card-contratos"
+        id="empenhos-card"
+        style="height: 250px"
+      >
         <div class="card-header">
           <div class="d-flex" style="width: 100%">
             <div class="ml-3" style="flex-grow: 1">
@@ -65,7 +70,7 @@ Executivo{% endblock %} {% block content %}
         </div>
 
         <div class="card-content" style="padding-top: 8px">
-          <div class="valor-principal">804</div>
+          <div class="valor-principal" id="total-empenhos-display">0</div>
           <div class="linha">
             <div
               class="dashboard-card-filter clickable"
@@ -73,7 +78,7 @@ Executivo{% endblock %} {% block content %}
               tabindex="0"
             >
               <div>Em execução</div>
-              <div class="valor-azul">375</div>
+              <div class="valor-azul" id="em-execucao-count">0</div>
             </div>
             <div class="divider"></div>
             <div
@@ -82,7 +87,7 @@ Executivo{% endblock %} {% block content %}
               tabindex="0"
             >
               <div>Finalizados</div>
-              <div class="valor-azul">429</div>
+              <div class="valor-azul" id="finalizados-count">0</div>
             </div>
             <div class="divider"></div>
             <div
@@ -91,29 +96,35 @@ Executivo{% endblock %} {% block content %}
               tabindex="0"
             >
               <div>Rap</div>
-              <div class="valor-vermelho">36</div>
+              <div class="valor-vermelho" id="rap-count">0</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-12 col-md-4 col-lg-3 p-1">
-      <div class="br-card h-100 card-contratos">
+
+    <!-- Valores Totais Card -->
+    <div class="col-12 col-md-6 col-lg-4 p-1">
+      <div
+        class="br-card card-contratos"
+        id="valores-totais-card"
+        style="height: 250px"
+      >
         <div class="card-header">
           <div class="d-flex" style="width: 100%">
             <div class="ml-3" style="flex-grow: 1">
               <div class="titulo">
                 <img
-                  src="/static/images/doc2.png"
+                  src="/static/images/ico/money.png"
                   alt="Ícone"
                   style="height: 36px; margin: 10px 0px -10px 0px"
                 />
-                Empenhos
+                Valores Totais
               </div>
               <div
                 style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
               ></div>
-              <div class="subtitulo">Total de empenhos desde 2019</div>
+              <div class="subtitulo">Comparativo de valores financeiros</div>
             </div>
 
             <div
@@ -124,9 +135,6 @@ Executivo{% endblock %} {% block content %}
                 class="br-button circle kpi-dropdown-btn"
                 type="button"
                 aria-label="Opções de visualização"
-                data-dashlane-label="true"
-                data-dashlane-rid="de64c6a3f21bc3b5"
-                data-dashlane-classification="other"
               >
                 <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
               </button>
@@ -134,43 +142,22 @@ Executivo{% endblock %} {% block content %}
           </div>
         </div>
 
-        <div class="card-content" style="padding-top: 8px">
-          <div class="valor-principal">804</div>
-          <div class="linha">
-            <div
-              class="dashboard-card-filter clickable"
-              data-filter="vigentes"
-              tabindex="0"
-            >
-              <div>Vigentes</div>
-              <div class="valor-azul">375</div>
-            </div>
-            <div class="divider"></div>
-            <div
-              class="dashboard-card-filter clickable"
-              data-filter="finalizados"
-              tabindex="0"
-            >
-              <div>Finalizados</div>
-              <div class="valor-azul">429</div>
-            </div>
-            <div class="divider"></div>
-            <div
-              class="dashboard-card-filter clickable"
-              data-filter="criticos"
-              tabindex="0"
-            >
-              <div>Críticos</div>
-              <div class="valor-vermelho">36</div>
-            </div>
-          </div>
+        <div class="card-content" style="padding: 16px">
+          <div
+            id="valores-totais-chart"
+            style="height: 180px; width: 100%"
+          ></div>
         </div>
       </div>
     </div>
-    <!-- Últimos Lançamentos Section -->
 
-    <div class="col-12 col-md-4 col-lg-4 p-1">
-      <div class="br-card" id="ultimos-lancamentos-container">
+    <!-- Últimos Lançamentos Card -->
+    <div class="col-12 col-md-12 col-lg-4 p-1">
+      <div
+        class="br-card"
+        id="ultimos-lancamentos-container"
+        style="height: 250px"
+      >
         <div class="card-header">
           <div class="d-flex" style="width: 100%">
             <div class="ml-3" style="flex-grow: 1">
@@ -191,9 +178,12 @@ Executivo{% endblock %} {% block content %}
             </div>
           </div>
         </div>
-        <div class="card-content" style="padding: 0">
+        <div
+          class="card-content"
+          style="padding: 0; height: calc(100% - 60px); overflow-y: auto"
+        >
           <div class="table-responsive">
-            <div class="text-muted">
+            <div class="text-muted text-center" style="padding: 20px">
               <span
                 class="br-spinner small"
                 role="status"
@@ -218,7 +208,11 @@ Executivo{% endblock %} {% block content %}
   <div class="row mb-4 encontro-cards-row">
     <!-- Empenhos Originais - Left side (col-lg-8) -->
     <div class="col-lg-8">
-      <div class="br-card" id="empenhos-originais-container">
+      <div
+        class="br-card"
+        id="empenhos-originais-container"
+        style="height: 500px"
+      >
         <div class="card-header">
           <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex" style="width: 100%">
@@ -248,7 +242,10 @@ Executivo{% endblock %} {% block content %}
             ></div>
           </div>
         </div>
-        <div class="card-content" style="padding: 0">
+        <div
+          class="card-content"
+          style="padding: 0; height: calc(100% - 80px); overflow-y: auto"
+        >
           <div class="table-responsive">
             <table class="br-table table-hover table-striped">
               <thead style="background-color: #f8f8f8">
@@ -287,9 +284,79 @@ Executivo{% endblock %} {% block content %}
     <!-- Right side - Grid Financeiro and Movimentações stacked (col-lg-4) -->
     <div class="col-lg-4">
       <div class="encontro-right-column">
-        <!-- Grid Numerado Financeiro Section -->
+        <!-- Movimentações Orçamentárias Section -->
         <div class="mb-4">
-          <div class="br-card" id="financeiro-grid-container">
+          <div
+            class="br-card"
+            id="movimentacoes-container"
+            style="height: 240px"
+          >
+            <div class="card-header">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex" style="width: 100%">
+                  <div class="ml-3" style="flex-grow: 1">
+                    <div class="titulo">
+                      <img
+                        src="/static/images/doc2.png"
+                        alt="Ícone"
+                        style="height: 36px; margin: 10px 0px -10px 0px"
+                      />
+                      Orçamentário
+                    </div>
+                    <div
+                      style="
+                        border-bottom: 1px solid #ccc;
+                        margin: -6px 0px 0px 26px;
+                      "
+                    ></div>
+                    <div class="subtitulo">
+                      Lista de movimentações orçamentárias do contrato
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card-content"
+              style="padding: 0; height: calc(100% - 80px); overflow-y: auto"
+            >
+              <div class="table-responsive">
+                <table class="br-table table-hover table-striped">
+                  <thead style="background-color: #f8f8f8">
+                    <tr>
+                      <th style="width: 40px; border: none">#</th>
+                      <th style="border: none">Data</th>
+                      <th style="border: none">Empenho</th>
+                      <th style="width: 50px; border: none"></th>
+                      <th style="border: none">Espécie</th>
+                      <th style="border: none">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody id="movimentacoes-tbody">
+                    <!-- Loading state -->
+                    <tr>
+                      <td colspan="6" class="text-center" style="padding: 40px">
+                        <div class="text-muted">
+                          <i class="fas fa-exchange-alt fa-2x mb-3"></i>
+                          <br />
+                          Dados de movimentações carregados automaticamente
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid Numerado Financeiro Section -->
+        <div>
+          <div
+            class="br-card"
+            id="financeiro-grid-container"
+            style="height: 240px"
+          >
             <div class="card-header">
               <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex" style="width: 100%">
@@ -315,7 +382,10 @@ Executivo{% endblock %} {% block content %}
                 </div>
               </div>
             </div>
-            <div class="card-content" style="padding: 0">
+            <div
+              class="card-content"
+              style="padding: 0; height: calc(100% - 80px); overflow-y: auto"
+            >
               <div class="table-responsive">
                 <table class="br-table table-hover table-striped">
                   <thead style="background-color: #f8f8f8">
@@ -346,76 +416,249 @@ Executivo{% endblock %} {% block content %}
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Movimentações Orçamentárias Section -->
-        <div>
-          <div class="br-card" id="movimentacoes-container">
-            <div class="card-header">
-              <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex" style="width: 100%">
-                  <div class="ml-3" style="flex-grow: 1">
-                    <div class="titulo">
-                      <img
-                        src="/static/images/doc2.png"
-                        alt="Ícone"
-                        style="height: 36px; margin: 10px 0px -10px 0px"
-                      />
-                      Orçamentário
+  <!-- Contract Analysis Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div
+        class="br-card"
+        id="contract-analysis-card"
+        style="min-height: 600px"
+      >
+        <div class="card-header">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex" style="width: 100%">
+              <div class="ml-3" style="flex-grow: 1">
+                <div class="titulo">
+                  <i
+                    class="fas fa-chart-bar"
+                    style="
+                      color: #1351b4;
+                      font-size: 24px;
+                      margin: -10px 0px 10px 0px;
+                      width: 36px;
+                      height: 36px;
+                      display: inline-flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  ></i>
+                  Análise Gerencial do Contrato
+                </div>
+                <div
+                  style="
+                    border-bottom: 1px solid #ccc;
+                    margin: -6px 0px 0px 26px;
+                  "
+                ></div>
+                <div class="subtitulo" style="padding-left: 40px">
+                  Informações estratégicas para gestão e tomada de decisão
+                </div>
+              </div>
+            </div>
+            <div
+              class="d-flex align-items-center gap-2"
+              style="margin-top: -18px"
+            >
+              <button
+                class="br-button circle"
+                type="button"
+                onclick="refreshContractAnalysis()"
+                aria-label="Atualizar análise"
+              >
+                <i class="fas fa-sync-alt" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-content" style="padding: 20px">
+          <!-- Analysis Loading State -->
+          <div
+            id="analysis-loading"
+            class="text-center"
+            style="padding: 40px; display: block"
+          >
+            <span
+              class="br-spinner"
+              role="status"
+              aria-label="Carregando análise"
+            ></span>
+            <p class="text-muted mt-3">Processando dados do contrato...</p>
+          </div>
+
+          <!-- Analysis Content -->
+          <div id="analysis-content" style="display: none">
+            <!-- Key Performance Indicators Row -->
+            <div class="row mb-4">
+              <div class="col-md-3">
+                <div class="analysis-metric">
+                  <div class="metric-label">Taxa de Execução</div>
+                  <div class="metric-value" id="execution-rate">0%</div>
+                  <div class="metric-trend" id="execution-trend"></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="analysis-metric">
+                  <div class="metric-label">Eficiência de Pagamento</div>
+                  <div class="metric-value" id="payment-efficiency">0%</div>
+                  <div class="metric-trend" id="payment-trend"></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="analysis-metric">
+                  <div class="metric-label">Tempo Médio RAP</div>
+                  <div class="metric-value" id="rap-avg-time">0 dias</div>
+                  <div class="metric-trend" id="rap-trend"></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="analysis-metric">
+                  <div class="metric-label">Risk Score</div>
+                  <div class="metric-value" id="risk-score">Baixo</div>
+                  <div class="metric-trend" id="risk-trend"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detailed Analysis Sections -->
+            <div class="row">
+              <!-- Financial Health -->
+              <div class="col-md-6 mb-4">
+                <div class="analysis-section">
+                  <h5 class="section-title">
+                    <i class="fas fa-chart-line text-primary"></i>
+                    Saúde Financeira
+                  </h5>
+                  <div class="section-content">
+                    <div class="analysis-item">
+                      <span class="item-label">Saldo Disponível:</span>
+                      <span class="item-value" id="available-balance"
+                        >R$ 0,00</span
+                      >
                     </div>
-                    <div
-                      style="
-                        border-bottom: 1px solid #ccc;
-                        margin: -6px 0px 0px 26px;
-                      "
-                    ></div>
-                    <div class="subtitulo">
-                      Lista de movimentações orçamentárias do contrato
+                    <div class="analysis-item">
+                      <span class="item-label">Comprometimento:</span>
+                      <span class="item-value" id="commitment-level">0%</span>
+                    </div>
+                    <div class="analysis-item">
+                      <span class="item-label">Projeção de Encerramento:</span>
+                      <span class="item-value" id="closure-projection">--</span>
+                    </div>
+                    <div class="progress-container mt-3">
+                      <div class="progress-label">Execução Orçamentária</div>
+                      <div class="progress" style="height: 20px">
+                        <div
+                          class="progress-bar bg-success"
+                          id="budget-progress"
+                          style="width: 0%"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Patterns -->
+              <div class="col-md-6 mb-4">
+                <div class="analysis-section">
+                  <h5 class="section-title">
+                    <i class="fas fa-credit-card text-success"></i>
+                    Padrões de Pagamento
+                  </h5>
+                  <div class="section-content">
+                    <div class="analysis-item">
+                      <span class="item-label">Frequência de Pagamento:</span>
+                      <span class="item-value" id="payment-frequency">--</span>
+                    </div>
+                    <div class="analysis-item">
+                      <span class="item-label">Valor Médio por Pagamento:</span>
+                      <span class="item-value" id="avg-payment-value"
+                        >R$ 0,00</span
+                      >
+                    </div>
+                    <div class="analysis-item">
+                      <span class="item-label">Último Pagamento:</span>
+                      <span class="item-value" id="last-payment-date">--</span>
+                    </div>
+                    <div class="analysis-item">
+                      <span class="item-label"
+                        >Próximo Pagamento Estimado:</span
+                      >
+                      <span class="item-value" id="next-payment-estimate"
+                        >--</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk Analysis -->
+              <div class="col-md-6 mb-4">
+                <div class="analysis-section">
+                  <h5 class="section-title">
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    Análise de Riscos
+                  </h5>
+                  <div class="section-content">
+                    <div class="risk-alerts" id="risk-alerts">
+                      <!-- Risk alerts will be populated here -->
+                    </div>
+                    <div class="analysis-item mt-3">
+                      <span class="item-label">Empenhos em RAP:</span>
+                      <span class="item-value" id="rap-empenhos-count">0</span>
+                    </div>
+                    <div class="analysis-item">
+                      <span class="item-label">Valor Total em RAP:</span>
+                      <span class="item-value" id="rap-total-value"
+                        >R$ 0,00</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Performance Insights -->
+              <div class="col-md-6 mb-4">
+                <div class="analysis-section">
+                  <h5 class="section-title">
+                    <i class="fas fa-lightbulb text-info"></i>
+                    Insights de Performance
+                  </h5>
+                  <div class="section-content">
+                    <div class="insights-list" id="performance-insights">
+                      <!-- Performance insights will be populated here -->
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="card-content" style="padding: 0">
-              <div class="table-responsive">
-                <table class="br-table table-hover table-striped">
-                  <thead style="background-color: #f8f8f8">
-                    <tr>
-                      <th style="width: 40px; border: none">#</th>
-                      <th style="border: none">Data</th>
-                      <th style="border: none">Empenho</th>
-                      <th style="width: 50px; border: none"></th>
-                      <th style="border: none">Espécie</th>
-                      <th style="border: none">Valor</th>
-                      <th style="width: 50px; border: none"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="movimentacoes-tbody">
-                    <!-- Loading state -->
-                    <tr>
-                      <td colspan="7" class="text-center" style="padding: 40px">
-                        <div class="text-muted">
-                          <i class="fas fa-exchange-alt fa-2x mb-3"></i>
-                          <br />
-                          Dados de movimentações carregados automaticamente
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+
+            <!-- Recommendations Section -->
+            <div class="row">
+              <div class="col-12">
+                <div class="analysis-section">
+                  <h5 class="section-title">
+                    <i class="fas fa-clipboard-list text-primary"></i>
+                    Recomendações Gerenciais
+                  </h5>
+                  <div class="section-content">
+                    <div
+                      class="recommendations-list"
+                      id="management-recommendations"
+                    >
+                      <!-- Recommendations will be populated here -->
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Results Section -->
-  <div id="empenhos-results" class="col-6">
-    <!-- Results will be displayed here dynamically -->
-    <div class="text-center text-muted" style="padding: 60px">
-      <i class="fas fa-search fa-3x mb-3"></i>
-      <h5>Aguardando Consulta</h5>
     </div>
   </div>
   <!-- The DetalhesEmpenhos functionality is now integrated into encontro-contas.js -->
@@ -424,9 +667,169 @@ Executivo{% endblock %} {% block content %}
 
 <script type="module">
   import EncontroContas from "/static/js/encontro/encontro-contas.js";
+
+  // Global function for refresh button
+  window.refreshContractAnalysis = function () {
+    if (window.EncontroContas) {
+      window.EncontroContas.renderContractAnalysis();
+    }
+  };
 </script>
 
 <!-- Include SheetJS for Excel export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- Contract Analysis Styles -->
+<style>
+  .analysis-metric {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    border-left: 4px solid #1351b4;
+    height: 100%;
+  }
+
+  .metric-label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1351b4;
+    margin-bottom: 4px;
+  }
+
+  .metric-trend {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .metric-trend.positive {
+    color: #28a745;
+  }
+
+  .metric-trend.negative {
+    color: #dc3545;
+  }
+
+  .metric-trend.neutral {
+    color: #6c757d;
+  }
+
+  .analysis-section {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    height: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .section-title {
+    color: #495057;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .section-title i {
+    margin-right: 8px;
+  }
+
+  .analysis-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f3f4;
+  }
+
+  .analysis-item:last-child {
+    border-bottom: none;
+  }
+
+  .item-label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 14px;
+  }
+
+  .item-value {
+    font-weight: 600;
+    color: #1351b4;
+    font-size: 14px;
+  }
+
+  .progress-container {
+    margin-top: 15px;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  .risk-alert {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .risk-alert.high {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+  }
+
+  .risk-alert.medium {
+    background: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+  }
+
+  .risk-alert.low {
+    background: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+  }
+
+  .insight-item,
+  .recommendation-item {
+    background: #f8f9fa;
+    border-left: 4px solid #1351b4;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 0 4px 4px 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .recommendation-item {
+    border-left-color: #28a745;
+  }
+
+  .insight-item .icon,
+  .recommendation-item .icon {
+    color: #1351b4;
+    margin-right: 8px;
+  }
+
+  .recommendation-item .icon {
+    color: #28a745;
+  }
+</style>
 
 {% endblock %}

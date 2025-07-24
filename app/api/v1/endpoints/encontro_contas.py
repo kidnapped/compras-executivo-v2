@@ -81,12 +81,15 @@ async def get_tudo_data(
         formatted_response = {
             "contrato_id": contrato_id,
             "total_empenhos": result.get('summary', {}).get('total_empenhos', 0),
+            "total_empenhado": result.get('summary', {}).get('total_empenhado', 0),
+            "total_orcamentario": result.get('summary', {}).get('total_orcamentario', 0),
             "total_documents": result.get('summary', {}).get('total_documents', {}),
             "total_financial_value": result.get('summary', {}).get('total_financial_value', 0),
+            "total_financial_by_type": result.get('summary', {}).get('total_financial_by_type', {}),
             "empenhos_data": result.get('data', [])
         }
         
-        logger.info(f"Successfully processed contract {contrato_id} with {formatted_response['total_empenhos']} empenhos")
+        logger.info(f"Successfully processed contract {contrato_id} with {formatted_response['total_empenhos']} empenhos, total empenhado: {formatted_response['total_empenhado']}, total orçamentário: {formatted_response['total_orcamentario']}")
         return formatted_response
 
     except HTTPException:

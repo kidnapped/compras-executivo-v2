@@ -5,28 +5,28 @@ import card_kpi from "../card.js";
 // BR Design System Color Palette
 export const BR_COLORS = {
   // Primary colors
-  primary: '#1351b4',     // Blue primary
-  primaryDark: '#0f4394', // Blue primary dark
-  primaryLight: '#4f83cc', // Blue primary light
-  
-  // Secondary colors  
-  secondary: '#10b981',   // Green secondary
-  secondaryDark: '#059669', // Green secondary dark
-  secondaryLight: '#34d399', // Green secondary light
-  
+  primary: "#1351b4", // Blue primary
+  primaryDark: "#0f4394", // Blue primary dark
+  primaryLight: "#4f83cc", // Blue primary light
+
+  // Secondary colors
+  secondary: "#10b981", // Green secondary
+  secondaryDark: "#059669", // Green secondary dark
+  secondaryLight: "#34d399", // Green secondary light
+
   // Neutral colors
-  warning: '#dc3545',     // Warm red (instead of orange)
-  warningDark: '#c82333', // Dark warm red
-  danger: '#ef4444',      // Red danger
-  dangerDark: '#dc2626',  // Red danger dark
-  info: '#3b82f6',        // Blue info
-  infoDark: '#2563eb',    // Blue info dark
-  success: '#10b981',     // Green success
-  successDark: '#059669', // Green success dark
-  
+  warning: "#dc3545", // Warm red (instead of orange)
+  warningDark: "#c82333", // Dark warm red
+  danger: "#ef4444", // Red danger
+  dangerDark: "#dc2626", // Red danger dark
+  info: "#3b82f6", // Blue info
+  infoDark: "#2563eb", // Blue info dark
+  success: "#10b981", // Green success
+  successDark: "#059669", // Green success dark
+
   // Additional colors
-  yellow: '#eab308',      // Yellow
-  yellowDark: '#ca8a04',  // Yellow dark
+  yellow: "#eab308", // Yellow
+  yellowDark: "#ca8a04", // Yellow dark
 };
 
 export const fetchKpiData = async (endpoint = "/kpis/kpi1") => {
