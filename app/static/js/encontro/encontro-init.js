@@ -92,16 +92,16 @@ const EncontroInit = {
     }
 
     // 1. Replace "Últimos Lançamentos" card
-    this.createUltimosLancamentosCard();
+    //this.createUltimosLancamentosCard();
 
     // 2. Replace "Histórico Orçamentário" card
-    this.createHistoricoOrcamentarioCard();
+    //this.createHistoricoOrcamentarioCard();
 
     // 3. Replace "Empenhos Originais" card
-    this.createEmpenhosOriginaisCard();
+    //this.createEmpenhosOriginaisCard();
 
     // 4. Create additional test cards
-    this.createTestCards();
+    // this.createTestCards();
   },
 
   /**
@@ -139,19 +139,19 @@ const EncontroInit = {
         {
           icon: "📄",
           data: "15/01/2025",
-          money: "💰",
-          detalhes: "Empenho Original - R$ 5.000,00",
+          money: "ℹ️",
+          detalhes: "2023NE000983 - R$ 5.000,00",
         },
         {
           icon: "📄",
           data: "16/01/2025",
-          money: "💰",
+          money: "ℹ️",
           detalhes: "Pagamento Parcial - R$ 2.500,00",
         },
         {
           icon: "📄",
           data: "17/01/2025",
-          money: "💰",
+          money: "ℹ️",
           detalhes: "Saldo Restante - R$ 2.500,00",
         },
       ]);
@@ -183,6 +183,8 @@ const EncontroInit = {
       title: "Histórico Orçamentário",
       subtitle: "Total de empenhos originais",
       tbodyId: "historico-orcamentario-tbody",
+      headers: ["", "Data", "Valor"],
+      containerClass: "h-100",
     });
 
     container.parentNode.replaceChild(card, container);
@@ -192,22 +194,19 @@ const EncontroInit = {
     setTimeout(() => {
       CardGenerator.populateTable("historico-orcamentario-tbody", [
         {
-          numero: "001",
-          data: "10/01/2025",
-          tipo: "Empenho Original",
-          valor: "R$ 10.000,00",
+          icon: "📊",
+          data: "Janeiro/2025",
+          valor: "R$ 15.000,00",
         },
         {
-          numero: "002",
-          data: "15/01/2025",
-          tipo: "Reforço",
-          valor: "R$ 5.000,00",
+          icon: "📈",
+          data: "Dezembro/2024",
+          valor: "R$ 12.500,00",
         },
         {
-          numero: "003",
-          data: "20/01/2025",
-          tipo: "Anulação Parcial",
-          valor: "- R$ 2.000,00",
+          icon: "📊",
+          data: "Novembro/2024",
+          valor: "R$ 8.750,00",
         },
       ]);
     }, 750);
@@ -236,7 +235,19 @@ const EncontroInit = {
       title: "Empenhos Originais",
       subtitle: "Lista numerada de empenhos do contrato",
       tbodyId: "empenhos-originais-tbody",
-      headers: ["#", "Número do Empenho", "Data", "Valor", "Status"],
+      headers: [
+        "#",
+        "C",
+        "Empenho",
+        "Data",
+        "Valor",
+        "Espécie",
+        "Orçamentária",
+        "finanças",
+        "Saldo",
+        "PP",
+        "G",
+      ],
       containerClass: "h-100",
     });
 
@@ -309,6 +320,7 @@ const EncontroInit = {
       title: "Grid Financeiro",
       subtitle: "Movimentações financeiras detalhadas",
       tbodyId: "financeiro-grid-tbody",
+      headers: ["#", "Data", "Padamento", "i", "Tipo", "Parcial", "Nominal"],
     });
 
     // Replace content but keep the container structure
@@ -350,16 +362,20 @@ const EncontroInit = {
     if (!CardGenerator) return;
 
     const container = document.querySelector("#movimentacoes-container");
-    if (!container) return;
+    if (!container) {
+      console.warn("Container #movimentacoes-container not found");
+      return;
+    }
 
     const card = CardGenerator.createCard({
       title: "Movimentações",
-      subtitle: "Histórico completo de movimentações",
+      subtitle: "Histórico de movimentações do contrato",
       tbodyId: "movimentacoes-tbody",
-      headers: ["Data/Hora", "Tipo", "Usuário", "Descrição"],
+      headers: ["Data", "Tipo", "Valor", "Status"],
       containerClass: "h-100",
     });
 
+    // Replace content but keep the container structure
     container.innerHTML = "";
     container.appendChild(card.querySelector(".card-header"));
     container.appendChild(card.querySelector(".card-content"));
@@ -368,22 +384,22 @@ const EncontroInit = {
     setTimeout(() => {
       CardGenerator.populateTable("movimentacoes-tbody", [
         {
-          dataHora: "15/01/2025 14:30",
-          tipo: "Criação",
-          usuario: "João Silva",
-          descricao: "Contrato criado",
-        },
-        {
-          dataHora: "16/01/2025 09:15",
+          data: "15/01/2025",
           tipo: "Empenho",
-          usuario: "Maria Santos",
-          descricao: "Empenho adicionado",
+          valor: "R$ 10.000,00",
+          status: "✅ Confirmado",
         },
         {
-          dataHora: "17/01/2025 16:45",
+          data: "18/01/2025",
+          tipo: "Liquidação",
+          valor: "R$ 8.500,00",
+          status: "✅ Processado",
+        },
+        {
+          data: "20/01/2025",
           tipo: "Pagamento",
-          usuario: "Pedro Lima",
-          descricao: "Pagamento processado",
+          valor: "R$ 7.200,00",
+          status: "⏳ Pendente",
         },
       ]);
     }, 1500);
