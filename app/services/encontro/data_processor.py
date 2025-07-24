@@ -182,17 +182,42 @@ class DataProcessor:
     def create_summary_response(self, contract_data: List[Dict]) -> Dict[str, Any]:
         """Create a summary response with aggregated data"""
         total_empenhos = len(contract_data)
-        total_dar_docs = sum(len(item.get('documentos_dar', [])) for item in contract_data)
-        total_darf_docs = sum(len(item.get('documentos_darf', [])) for item in contract_data)
-        total_gps_docs = sum(len(item.get('documentos_gps', [])) for item in contract_data)
-        total_ob_docs = sum(len(item.get('linha_evento_ob', [])) for item in contract_data)
+        
+        # Count documents from the correct nested structure
+        total_dar_docs = sum(len(item.get('Finanças', {}).get('documentos_dar', [])) for item in contract_data)
+        total_darf_docs = sum(len(item.get('Finanças', {}).get('documentos_darf', [])) for item in contract_data)
+        total_gps_docs = sum(len(item.get('Finanças', {}).get('documentos_gps', [])) for item in contract_data)
+        total_ob_docs = sum(len(item.get('Finanças', {}).get('linha_evento_ob', [])) for item in contract_data)
         
         logger.info(f"Document counts - DAR: {total_dar_docs}, DARF: {total_darf_docs}, GPS: {total_gps_docs}, OB: {total_ob_docs}")
         
-        total_value = sum(
-            item.get('financial', {}).get('totals', {}).get('total_operacao', 0) 
-            for item in contract_data
-        )
+        # Calculate total financial value from documents
+        total_value = 0.0
+        
+        for item in contract_data:
+            financas = item.get('Finanças', {})
+            
+            # Sum DAR documents
+            for dar_doc in financas.get('documentos_dar', []):
+                total_value += float(dar_doc.get('va_principal', 0) or 0)
+                total_value += float(dar_doc.get('va_juros', 0) or 0)
+                total_value += float(dar_doc.get('va_multa', 0) or 0)
+            
+            # Sum DARF documents
+            for darf_doc in financas.get('documentos_darf', []):
+                total_value += float(darf_doc.get('va_receita', 0) or 0)
+                total_value += float(darf_doc.get('va_juros', 0) or 0)
+                total_value += float(darf_doc.get('va_multa', 0) or 0)
+            
+            # Sum GPS documents
+            for gps_doc in financas.get('documentos_gps', []):
+                total_value += float(gps_doc.get('va_inss', 0) or 0)
+            
+            # Sum OB documents
+            for ob_doc in financas.get('linha_evento_ob', []):
+                total_value += float(ob_doc.get('va_linha_evento', 0) or 0)
+        
+        logger.info(f"Total financial value calculated: {total_value}")
         
         return {
             'data': contract_data,

@@ -28,7 +28,7 @@ Executivo{% endblock %} {% block content %}
   </div>
   <div class="row mb-4">
     <div class="col-12 col-md-4 col-lg-3 p-1">
-      <div class="br-card h-100 card-contratos">
+      <div class="br-card h-100 card-contratos" id="empenhos-card">
         <div class="card-header">
           <div class="d-flex" style="width: 100%">
             <div class="ml-3" style="flex-grow: 1">
@@ -72,7 +72,7 @@ Executivo{% endblock %} {% block content %}
               data-filter="vigentes"
               tabindex="0"
             >
-              <div>Vigentes</div>
+              <div>Em execução</div>
               <div class="valor-azul">375</div>
             </div>
             <div class="divider"></div>
@@ -90,7 +90,7 @@ Executivo{% endblock %} {% block content %}
               data-filter="criticos"
               tabindex="0"
             >
-              <div>Críticos</div>
+              <div>Rap</div>
               <div class="valor-vermelho">36</div>
             </div>
           </div>
