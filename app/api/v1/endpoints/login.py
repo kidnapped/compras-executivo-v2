@@ -64,12 +64,13 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
         # Se CPF for tudo zero, usar valores padrão
         if cpf_logged == "00000000000":  # CPF sem formatação do banco
             print("🔧 USANDO VALORES PADRÃO PARA CPF DE TESTE")
+            request.session["cpf"] = '31352752808'
             request.session["uasgs"] = [393003]  # Array de UASGs
             request.session["usuario_id"] = 198756  # Valor único
             request.session["usuario_role"] = "Consulta Global"  # Valor único
             request.session["usuario_scope"] = "global"  # Valor único
-            request.session["usuario_name"] = "Desenvolvedor"  # Nome padrão
-            request.session["usuario_email"] = "teste@comprasexecutivo.sistema.gov.br"  # Email padrão
+            request.session["usuario_name"] = "Adriano Carneiro"  # Nome padrão
+            request.session["usuario_email"] = "adriano.carneiro@sp.gov.br"  # Email padrão
             print(f"✅ SESSÃO CONFIGURADA: uasgs={request.session['uasgs']}, usuario_id={request.session['usuario_id']}")
         else:
             print(f"🔍 BUSCANDO DADOS PARA CPF: {cpf_logged}")

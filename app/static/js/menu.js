@@ -8,11 +8,12 @@ export default {
     { texto: "Minha Conta", url: "/minha-conta", icone: "fas fa-user-circle" },
     { texto: "Suporte", url: "/suporte", icone: "fas fa-headset" },
     { texto: "Ajuda", url: "/ajuda", icone: "fas fa-question-circle" },
+    { texto: "dev-ops", url: "/dev-ops", icone: "fas fa-tools" },
     { texto: "Sair", url: "/logout", icone: "fas fa-sign-out-alt" },
   ],
 
   // Development-only menu items
-  devMenuItems: [{ texto: "dev-ops", url: "/dev-ops", icone: "fas fa-tools" }],
+  devMenuItems: [],
 
   // Check if we're in development mode
   isDevelopmentMode() {
