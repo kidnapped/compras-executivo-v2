@@ -60,7 +60,7 @@ export const initKpi4 = async () => {
             {
               ...option.series[0],
               label: {
-                show: true,
+                show: false,
                 position: "inside",
                 formatter: (params) => {
                   const dataIndex = params.dataIndex;

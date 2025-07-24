@@ -15,6 +15,7 @@ export const initKpi2 = async () => {
       cardTitle: kpiData.titulo,
       cardSubtitle: kpiData.subtitulo,
       chartType: "pie",
+      colorPalette: "status", // Use status colors for contract compliance
       labels: ["Total contratos", "Sem Licitacao"],
       values: [kpiData.total_contratos, kpiData.contratos_sem_licitacao],
     });

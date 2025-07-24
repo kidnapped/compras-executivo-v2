@@ -2,6 +2,33 @@
 import getEcharts from "../../util/echarts.js";
 import card_kpi from "../card.js";
 
+// BR Design System Color Palette
+export const BR_COLORS = {
+  // Primary colors
+  primary: '#1351b4',     // Blue primary
+  primaryDark: '#0f4394', // Blue primary dark
+  primaryLight: '#4f83cc', // Blue primary light
+  
+  // Secondary colors  
+  secondary: '#10b981',   // Green secondary
+  secondaryDark: '#059669', // Green secondary dark
+  secondaryLight: '#34d399', // Green secondary light
+  
+  // Neutral colors
+  warning: '#dc3545',     // Warm red (instead of orange)
+  warningDark: '#c82333', // Dark warm red
+  danger: '#ef4444',      // Red danger
+  dangerDark: '#dc2626',  // Red danger dark
+  info: '#3b82f6',        // Blue info
+  infoDark: '#2563eb',    // Blue info dark
+  success: '#10b981',     // Green success
+  successDark: '#059669', // Green success dark
+  
+  // Additional colors
+  yellow: '#eab308',      // Yellow
+  yellowDark: '#ca8a04',  // Yellow dark
+};
+
 export const fetchKpiData = async (endpoint = "/kpis/kpi1") => {
   const res = await fetch(endpoint);
   if (!res.ok) throw new Error("Erro ao carregar dados do KPI");
@@ -17,14 +44,14 @@ export const getBaseChartOption = ({
   if (chartType === "pie") {
     return {
       tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
-      legend: { orient: "vertical", left: "left" },
+      legend: { show: false }, // Hide legend by default
       grid: { left: 40, right: 40, bottom: 40, top: 40, containLabel: true },
       series: [
         {
           name: cardTitle,
           type: "pie",
           radius: ["40%", "65%"],
-          center: ["55%", "50%"], // Shift center to account for legend
+          center: ["50%", "50%"], // Center the pie since no legend
           avoidLabelOverlap: false,
           label: {
             show: true,
