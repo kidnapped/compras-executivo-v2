@@ -186,12 +186,12 @@ class EncontroContas {
     this.containers.empenhosTable.innerHTML = empenhos
       .map((empenho, index) => {
         const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
-        const financasTotal = this.calculateFinancasTotal(empenho);
+        const financasTotal = this.calculateFinancasTotal(empenho, true); // Use partial values for saldo calculation
         const empenhado = empenho.empenho?.empenhado || 0;
         const pago = empenho.empenho?.pago || 0;
-        const saldo = orcamentarioTotal - financasTotal; // Saldo de empenho = Orçamentário - Finanças
+        const saldo = orcamentarioTotal - financasTotal; // Saldo de empenho = Orçamentário - Finanças Parciais
 
-        // Calculate percentage: Finanças / Orçamentário * 100
+        // Calculate percentage: Finanças Parciais / Orçamentário * 100
         const percentageStatus = this.calculateStatusPercentage(
           financasTotal,
           orcamentarioTotal
@@ -268,6 +268,16 @@ class EncontroContas {
 
       docTypes.forEach((docType) => {
         docType.data.forEach((doc) => {
+          // Debug: Log when va_celula is found
+          if (doc.va_celula !== null && doc.va_celula !== undefined) {
+            console.log(
+              `📊 Found va_celula in ${docType.key}: ${
+                doc.va_celula
+              } for document ID ${
+                doc.id_doc_dar || doc.id_doc_darf || doc.id_doc_gps || "unknown"
+              }`
+            );
+          }
           financialRows.push(this.createFinancialRow(doc, docType.key));
         });
       });
@@ -476,7 +486,7 @@ class EncontroContas {
     const documentId = this.getDocumentId(doc, docType);
     const rawDate = this.extractDateFromFinancialDoc(doc);
     const formattedDate = rawDate !== "N/A" ? rawDate : "";
-    const value = this.getFinancialDocValue(doc, docType);
+    const value = this.getFinancialDocValue(doc, docType, "nominal");
 
     if (!documentId || documentId === "N/A" || !formattedDate) {
       return null; // Skip invalid documents
@@ -585,12 +595,6 @@ class EncontroContas {
 
       const chartData = [
         {
-          name: "Empenhado",
-          value: formatValue(totalEmpenhado),
-          originalValue: totalEmpenhado,
-          unit: getUnit(totalEmpenhado),
-        },
-        {
           name: "Orçamentário",
           value: formatValue(totalOrcamentario),
           originalValue: totalOrcamentario,
@@ -654,8 +658,8 @@ class EncontroContas {
               value: item.originalValue, // Use original value, not formatted value
               itemStyle: {
                 color: function (params) {
-                  const colors = ["#1351b4", "#10b981", "#3b82f6"]; // BR Design System colors
-                  return colors[params.dataIndex] || "#1351b4";
+                  const colors = ["#10b981", "#3b82f6"]; // BR Design System colors - removed first color for Empenhado
+                  return colors[params.dataIndex] || "#10b981";
                 },
               },
             })),
@@ -704,9 +708,9 @@ class EncontroContas {
       empenhosData.forEach((empenho) => {
         totalEmpenhos++;
 
-        // Calculate payment percentage
+        // Calculate payment percentage using partial values
         const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
-        const financasTotal = this.calculateFinancasTotal(empenho);
+        const financasTotal = this.calculateFinancasTotal(empenho, true); // Use partial values
 
         const percentagePaid =
           orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
@@ -837,7 +841,7 @@ class EncontroContas {
     // Analyze each empenho
     empenhosData.forEach((empenho, index) => {
       const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
-      const financasTotal = this.calculateFinancasTotal(empenho);
+      const financasTotal = this.calculateFinancasTotal(empenho, true); // Use partial values for analysis
       const empenhado = parseFloat(empenho.empenho?.valor_empenhado || 0);
 
       totalEmpenhado += empenhado;
@@ -1340,7 +1344,7 @@ class EncontroContas {
 
       const option = {
         title: {
-          text: "Movimentações Financeiras e Orçamentárias",
+          text: "Movimentações Financeiras Parciais e Orçamentárias",
           left: "center",
           textStyle: { color: "#333", fontSize: 16 },
         },
@@ -1358,7 +1362,7 @@ class EncontroContas {
           },
         },
         legend: {
-          data: ["Valores Orçamentários", "Valores Financeiros"],
+          data: ["Valores Orçamentários", "Valores Financeiros Parciais"],
           bottom: 10,
         },
         grid: {
@@ -1395,7 +1399,7 @@ class EncontroContas {
             },
           },
           {
-            name: "Valores Financeiros",
+            name: "Valores Financeiros Parciais",
             type: "line",
             data: chartData.financeiro,
             smooth: true, // Enable smooth curves
@@ -1432,9 +1436,13 @@ class EncontroContas {
     }
 
     console.log(
-      `📊 Preparing chart data for ${this.state.filteredData.empenhos_data.length} empenhos`
+      `📊 Preparing chart data for ${this.state.filteredData.empenhos_data.length} empenhos (using partial values for financeiro)`
     );
 
+    // CHART CALCULATION LOGIC:
+    // Financial values now use va_celula (partial payments) instead of nominal values
+    // This provides a more accurate view of actual payment execution vs budget allocation
+    //
     // RP FILTERING LOGIC:
     // Operations with "RP" in no_operacao (like "INSCRICAO EM RP", "ANULACAO DE RP", etc.)
     // represent budget rollovers to next year and should be excluded from chart calculations
@@ -1543,7 +1551,7 @@ class EncontroContas {
           if (!doc) return;
 
           const month = this.extractMonthFromFinancialDoc(doc);
-          const value = this.getFinancialDocValue(doc, docType.key);
+          const value = this.getFinancialDocValue(doc, docType.key, "parcial"); // Use partial values for chart
 
           if (month && value !== null && value !== undefined && !isNaN(value)) {
             if (!monthlyData.has(month)) {
@@ -1551,7 +1559,7 @@ class EncontroContas {
             }
             monthlyData.get(month).financeiro += value;
             console.log(
-              `    ✅ Financeiro (${docType.key}): ${month} += R$ ${value}`
+              `    ✅ Financeiro Parcial (${docType.key}): ${month} += R$ ${value}`
             );
           }
         });
@@ -1691,7 +1699,7 @@ class EncontroContas {
     }, 0);
   }
 
-  calculateFinancasTotal(empenho) {
+  calculateFinancasTotal(empenho, usePartialValues = false) {
     let total = 0;
 
     // Handle new nested structure under Finanças
@@ -1700,27 +1708,51 @@ class EncontroContas {
     // DARF documents
     (financas.documentos_darf || empenho.documentos_darf || []).forEach(
       (doc) => {
-        total +=
-          (parseFloat(doc.va_juros) || 0) +
-          (parseFloat(doc.va_receita) || 0) +
-          (parseFloat(doc.va_multa) || 0);
+        if (
+          usePartialValues &&
+          doc.va_celula !== null &&
+          doc.va_celula !== undefined
+        ) {
+          total += parseFloat(doc.va_celula) || 0;
+        } else {
+          total +=
+            (parseFloat(doc.va_juros) || 0) +
+            (parseFloat(doc.va_receita) || 0) +
+            (parseFloat(doc.va_multa) || 0);
+        }
       }
     );
 
     // DAR documents
     (financas.documentos_dar || empenho.documentos_dar || []).forEach((doc) => {
-      total +=
-        (parseFloat(doc.va_multa) || 0) +
-        (parseFloat(doc.va_juros) || 0) +
-        (parseFloat(doc.va_principal) || 0);
+      if (
+        usePartialValues &&
+        doc.va_celula !== null &&
+        doc.va_celula !== undefined
+      ) {
+        total += parseFloat(doc.va_celula) || 0;
+      } else {
+        total +=
+          (parseFloat(doc.va_multa) || 0) +
+          (parseFloat(doc.va_juros) || 0) +
+          (parseFloat(doc.va_principal) || 0);
+      }
     });
 
     // GPS documents
     (financas.documentos_gps || empenho.documentos_gps || []).forEach((doc) => {
-      total += parseFloat(doc.va_inss) || 0;
+      if (
+        usePartialValues &&
+        doc.va_celula !== null &&
+        doc.va_celula !== undefined
+      ) {
+        total += parseFloat(doc.va_celula) || 0;
+      } else {
+        total += parseFloat(doc.va_inss) || 0;
+      }
     });
 
-    // OB documents
+    // OB documents (OB doesn't have va_celula, so always use va_linha_evento)
     (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
       (doc) => {
         total += parseFloat(doc.va_linha_evento) || 0;
@@ -1728,6 +1760,11 @@ class EncontroContas {
     );
 
     return total;
+  }
+
+  // New function specifically for partial payment totals
+  calculateFinancasPartialTotal(empenho) {
+    return this.calculateFinancasTotal(empenho, true);
   }
 
   createFinancialRow(doc, docType) {
@@ -1741,8 +1778,8 @@ class EncontroContas {
       type: this.getDocumentType(docType),
       icon: this.getDocumentIcon(docType),
       iconColor: this.getDocumentIconColor(docType),
-      parcial: this.getFinancialDocValue(doc, docType),
-      nominal: this.getFinancialDocValue(doc, docType),
+      parcial: this.getFinancialDocValue(doc, docType, "parcial"),
+      nominal: this.getFinancialDocValue(doc, docType, "nominal"),
     };
 
     return row;
@@ -1852,7 +1889,17 @@ class EncontroContas {
     }
   }
 
-  getFinancialDocValue(doc, docType) {
+  getFinancialDocValue(doc, docType, valueType = "nominal") {
+    // For partial payments, use va_celula if available
+    if (
+      valueType === "parcial" &&
+      doc.va_celula !== null &&
+      doc.va_celula !== undefined
+    ) {
+      return parseFloat(doc.va_celula) || 0;
+    }
+
+    // For nominal values or when va_celula is not available, use the original calculation
     switch (docType) {
       case "documentos_dar":
         return (
@@ -2092,7 +2139,7 @@ class EncontroContas {
   }
 
   calculateStatusPercentage(financas, orcamentario) {
-    // Calculate percentage: Finanças / Orçamentário * 100
+    // Calculate percentage: Finanças Parciais / Orçamentário * 100
     if (!orcamentario || orcamentario === 0) {
       return {
         percentage: 0,
@@ -2111,8 +2158,8 @@ class EncontroContas {
   }
 
   getPercentageStatusBadge(percentage) {
-    // Color coding based on financial execution percentage: Finanças / Orçamentário * 100
-    // Higher percentage = more of the budget has been financially processed
+    // Color coding based on financial execution percentage: Finanças Parciais / Orçamentário * 100
+    // Higher percentage = more of the budget has been financially processed (using partial payment values)
     if (percentage >= 80) {
       return "badge-success"; // Green: 80-100% financially processed (excellent execution)
     } else if (percentage >= 50) {
@@ -2369,12 +2416,12 @@ class EncontroContas {
 
     this.state.rawData.empenhos_data.forEach((empenho, index) => {
       const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
-      const financasTotal = this.calculateFinancasTotal(empenho);
+      const financasTotal = this.calculateFinancasTotal(empenho, true); // Use partial values for export
       const empenhado = empenho.empenho?.empenhado || 0;
       const pago = empenho.empenho?.pago || 0;
-      const saldo = orcamentarioTotal - financasTotal; // Saldo de empenho = Orçamentário - Finanças
+      const saldo = orcamentarioTotal - financasTotal; // Saldo de empenho = Orçamentário - Finanças Parciais
 
-      // Calculate percentage status for export: Finanças / Orçamentário * 100
+      // Calculate percentage status for export: Finanças Parciais / Orçamentário * 100
       const percentageStatus = this.calculateStatusPercentage(
         financasTotal,
         orcamentarioTotal
@@ -2409,7 +2456,7 @@ class EncontroContas {
           Data: this.formatDateForExcel(this.buildDateFromDARF(doc)),
           Pagamento: this.formatDocumentId(doc.id_doc_darf),
           Tipo: "DARF",
-          Parcial: doc.va_receita || 0,
+          Parcial: doc.va_celula || 0,
           Nominal: doc.va_receita || 0,
         });
       });
@@ -2421,7 +2468,7 @@ class EncontroContas {
           Data: this.formatDateForExcel(this.buildDateFromDAR(doc)),
           Pagamento: this.formatDocumentId(doc.id_doc_dar),
           Tipo: "DAR",
-          Parcial: doc.va_principal || 0,
+          Parcial: doc.va_celula || 0,
           Nominal: doc.va_principal || 0,
         });
       });
@@ -2433,7 +2480,7 @@ class EncontroContas {
           Data: this.formatDateForExcel(this.buildDateFromGPS(doc)),
           Pagamento: this.formatDocumentId(doc.id_doc_gps),
           Tipo: "GPS",
-          Parcial: doc.va_receita || 0,
+          Parcial: doc.va_celula || 0,
           Nominal: doc.va_receita || 0,
         });
       });
@@ -2448,7 +2495,7 @@ class EncontroContas {
               doc.id_doc_ob || doc.id_linha_evento_ob
             ),
             Tipo: "OB",
-            Parcial: doc.va_linha_evento || 0,
+            Parcial: doc.va_linha_evento || 0, // OB doesn't have va_celula, use va_linha_evento
             Nominal: doc.va_linha_evento || 0,
           });
         }

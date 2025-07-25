@@ -185,19 +185,34 @@ endblock %} {% block content %}
   <div class="row mb-4">
     <div class="col-12 col-lg-8">
       <div class="br-card">
-        <div class="card-header">
-          <div class="d-flex align-items-center">
+        <div
+          class="card-header"
+          onclick="toggleFiltersCollapse()"
+          style="cursor: pointer"
+        >
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              <i
+                class="fas fa-filter"
+                style="color: #1351b4; font-size: 14px"
+              ></i>
+              <span class="ml-2 font-weight-bold">Filtros de Busca</span>
+            </div>
             <i
-              class="fas fa-filter"
-              style="color: #1351b4; font-size: 14px"
+              class="fas fa-chevron-down filters-toggle-icon"
+              style="
+                transition: transform 0.3s ease;
+                color: #1351b4;
+                font-size: 1.2rem;
+              "
+              title="Expandir/Colapsar filtros detalhados"
             ></i>
-            <span class="ml-2 font-weight-bold">Filtros de Busca</span>
           </div>
         </div>
         <div class="card-content" id="filters-content">
           <form id="uasg-filter-form">
-            <!-- Row 1: Search -->
-            <div class="row mb-3">
+            <!-- Row 1: Search - Always visible -->
+            <div class="row mb-3" id="basic-search">
               <div class="col-12">
                 <div class="br-input" data-trigger="input">
                   <label for="search_term">Buscar UASG</label>
@@ -212,78 +227,86 @@ endblock %} {% block content %}
               </div>
             </div>
 
-            <!-- Row 2: Value Filters -->
-            <div class="row mb-3">
-              <div class="col-12 col-md-6">
-                <div class="br-input" data-trigger="input">
-                  <label for="valor_min">Valor Mínimo dos Contratos</label>
-                  <input
-                    id="valor_min"
-                    name="valor_min"
-                    type="number"
-                    placeholder="Ex: 100000"
-                    min="0"
-                    step="0.01"
-                  />
-                  <small class="form-text text-muted"
-                    >Valor em reais (R$)</small
-                  >
+            <!-- Detailed Filters - Initially collapsed -->
+            <div
+              id="detailed-filters"
+              style="display: none; transition: all 0.3s ease"
+            >
+              <!-- Row 2: Value Filters -->
+              <div class="row mb-3">
+                <div class="col-12 col-md-6">
+                  <div class="br-input" data-trigger="input">
+                    <label for="valor_min">Valor Mínimo dos Contratos</label>
+                    <input
+                      id="valor_min"
+                      name="valor_min"
+                      type="number"
+                      placeholder="Ex: 100000"
+                      min="0"
+                      step="0.01"
+                    />
+                    <small class="form-text text-muted"
+                      >Valor em reais (R$)</small
+                    >
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="br-input" data-trigger="input">
+                    <label for="valor_max">Valor Máximo dos Contratos</label>
+                    <input
+                      id="valor_max"
+                      name="valor_max"
+                      type="number"
+                      placeholder="Ex: 1000000"
+                      min="0"
+                      step="0.01"
+                    />
+                    <small class="form-text text-muted"
+                      >Valor em reais (R$)</small
+                    >
+                  </div>
                 </div>
               </div>
-              <div class="col-12 col-md-6">
-                <div class="br-input" data-trigger="input">
-                  <label for="valor_max">Valor Máximo dos Contratos</label>
-                  <input
-                    id="valor_max"
-                    name="valor_max"
-                    type="number"
-                    placeholder="Ex: 1000000"
-                    min="0"
-                    step="0.01"
-                  />
-                  <small class="form-text text-muted"
-                    >Valor em reais (R$)</small
-                  >
-                </div>
-              </div>
-            </div>
 
-            <!-- Row 3: Contract Filters -->
-            <div class="row mb-3">
-              <div class="col-12 col-md-3">
-                <div class="br-input" data-trigger="input">
-                  <label for="interval_days">Dias até o Fim do Contrato</label>
-                  <input
-                    id="interval_days"
-                    name="interval_days"
-                    type="number"
-                    placeholder="Ex: 365"
-                    min="1"
-                    max="3650"
-                  />
-                  <small class="form-text text-muted"
-                    >Contratos que vencem em até X dias (opcional)</small
-                  >
+              <!-- Row 3: Contract Filters -->
+              <div class="row mb-3">
+                <div class="col-12 col-md-3">
+                  <div class="br-input" data-trigger="input">
+                    <label for="interval_days"
+                      >Dias até o Fim do Contrato</label
+                    >
+                    <input
+                      id="interval_days"
+                      name="interval_days"
+                      type="number"
+                      placeholder="Ex: 365"
+                      min="1"
+                      max="3650"
+                    />
+                    <small class="form-text text-muted"
+                      >Contratos que vencem em até X dias (opcional)</small
+                    >
+                  </div>
                 </div>
-              </div>
-              <div class="col-12 col-md-3">
-                <div class="br-checkbox mt-4">
-                  <input
-                    id="has_contracts"
-                    name="has_contracts"
-                    type="checkbox"
-                  />
-                  <label for="has_contracts">Com Contratos</label>
+                <div class="col-12 col-md-3">
+                  <div class="br-checkbox mt-4">
+                    <input
+                      id="has_contracts"
+                      name="has_contracts"
+                      type="checkbox"
+                    />
+                    <label for="has_contracts">Com Contratos</label>
+                  </div>
                 </div>
-              </div>
-              <div class="col-12 col-md-3">
-                <div class="br-checkbox mt-4">
-                  <input
-                    id="active_contracts"
-                    name="active_contracts"
-                    type="checkbox"
-                  />
-                  <label for="active_contracts">Com Contratos Ativos</label>
+                <div class="col-12 col-md-3">
+                  <div class="br-checkbox mt-4">
+                    <input
+                      id="active_contracts"
+                      name="active_contracts"
+                      type="checkbox"
+                    />
+                    <label for="active_contracts">Com Contratos Ativos</label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -329,16 +352,35 @@ endblock %} {% block content %}
     </div>
     <div class="col-12 col-lg-4">
       <div class="br-card">
-        <div class="card-header">
-          <div class="d-flex align-items-center">
+        <div
+          class="card-header"
+          onclick="toggleSavedFiltersCollapse()"
+          style="cursor: pointer"
+        >
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              <i
+                class="fas fa-bookmark"
+                style="color: #1351b4; font-size: 14px"
+              ></i>
+              <span class="ml-2 font-weight-bold">Filtros Salvos</span>
+            </div>
             <i
-              class="fas fa-bookmark"
-              style="color: #1351b4; font-size: 14px"
+              class="fas fa-chevron-down saved-filters-toggle-icon"
+              style="
+                transition: transform 0.3s ease;
+                color: #1351b4;
+                font-size: 1.2rem;
+              "
+              title="Expandir/Colapsar filtros salvos"
             ></i>
-            <span class="ml-2 font-weight-bold">Filtros Salvos</span>
           </div>
         </div>
-        <div class="card-content" id="saved-filters-content">
+        <div
+          class="card-content"
+          id="saved-filters-content"
+          style="display: none; transition: all 0.3s ease"
+        >
           <!-- Save Current Filter Section -->
           <div class="mb-3">
             <div class="br-input" data-trigger="input">
@@ -407,6 +449,16 @@ endblock %} {% block content %}
               </span>
             </div>
             <div class="d-flex gap-2">
+              <button
+                type="button"
+                class="br-button success small"
+                id="btn-select-all"
+                onclick="selectAllResults()"
+                style="display: none"
+              >
+                <i class="fas fa-check-double mr-1"></i>
+                Selecionar Todos
+              </button>
               <button
                 type="button"
                 class="br-button secondary small"
@@ -504,6 +556,12 @@ endblock %} {% block content %}
     gap: 0.25rem !important;
   }
 
+  /* Card header hover effect */
+  .card-header:hover {
+    background-color: #e9ecef !important;
+    transition: background-color 0.3s ease;
+  }
+
   .badge {
     display: inline-block;
     padding: 0.25em 0.4em;
@@ -534,6 +592,17 @@ endblock %} {% block content %}
   .badge-warning {
     color: #212529;
     background-color: #ffc107;
+  }
+
+  .br-button.success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+  }
+
+  .br-button.success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
   }
 
   .floating-action .br-button.circle {
@@ -857,6 +926,11 @@ endblock %} {% block content %}
     document.getElementById("empty-state").style.display = "block";
     document.getElementById("results-container").style.display = "none";
     updateResultsCount(0);
+
+    // Hide all action buttons when no results
+    document.getElementById("btn-select-all").style.display = "none";
+    document.getElementById("btn-collapse-all").style.display = "none";
+    document.getElementById("btn-expand-all").style.display = "none";
   }
 
   function showError(message) {
@@ -1019,7 +1093,7 @@ endblock %} {% block content %}
       <div class="card-content p-1">
         <h6 class="mb-1">${item.codigo || "N/A"}</h6>
         <small class="text-muted d-block mb-1">${
-          item.nomeresumido ? item.nomeresumido.substring(0, 20) + "..." : "N/A"
+          item.nome ? item.nome.substring(0, 20) + "..." : "N/A"
         }</small>
         <span class="badge badge-success">${item.contract_count || 0}</span>
       </div>
@@ -1373,6 +1447,7 @@ endblock %} {% block content %}
     );
     const collapseAllBtn = document.getElementById("btn-collapse-all");
     const expandAllBtn = document.getElementById("btn-expand-all");
+    const selectAllBtn = document.getElementById("btn-select-all");
 
     if (allGroupContainers.length > 0) {
       // Check if any groups are expanded
@@ -1394,10 +1469,54 @@ endblock %} {% block content %}
         ? "inline-block"
         : "none";
       expandAllBtn.style.display = hasCollapsedGroups ? "inline-block" : "none";
+      selectAllBtn.style.display = "inline-block"; // Always show select all when there are results
     } else {
-      // No groups, hide both buttons
+      // No groups, hide all buttons
       collapseAllBtn.style.display = "none";
       expandAllBtn.style.display = "none";
+      selectAllBtn.style.display = "none";
+    }
+  }
+
+  // Select all results function
+  function selectAllResults() {
+    // Find all UASG cards in the current results
+    const allUasgCards = document.querySelectorAll("[data-uasg-code]");
+    let newSelections = 0;
+
+    allUasgCards.forEach((card) => {
+      const codigo = card.getAttribute("data-uasg-code");
+      const unidadeId = card.getAttribute("data-uasg-id");
+      const columnElement = card.closest(".col-3, .col-md-3, .col-lg-2");
+
+      // Check if this UASG is not already selected
+      if (!selectedUASGs.some((uasg) => uasg.codigo === codigo)) {
+        selectedUASGs.push({
+          codigo: codigo,
+          unidade_id: unidadeId,
+          timestamp: new Date().toISOString(),
+        });
+
+        // Add visual selection
+        if (columnElement) {
+          addCardSelection(columnElement);
+        }
+        newSelections++;
+      }
+    });
+
+    // Update UI components
+    updateSelectionCounter();
+    updateGroupSelectionIndicators();
+    saveSelectionsToStorage();
+
+    // Show feedback to user
+    if (newSelections > 0) {
+      console.log(
+        `Selected ${newSelections} new UASGs. Total selected: ${selectedUASGs.length}`
+      );
+    } else {
+      console.log("All visible UASGs were already selected");
     }
   }
 
@@ -1715,6 +1834,40 @@ endblock %} {% block content %}
       content.style.display = "none";
       icon.classList.remove("fa-chevron-up");
       icon.classList.add("fa-chevron-down");
+    }
+  }
+
+  // Toggle filters detailed section
+  function toggleFiltersCollapse() {
+    const detailedFilters = document.getElementById("detailed-filters");
+    const toggleIcon = document.querySelector(".filters-toggle-icon");
+
+    if (detailedFilters.style.display === "none") {
+      detailedFilters.style.display = "block";
+      toggleIcon.classList.remove("fa-chevron-down");
+      toggleIcon.classList.add("fa-chevron-up");
+    } else {
+      detailedFilters.style.display = "none";
+      toggleIcon.classList.remove("fa-chevron-up");
+      toggleIcon.classList.add("fa-chevron-down");
+    }
+  }
+
+  // Toggle saved filters section
+  function toggleSavedFiltersCollapse() {
+    const savedFiltersContent = document.getElementById(
+      "saved-filters-content"
+    );
+    const toggleIcon = document.querySelector(".saved-filters-toggle-icon");
+
+    if (savedFiltersContent.style.display === "none") {
+      savedFiltersContent.style.display = "block";
+      toggleIcon.classList.remove("fa-chevron-down");
+      toggleIcon.classList.add("fa-chevron-up");
+    } else {
+      savedFiltersContent.style.display = "none";
+      toggleIcon.classList.remove("fa-chevron-up");
+      toggleIcon.classList.add("fa-chevron-down");
     }
   }
 </script>

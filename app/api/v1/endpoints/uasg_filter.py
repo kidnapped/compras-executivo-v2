@@ -76,7 +76,7 @@ async def get_uasg_data(
                 u2.unidade_id,
                 u3.codigosiafi,
                 u3.gestao,
-                u3.nomeresumido,
+                u3.nome,
                 u3.codigo,
                 u.id as user_id,
                 SUM(CASE WHEN c.valor_global::numeric IS NOT NULL THEN c.valor_global::numeric ELSE 0 END) as total_value
@@ -135,7 +135,7 @@ async def get_uasg_data(
         # Search term filter
         if search_term:
             where_conditions.append("""
-                (u3.nomeresumido ILIKE :search_term 
+                (u3.nome ILIKE :search_term 
                  OR u3.codigo::text ILIKE :search_term
                  OR u3.codigosiafi::text ILIKE :search_term)
             """)
@@ -146,8 +146,8 @@ async def get_uasg_data(
             base_query += " WHERE " + " AND ".join(where_conditions)
         
         base_query += """
-            GROUP BY u2.unidade_id, u3.codigosiafi, u3.gestao, u3.nomeresumido, u3.codigo, u.id
-            ORDER BY u3.nomeresumido
+            GROUP BY u2.unidade_id, u3.codigosiafi, u3.gestao, u3.nome, u3.codigo, u.id
+            ORDER BY u3.nome
         """
         
         logger.info(f"Executing UASG filter query with params: {params}")
@@ -164,7 +164,7 @@ async def get_uasg_data(
                 "codigo": row.get("codigo"),
                 "codigosiafi": row.get("codigosiafi"),
                 "gestao": row.get("gestao"),
-                "nomeresumido": row.get("nomeresumido"),
+                "nome": row.get("nome"),
                 "user_id": row.get("user_id"),
                 "contract_count": row.get("contract_count", 0),
                 "total_value": float(row.get("total_value", 0)) if row.get("total_value") else 0.0
@@ -237,7 +237,7 @@ def group_uasgs_by_agency(uasg_data: List[Dict]) -> List[Dict]:
         total_value = sum(uasg.get("total_value", 0) for uasg in uasgs)
         
         # Get agency name from first UASG (they should all have the same gestao)
-        agency_name = uasgs[0].get("nomeresumido", "Nome não disponível") if uasgs else "Desconhecido"
+        agency_name = uasgs[0].get("nome", "Nome não disponível") if uasgs else "Desconhecido"
         
         group_item = {
             "gestao": gestao,

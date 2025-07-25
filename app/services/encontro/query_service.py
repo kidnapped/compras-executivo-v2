@@ -109,14 +109,17 @@ class QueryService:
     async def get_document_ids(self, full_numero: str) -> Dict[str, List[int]]:
         """Get all document IDs for an empenho"""
         # Execute queries sequentially to avoid session conflicts
-        dar_ids = await self._get_dar_ids(full_numero)
-        darf_ids = await self._get_darf_ids(full_numero)
-        gps_ids = await self._get_gps_ids(full_numero)
+        dar_data = await self._get_dar_ids(full_numero)
+        darf_data = await self._get_darf_ids(full_numero)
+        gps_data = await self._get_gps_ids(full_numero)
         
         return {
-            'dar_ids': dar_ids,
-            'darf_ids': darf_ids,
-            'gps_ids': gps_ids
+            'dar_ids': [item['id'] for item in dar_data],
+            'darf_ids': [item['id'] for item in darf_data],
+            'gps_ids': [item['id'] for item in gps_data],
+            'dar_va_celula': dar_data,
+            'darf_va_celula': darf_data,
+            'gps_va_celula': gps_data
         }
 
     async def get_financial_data(self, full_numero: str, numero: str, unidade_prefix: str, uasg_codigo: str = None) -> Dict[str, List[Dict]]:
@@ -154,20 +157,20 @@ class QueryService:
         }
 
     # Private methods for individual queries
-    async def _get_dar_ids(self, full_numero: str) -> List[int]:
-        query = text("SELECT id_documento_dar FROM wd_deta_orca_fina_dar WHERE id_documento_ne = :numero_empenho")
+    async def _get_dar_ids(self, full_numero: str) -> List[Dict]:
+        query = text("SELECT id_documento_dar, va_celula FROM wd_deta_orca_fina_dar WHERE id_documento_ne = :numero_empenho")
         result = await self.db_financeiro.execute(query, {"numero_empenho": full_numero})
-        return [row[0] for row in result.fetchall()]
+        return [{"id": row[0], "va_celula": row[1]} for row in result.fetchall()]
 
-    async def _get_darf_ids(self, full_numero: str) -> List[int]:
-        query = text("SELECT id_documento_darf FROM wd_deta_orca_fina_darf WHERE id_documento_ne = :numero_empenho")
+    async def _get_darf_ids(self, full_numero: str) -> List[Dict]:
+        query = text("SELECT id_documento_darf, va_celula FROM wd_deta_orca_fina_darf WHERE id_documento_ne = :numero_empenho")
         result = await self.db_financeiro.execute(query, {"numero_empenho": full_numero})
-        return [row[0] for row in result.fetchall()]
+        return [{"id": row[0], "va_celula": row[1]} for row in result.fetchall()]
 
-    async def _get_gps_ids(self, full_numero: str) -> List[int]:
-        query = text("SELECT id_documento_gps FROM wd_deta_orca_fina_gps WHERE id_documento_ne = :numero_empenho")
+    async def _get_gps_ids(self, full_numero: str) -> List[Dict]:
+        query = text("SELECT id_documento_gps,va_celula FROM wd_deta_orca_fina_gps WHERE id_documento_ne = :numero_empenho")
         result = await self.db_financeiro.execute(query, {"numero_empenho": full_numero})
-        return [row[0] for row in result.fetchall()]
+        return [{"id": row[0], "va_celula": row[1]} for row in result.fetchall()]
 
     async def _get_full_dar_documents(self, dar_ids: List[int]) -> List[Dict]:
         query = text("SELECT * FROM wd_doc_dar WHERE id_doc_dar = ANY(:dar_ids)")

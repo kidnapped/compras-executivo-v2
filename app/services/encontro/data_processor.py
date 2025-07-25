@@ -16,16 +16,14 @@ class DataProcessor:
         # First process the financial data to apply negative values for ANULACAO/CANCELAMENTO
         processed_financial = self._process_financial_data(financial_data)
         
+        # Process documents and merge va_celula values directly into document objects
+        enhanced_financas = self._merge_va_celula_into_documents(document_data, financial_data)
+        
         # Create the format expected by the frontend (matching original endpoint)
         processed = {
             'prefixed_numero': f"{financial_data.get('unidade_prefix', '')}{empenho.get('numero', '')}",
             'empenho': self._serialize_empenho(empenho),
-            'Finanças': {
-                'documentos_dar': self._serialize_list(document_data.get('dar_documents', [])),
-                'documentos_darf': self._serialize_list(document_data.get('darf_documents', [])),
-                'documentos_gps': self._serialize_list(document_data.get('gps_documents', [])),
-                'linha_evento_ob': self._serialize_list(financial_data.get('linha_evento_ob', [])),
-            },
+            'Finanças': enhanced_financas,
             'Orçamentário': {
                 'operacoes': processed_financial.get('Orçamentário', []),  # Use processed data with negative values
                 'items': processed_financial.get('ne_item', [])
@@ -33,6 +31,63 @@ class DataProcessor:
             
         }
         return processed
+
+    def _merge_va_celula_into_documents(self, document_data: Dict, financial_data: Dict) -> Dict[str, Any]:
+        """Merge va_celula values directly into document objects for easier frontend access"""
+        enhanced_financas = {
+            'linha_evento_ob': self._serialize_list(financial_data.get('linha_evento_ob', []))
+        }
+        
+        # Process each document type and merge va_celula values
+        for doc_type in ['dar', 'darf', 'gps']:
+            documents_key = f'{doc_type}_documents'
+            va_celula_key = f'{doc_type}_va_celula'
+            
+            documents = document_data.get(documents_key, [])
+            va_celula_data = document_data.get(va_celula_key, [])
+            
+            # Create a mapping of document ID to va_celula value
+            va_celula_map = {item['id']: item['va_celula'] for item in va_celula_data}
+            
+            # Merge va_celula into each document
+            enhanced_documents = []
+            for doc in documents:
+                # Handle different document object types
+                if hasattr(doc, '_mapping'):
+                    # SQLAlchemy Row object
+                    doc_dict = dict(doc._mapping)
+                elif hasattr(doc, '__dict__'):
+                    # SQLAlchemy model object
+                    doc_dict = {key: getattr(doc, key) for key in doc.__dict__.keys() if not key.startswith('_')}
+                elif isinstance(doc, dict):
+                    # Already a dictionary
+                    doc_dict = dict(doc)
+                else:
+                    # Fallback - convert to dict
+                    doc_dict = dict(doc)
+                
+                # Serialize the document
+                doc_dict = self._serialize_dict(doc_dict)
+                
+                # Find the document ID field (different naming conventions)
+                doc_id = None
+                possible_id_fields = [f'id_doc_{doc_type}', f'id_documento_{doc_type}', 'id']
+                for id_field in possible_id_fields:
+                    if id_field in doc_dict:
+                        doc_id = doc_dict[id_field]
+                        break
+                
+                # Add va_celula value if it exists for this document
+                if doc_id and doc_id in va_celula_map:
+                    doc_dict['va_celula'] = va_celula_map[doc_id]
+                else:
+                    doc_dict['va_celula'] = None
+                    
+                enhanced_documents.append(doc_dict)
+            
+            enhanced_financas[f'documentos_{doc_type}'] = enhanced_documents
+        
+        return enhanced_financas
 
     def _serialize_empenho(self, empenho: Dict) -> Dict[str, Any]:
         """Serialize empenho data with proper type conversion"""
@@ -113,6 +168,10 @@ class DataProcessor:
             'dar_documents': self._serialize_list(dar_docs),
             'darf_documents': self._serialize_list(darf_docs),
             'gps_documents': self._serialize_list(gps_docs),
+            # Include va_celula data for partial payments
+            'dar_va_celula': self._serialize_list(document_data.get('dar_va_celula', [])),
+            'darf_va_celula': self._serialize_list(document_data.get('darf_va_celula', [])),
+            'gps_va_celula': self._serialize_list(document_data.get('gps_va_celula', [])),
             'counts': {
                 'dar_count': len(dar_docs),
                 'darf_count': len(darf_docs),
