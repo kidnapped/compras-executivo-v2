@@ -1,6 +1,17 @@
 /* ===================== LOGIN SPECIFIC STYLES ===================== */
 
-/* Login page specific styles - defined inline in login.html template */
+/* Login page body styling */
+.login-body {
+  background-color: #f8f8f8;
+  font-family: Rawline, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* Login page specific styles */
 .login-container {
   background-color: #fff;
   padding: 3rem;
@@ -12,9 +23,23 @@
 }
 
 .login-logo {
-  width: 120px;
-  height: auto;
-  margin-bottom: 2rem;
+  display: block;
+  margin: 0 auto 2rem auto;
+  max-width: 220px;
+}
+
+.login-button-primary {
+  width: 100%;
+}
+
+.login-input-label {
+  font-weight: bold;
+  text-align: left;
+  display: block;
+}
+
+.login-form-group {
+  text-align: left;
 }
 
 .login-title {

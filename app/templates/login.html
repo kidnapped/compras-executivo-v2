@@ -9,62 +9,12 @@
     <script defer src="/static/js/common/govbr-ds/core.min.js"></script>
     <link rel="stylesheet" href="/static/css/common/rawline.css">
     <link rel="stylesheet" href="/static/fonts/font-awesome/css/all.min.css">
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const cpfInput = document.getElementById('cpf');
-            cpfInput.addEventListener('input', function () {
-                let v = cpfInput.value.replace(/\D/g, '');
-                v = v.replace(/(\d{3})(\d)/, '$1.$2');
-                v = v.replace(/(\d{3})(\d)/, '$1.$2');
-                v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-                cpfInput.value = v;
-            });
-        });
-
-        // Forçar redirecionamento para tela gov.br
-        function forcarLoginGovBr() {
-            // Adiciona parâmetro para indicar que é login gov.br
-            const currentUrl = new URL(window.location.href);
-            const nextUrl = currentUrl.searchParams.get('next') || '/inicio';
-            
-            // Redireciona para a mesma URL mas com indicação de que é gov.br
-            window.location.href = `/login?force_govbr=1&next=${nextUrl}`;
-        }
-    </script>
-    <style>
-        body {
-            background-color: #f8f8f8;
-            font-family: Rawline, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-container {
-            background-color: #fff;
-            padding: 3rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 420px;
-        }
-        .logo {
-            display: block;
-            margin: 0 auto 2rem auto;
-            max-width: 220px;
-        }
-        .br-button.primary {
-            width: 100%;
-        }
-        .br-input label {
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/login.css">
+    <script src="/static/js/login.js"></script>
 </head>
-<body>
+<body class="login-body">
     <div class="login-container">
-        <img src="/static/images/comprasexecutivo_logo.png" alt="Compras Executivo" class="logo">
+        <img src="/static/images/comprasexecutivo_logo.png" alt="Compras Executivo" class="login-logo">
 
         {% if error %}
         <div class="br-message danger mb-3" role="alert" style="border-radius: 10px !important;">
@@ -79,18 +29,18 @@
 
         {% set next_url = request.query_params.next or '/inicio' %}
         <form method="POST" action="/login?next={{ next_url }}">
-            <div class="br-input mb-3" data-trigger="input">
-                <label for="cpf">CPF</label>
+            <div class="br-input mb-3 login-form-group" data-trigger="input">
+                <label for="cpf" class="login-input-label">CPF</label>
                 <input id="cpf" name="cpf" type="text" placeholder="000.000.000-00" required maxlength="14" autocomplete="cpf">
             </div>
-            <div class="br-input mb-4" data-trigger="input">
-                <label for="senha">Senha</label>i 
+            <div class="br-input mb-4 login-form-group" data-trigger="input">
+                <label for="senha" class="login-input-label">Senha</label>
                 <input id="senha" name="senha" type="password" required autocomplete="current-password">
             </div>
-            <button type="submit" class="br-button primary">Entrar</button>
+            <button type="submit" class="br-button primary login-button-primary">Entrar</button>
         </form>
         <!-- Botão para forçar login gov.br -->
-        <button onclick="forcarLoginGovBr()" class="br-button primary mt-2">
+        <button onclick="loginForceGovBr()" class="br-button primary login-button-primary mt-2">
             <i class="fas fa-user-shield mr-1" aria-hidden="true"></i>
             Entrar com&nbsp;<strong>gov.br</strong>
         </button>
