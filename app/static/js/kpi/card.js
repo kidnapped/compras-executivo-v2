@@ -110,7 +110,7 @@ export default {
                             ${titulo}
                         </div>
                         <div style="border-bottom: 1px solid #ccc;margin:-6px 0px 0px 26px;"></div>
-                        <div class="subtitulo" style="margin-left: 40px">${subtitulo}</div>
+                        <div class="subtitulo" style="margin-left: 26px">${subtitulo}</div>
                     </div>
                     ${dropdownButton}
                 </div>
