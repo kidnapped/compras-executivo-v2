@@ -22,7 +22,8 @@ class ValidateCpfRequest(BaseModel):
 @router.get("/dev-ops", response_class=HTMLResponse)
 async def render_dev_ops(request: Request):
     return templates.TemplateResponse("dev-ops.html", {
-        "request": request
+        "request": request,
+        "template_name": "outros-templates"
     })
 
 # Endpoint para buscar unidades organizacionais

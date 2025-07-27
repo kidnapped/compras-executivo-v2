@@ -120,7 +120,8 @@ async def render_dashboard(
             logger.warning(f"Error fetching UASG info: {e}")
     
     return templates.TemplateResponse("dashboard.html", {
-        "request": request
+        "request": request,
+        "template_name": "dashboard"
     })
 
 # Endpoints do dashboard para contratos

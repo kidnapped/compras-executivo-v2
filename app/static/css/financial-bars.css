@@ -1,0 +1,243 @@
+/* ===================== FINANCIAL CHARTS COMPONENTS ===================== */
+
+/* Renewal Bar Charts */
+.renewal-bars-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+}
+
+.renewal-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.renewal-bar-value {
+  font-size: 11px;
+  font-weight: bold;
+  color: #333;
+  min-height: 14px;
+}
+
+.renewal-bar {
+  width: 48px;
+  height: 150px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.renewal-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transition: height 0.3s ease;
+  border-radius: 1px;
+}
+
+/* Bar fill colors based on renewal period - matching gauge colors */
+.renewal-bar[data-days="120"] .renewal-bar-fill {
+  background-color: #fcec8f; /* Yellow for 120 days - matches gauge yellow zone */
+}
+
+.renewal-bar[data-days="90"] .renewal-bar-fill {
+  background-color: #f5c289; /* Orange for 90 days - matches gauge orange zone */
+}
+
+.renewal-bar[data-days="45"] .renewal-bar-fill {
+  background-color: #ec7975; /* Red for 45 days - matches gauge red zone */
+}
+
+/* Active renewal bar styling */
+.renewal-bar.active {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+.renewal-bar.active .renewal-bar-fill {
+  animation: fillAnimation 0.5s ease-out;
+}
+
+@keyframes fillAnimation {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--fill-height, 0);
+  }
+}
+
+/* Hover effects */
+.renewal-bar:hover {
+  border-color: #007bff;
+}
+
+.renewal-bar-group:hover .renewal-bar-value {
+  color: #007bff;
+}
+
+/* Financial Bar Charts - Similar to renewal bars but for money amounts */
+.financial-bars-container {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+}
+
+.financial-bar-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1px;
+}
+
+.financial-bar-value {
+  font-size: 9px;
+  font-weight: bold;
+  color: #333;
+  min-width: 32px;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.financial-bar {
+  width: 28px;
+  height: 120px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 1px;
+}
+
+.financial-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transition: height 0.3s ease;
+  border-radius: 1px;
+}
+
+/* Financial bar fill colors - different from renewal bars */
+.financial-bar[data-type="contratado"] .financial-bar-fill {
+  background-color: #4CAF50; /* Green for contracted amount */
+}
+
+.financial-bar[data-type="empenhado"] {
+  background-color: #E3F2FD; /* Light blue background for committed */
+}
+
+.financial-bar[data-type="empenhado"] .financial-bar-fill {
+  background-color: #2196F3; /* Blue for committed amount */
+}
+
+.financial-bar[data-type="pagamentos"] {
+  background-color: #FFF3E0; /* Light orange background for payments */
+}
+
+.financial-bar[data-type="pagamentos"] .financial-bar-fill {
+  background-color: #FF9800; /* Orange for payment amount */
+}
+
+/* Active financial bar styling */
+.financial-bar.active {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+.financial-bar.active .financial-bar-fill {
+  animation: fillAnimation 0.5s ease-out;
+}
+
+/* Hover effects for financial bars */
+.financial-bar-group:hover .financial-bar-value {
+  color: #007bff;
+}
+
+/* Aditivos specific styles */
+.aditivos-summary {
+  padding: 0.75rem 1rem;
+  background-color: #e7f3ff;
+  border-left: 4px solid #0066cc;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.aditivos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.aditivos-table th,
+.aditivos-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.aditivos-table th {
+  background-color: #00366f;
+  color: white;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.aditivos-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.aditivos-table tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.aditivo-objeto-row,
+.aditivo-observacao-row {
+  background-color: #f8f9fa !important;
+}
+
+.aditivo-objeto-row:hover,
+.aditivo-observacao-row:hover {
+  background-color: #e9ecef !important;
+}
+
+.aditivo-detail-label {
+  font-weight: bold;
+  color: #495057;
+  margin-bottom: 0.25rem;
+}
+
+.aditivo-detail-content {
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.valor-currency {
+  font-weight: bold;
+  color: #28a745;
+}
+
+.data-badge {
+  background-color: #e9ecef;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: #495057;
+}

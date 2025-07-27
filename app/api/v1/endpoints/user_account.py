@@ -24,5 +24,6 @@ async def minha_conta(request: Request):
     
     return templates.TemplateResponse("minha_conta.html", {
         "request": request,
-        "user_data": user_data
+        "user_data": user_data,
+        "template_name": "outros-templates"
     })

@@ -1,12 +1,11 @@
 import logging
 from fastapi import APIRouter, Request, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Any, Dict, List
 
-from app.utils.static_loader import collect_static_files
+from app.core.templates import templates
 from app.core import config as app_config
 from app.utils.session_utils import get_uasgs_str, get_usuario_id
 from app.db.session import get_session_contratos, get_session_financeiro
@@ -15,7 +14,6 @@ from app.services.encontro import EncontroService
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
 # Renderiza a página do encontro de contas
 @router.get("/encontro-de-contas", response_class=HTMLResponse)
@@ -23,15 +21,11 @@ async def render_encontro_contas(request: Request):
     """
     Renderiza a página de Encontro de Contas
     """
-    dev_css_files, dev_js_modules, dev_js_files = collect_static_files()
     return templates.TemplateResponse(
         "encontro-de-contas.html", 
         {
             "request": request,
-            "dev_css_files": dev_css_files,
-            "dev_js_modules": dev_js_modules,
-            "dev_js_files": dev_js_files, 
-            "config": app_config
+            "template_name": "encontro-de-contas"
         }
     )
 

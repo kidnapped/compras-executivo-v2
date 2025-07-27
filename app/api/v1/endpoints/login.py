@@ -16,7 +16,8 @@ async def login_form(request: Request):
     next_url = request.query_params.get("next") or "/inicio"
     return templates.TemplateResponse("login.html", {
         "request": request,
-        "next": next_url
+        "next": next_url,
+        "template_name": "login"
     })
 
 @router.post("/login")
@@ -39,7 +40,8 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
         print("⛔️ IP bloqueado temporariamente por excesso de tentativas")
         return templates.TemplateResponse("login.html", {
             "request": request,
-            "error": "Muitas tentativas. Tente novamente mais tarde."
+            "error": "Muitas tentativas. Tente novamente mais tarde.",
+            "template_name": "login"
         })
 
     # Verifica no banco
@@ -193,7 +195,8 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
     return templates.TemplateResponse("login.html", {
         "request": request,
         "error": "CPF ou senha incorretos.",
-        "next": request.query_params.get("next") or "/inicio"
+        "next": request.query_params.get("next") or "/inicio",
+        "template_name": "login"
     })
 
 @router.get("/logout")
@@ -210,25 +213,29 @@ async def inicio(request: Request):
     
     return templates.TemplateResponse("inicio.html", {
         "request": request,
-        "cpf": cpf
+        "cpf": cpf,
+        "template_name": "inicio"
     })
 
 @router.get("/bloqueado", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
     return templates.TemplateResponse("bloqueado.html", {
-        "request": request
+        "request": request,
+        "template_name": "outros-templates"
     })
 
 @router.get("/suporte", response_class=HTMLResponse)
 async def render_suporte(request: Request):
     return templates.TemplateResponse("suporte.html", {
-        "request": request
+        "request": request,
+        "template_name": "outros-templates"
     })
 
 @router.get("/ajuda", response_class=HTMLResponse)
 async def render_ajuda(request: Request):
     return templates.TemplateResponse("ajuda.html", {
-        "request": request
+        "request": request,
+        "template_name": "outros-templates"
     })
 
 @router.get("/login/success")
@@ -250,5 +257,6 @@ async def govbr_callback(request: Request):
     """
     return templates.TemplateResponse("govbr_callback.html", {
         "request": request,
-        "settings": settings
+        "settings": settings,
+        "template_name": "outros-templates"
     })

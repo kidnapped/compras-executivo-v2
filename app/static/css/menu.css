@@ -1,0 +1,59 @@
+/* ===================== MENU LATERAL ===================== */
+
+#main-navigation {
+  position: fixed;
+  top: 130px; /* MESMO valor do header normal */
+  left: 0;
+  width: 250px;
+  height: calc(100% - 130px);
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 999 !important;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease, top 0.3s ease, height 0.3s ease;
+}
+
+#main-navigation.active {
+  transform: translateX(0);
+}
+
+/* QUANDO O HEADER ENCOLHER, o menu sobe */
+body:has(.br-header.header-shrink) #main-navigation {
+  top: 90px !important;
+  height: calc(100% - 90px) !important;
+}
+
+/* Fallback para navegadores que não suportam :has() */
+.header-shrinked #main-navigation {
+  top: 90px !important;
+  height: calc(100% - 90px) !important;
+}
+
+/* CONTEÚDO PRINCIPAL quando menu está aberto */
+.menu-open .br-main {
+  margin-left: 220px; /* Empurra o conteúdo quando o menu abre */
+}
+
+#menu-toggle-button {
+  font-size: 24px;
+  line-height: 1;
+}
+
+#menu-toggle-button span {
+  position: relative;
+  top: -3px; /* move só o ícone */
+}
+
+/* Mobile menu adjustments */
+@media (max-width: 991.98px) {
+  /* Esconde o topo do menu lateral no mobile */
+  .br-menu .menu-header {
+    display: none !important;
+  }
+
+  #main-navigation {
+    top: 90px; /* valor do header encolhido no mobile */
+    height: calc(100% - 90px);
+  }
+}

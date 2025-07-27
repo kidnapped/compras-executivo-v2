@@ -1,0 +1,350 @@
+/* ===================== OTHER TEMPLATES SPECIFIC STYLES ===================== */
+
+/* ===================== MINHA CONTA STYLES ===================== */
+.minha-conta-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.minha-conta-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.minha-conta-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #1351b4;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1rem;
+}
+
+.minha-conta-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.minha-conta-section {
+  margin-bottom: 2rem;
+}
+
+.minha-conta-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* ===================== SUPORTE STYLES ===================== */
+.suporte-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.suporte-hero {
+  text-align: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 3rem 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.suporte-hero h1 {
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+.suporte-hero p {
+  font-size: 1.125rem;
+  color: #6c757d;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.suporte-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.suporte-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.suporte-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.suporte-card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  background-color: rgba(19, 81, 180, 0.1);
+  color: #1351b4;
+}
+
+.suporte-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.suporte-card-description {
+  color: #6c757d;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.suporte-card-action {
+  background-color: #1351b4;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s;
+}
+
+.suporte-card-action:hover {
+  background-color: #0f4394;
+  color: white;
+  text-decoration: none;
+}
+
+/* ===================== AJUDA STYLES ===================== */
+.ajuda-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.ajuda-search {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.ajuda-search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 2rem;
+  font-size: 1rem;
+}
+
+.ajuda-search-input:focus {
+  outline: none;
+  border-color: #1351b4;
+  box-shadow: 0 0 0 2px rgba(19, 81, 180, 0.25);
+}
+
+.ajuda-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.ajuda-category {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ajuda-category:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ajuda-category-header {
+  background-color: #1351b4;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.ajuda-category-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.ajuda-category-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ajuda-category-body {
+  padding: 1.5rem;
+}
+
+.ajuda-category-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ajuda-category-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.ajuda-category-item:last-child {
+  border-bottom: none;
+}
+
+.ajuda-category-link {
+  color: #495057;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.ajuda-category-link:hover {
+  color: #1351b4;
+  text-decoration: none;
+}
+
+/* ===================== BLOQUEADO STYLES ===================== */
+.welcome-container.main-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+}
+
+.bloqueado-card {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.bloqueado-icon {
+  font-size: 3rem;
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.bloqueado-title {
+  color: #dc3545;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.bloqueado-message {
+  color: #6c757d;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.bloqueado-contact {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* ===================== VDB STYLES ===================== */
+.vdb-container {
+  padding: 2rem 1rem;
+}
+
+.vdb-header {
+  margin-bottom: 2rem;
+}
+
+.vdb-controls {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.vdb-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+.vdb-menu {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.vdb-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+}
+
+.vdb-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+}
+
+.vdb-manual-mode {
+  margin-top: 1rem;
+}
+
+.vdb-query-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .suporte-grid,
+  .ajuda-categories {
+    grid-template-columns: 1fr;
+  }
+
+  .minha-conta-container,
+  .suporte-container,
+  .ajuda-container {
+    padding: 1rem;
+  }
+}

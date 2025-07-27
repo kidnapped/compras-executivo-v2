@@ -12,12 +12,12 @@ router = APIRouter()
 
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_index(request: Request):
-    return templates.TemplateResponse("admin.html", {"request": request})
+    return templates.TemplateResponse("admin.html", {"request": request, "template_name": "admin"})
 
 # Página HTML
 @router.get("/admin/usuarios", response_class=HTMLResponse)
 async def admin_usuarios_html(request: Request):
-    return templates.TemplateResponse("admin_usuarios.html", {"request": request})
+    return templates.TemplateResponse("admin_usuarios.html", {"request": request, "template_name": "admin"})
 
 # API JSON para listagem paginada
 @router.get("/admin/usuarios/lista")
@@ -111,7 +111,8 @@ async def admin_perfis(request: Request):
         "request": request,
         "titulo": "Perfis",
         "descricao": "Em desenvolvimento",
-        "icone": "fas fa-id-badge"
+        "icone": "fas fa-id-badge",
+        "template_name": "admin"
     })
 
 @router.get("/admin/permissoes", response_class=HTMLResponse)
@@ -120,16 +121,16 @@ async def admin_permissoes(request: Request):
         "request": request,
         "titulo": "Permissões",
         "descricao": "Em desenvolvimento", 
-        "icone": "fas fa-user-shield"
-    })
-
-@router.get("/admin/logs", response_class=HTMLResponse)
+        "icone": "fas fa-user-shield",
+        "template_name": "admin"
+    })@router.get("/admin/logs", response_class=HTMLResponse)
 async def admin_logs(request: Request):
     return templates.TemplateResponse("admin.html", {
         "request": request,
         "titulo": "Logs",
         "descricao": "Em desenvolvimento",
-        "icone": "fas fa-file-alt"
+        "icone": "fas fa-file-alt",
+        "template_name": "admin"
     })
 
 @router.get("/admin/sistema", response_class=HTMLResponse)
@@ -138,7 +139,8 @@ async def admin_sistema(request: Request):
         "request": request,
         "titulo": "Sistema",
         "descricao": "Em desenvolvimento",
-        "icone": "fas fa-cogs"
+        "icone": "fas fa-cogs",
+        "template_name": "admin"
     })
 
 @router.get("/admin/etl", response_class=HTMLResponse)
@@ -147,7 +149,8 @@ async def admin_etl(request: Request):
         "request": request,
         "titulo": "ETL",
         "descricao": "Em desenvolvimento",
-        "icone": "fas fa-database"
+        "icone": "fas fa-database",
+        "template_name": "admin"
     })
 
 @router.get("/admin/uasgs", response_class=HTMLResponse)
@@ -156,7 +159,8 @@ async def admin_uasgs(request: Request):
         "request": request,
         "titulo": "UASGs",
         "descricao": "Em desenvolvimento",
-        "icone": "fas fa-university"
+        "icone": "fas fa-university",
+        "template_name": "admin"
     })
 
 @router.get("/admin/parametros", response_class=HTMLResponse)
@@ -165,7 +169,8 @@ async def admin_parametros(request: Request):
         "request": request,
         "titulo": "Parâmetros",
         "descricao": "Em desenvolvimento",
-        "icone": "fas fa-sliders-h"
+        "icone": "fas fa-sliders-h",
+        "template_name": "admin"
     })
 
 @router.get("/admin/integracoes", response_class=HTMLResponse)
@@ -174,5 +179,6 @@ async def admin_integracoes(request: Request):
         "request": request,
         "titulo": "Integrações",
         "descricao": "Em desenvolvimento",
-        "icone": "fas fa-plug"
+        "icone": "fas fa-plug",
+        "template_name": "admin"
     })

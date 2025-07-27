@@ -1,0 +1,486 @@
+/* ===================== KPI DASHBOARD STYLES ===================== */
+
+/* KPI Dashboard Layout Styles */
+.kpi-dashboard {
+  padding: 1rem 0;
+}
+
+.kpi-dashboard .br-card {
+  transition: box-shadow 0.2s ease;
+  border: 1px solid #e9ecef;
+}
+
+.kpi-dashboard .br-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure consistent card heights in rows */
+.kpi-chart-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.kpi-chart-row .br-card {
+  height: 100%;
+}
+
+/* Loading states for KPI cards */
+.br-loading.medium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent !important;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 0.875rem;
+  min-height: 120px;
+  width: 100%;
+  position: relative;
+}
+
+/* Cor personalizada para todos os spinners br-loading */
+.br-loading.medium::before,
+.br-loading.medium::after {
+  border-color: #8f9dd2 !important;
+}
+
+.br-loading.medium {
+  border-color: #8f9dd2 !important;
+}
+
+/* Garantir que a animação de loading use a cor correta */
+.br-loading.medium > *,
+.br-loading.medium::before,
+.br-loading.medium::after {
+  border-top-color: #8f9dd2 !important;
+  border-left-color: #8f9dd2 !important;
+  border-bottom-color: transparent !important;
+  border-right-color: transparent !important;
+}
+
+/* Summary cards styling */
+.kpi-summary-card {
+  transition: transform 0.2s ease;
+}
+
+.kpi-summary-card:hover {
+  transform: translateY(-2px);
+}
+
+.kpi-summary-card a:hover h2 {
+  opacity: 0.8;
+}
+
+/* KPI 8 Full Width Map Styles */
+#card-kpi-por-estado {
+  position: relative;
+}
+
+#card-kpi-por-estado .br-card {
+  border-radius: 8px;
+}
+
+/* Ensure map container takes full available space */
+#card-kpi-por-estado .kpi-chart-inner {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Map visualization enhancements */
+#card-kpi-por-estado .visualMap-continuous {
+  z-index: 10;
+}
+
+/* Ensure proper spacing after full-width map */
+.kpi-content-section {
+  margin-top: 1rem;
+}
+
+/* Ensure all KPI charts display properly without overflow issues */
+.kpi-chart-inner {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Prevent charts from being cut off */
+.br-card .kpi-chart-inner {
+  margin: 0;
+  padding: 10px;
+}
+
+/* Ensure ECharts containers have proper spacing */
+.kpi-chart-inner > div {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Fix for pie chart labels that extend beyond container */
+[id*="card-kpi"] .kpi-chart-inner {
+  overflow: visible !important;
+  padding: 15px 10px;
+}
+
+/* Specific fixes for chart types that need extra space */
+.kpi-chart-inner[data-chart-type="pie"] {
+  padding: 20px 10px;
+}
+
+/* Ensure tooltips and labels are not clipped */
+.br-card {
+  overflow: visible;
+}
+
+.br-card.list-card {
+  overflow: visible;
+}
+
+/* Additional spacing for chart elements that extend beyond bounds */
+.kpi-chart-inner .echarts-tooltip,
+.kpi-chart-inner .echarts-legend,
+.kpi-chart-inner .echarts-label {
+  z-index: 100;
+}
+
+/* Ensure cards have enough space for chart elements */
+.br-card.list-card {
+  padding-bottom: 1rem;
+  min-height: fit-content;
+}
+
+/* Special handling for full-width KPI 8 */
+#card-kpi-por-estado {
+  position: relative;
+  z-index: 1;
+}
+
+#card-kpi-por-estado .kpi-chart-inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ensure ECharts map fills the container properly */
+#card-kpi-por-estado .kpi-chart-inner > div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Full-width KPI 8 section spacing */
+.kpi-full-width-section {
+  margin-bottom: 2rem;
+}
+
+.kpi-full-width-section .br-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+}
+
+/* Two-column KPI layout styling */
+.kpi-two-column-layout .col-lg-6 {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-two-column-layout .br-card {
+  margin-bottom: 1.5rem;
+  flex: 0 0 auto;
+}
+
+/* Ensure equal spacing between columns */
+.kpi-content-section > .col-lg-6:first-child {
+  padding-right: 0.75rem;
+}
+
+.kpi-content-section > .col-lg-6:last-child {
+  padding-left: 0.75rem;
+}
+
+/* Summary cards in two-column layout */
+.kpi-content-section .text-center {
+  padding: 1.5rem !important;
+}
+
+.kpi-content-section .text-center h2 {
+  font-size: 2rem !important;
+}
+
+.kpi-content-section .text-center h3 {
+  font-size: 1.125rem !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Responsive adjustments for KPI layout */
+@media (max-width: 991.98px) {
+  .kpi-dashboard .row > div {
+    margin-bottom: 1rem;
+  }
+
+  /* Stack charts vertically on mobile */
+  .kpi-dashboard [id*="card-kpi"] {
+    height: 300px !important;
+  }
+
+  /* Full width map responsive adjustments */
+  #card-kpi-por-estado {
+    height: 60vh !important;
+    min-height: 400px !important;
+  }
+
+  #card-kpi-por-estado .br-loading.medium {
+    height: 60vh !important;
+    min-height: 400px !important;
+  }
+
+  /* Mobile responsive adjustments for two-column layout */
+  .kpi-content-section > .col-lg-6:first-child,
+  .kpi-content-section > .col-lg-6:last-child {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .kpi-dashboard [id*="card-kpi"] {
+    height: 250px !important;
+  }
+
+  /* Adjust summary card text for mobile */
+  .kpi-dashboard .text-center h2 {
+    font-size: 2rem !important;
+  }
+
+  .kpi-dashboard .text-center h3 {
+    font-size: 1.25rem !important;
+  }
+
+  #card-kpi-por-estado {
+    height: 50vh !important;
+    min-height: 350px !important;
+  }
+
+  #card-kpi-por-estado .br-loading.medium {
+    height: 50vh !important;
+    min-height: 350px !important;
+  }
+}
+
+/* Unified KPI Dropdown Styles */
+.kpi-dropdown-menu,
+.kpi8-dropdown-menu {
+  /* Override general dropdown styles */
+  top: 100% !important;
+  left: auto !important;
+  right: 0 !important;
+  margin-top: 5px !important;
+  position: absolute !important;
+  z-index: 1000;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 180px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.kpi-dropdown-menu .dropdown-item,
+.kpi8-dropdown-menu .dropdown-item {
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  display: block;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.kpi-dropdown-menu .dropdown-item:last-child,
+.kpi8-dropdown-menu .dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.kpi-dropdown-menu .dropdown-divider,
+.kpi8-dropdown-menu .dropdown-divider {
+  height: 1px;
+  margin: 4px 0;
+  background-color: #ddd;
+  border: none;
+}
+
+.kpi-dropdown-menu .dropdown-item:hover,
+.kpi8-dropdown-menu .dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.kpi-dropdown-menu .dropdown-item:active,
+.kpi8-dropdown-menu .dropdown-item:active {
+  background-color: #e9ecef;
+}
+
+.kpi-dropdown-btn,
+.kpi8-dropdown-btn {
+  transition: all 0.2s ease;
+}
+
+.kpi-dropdown-btn:hover,
+.kpi8-dropdown-btn:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.05);
+}
+
+/* KPI Data Modal Styling */
+.kpi-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpi-modal-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: white; /* Ensures content doesn't show through */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+}
+
+.kpi-modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.kpi-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.kpi-modal-close:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.kpi-modal-body {
+  padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.kpi-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.kpi-data-table th,
+.kpi-data-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.kpi-data-table th {
+  background-color: #00366f;
+  color: white;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.kpi-data-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.kpi-data-table tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.kpi-modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  background-color: #f8f9fa;
+  flex-shrink: 0;
+  z-index: 1;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.kpi-btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.kpi-btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.kpi-btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.kpi-btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.kpi-btn-primary.success {
+  background-color: #28a745;
+}
+
+.table-responsive {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: auto;
+}

@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "build:dynamic": "python3 build_bundles.py",
+    "build:watch": "python3 build_bundles.py && echo 'Watching for changes...'",
+    "dev": "echo 'Development mode - using individual files'",
+    "bundle:check": "python3 -c 'from app.utils.static_loader import collect_static_files; print(\"Dynamic bundle order:\"); files = collect_static_files(); print(f\"CSS: {len(files[2])} files, JS: {len(files[0]) + len(files[1])} files\")'"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
