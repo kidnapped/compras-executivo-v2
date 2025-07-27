@@ -9,15 +9,20 @@
     <link rel="stylesheet" href="/static/dist/bundle.css" />
     <script src="/static/dist/bundle.js"></script>
     {%- else -%}
-    {%- for css_file in dev_css_files %}
+    {%- for css_file in base_css_files %}
     <link rel="stylesheet" href="{{ css_file }}" />
     {%- endfor %}
-    <script>window.process={env:{ENVIRONMENT:"{{ config.API_ENV }}"}};</script>
-    {%- for js_file in dev_js_modules %}
-    <script type="module" src="{{ js_file }}"></script>
+    {%- if template_name -%}
+    {%- for css_file in get_template_specific_css(template_name) %}
+    <link rel="stylesheet" href="{{ css_file }}" />
     {%- endfor %}
+    {%- endif %}
+    <script>window.process={env:{ENVIRONMENT:"{{ config.API_ENV }}"}};</script>
     {%- for js_file in dev_js_files %}
     <script src="{{ js_file }}"></script>
+    {%- endfor %}
+    {%- for js_file in dev_js_modules %}
+    <script type="module" src="{{ js_file }}"></script>
     {%- endfor %}
     {%- endif %}
 </head>

@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Request, Query, Form, HTTPException, Depends
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import subprocess
 import secrets
 
+from app.core.templates import templates
+
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 security = HTTPBasic()
 
 # Basic Auth credentials
@@ -37,7 +37,7 @@ def executar_java(vdb_tipo: str, query: str):
 # Página principal
 @router.get("/vdb", response_class=HTMLResponse)
 def render_vdb_page(request: Request, current_user: str = Depends(get_current_user)):
-    return templates.TemplateResponse("vdb.html", {"request": request})
+    return templates.TemplateResponse("vdb.html", {"request": request, "template_name": "outros-templates"})
 
 # Menu lateral
 @router.get("/vdb/menu", response_class=HTMLResponse)

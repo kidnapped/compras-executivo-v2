@@ -18,10 +18,12 @@ const isProd = process.env.ENVIRONMENT === "production"
 export default {
     mode: isProd ? "production" : "development",
     cache: false,
-    entry: "./app/static/js/app.js",
+    entry: {
+        bundle: "./app/static/dist/bundle_webpack.css"
+    },
     output: {
-        filename: "bundle.js",
-        path: path.resolve(__dirname, "app/static/dist"),
+        filename: "[name].js",
+        path: path.resolve(__dirname, "app/static/webpack"),
         clean: true,
     },
     module: {

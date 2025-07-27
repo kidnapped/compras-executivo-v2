@@ -1,0 +1,242 @@
+/* ===================== DASHBOARD SPECIFIC STYLES ===================== */
+
+/* Dashboard card filter clickable fields */
+.dashboard-card-filter.clickable {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.dashboard-card-filter.clickable:hover,
+.dashboard-card-filter.active {
+  background: #e6f0fa;
+  box-shadow: 0 0 0 2px #8f9dd2;
+}
+
+/* Card Contratos specific styles */
+.card-contratos {
+  font-family: "Rawline", sans-serif;
+  font-feature-settings: "tnum";
+}
+
+.card-contratos .titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #00366f;
+  margin: -16px 0px 0px -20px;
+}
+
+.card-contratos .subtitulo {
+  font-size: 10px;
+  color: #000;
+  margin-left: 26px;
+}
+
+.card-contratos .valor-principal {
+  margin-left: 40px;
+  font-size: 30px;
+  color: #ff8000;
+}
+
+.card-contratos .valor-principal span {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.card-contratos .linha {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 4px 0px 0px 42px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.card-contratos .linha div {
+  text-align: left;
+}
+
+.card-contratos .linha .valor-azul {
+  color: #00366f;
+  font-weight: bold;
+}
+
+.card-contratos .linha .valor-vermelho {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+.card-contratos .linha .divider {
+  border-left: 1px solid #ccc;
+  height: 32px;
+}
+
+.card-contratos .br-button {
+  z-index: 1000;
+}
+
+/* Widget próximas atividades */
+.widget-atividades-box {
+  border-radius: 4px;
+  font-size: 12px;
+  background: #fff;
+}
+
+.widget-atividades-header {
+  background: #f8f8f8;
+  font-weight: bold;
+  padding: 6px 10px 6px 10px;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.widget-atividades-item {
+  padding: 6px 3px 0px 3px;
+  border-bottom: 1px solid #eee;
+  color: #444;
+}
+
+.widget-atividades-item:last-child {
+  border-bottom: none;
+}
+
+.widget-atividades-item i {
+  color: #bbc6ea;
+  margin-right: 2px;
+}
+
+.widget-atividades-item a {
+  color: #8f9dd2;
+  text-decoration: none;
+  margin-right: 2px;
+}
+
+.widget-atividades-item span {
+  color: #888;
+}
+
+.widget-atividades-lista {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.widget-atividades-item a,
+.widget-atividades-item span {
+  position: relative;
+  top: -3px;
+}
+
+/* Dashboard table specific styles */
+.dashboard-table-container {
+  width: 100%;
+  flex-grow: 1;
+  min-height: calc(100vh - 380px);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-table-container .table-responsive {
+  max-height: calc(100vh - 420px);
+  overflow-y: auto;
+  overflow-x: auto;
+  min-height: calc(100vh - 420px);
+  height: auto;
+  flex-grow: 1;
+  position: relative;
+}
+
+.dashboard-table-container .br-table {
+  width: 100%;
+  table-layout: auto;
+  margin-bottom: 0;
+}
+
+.dashboard-table-container .br-table tbody {
+  display: table-row-group;
+}
+
+/* Ensure dashboard row can grow with content */
+.row-tight {
+  min-height: fit-content;
+}
+
+.row-tight .col-12 {
+  display: flex;
+  flex-direction: column;
+}
+
+/* MENU CONTRATOS - Dropdown submenu */
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+  display: none;
+  top: 0;
+  left: 100%;
+  position: absolute;
+  margin-top: -1px;
+}
+
+.dropdown-submenu:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 5px;
+  min-width: 220px;
+}
+
+.dropdown-item {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+/* Filter menu button and dropdown styles */
+.filter-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+#btn-filtro-opcoes {
+  border: none;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#btn-filtro-opcoes:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+#btn-filtro-opcoes i {
+  margin-left: 4px;
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 200px;
+  padding: 8px 0;
+}

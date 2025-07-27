@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Compras Executivo</title>
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="/static/govbr-ds/core.min.css">
-    <script defer src="/static/govbr-ds/core.min.js"></script>
-    <link rel="stylesheet" href="/static/css/rawline.css">
+    <link rel="stylesheet" href="/static/css/common/govbr-ds/core.min.css">
+    <script defer src="/static/js/common/govbr-ds/core.min.js"></script>
+    <link rel="stylesheet" href="/static/css/common/rawline.css">
     <link rel="stylesheet" href="/static/fonts/font-awesome/css/all.min.css">
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -84,7 +84,7 @@
                 <input id="cpf" name="cpf" type="text" placeholder="000.000.000-00" required maxlength="14" autocomplete="cpf">
             </div>
             <div class="br-input mb-4" data-trigger="input">
-                <label for="senha">Senha</label>
+                <label for="senha">Senha</label>i 
                 <input id="senha" name="senha" type="password" required autocomplete="current-password">
             </div>
             <button type="submit" class="br-button primary">Entrar</button>
@@ -96,7 +96,5 @@
         </button>
 
     </div>
-
-    <script type="module" src="{{ url_for('static', path='dist/bundle.js') }}"></script>
 </body>
 </html>

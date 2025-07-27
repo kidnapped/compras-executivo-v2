@@ -4,11 +4,10 @@ from typing import Any, Dict, List
 from babel.dates import format_date
 from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.utils.static_loader import collect_static_files
+from app.core.templates import templates
 from app.core import config as app_config
 from app.core.config import settings
 from app.utils.session_utils import get_uasgs_str
@@ -19,17 +18,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
 # Renderiza a página do kpis
 @router.get("/kpis", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
-    dev_css_files, dev_js_modules, dev_js_files = collect_static_files()
-    return templates.TemplateResponse("kpi.html", {"request": request,
-                                                   "dev_css_files": dev_css_files,
-                                                   "dev_js_modules": dev_js_modules,
-                                                   "dev_js_files": dev_js_files, 
-                                                   "config": app_config})
+    return templates.TemplateResponse("kpi.html", {
+        "request": request,
+        "template_name": "kpi"
+    })
 
 
 #Endpoints do kpi 1

@@ -1,0 +1,248 @@
+/* ===================== BASE LAYOUT & TYPOGRAPHY ===================== */
+
+/* Media queries - Responsive typography */
+:root {
+  --h1-size: 2.5rem;
+  --h2-size: 2rem;
+  --h3-size: 1.75rem;
+  --h4-size: 1.5rem;
+  --h5-size: 1.25rem;
+  --h6-size: 1rem;
+  --h7-size: 0.875rem;
+}
+
+/* Base styles */
+h1 {
+  font-size: var(--h1-size);
+}
+h2 {
+  font-size: var(--h2-size);
+}
+h3 {
+  font-size: var(--h3-size);
+}
+h4 {
+  font-size: var(--h4-size);
+}
+h5 {
+  font-size: var(--h5-size);
+}
+h6 {
+  font-size: var(--h6-size);
+}
+h7 {
+  font-size: var(--h7-size);
+}
+
+/* Small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+  :root {
+    --h1-size: 1rem;
+    --h2-size: 1.55rem;
+    --h3-size: 1.1rem;
+    --h4-size: 1.2rem;
+    --h5-size: 1.12rem;
+    --h6-size: 1rem;
+    --h7-size: 0.85rem;
+  }
+}
+
+/* Medium devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  :root {
+    --h1-size: 1.25rem;
+    --h2-size: 1.15rem;
+    --h3-size: 1.05rem;
+    --h4-size: 1rem;
+    --h5-size: 0.95rem;
+    --h6-size: 1rem;
+    --h7-size: 0.875rem;
+  }
+}
+
+/* Large devices (desktops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  :root {
+    --h1-size: 2.4rem;
+    --h2-size: 1.95rem;
+    --h3-size: 1.7rem;
+    --h4-size: 1.45rem;
+    --h5-size: 1.2rem;
+    --h6-size: 1rem;
+    --h7-size: 0.875rem;
+  }
+}
+
+/* Extra large devices (large desktops, 992px and up) */
+@media (min-width: 992px) {
+  :root {
+    --h1-size: 2.5rem;
+    --h2-size: 2rem;
+    --h3-size: 1.75rem;
+    --h4-size: 1.5rem;
+    --h5-size: 1.25rem;
+    --h6-size: 1rem;
+    --h7-size: 0.875rem;
+  }
+}
+
+/* GERAL */
+html {
+  overflow: hidden;
+}
+
+body {
+  font-family: Raleway, sans-serif;
+}
+
+@media (max-width: 991.98px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* PAGE LAYOUT & FOOTER */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Evita scroll horizontal */
+}
+
+html {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+body {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.br-main {
+  min-height: calc(100vh + 1px); /* força scroll mínimo */
+  margin-bottom: 0; /* Remove espaço extra */
+  padding-bottom: 0 !important; /* Força remoção de padding */
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+  padding-top: 110px; /* espaço para o header normal */
+}
+
+.container-lg {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* FOOTER */
+.br-footer {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 0; /* Remove espaço extra no final */
+  padding-bottom: 0 !important; /* Força remoção de padding */
+  z-index: 998; /* Menor que o menu lateral (999) para ficar atrás */
+}
+
+.br-footer:after {
+  content: "";
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* CARD GERAL */
+.br-card {
+  border-radius: 10px;
+  box-sizing: border-box;
+  z-index: 1 !important;
+}
+
+.br button {
+  z-index: 1000;
+}
+
+/* Common card patterns */
+.row-tight > [class*="col"] {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+}
+
+/* MODAL GERAL */
+.br-scrim[style*="display: block"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 2050 !important;
+}
+
+/* Ensure scrim has proper background when inside containers */
+.container-lg .br-scrim[style*="display: block"],
+.container .br-scrim[style*="display: block"],
+.container-fluid .br-scrim[style*="display: block"] {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: 2040 !important;
+}
+
+/* Modal dialog container - Updated to match KPI modal with center popup */
+.br-modal .br-modal-dialog {
+  background: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  max-width: 80vw !important;
+  width: 90% !important;
+  max-height: 80vh !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  z-index: 2060 !important;
+}
+
+.br-modal .br-modal-body {
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  padding: 1.5rem !important;
+}
+
+.br-modal .br-modal-header {
+  padding: 1rem 1.5rem !important;
+  border-bottom: 1px solid #e9ecef !important;
+  background-color: #f8f9fa !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.br-modal .br-modal-footer {
+  padding: 1rem 1.5rem !important;
+  border-top: 1px solid #e9ecef !important;
+  background-color: #f8f9fa !important;
+  border-radius: 0 0 8px 8px !important;
+}
+
+.br-modal .br-modal-title {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  margin: 0 !important;
+}
+
+.br-modal .br-modal-close {
+  background: none !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+  cursor: pointer !important;
+  color: #6c757d !important;
+  padding: 0 !important;
+}
+
+.br-modal .br-modal-close:hover {
+  color: #333 !important;
+}
