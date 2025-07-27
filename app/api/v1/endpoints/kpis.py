@@ -695,20 +695,17 @@ async def get_dashboard_kpi11(
             "percentual_rescindidos": 0.0
         }
 
-    # Use the first UASG ID for the query (since the original query uses a specific unidade_id)
-    unidade_id = ids_uasg[0] if ids_uasg else 16617
-
     query = """
         WITH total_contratos AS (
           SELECT COUNT(DISTINCT id) AS total
           FROM contratos
-          WHERE unidade_id = :unidade_id
+          WHERE unidade_id = ANY(:ids)
         ),
         rescindidos AS (
           SELECT COUNT(DISTINCT contrato_id) AS rescindidos
           FROM contratohistorico
           WHERE tipo_id = 191
-            AND unidade_id = :unidade_id
+            AND unidade_id = ANY(:ids)
         )
         SELECT 
           rescindidos,
@@ -717,7 +714,7 @@ async def get_dashboard_kpi11(
         FROM rescindidos, total_contratos;
     """
     
-    result = await db.execute(text(query), {"unidade_id": unidade_id})
+    result = await db.execute(text(query), {"ids": ids_uasg})
     row = result.mappings().first()
 
     if not row:
@@ -731,7 +728,7 @@ async def get_dashboard_kpi11(
 
     data = {
         "titulo": "Contratos Rescindidos",
-        "subtitulo": f"Análise de percentual de contratos rescindidos - Unidade {unidade_id}",
+        "subtitulo": "Análise de percentual de contratos rescindidos",
         "total_contratos": int(row.get("total", 0) or 0),
         "rescindidos": int(row.get("rescindidos", 0) or 0),
         "percentual_rescindidos": float(row.get("percentual_rescindidos", 0.0) or 0.0)
@@ -766,9 +763,6 @@ async def get_dashboard_kpi12(
             "media_dias_execucao": 0.0
         }
 
-    # Use the first UASG ID for the query (since the original query uses a specific unidade_id)
-    unidade_id = ids_uasg[0] if ids_uasg else 16617
-
     query = """
         SELECT
             COUNT(*) AS total_contratos_inativos,
@@ -776,13 +770,12 @@ async def get_dashboard_kpi12(
             ROUND(AVG(EXTRACT(MONTH FROM AGE(vigencia_fim, vigencia_inicio)))) AS media_meses_vigencia,
             ROUND(AVG((vigencia_inicio::date - data_assinatura::date))) AS media_dias_execucao
         FROM contratos
-        WHERE unidade_id = :unidade_id
+        WHERE unidade_id = ANY(:ids)
           AND vigencia_inicio IS NOT NULL
-          AND vigencia_fim IS NOT NULL
           AND data_assinatura IS NOT NULL;
     """
     
-    result = await db.execute(text(query), {"unidade_id": unidade_id})
+    result = await db.execute(text(query), {"ids": ids_uasg})
     row = result.mappings().first()
 
     if not row:
@@ -797,7 +790,7 @@ async def get_dashboard_kpi12(
 
     data = {
         "titulo": "Análise de Vigência de Contratos",
-        "subtitulo": f"Duração média de vigência e tempo de execução - Unidade {unidade_id}",
+        "subtitulo": "Duração média de vigência e tempo de execução",
         "total_contratos": int(row.get("total_contratos_inativos", 0) or 0),
         "media_anos_vigencia": int(row.get("media_anos_vigencia", 0) or 0),
         "media_meses_vigencia": float(row.get("media_meses_vigencia", 0.0) or 0.0),

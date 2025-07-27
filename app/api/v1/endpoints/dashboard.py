@@ -157,54 +157,33 @@ async def get_dashboard_contratos(
 
     # 2. Executa a query principal
     query = """
-        WITH h AS (
-          SELECT hist.*
-          FROM contratohistorico hist
-          JOIN (
-            SELECT contrato_id,
-                   MAX(data_assinatura) AS max_assinatura
-            FROM contratohistorico
-            WHERE unidade_id = ANY(:ids)
-            GROUP BY contrato_id
-          ) latest
-            ON hist.contrato_id = latest.contrato_id
-           AND hist.data_assinatura = latest.max_assinatura
-          WHERE hist.unidade_id = ANY(:ids)
-        )
-
         SELECT
-          SUM(CASE
-                WHEN h.vigencia_fim BETWEEN CURRENT_DATE
-                                      AND CURRENT_DATE + INTERVAL '45 days'
-                THEN 1 ELSE 0
-              END) AS ending_within_45_days,
-
-          SUM(CASE
-                WHEN h.vigencia_fim > CURRENT_DATE + INTERVAL '45 days'
-                 AND h.vigencia_fim <= CURRENT_DATE + INTERVAL '90 days'
-                THEN 1 ELSE 0
-              END) AS ending_within_90_days,
-
-          SUM(CASE
-                WHEN h.vigencia_fim > CURRENT_DATE + INTERVAL '90 days'
-                 AND h.vigencia_fim <= CURRENT_DATE + INTERVAL '120 days'
-                THEN 1 ELSE 0
-              END) AS ending_within_120_days,
-
-          SUM(CASE
-                WHEN h.vigencia_fim > CURRENT_DATE + INTERVAL '120 days'
-                THEN 1 ELSE 0
-              END) AS ending_after_120_days,
-
-          COUNT(*) AS total_contracts,
-
-          SUM(CASE
-                WHEN CURRENT_DATE BETWEEN h.vigencia_inicio AND h.vigencia_fim
-                THEN CAST(h.valor_inicial AS NUMERIC)
-                ELSE 0.0
-              END) AS total_valor_inicial
-
-        FROM h;
+  SUM(CASE
+        WHEN c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '45 days'
+        THEN 1 ELSE 0
+      END) AS ending_within_45_days,
+  SUM(CASE
+        WHEN c.vigencia_fim > CURRENT_DATE + INTERVAL '45 days'
+         AND c.vigencia_fim <= CURRENT_DATE + INTERVAL '90 days'
+        THEN 1 ELSE 0
+      END) AS ending_within_90_days,
+  SUM(CASE
+        WHEN c.vigencia_fim > CURRENT_DATE + INTERVAL '90 days'
+         AND c.vigencia_fim <= CURRENT_DATE + INTERVAL '120 days'
+        THEN 1 ELSE 0
+      END) AS ending_within_120_days,
+  SUM(CASE
+        WHEN c.vigencia_fim > CURRENT_DATE + INTERVAL '120 days'
+        THEN 1 ELSE 0
+      END) AS ending_after_120_days,
+  COUNT(*) AS total_contracts,
+  SUM(CASE
+        WHEN CURRENT_DATE BETWEEN c.vigencia_inicio AND c.vigencia_fim
+        THEN CAST(c.valor_global AS NUMERIC)
+        ELSE 0.0
+      END) AS total_valor_inicial
+FROM contratos c
+WHERE c.unidade_id = ANY(:ids)
     """
     result = await db.execute(text(query), {"ids": ids_uasg})
     row = result.mappings().first() or {}
@@ -523,6 +502,9 @@ async def get_contratos_lista(
 
     # Build WHERE conditions
     where_conditions = ["c.unidade_id = ANY(:unit_ids)", "c.deleted_at IS NULL"]
+    
+    # Add contract date filter: active contracts OR contracts started after 2021-01-01
+    where_conditions.append("((CURRENT_DATE BETWEEN c.vigencia_inicio AND c.vigencia_fim) OR (c.vigencia_inicio >= DATE '2021-01-01'))")
     
     # Add favorites filter if needed
     if favoritos and favorite_contract_ids:

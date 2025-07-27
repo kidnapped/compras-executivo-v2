@@ -6,28 +6,32 @@ import financialBars from "./financial-bars.js";
 export default {
   // Renderiza os chips de filtro visual
   renderActiveFilters() {
-    const container = document.getElementById('active-filters-container');
+    const container = document.getElementById("active-filters-container");
     if (!container) return;
     const filterNames = {
-      vigentes: 'Vigentes',
-      finalizados: 'Finalizados',
-      criticos: 'Críticos',
-      '120dias': '120 dias',
-      '90dias': '90 dias',
-      '45dias': '45 dias',
-      outros: 'Outros',
-      todos: 'Todos',
-      mais120: 'Mais de 120 dias',
-      pf: 'Pessoa Física',
-      pj: 'Pessoa Jurídica',
+      vigentes: "Vigentes",
+      finalizados: "Finalizados",
+      criticos: "Críticos",
+      "120dias": "120 dias",
+      "90dias": "90 dias",
+      "45dias": "45 dias",
+      outros: "Outros",
+      todos: "Todos",
+      mais120: "Mais de 120 dias",
+      pf: "Pessoa Física",
+      pj: "Pessoa Jurídica",
     };
     const filtros = window._dashboardVisualFilters || [];
-    container.innerHTML = filtros.map(filtro => `
+    container.innerHTML = filtros
+      .map(
+        (filtro) => `
       <span class="filter-chip" style="background:#e3eaf3; color:#084a8a; border-radius:16px; padding:4px 12px; display:inline-flex; align-items:center; font-size:13px; margin-bottom:2px;">
         ${filterNames[filtro] || filtro}
         <button type="button" aria-label="Remover filtro" style="background:none; border:none; color:#084a8a; margin-left:6px; font-size:15px; cursor:pointer; line-height:1;" onclick="App.removeActiveFilter('${filtro}')">&times;</button>
       </span>
-    `).join('');
+    `
+      )
+      .join("");
   },
 
   // Remove chip de filtro visual
@@ -42,7 +46,7 @@ export default {
   // State management for the table
   tableState: {
     currentPage: 1,
-    limit: 10,
+    limit: 50,
     totalPages: 1,
     totalItems: 0,
     filters: {
@@ -187,10 +191,11 @@ export default {
         ],
       });
 
-      chart.off && chart.off('click');
-      chart.on('click', (params) => {
-        if (params.componentType === 'series' && params.seriesType === 'bar') {
-          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+      chart.off && chart.off("click");
+      chart.on("click", (params) => {
+        if (params.componentType === "series" && params.seriesType === "bar") {
+          if (!window._dashboardVisualFilters)
+            window._dashboardVisualFilters = [];
           const filter = params.name;
           const idx = window._dashboardVisualFilters.indexOf(filter);
           if (idx === -1) {
@@ -198,7 +203,7 @@ export default {
           } else {
             window._dashboardVisualFilters.splice(idx, 1);
           }
-          if (typeof App !== 'undefined' && App.renderActiveFilters) {
+          if (typeof App !== "undefined" && App.renderActiveFilters) {
             App.renderActiveFilters();
           }
         }
@@ -364,7 +369,12 @@ export default {
   }) {
     // Helper to check if filter is active
     const isActive = (filter) =>
-      this.tableState && this.tableState.filters && this.tableState.filters.tipo && this.tableState.filters.tipo.includes(filter) ? 'active' : '';
+      this.tableState &&
+      this.tableState.filters &&
+      this.tableState.filters.tipo &&
+      this.tableState.filters.tipo.includes(filter)
+        ? "active"
+        : "";
     // Card HTML with clickable/filterable fields
     const html = `
       <div class="col-12 col-lg-3">
@@ -373,54 +383,62 @@ export default {
           <div class="card-content" style="padding-top: 8px;">
             <div class="valor-principal">${quantidade_total}</div>
             <div class="linha">
-              <div class="dashboard-card-filter clickable ${isActive('vigentes')}" data-filter="vigentes" tabindex="0"><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive(
+                "vigentes"
+              )}" data-filter="vigentes" tabindex="0"><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
               <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive('finalizados')}" data-filter="finalizados" tabindex="0"><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive(
+                "finalizados"
+              )}" data-filter="finalizados" tabindex="0"><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
               <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive('criticos')}" data-filter="criticos" tabindex="0"><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive(
+                "criticos"
+              )}" data-filter="criticos" tabindex="0"><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
             </div>
             <div class="linha" style="gap: 8px;">
-              <div class="dashboard-card-filter clickable ${isActive('120dias')}" data-filter="120dias" tabindex="0"><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive(
+                "120dias"
+              )}" data-filter="120dias" tabindex="0"><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
               <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive('90dias')}" data-filter="90dias" tabindex="0"><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive(
+                "90dias"
+              )}" data-filter="90dias" tabindex="0"><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
               <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive('45dias')}" data-filter="45dias" tabindex="0"><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive(
+                "45dias"
+              )}" data-filter="45dias" tabindex="0"><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
               <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive('outros')}" data-filter="outros" tabindex="0"><div>Outros</div><div class="valor-azul">${outros}</div></div>
+              <div class="dashboard-card-filter clickable ${isActive(
+                "outros"
+              )}" data-filter="outros" tabindex="0"><div>Outros</div><div class="valor-azul">${outros}</div></div>
             </div>
           </div>
         </div>
       </div>`;
     // After rendering, setup event listeners
     setTimeout(() => {
-      this.setupDashboardCardFilterClicks && this.setupDashboardCardFilterClicks();
+      this.setupDashboardCardFilterClicks &&
+        this.setupDashboardCardFilterClicks();
     }, 0);
     return html;
   },
 
   // Add event listeners to dashboard card filter fields
   setupDashboardCardFilterClicks() {
-    document.querySelectorAll('.dashboard-card-filter.clickable').forEach(el => {
-      // Remove listeners para evitar múltiplos handlers
-      el.replaceWith(el.cloneNode(true));
-    });
-    // Re-seleciona após replaceWith
-    document.querySelectorAll('.dashboard-card-filter.clickable').forEach(el => {
-      el.addEventListener('click', (e) => {
-        if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
-        const filter = el.getAttribute('data-filter');
-        const idx = window._dashboardVisualFilters.indexOf(filter);
-        if (idx === -1) {
-          window._dashboardVisualFilters.push(filter);
-        } else {
-          window._dashboardVisualFilters.splice(idx, 1);
-        }
-        this.renderActiveFilters();
+    document
+      .querySelectorAll(".dashboard-card-filter.clickable")
+      .forEach((el) => {
+        // Remove listeners para evitar múltiplos handlers
+        el.replaceWith(el.cloneNode(true));
       });
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
-          const filter = el.getAttribute('data-filter');
+    // Re-seleciona após replaceWith
+    document
+      .querySelectorAll(".dashboard-card-filter.clickable")
+      .forEach((el) => {
+        el.addEventListener("click", (e) => {
+          if (!window._dashboardVisualFilters)
+            window._dashboardVisualFilters = [];
+          const filter = el.getAttribute("data-filter");
           const idx = window._dashboardVisualFilters.indexOf(filter);
           if (idx === -1) {
             window._dashboardVisualFilters.push(filter);
@@ -428,9 +446,22 @@ export default {
             window._dashboardVisualFilters.splice(idx, 1);
           }
           this.renderActiveFilters();
-        }
+        });
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            if (!window._dashboardVisualFilters)
+              window._dashboardVisualFilters = [];
+            const filter = el.getAttribute("data-filter");
+            const idx = window._dashboardVisualFilters.indexOf(filter);
+            if (idx === -1) {
+              window._dashboardVisualFilters.push(filter);
+            } else {
+              window._dashboardVisualFilters.splice(idx, 1);
+            }
+            this.renderActiveFilters();
+          }
+        });
       });
-    });
   },
 
   // Toggle filter in tableState.filters.tipo and update dashboard
@@ -828,7 +859,8 @@ export default {
       searchInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const value = e.target.value.trim();
-          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
+          if (!window._dashboardVisualFilters)
+            window._dashboardVisualFilters = [];
           // Remove o filtro anterior se existir
           if (lastSearch) {
             const idx = window._dashboardVisualFilters.indexOf(lastSearch);
@@ -1072,13 +1104,14 @@ export default {
 
     // Adiciona funcionalidade de filtro visual para número do processo
     setTimeout(() => {
-      document.querySelectorAll('.processo-filter').forEach(el => {
+      document.querySelectorAll(".processo-filter").forEach((el) => {
         el.replaceWith(el.cloneNode(true));
       });
-      document.querySelectorAll('.processo-filter').forEach(el => {
-        el.addEventListener('click', (e) => {
-          if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
-          const processo = el.getAttribute('data-processo');
+      document.querySelectorAll(".processo-filter").forEach((el) => {
+        el.addEventListener("click", (e) => {
+          if (!window._dashboardVisualFilters)
+            window._dashboardVisualFilters = [];
+          const processo = el.getAttribute("data-processo");
           if (!processo) return;
           const idx = window._dashboardVisualFilters.indexOf(processo);
           if (idx === -1) {
@@ -1086,14 +1119,15 @@ export default {
           } else {
             window._dashboardVisualFilters.splice(idx, 1);
           }
-          if (typeof App !== 'undefined' && App.renderActiveFilters) {
+          if (typeof App !== "undefined" && App.renderActiveFilters) {
             App.renderActiveFilters();
           }
         });
-        el.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
-            const processo = el.getAttribute('data-processo');
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            if (!window._dashboardVisualFilters)
+              window._dashboardVisualFilters = [];
+            const processo = el.getAttribute("data-processo");
             if (!processo) return;
             const idx = window._dashboardVisualFilters.indexOf(processo);
             if (idx === -1) {
@@ -1101,7 +1135,7 @@ export default {
             } else {
               window._dashboardVisualFilters.splice(idx, 1);
             }
-            if (typeof App !== 'undefined' && App.renderActiveFilters) {
+            if (typeof App !== "undefined" && App.renderActiveFilters) {
               App.renderActiveFilters();
             }
           }
@@ -1303,7 +1337,7 @@ export default {
                   class="processo-filter"
                   style="color: #666; cursor: pointer; margin-left: 2px;" 
                   tabindex="0"
-                  data-processo="${contract.processo || ''}"
+                  data-processo="${contract.processo || ""}"
                   data-tooltip-text="Número do processo"
                   data-tooltip-place="bottom"
                   data-tooltip-type="info"
@@ -1337,9 +1371,15 @@ export default {
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           ${financialBars.createPaidBar(contract)}
         </td>
-        <td class="hide-mobile" valign="top" style="padding: 5px 8px; min-width: ${Array.isArray(contract.responsaveis) && contract.responsaveis.length > 0 ? '180px' : '120px'};">
+        <td class="hide-mobile" valign="top" style="padding: 5px 8px; min-width: ${
+          Array.isArray(contract.responsaveis) &&
+          contract.responsaveis.length > 0
+            ? "180px"
+            : "120px"
+        };">
           ${
-            Array.isArray(contract.responsaveis) && contract.responsaveis.length > 0
+            Array.isArray(contract.responsaveis) &&
+            contract.responsaveis.length > 0
               ? contract.responsaveis
                   .map(
                     (resp) => `
@@ -1709,39 +1749,41 @@ export default {
     try {
       // Show loading state
       const originalSrc = imgElement.src;
-      imgElement.style.opacity = '0.5';
-      
-      const response = await fetch(`/dashboard/contrato/${contractId}/favorito`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      imgElement.style.opacity = "0.5";
+
+      const response = await fetch(
+        `/dashboard/contrato/${contractId}/favorito`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      
+
       if (data.success) {
         // Update the image
         imgElement.src = `static/images/ico/heart_${data.favorite_icon}.png`;
         imgElement.title = data.favorite_title;
-        imgElement.setAttribute('data-tooltip-text', data.favorite_title);
-        
-        console.log('Favorite status updated:', data);
+        imgElement.setAttribute("data-tooltip-text", data.favorite_title);
+
+        console.log("Favorite status updated:", data);
       } else {
-        throw new Error('Failed to update favorite status');
+        throw new Error("Failed to update favorite status");
       }
-      
     } catch (error) {
-      console.error('Error toggling favorite:', error);
+      console.error("Error toggling favorite:", error);
       // Optionally show an error message to the user
-      alert('Erro ao atualizar favorito. Tente novamente.');
+      alert("Erro ao atualizar favorito. Tente novamente.");
     } finally {
       // Restore opacity
-      imgElement.style.opacity = '1';
+      imgElement.style.opacity = "1";
     }
   },
 };

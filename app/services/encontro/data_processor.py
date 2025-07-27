@@ -288,16 +288,12 @@ class DataProcessor:
                         # Check if this is an RP operation
                         is_rp_operation = 'RP' in operation_type
                         
-                        # Check if this is the oldest operation
-                        is_oldest_operation = (oldest_operation is not None and op is oldest_operation)
+                        # Use the flag that was already set in _process_financial_data
+                        is_oldest_operation = op.get('is_oldest_operation', False)
                         
                         # Apply RP logic: If it's an RP operation and NOT the oldest, count as 0
                         if is_rp_operation and not is_oldest_operation:
                             value = 0  # Count as zero to avoid double-counting budget
-                        
-                        # Apply negative value for cancellation/annulment operations
-                        if 'ANULACAO' in operation_type or 'CANCELAMENTO' in operation_type:
-                            value = -value
                         
                         total_orcamentario += value
         
