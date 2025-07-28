@@ -87,9 +87,7 @@ h7 {
 }
 
 /* GERAL */
-html {
-  overflow: hidden;
-}
+/* html overflow rules removidas - conflitavam com outros CSS */
 
 body {
   font-family: Raleway, sans-serif;
@@ -107,7 +105,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Evita scroll horizontal */
+  /* overflow rules removidas - deixa outros CSS controlarem */
 }
 
 html {
@@ -121,12 +119,12 @@ body {
 }
 
 .br-main {
-  min-height: calc(100vh + 1px); /* força scroll mínimo */
+  min-height: calc(100vh - 130px); /* Subtrai o padding-top para não criar altura extra */
   margin-bottom: 0; /* Remove espaço extra */
   padding-bottom: 0 !important; /* Força remoção de padding */
   margin-left: 0;
   transition: margin-left 0.3s ease;
-  padding-top: 110px; /* espaço para o header normal */
+  padding-top: 130px; /* espaço para o header normal - deve coincidir com JS */
 }
 
 .container-lg {
@@ -245,4 +243,15 @@ body {
 
 .br-modal .br-modal-close:hover {
   color: #333 !important;
+}
+
+/* ===================== CORREÇÃO HEADER FIXO ===================== */
+/* Garante que o header sempre fique fixo no topo, mesmo com scroll */
+.br-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 9999 !important;
 }

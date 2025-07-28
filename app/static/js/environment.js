@@ -42,10 +42,11 @@ export default {
 
     const shrinkHeader = () => {
       const scrollY = window.scrollY;
-      const shouldShrink =
-        (!lastShrinkState && scrollY > 50) || (lastShrinkState && scrollY < 30)
-          ? !lastShrinkState
-          : lastShrinkState;
+      
+      // Melhora a lógica de threshold para evitar "jitter"
+      const shouldShrink = lastShrinkState 
+        ? scrollY > 20  // Se já está encolhido, só expande se subir bastante
+        : scrollY > 80; // Se está normal, só encolhe se descer bastante
 
       if (shouldShrink !== lastShrinkState) {
         header.classList.toggle("header-shrink", shouldShrink);

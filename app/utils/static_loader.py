@@ -31,39 +31,36 @@ def collect_static_files():
             all_css.extend(get_files_in_dir(subdir_path, (".css",)))
             all_js.extend(get_files_in_dir(subdir_path, (".js",)))
 
-    # Separate CSS files based on directory structure and patterns
-    base_css = []
-    template_css = []
-    
-    for css_file in all_css:
-        css_path = Path(css_file)
+    # In development mode, include ALL CSS files as base CSS for simplicity
+    # This ensures all styles are available without having to manage complex categorization
+    # Exclude login.css and outros-templates.css in development mode
+    base_css = [css for css in all_css if not (css.endswith('/login.css') or css.endswith('/outros-templates.css'))]
+    template_css = []  # No template-specific CSS in development
+
+    # Sort CSS files: common framework files first, then priority files, then alphabetically
+    def css_sort_key(x):
+        # Priority order for specific CSS files
+        priority_files = {
+            '/static/css/app.css': 10,
+            '/static/css/base.css': 11,
+            '/static/css/header.css': 12,
+            '/static/css/menu.css': 13
+        }
         
-        # Priority 1: Files in /css/common/ directory (always base CSS)
-        if "/css/common/" in css_file:
-            base_css.append(css_file)
-        # Priority 2: Third-party/framework files (by directory pattern)
-        elif any(framework_dir in css_file for framework_dir in ["/fonts/"]):
-            base_css.append(css_file)
-        # Priority 3: Core component files (in root css directory, not template-specific)
-        elif css_path.parent.name == "css" and any(
-            component_type in css_path.stem.lower() for component_type in [
-                "app", "base", "header", "menu", "table", "financial"
-            ]
-        ):
-            base_css.append(css_file)
-        # Everything else is template-specific
+        if "/css/common/govbr-ds/" in x:
+            return (0, x)
+        elif "/css/common/" in x:
+            return (1, x)
+        elif "/fonts/" in x:
+            return (2, x)
+        elif x in priority_files:
+            return (3, priority_files[x], x)
         else:
-            template_css.append(css_file)
+            return (4, x)  # Rest alphabetically
+    
+    base_css.sort(key=css_sort_key)
 
-    # Sort to ensure consistent order (common files first, govbr-ds first within common)
-    base_css.sort(key=lambda x: (
-        0 if "/css/common/govbr-ds/" in x else 
-        1 if "/css/common/" in x else 
-        2 if "/fonts/" in x else 
-        3
-    ))
-
-    # Separate JS files: first by location (common first), then by type
+    # Separate JS files dynamically: scripts vs modules
     common_js_files = []      # Scripts from /js/common/
     common_js_modules = []    # Modules from /js/common/
     other_js_files = []       # Scripts from other locations
@@ -72,10 +69,11 @@ def collect_static_files():
     for js_file in all_js:
         js_path = Path(js_file)
         is_common = "/js/common/" in js_file
-        # ECharts ESM is a module, not a regular script
-        is_script = (js_path.suffix == ".js" and 
-                    ".min.js" in js_path.name and 
-                    "echarts.esm" not in js_path.name)
+        
+        # Determine if it's a script or module based on file characteristics
+        # Scripts: .min.js files (typically pre-minified libraries)
+        # Modules: .js files that are not minified (ES6 modules)
+        is_script = ".min.js" in js_path.name
         
         if is_common:
             if is_script:
@@ -88,19 +86,19 @@ def collect_static_files():
             else:
                 other_js_modules.append(js_file)
 
-    # Sort common JS files to ensure govbr-ds comes first, then echarts
-    common_js_files.sort(key=lambda x: (
-        0 if "/js/common/govbr-ds/" in x else 
-        1 if "echarts" in x else
-        2
-    ))
+    # Sort JS files: govbr-ds first, then alphabetically
+    def js_sort_key(x):
+        return (
+            0 if "/js/common/govbr-ds/" in x else 
+            1 if "echarts" in x.lower() else
+            2,
+            x  # Secondary sort alphabetically
+        )
     
-    # Sort common JS modules similarly
-    common_js_modules.sort(key=lambda x: (
-        0 if "/js/common/govbr-ds/" in x else 
-        1 if "echarts" in x else
-        2
-    ))
+    common_js_files.sort(key=js_sort_key)
+    common_js_modules.sort(key=js_sort_key)
+    other_js_files.sort()
+    other_js_modules.sort()
 
     # Combine: common files first within each category
     # Scripts (no type="module"): common scripts first, then others
@@ -122,7 +120,7 @@ def get_template_specific_css(template_name):
     
     template_css = []
     template_lower = template_name.lower()
-    
+
     # Generate all possible template name variations for matching
     template_patterns = {
         template_lower,
@@ -131,25 +129,27 @@ def get_template_specific_css(template_name):
         template_lower.replace("-", ""),
         template_lower.replace("_", "")
     }
-    
+
+    # Get the base CSS files to exclude duplicates
+    try:
+        _, _, base_css, _ = collect_static_files()
+        base_css_set = set(base_css)
+    except Exception:
+        base_css_set = set()
+
     # Scan all CSS files recursively for template-specific matches
     for css_file in base.rglob("*.css"):
         if css_file.is_file():
             file_stem = css_file.stem.lower()
-            
-            # Skip files in common/ directory (these are base CSS)
+
+            # Skip files in common/ directory (these are framework files)
             if "common" in css_file.parts:
                 continue
-                
-            # Skip files that are clearly framework/component files
-            if any(framework_pattern in file_stem for framework_pattern in [
-                "app", "base", "header", "menu", "table", "financial"
-            ]):
-                continue
-            
-            # Check if this file matches the template name patterns
+
+            # Check if this file matches any of the template name patterns
             if any(pattern in file_stem for pattern in template_patterns):
                 rel_path = f"/static/{css_file.relative_to(base.parent).as_posix()}"
-                template_css.append(rel_path)
-    
+                if rel_path not in base_css_set:
+                    template_css.append(rel_path)
+
     return sorted(template_css)
