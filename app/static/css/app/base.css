@@ -135,6 +135,11 @@ body {
   padding-bottom: 0 !important;
 }
 
+.br-main .container-lg > * {
+  margin-left: calc(-15px + 10px);
+  margin-right: calc(-15px + 10px);
+}
+
 /* FOOTER */
 .br-footer {
   position: relative;

@@ -3,7 +3,7 @@
  * 📄 CloneFinanceiroToPostgres.java
  *
  * Sincroniza tabelas do DaaS SERPRO (via Teiid) para banco local PostgreSQL,
- * usando datas do campo `DT_CARGA_C`, controladas por `tables_financeiro.txt`.
+ * usando datas do campo `DT_CARGA_C`, controladas por `CloneFinanceiroToPostgres.ini`.
  * A sincronização é incremental e atualiza automaticamente o arquivo de controle.
  *
  * 🔧 Compilação:
@@ -11,10 +11,10 @@
  *
  * ▶️ Execução em segundo plano:
  *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres </dev/null &>/dev/null & disown
- *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres --ignore-delete </dev/null &>/dev/null & disown ; tail -f clone_financeiro.log
+ *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroToPostgres --ignore-delete </dev/null &>/dev/null & disown ; tail -f CloneFinanceiroToPostgres.log
  *
  * 📂 Log:
- *   tail -f clone_financeiro.log
+ *   tail -f CloneFinanceiroToPostgres.log
  *
  * 🛑 Parar o processo:
  *   pkill -f CloneFinanceiroToPostgres
@@ -35,7 +35,7 @@ public class CloneFinanceiroToPostgres {
 
         while (true) {
             try {
-                PrintStream log = new PrintStream(new FileOutputStream("clone_financeiro.log", true));
+                PrintStream log = new PrintStream(new FileOutputStream("CloneFinanceiroToPostgres.log", true));
                 System.setOut(log);
                 System.setErr(log);
                 System.out.println(timestamp() + " 📝 Log iniciado em: " + LocalDateTime.now());
@@ -57,7 +57,7 @@ public class CloneFinanceiroToPostgres {
                         "jdbc:postgresql://localhost:5432/financeiro", "postgres", "postgres");
                 System.out.println(timestamp() + " ✅ Conectado ao PostgreSQL.");
 
-                Path tablesPath = Paths.get("tables_financeiro.txt");
+                Path tablesPath = Paths.get("CloneFinanceiroToPostgres.ini");
                 List<String> linhas = Files.readAllLines(tablesPath);
                 Map<String, LocalDate> tabelaDataInicio = new LinkedHashMap<>();
 
@@ -320,7 +320,7 @@ public class CloneFinanceiroToPostgres {
 
             Files.write(path, novasLinhas);
         } catch (IOException e) {
-            System.err.println(timestamp() + " ❌ Erro ao atualizar tables_financeiro.txt: " + e.getMessage());
+            System.err.println(timestamp() + " ❌ Erro ao atualizar CloneFinanceiroToPostgres.ini: " + e.getMessage());
         }
 
     }

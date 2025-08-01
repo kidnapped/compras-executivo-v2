@@ -1,0 +1,71 @@
+{% extends "app/base.html" %}
+
+{% block title %}Postgres Local - Administração{% endblock %}
+
+{% block content %}
+<div class="admin_postgres_local-page">
+  <div class="container-fluid">
+    <!-- Breadcrumb -->
+    <div class="admin_postgres_local-breadcrumb">
+      <div class="breadcrumb-modern">
+        <div class="breadcrumb-items">
+          <div class="breadcrumb-item">
+            <a href="/inicio">
+              <i class="fas fa-home"></i>
+              <span>Página Inicial</span>
+            </a>
+          </div>
+          <div class="breadcrumb-separator">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <div class="breadcrumb-item">
+            <a href="/admin">
+              <i class="fas fa-cog"></i>
+              <span>Administração</span>
+            </a>
+          </div>
+          <div class="breadcrumb-separator">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <div class="breadcrumb-item">
+            <a href="/admin/etl">
+              <i class="fas fa-database"></i>
+              <span>ETL</span>
+            </a>
+          </div>
+          <div class="breadcrumb-separator">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <div class="breadcrumb-item active">
+            <i class="fas fa-table"></i>
+            <span>Postgres Local</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header Card -->
+    <div class="header-card">
+      <div class="header-content">
+        <div class="header-info">
+          <div class="header-icon">
+            <i class="fas fa-table"></i>
+          </div>
+          <div class="header-text">
+            <h1>Consultar dados do Postgres Local</h1>
+            <p>Visualize e pesquise os dados armazenados localmente no banco Postgres.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-card">
+      <div class="content-body">
+        <h3>Exemplo de Conteúdo</h3>
+        <p>Esta é a página de consulta aos dados do Postgres Local. Aqui você pode implementar ferramentas para visualizar e pesquisar dados no banco local.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

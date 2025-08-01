@@ -86,19 +86,29 @@ def collect_static_files():
             else:
                 other_js_modules.append(js_file)
 
-    # Sort JS files: govbr-ds first, then alphabetically
+    # Sort JS files: govbr-ds first, then priority files, then alphabetically
     def js_sort_key(x):
-        return (
-            0 if "/js/common/govbr-ds/" in x else 
-            1 if "echarts" in x.lower() else
-            2,
-            x  # Secondary sort alphabetically
-        )
+        # Priority order for specific JS files
+        priority_js_files = {
+            '/static/js/util/echarts.js': 10,
+            '/static/js/app.js': 11
+        }
+        
+        if "/js/common/govbr-ds/" in x:
+            return (0, x)
+        elif "echarts" in x.lower() and x not in priority_js_files:
+            return (1, x)
+        elif x in priority_js_files:
+            return (2, priority_js_files[x], x)
+        elif "/js/app/" in x:
+            return (3, x)  # App directory files
+        else:
+            return (4, x)  # Rest alphabetically
     
     common_js_files.sort(key=js_sort_key)
     common_js_modules.sort(key=js_sort_key)
-    other_js_files.sort()
-    other_js_modules.sort()
+    other_js_files.sort(key=js_sort_key)
+    other_js_modules.sort(key=js_sort_key)
 
     # Combine: common files first within each category
     # Scripts (no type="module"): common scripts first, then others

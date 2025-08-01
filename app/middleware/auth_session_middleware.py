@@ -26,7 +26,7 @@ class AuthSessionMiddleware(BaseHTTPMiddleware):
         )
 
         if settings.REPAIR_MODE and not (public_paths or path.startswith("/admin")):
-            return templates.TemplateResponse("repair.html", {"request": request}, status_code=503)
+            return templates.TemplateResponse("app/repair.html", {"request": request}, status_code=503)
 
         if not public_paths:
             if "session" not in request.scope:

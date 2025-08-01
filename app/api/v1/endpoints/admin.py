@@ -12,12 +12,12 @@ router = APIRouter()
 
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_index(request: Request):
-    return templates.TemplateResponse("admin.html", {"request": request, "template_name": "admin"})
+    return templates.TemplateResponse("admin/admin.html", {"request": request, "template_name": "admin"})
 
 # Página HTML
 @router.get("/admin/usuarios", response_class=HTMLResponse)
 async def admin_usuarios_html(request: Request):
-    return templates.TemplateResponse("admin_usuarios.html", {"request": request, "template_name": "admin"})
+    return templates.TemplateResponse("admin/admin_usuarios.html", {"request": request, "template_name": "admin"})
 
 # API JSON para listagem paginada
 @router.get("/admin/usuarios/lista")
@@ -107,7 +107,7 @@ async def editar_usuario(
 # Outras páginas administrativas
 @router.get("/admin/perfis", response_class=HTMLResponse)
 async def admin_perfis(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("admin/admin.html", {
         "request": request,
         "titulo": "Perfis",
         "descricao": "Em desenvolvimento",
@@ -117,15 +117,17 @@ async def admin_perfis(request: Request):
 
 @router.get("/admin/permissoes", response_class=HTMLResponse)
 async def admin_permissoes(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("admin/admin.html", {
         "request": request,
         "titulo": "Permissões",
         "descricao": "Em desenvolvimento", 
         "icone": "fas fa-user-shield",
         "template_name": "admin"
-    })@router.get("/admin/logs", response_class=HTMLResponse)
+    })
+
+@router.get("/admin/logs", response_class=HTMLResponse)
 async def admin_logs(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("admin/admin.html", {
         "request": request,
         "titulo": "Logs",
         "descricao": "Em desenvolvimento",
@@ -135,7 +137,7 @@ async def admin_logs(request: Request):
 
 @router.get("/admin/sistema", response_class=HTMLResponse)
 async def admin_sistema(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("admin/admin.html", {
         "request": request,
         "titulo": "Sistema",
         "descricao": "Em desenvolvimento",
@@ -145,17 +147,11 @@ async def admin_sistema(request: Request):
 
 @router.get("/admin/etl", response_class=HTMLResponse)
 async def admin_etl(request: Request):
-    return templates.TemplateResponse("admin.html", {
-        "request": request,
-        "titulo": "ETL",
-        "descricao": "Em desenvolvimento",
-        "icone": "fas fa-database",
-        "template_name": "admin"
-    })
+    return templates.TemplateResponse("admin/admin_etl.html", {"request": request, "template_name": "etl"})
 
 @router.get("/admin/uasgs", response_class=HTMLResponse)
 async def admin_uasgs(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("admin/admin.html", {
         "request": request,
         "titulo": "UASGs",
         "descricao": "Em desenvolvimento",
@@ -165,7 +161,7 @@ async def admin_uasgs(request: Request):
 
 @router.get("/admin/parametros", response_class=HTMLResponse)
 async def admin_parametros(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("admin/admin.html", {
         "request": request,
         "titulo": "Parâmetros",
         "descricao": "Em desenvolvimento",
@@ -175,10 +171,39 @@ async def admin_parametros(request: Request):
 
 @router.get("/admin/integracoes", response_class=HTMLResponse)
 async def admin_integracoes(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("admin/admin.html", {
         "request": request,
         "titulo": "Integrações",
         "descricao": "Em desenvolvimento",
         "icone": "fas fa-plug",
         "template_name": "admin"
     })
+
+# ETL Endpoints
+@router.get("/admin/etl/dw-tesouro", response_class=HTMLResponse)
+async def admin_etl_dw_tesouro(request: Request):
+    return templates.TemplateResponse("admin/admin_dw_tesouro.html", {"request": request, "template_name": "dw_tesouro"})
+
+@router.get("/admin/etl/vdb-compras", response_class=HTMLResponse)
+async def admin_etl_vdb_compras(request: Request):
+    return templates.TemplateResponse("admin/admin_vdb_compras.html", {"request": request, "template_name": "vdb_compras"})
+
+@router.get("/admin/etl/postgres-local", response_class=HTMLResponse)
+async def admin_etl_postgres_local(request: Request):
+    return templates.TemplateResponse("admin/admin_postgres_local.html", {"request": request, "template_name": "postgres_local"})
+
+@router.get("/admin/etl/import-dw-tesouro", response_class=HTMLResponse)
+async def admin_etl_import_dw_tesouro(request: Request):
+    return templates.TemplateResponse("admin/admin_import_dw_tesouro.html", {"request": request, "template_name": "import_dw_tesouro"})
+
+@router.get("/admin/etl/import-compras", response_class=HTMLResponse)
+async def admin_etl_import_compras(request: Request):
+    return templates.TemplateResponse("admin/admin_import_compras.html", {"request": request, "template_name": "import_compras"})
+
+@router.get("/admin/etl/atualizar-compras", response_class=HTMLResponse)
+async def admin_etl_atualizar_compras(request: Request):
+    return templates.TemplateResponse("admin/admin_atualizar_compras.html", {"request": request, "template_name": "atualizar_compras"})
+
+@router.get("/admin/etl/comparar-origem", response_class=HTMLResponse)
+async def admin_etl_comparar_origem(request: Request):
+    return templates.TemplateResponse("admin/admin_comparar_origem.html", {"request": request, "template_name": "comparar_origem"})

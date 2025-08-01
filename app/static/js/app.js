@@ -1,9 +1,9 @@
 if (process.env.ENVIRONMENT === "production") {
-  import("./style.js");
+  import("./app/style.js");
 }
 
 import environment from "./environment.js";
-import menu from "./menu.js";
+import menu from "./app/menu.js";
 import admin from "./admin.js";
 import modalManager from "./common/modal-manager.js";
 import tooltip from "./common/tooltip.js";
@@ -13,7 +13,8 @@ import devOps from "./dev-ops/dev-ops.js";
 import card_kpi from "./kpi/card.js";
 import contratos_dashboard from "./contrato/dashboard.js";
 import * as kpis_kpi from "./kpi/kpis.js";
-import encontroInit from "./encontro/encontro-init.js";
+// import encontroInit from "./encontro/encontro-init.js";
+import breadcrumb from "./app/breadcrumb.js";
 
 const App = {
   ...environment,
@@ -27,6 +28,7 @@ const App = {
   ...aditivosHandler,
   ...financialBars,
   ...devOps,
+  breadcrumb,
   // Don't spread encontroInit since it's an object with its own init method
 };
 
@@ -36,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   modalManager.initialize();
   tooltip.initialize();
   financialBars.initialize();
+  breadcrumb.breadcrumb_init();
   // Fix: Call the init method on the EncontroInit object
   // encontroInit.init(); // Remove this line - EncontroInit already auto-initializes
   App.init();

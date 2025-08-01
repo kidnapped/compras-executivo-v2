@@ -27,198 +27,190 @@ import java.util.*;
 import java.io.*;
 
 public class CloneContratosToPostgres {
+
     public static void main(String[] args) throws Exception {
         PrintStream log = null;
         try {
             log = new PrintStream(new FileOutputStream("clone_contratos.log", true));
             System.setOut(log);
             System.setErr(log);
-            System.out.println("🚀 Início da execução CloneContratosToPostgres");
+            System.out.println("🚀 [START] Execução CloneContratosToPostgres");
         } catch (Exception ex) {
-            ex.printStackTrace(); // ainda vai para nohup.out
-            return; // não consegue nem iniciar o log, então encerra
+            ex.printStackTrace();
+            return;
         }
 
-        while (true) {
-            try {
-                System.out.println("📅 Data de execução: " + new java.util.Date());
+        long inicioGlobal = System.currentTimeMillis();
 
-                String truststorePath = "/home/ec2-user/java/daas.serpro.gov.br.jks";
-                System.setProperty("javax.net.ssl.trustStore", truststorePath);
-                System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+        try {
+            System.out.println("📅 [INFO] Data de execução: " + new java.util.Date());
 
-                Class.forName("org.teiid.jdbc.TeiidDriver");
-                Class.forName("org.postgresql.Driver");
+            // SSL Config
+            String truststorePath = "/home/ec2-user/java/daas.serpro.gov.br.jks";
+            System.setProperty("javax.net.ssl.trustStore", truststorePath);
+            System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+            System.out.println("🔐 [INFO] Truststore configurado: " + truststorePath);
 
-                Connection daasConn = DriverManager.getConnection(
-                    "jdbc:teiid:ContratosGovBr_usr_ComprasExecutivo@mms://daas.serpro.gov.br:31000", 
-                    "70267715153", "t#Hlbr*tr8"
-                );
-                Connection pgConn = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/contratos", "postgres", "postgres"
-                );
+            // Drivers
+            Class.forName("org.teiid.jdbc.TeiidDriver");
+            Class.forName("org.postgresql.Driver");
+            System.out.println("✅ [INFO] Drivers carregados com sucesso");
 
-                List<String> tabelas = Files.readAllLines(Paths.get("tables_contratos.txt"));
-                for (String tabela : tabelas) {
-                    tabela = tabela.trim();
-                    if (tabela.isEmpty()) continue;
+            // Conexões
+            Connection daasConn = DriverManager.getConnection(
+                "jdbc:teiid:ContratosGovBr_usr_ComprasExecutivo@mms://daas.serpro.gov.br:31000",
+                "70267715153", "t#Hlbr*tr8"
+            );
+            Connection pgConn = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/contratos", "postgres", "postgres"
+            );
 
-                    System.out.println("\n🔄 Sincronizando: " + tabela);
-                    Statement stmtDaaS = daasConn.createStatement();
-                    stmtDaaS.setFetchSize(50);
-                    ResultSet rsTest = stmtDaaS.executeQuery(
-                        "SELECT * FROM ContratosGovBr_usr_ComprasExecutivo_VBL." + tabela + " LIMIT 1"
-                    );
-                    ResultSetMetaData meta = rsTest.getMetaData();
-                    int colCount = meta.getColumnCount();
+            List<String> tabelas = Files.readAllLines(Paths.get("tables_contratos.txt"));
+            System.out.println("📂 [INFO] Total de tabelas na lista: " + tabelas.size());
 
-                    List<String> keyColumns = new ArrayList<>();
-                    for (int i = 1; i <= colCount; i++) {
-                        String col = meta.getColumnName(i);
-                        if (col.equalsIgnoreCase("id")) {
-                            keyColumns.clear();
-                            keyColumns.add("id");
-                            break;
-                        } else if (col.toLowerCase().endsWith("_id")) {
-                            keyColumns.add(col);
-                        }
-                    }
-                    rsTest.close();
+            for (String tabela : tabelas) {
+                tabela = tabela.trim();
+                if (tabela.isEmpty()) continue;
 
-                    DatabaseMetaData dbMeta = pgConn.getMetaData();
-                    ResultSet tablesPG = dbMeta.getTables(null, null, tabela, null);
-                    if (!tablesPG.next()) {
-                        StringBuilder createSql = new StringBuilder("CREATE TABLE " + tabela + " (");
-                        for (int i = 1; i <= colCount; i++) {
-                            String colName = meta.getColumnName(i);
-                            String colType = meta.getColumnTypeName(i).toUpperCase();
-                            String pgType;
+                long inicioTabela = System.currentTimeMillis();
+                System.out.println("\n🔄 [SYNC] Iniciando sincronização da tabela: " + tabela);
 
-                            if (colName.equalsIgnoreCase("id")) {
-                                pgType = "BIGINT";
-                            } else {
-                                switch (colType) {
-                                    case "STRING":
-                                    case "VARCHAR":
-                                    case "CHAR":
-                                        pgType = "TEXT"; break;
-                                    case "INTEGER":
-                                    case "INT":
-                                    case "INT4":
-                                        pgType = "INTEGER"; break;
-                                    case "BIGINT":
-                                    case "INT8":
-                                        pgType = "BIGINT"; break;
-                                    case "DOUBLE":
-                                    case "FLOAT":
-                                    case "FLOAT8":
-                                        pgType = "DOUBLE PRECISION"; break;
-                                    case "DECIMAL":
-                                    case "NUMERIC":
-                                        pgType = "NUMERIC"; break;
-                                    case "BOOLEAN":
-                                        pgType = "BOOLEAN"; break;
-                                    case "DATE":
-                                        pgType = "DATE"; break;
-                                    case "TIMESTAMP":
-                                        pgType = "TIMESTAMP"; break;
-                                    default:
-                                        pgType = "TEXT"; break;
-                                }
-                            }
+                Statement stmtDaaS = daasConn.createStatement();
+                stmtDaaS.setFetchSize(0); // Evitar streaming no metadata
+                String sqlMeta = "SELECT * FROM ContratosGovBr_usr_ComprasExecutivo_VBL." + tabela + " LIMIT 1";
+                ResultSet rsMeta = stmtDaaS.executeQuery(sqlMeta);
+                ResultSetMetaData meta = rsMeta.getMetaData();
 
-                            createSql.append(colName).append(" ").append(pgType);
-                            if (i < colCount) createSql.append(", ");
-                        }
-                        createSql.append(")");
+                int colCount = meta.getColumnCount();
+                List<String> colunas = new ArrayList<>();
+                List<String> tipos = new ArrayList<>();
+                for (int i = 1; i <= colCount; i++) {
+                    colunas.add(meta.getColumnName(i));
+                    tipos.add(meta.getColumnTypeName(i).toUpperCase());
+                }
+                rsMeta.close();
 
-                        try (Statement stmtCreate = pgConn.createStatement()) {
-                            stmtCreate.execute(createSql.toString());
-                            System.out.println("📦 Tabela " + tabela + " criada.");
-                        }
-                    }
-                    tablesPG.close();
+                // Modelo de INSERT
+                StringBuilder insertSql = new StringBuilder("INSERT INTO " + tabela + " (");
+                for (int i = 0; i < colunas.size(); i++) {
+                    insertSql.append(colunas.get(i));
+                    if (i < colunas.size() - 1) insertSql.append(", ");
+                }
+                insertSql.append(") VALUES (");
+                for (int i = 0; i < colunas.size(); i++) {
+                    insertSql.append("?");
+                    if (i < colunas.size() - 1) insertSql.append(", ");
+                }
+                insertSql.append(")");
 
-                    String whereClause = "";
-                    if (!keyColumns.isEmpty()) {
-                        StringBuilder where = new StringBuilder(" WHERE ");
-                        for (int i = 0; i < keyColumns.size(); i++) {
-                            String col = keyColumns.get(i);
-                            Statement stmt = pgConn.createStatement();
-                            ResultSet rsMax = stmt.executeQuery("SELECT MAX(" + col + ") FROM " + tabela);
-                            long max = 0;
-                            if (rsMax.next()) max = rsMax.getLong(1);
-                            rsMax.close();
-                            stmt.close();
-
-                            where.append(col).append(" > ").append(max);
-                            if (i < keyColumns.size() - 1) where.append(" AND ");
-                        }
-                        where.append(" ORDER BY ").append(String.join(", ", keyColumns));
-                        whereClause = where.toString();
-                    }
-
-                    ResultSet rs = stmtDaaS.executeQuery(
-                        "SELECT * FROM ContratosGovBr_usr_ComprasExecutivo_VBL." + tabela + whereClause
-                    );
-
-                    StringBuilder insertSql = new StringBuilder("INSERT INTO " + tabela + " (");
-                    for (int i = 1; i <= colCount; i++) {
-                        insertSql.append(meta.getColumnName(i));
-                        if (i < colCount) insertSql.append(", ");
-                    }
-                    insertSql.append(") VALUES (");
-                    for (int i = 1; i <= colCount; i++) {
-                        insertSql.append("?");
-                        if (i < colCount) insertSql.append(", ");
-                    }
-                    insertSql.append(")");
-
-                    PreparedStatement psPG = pgConn.prepareStatement(insertSql.toString());
-
-                    int insertCount = 0;
-                    while (rs.next()) {
-                        for (int i = 1; i <= colCount; i++) {
-                            try {
-                                Object valor = rs.getObject(i);
-                                psPG.setObject(i, valor);
-                            } catch (Exception ex) {
-                                String colName = meta.getColumnName(i);
-                                Object valorErro = rs.getObject(i); // tentar capturar o valor que causou o erro
-                                System.err.println("🛑 Erro ao setar coluna '" + colName + "' com valor: " + valorErro);
-                                ex.printStackTrace();
-                                throw ex; // força parada para análise
-                            }
-                        }
-                        psPG.addBatch();
-                        insertCount++;
-                        if (insertCount % 500 == 0) {
-                            psPG.executeBatch();
-                            System.out.println("... " + insertCount + " registros inseridos em " + tabela);
-                        }
-                    }
-
-                    if (insertCount % 500 != 0) {
-                        psPG.executeBatch();
-                    }
-
-                    System.out.println("✅ Total " + insertCount + " registros inseridos em " + tabela);
-                    rs.close();
-                    stmtDaaS.close();
-                    psPG.close();
+                PreparedStatement psPG = null;
+                try {
+                    psPG = pgConn.prepareStatement(insertSql.toString());
+                } catch (SQLException ex) {
+                    tratarErroEstrutura(ex, tabela, colunas, tipos);
                 }
 
-                daasConn.close();
-                pgConn.close();
-                System.out.println("🏁 Sincronização concluída com sucesso.");
-                break;
+                // Consulta completa
+                ResultSet rsData = stmtDaaS.executeQuery("SELECT * FROM ContratosGovBr_usr_ComprasExecutivo_VBL." + tabela);
+                int count = 0;
 
-            } catch (Exception e) {
-                System.err.println("❌ Erro detectado: " + e.getMessage());
-                e.printStackTrace();
-                Thread.sleep(5000);
-                System.err.println("🔁 Reiniciando conexão...");
+                while (rsData.next()) {
+                    for (int i = 0; i < colunas.size(); i++) {
+                        psPG.setObject(i + 1, rsData.getObject(i + 1));
+                    }
+                    psPG.addBatch();
+                    if (++count % 500 == 0) {
+                        try {
+                            psPG.executeBatch();
+                            psPG.clearBatch();
+                        } catch (SQLException ex) {
+                            tratarErroEstrutura(ex, tabela, colunas, tipos);
+                        }
+                    }
+                }
+
+                if (count % 500 != 0) {
+                    try {
+                        psPG.executeBatch();
+                    } catch (SQLException ex) {
+                        tratarErroEstrutura(ex, tabela, colunas, tipos);
+                    }
+                }
+
+                psPG.close();
+                rsData.close();
+                stmtDaaS.close();
+
+                System.out.println("✅ [FIM] Tabela: " + tabela + " | Registros: " + count +
+                                   " | Tempo: " + (System.currentTimeMillis() - inicioTabela) / 1000 + "s");
             }
+
+            daasConn.close();
+            pgConn.close();
+            System.out.println("🏁 [DONE] Sincronização concluída em " +
+                               (System.currentTimeMillis() - inicioGlobal) / 1000 + "s");
+
+        } catch (Exception e) {
+            tratarErroGeral(e);
+        }
+    }
+
+    private static void tratarErroEstrutura(SQLException ex, String tabela, List<String> colunas, List<String> tipos) {
+        String msg = ex.getMessage();
+        System.err.println("❌ [ERRO SQL] " + msg);
+
+        if (msg.contains("column") && msg.contains("does not exist")) {
+            String col = extrairColuna(msg);
+            int idx = colunas.indexOf(col);
+            String tipoPg = "TEXT";
+            if (idx >= 0) {
+                tipoPg = mapearTipoPg(tipos.get(idx));
+            }
+            System.err.println("\n💡 [AJUSTE] Coluna ausente detectada:");
+            System.err.println("ALTER TABLE " + tabela + " ADD COLUMN " + col + " " + tipoPg + ";");
+            System.err.println("⚠ Execute o comando no PostgreSQL e rode novamente.");
+        }
+
+        ex.printStackTrace();
+        System.exit(1);
+    }
+
+    private static void tratarErroGeral(Exception e) {
+        System.err.println("❌ [FATAL] " + e.getMessage());
+        e.printStackTrace();
+        System.exit(1);
+    }
+
+    private static String extrairColuna(String msg) {
+        int start = msg.indexOf("\"");
+        int end = msg.indexOf("\"", start + 1);
+        if (start > 0 && end > start) {
+            return msg.substring(start + 1, end);
+        }
+        return "coluna_desconhecida";
+    }
+
+    private static String mapearTipoPg(String tipoTeiid) {
+        switch (tipoTeiid) {
+            case "STRING": case "VARCHAR": case "CHAR":
+                return "TEXT";
+            case "INTEGER": case "INT": case "INT4":
+                return "INTEGER";
+            case "BIGINT": case "INT8":
+                return "BIGINT";
+            case "DOUBLE": case "FLOAT": case "FLOAT8":
+                return "DOUBLE PRECISION";
+            case "DECIMAL": case "NUMERIC":
+                return "NUMERIC";
+            case "BOOLEAN":
+                return "BOOLEAN";
+            case "DATE":
+                return "DATE";
+            case "TIMESTAMP":
+                return "TIMESTAMP";
+            default:
+                return "TEXT";
         }
     }
 }
+

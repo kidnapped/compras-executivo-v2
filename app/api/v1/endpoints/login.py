@@ -211,7 +211,7 @@ async def inicio(request: Request):
     if not cpf:
         return RedirectResponse(url="/login?next=/inicio")
     
-    return templates.TemplateResponse("inicio.html", {
+    return templates.TemplateResponse("app/inicio.html", {
         "request": request,
         "cpf": cpf,
         "template_name": "inicio"
@@ -219,7 +219,7 @@ async def inicio(request: Request):
 
 @router.get("/bloqueado", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
-    return templates.TemplateResponse("bloqueado.html", {
+    return templates.TemplateResponse("app/bloqueado.html", {
         "request": request,
         "template_name": "outros-templates"
     })

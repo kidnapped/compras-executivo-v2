@@ -1,17 +1,28 @@
 /*
- * Uso:
- *   java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroTabelaData TABELA DATA [OFFSET]
+ * ───────────────────────────────────────────────────────────────────────────────
+ * 📄 CloneFinanceiroTabelaData.java
  *
- * Exemplos:
+ * Clona dados de uma tabela específica do DaaS SERPRO (via Teiid) para PostgreSQL
+ * local, permitindo especificar tabela, data e offset inicial para retomada.
+ * Ideal para reprocessamento de datas específicas ou recuperação após falhas.
+ *
+ * 🔧 Compilação:
+ *   javac -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroTabelaData.java
+ *
+ * ▶️ Execução:
  *   Execução normal (do zero):
  *     java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroTabelaData WD_DOCUMENTO 20201110
  *
  *   Retomar após travamento (a partir do 9066500):
  *     java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneFinanceiroTabelaData WD_DOCUMENTO 20201110 9066500
  *
- * - Se usar OFFSET, apaga registros da data antes de inserir.
- * - Log: clone_financeiro_table_size.log
- * - Ver progresso: tail -f clone_financeiro_table_size.log
+ * 📂 Log:
+ *   tail -f clone_financeiro_table_size.log
+ *
+ * 📝 Observações:
+ *   - Se usar OFFSET, apaga registros da data antes de inserir
+ *   - Útil para reprocessamento de datas puladas ou recuperação de falhas
+ * ───────────────────────────────────────────────────────────────────────────────
  */
 
 import java.sql.*;

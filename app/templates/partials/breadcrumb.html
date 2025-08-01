@@ -1,0 +1,33 @@
+<!-- Breadcrumb Component -->
+<div class="breadcrumb-container">
+  <div class="breadcrumb-modern">
+    <div class="breadcrumb-items">
+      {% for item in breadcrumb_items %}
+        {% if not loop.last %}
+          <div class="breadcrumb-item">
+            <a href="{{ item.url }}">
+              <i class="{{ item.icon }}"></i>
+              <span>{{ item.title }}</span>
+            </a>
+          </div>
+          <div class="breadcrumb-separator">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+        {% else %}
+          <div class="breadcrumb-item active">
+            <i class="{{ item.icon }}"></i>
+            <span>{{ item.title }}</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+      
+      <!-- Botão Voltar -->
+      {% if breadcrumb_items|length > 1 %}
+        <button class="breadcrumb-back-btn" onclick="App.breadcrumb.breadcrumb_goBackInBreadcrumb()" title="Voltar para a página anterior">
+          <i class="fas fa-arrow-left"></i>
+          <span>Voltar</span>
+        </button>
+      {% endif %}
+    </div>
+  </div>
+</div>

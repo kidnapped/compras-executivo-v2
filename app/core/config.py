@@ -44,6 +44,37 @@ class Settings(BaseSettings):
 
     USE_GOVBR_LOGIN: bool = False
 
+    # VDB Configuration - DaaS SERPRO Teiid
+    VDB_TEIID_HOST: str = "daas.serpro.gov.br"
+    VDB_TEIID_PORT: int = 31000
+    VDB_TEIID_USER: str = "70267715153"
+    VDB_TEIID_PASSWORD: str = "t#Hlbr*tr8"
+    VDB_TRUSTSTORE_PATH: str = "/home/ec2-user/java/"
+    VDB_TRUSTSTORE_FILE: str = "daas.serpro.gov.br.jks"
+    VDB_TRUSTSTORE_TYPE: str = "JKS"
+    
+    # VDB Names
+    VDB_CONTRATOS_NAME: str = "ContratosGovBr_usr_ComprasExecutivo"
+    VDB_FINANCEIRO_NAME: str = "DWTG_Colunar_Afinco"
+    VDB_FINANCEIRO_SCHEMA: str = "DWTG_Colunar_Afinco_VBL"
+    
+    # VDB JDBC URLs
+    VDB_CONTRATOS_JDBC_URL: str = f"jdbc:teiid:{VDB_CONTRATOS_NAME}@mms://{VDB_TEIID_HOST}:{VDB_TEIID_PORT}"
+    VDB_FINANCEIRO_JDBC_URL: str = f"jdbc:teiid:{VDB_FINANCEIRO_NAME}@mms://{VDB_TEIID_HOST}:{VDB_TEIID_PORT};fetchSize=2000;socketTimeout=7200000"
+    
+    # VDB JDBC Driver
+    VDB_TEIID_DRIVER: str = "org.teiid.jdbc.TeiidDriver"
+    VDB_POSTGRES_DRIVER: str = "org.postgresql.Driver"
+    
+    # VDB Local PostgreSQL targets (reusing existing configs)
+    VDB_LOCAL_POSTGRES_HOST: str = "localhost"
+    VDB_LOCAL_POSTGRES_PORT: int = 5432
+    VDB_LOCAL_POSTGRES_USER: str = "postgres"
+    VDB_LOCAL_POSTGRES_PASSWORD: str = "postgres"
+    VDB_LOCAL_CONTRATOS_DB: str = "contratos"
+    VDB_LOCAL_FINANCEIRO_DB: str = "financeiro"
+
+
     @property
     def GOVBR_BASE_URL(self):
         return self.GOVBR_HOMO_AUTH_URL if self.GOVBR_ENV == "homolog" else self.GOVBR_PROD_AUTH_URL

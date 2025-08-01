@@ -1,0 +1,114 @@
+{% extends "app/base.html" %}
+
+{% block title %}ETL - Administração{% endblock %}
+
+{% block content %}
+<div class="admin_etl-page">
+  <div class="container-fluid">
+    <!-- Breadcrumb -->
+    <div class="admin_etl-breadcrumb">
+      <div class="breadcrumb-modern">
+        <div class="breadcrumb-items">
+          <div class="breadcrumb-item">
+            <a href="/inicio">
+              <i class="fas fa-home"></i>
+              <span>Página Inicial</span>
+            </a>
+          </div>
+          <div class="breadcrumb-separator">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <div class="breadcrumb-item">
+            <a href="/admin">
+              <i class="fas fa-cog"></i>
+              <span>Administração</span>
+            </a>
+          </div>
+          <div class="breadcrumb-separator">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <div class="breadcrumb-item active">
+            <i class="fas fa-database"></i>
+            <span>ETL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header Card -->
+    <div class="header-card">
+      <div class="header-content">
+        <div class="header-info">
+          <div class="header-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="header-text">
+            <h1>Administração de ETL</h1>
+            <p>Gerencie e consulte dados entre diferentes fontes do Compras Executivo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards ETL -->
+    <div class="admin_etl-cards">
+      <!-- Card 1 -->
+      <div class="admin_etl-card">
+        <div>
+          <div class="admin_etl-card-title">Consulta do DW do Tesouro Gerencial</div>
+          <div class="admin_etl-card-desc">Acesse e consulte dados diretamente do Data Warehouse do Tesouro Gerencial.</div>
+        </div>
+        <button class="admin_etl-card-btn" onclick="window.location.href='/admin/etl/dw-tesouro'">Entrar</button>
+      </div>
+      <!-- Card 2 -->
+      <div class="admin_etl-card">
+        <div>
+          <div class="admin_etl-card-title">Consulta no VDB do Compras</div>
+          <div class="admin_etl-card-desc">Realize consultas diretamente no Virtual Database (VDB) do módulo Compras.</div>
+        </div>
+        <button class="admin_etl-card-btn" onclick="window.location.href='/admin/etl/vdb-compras'">Entrar</button>
+      </div>
+      <!-- Card 3 -->
+      <div class="admin_etl-card">
+        <div>
+          <div class="admin_etl-card-title">Consultar dados do Postgres Local</div>
+          <div class="admin_etl-card-desc">Visualize e pesquise os dados armazenados localmente no banco Postgres.</div>
+        </div>
+        <button class="admin_etl-card-btn" onclick="window.location.href='/admin/etl/postgres-local'">Entrar</button>
+      </div>
+      <!-- Card 4 -->
+      <div class="admin_etl-card">
+        <div>
+          <div class="admin_etl-card-title">Importar dados do DW do Tesouro Gerencial para o Postgres Local</div>
+          <div class="admin_etl-card-desc">Transfira dados do DW do Tesouro Gerencial para o banco Postgres local de forma segura e eficiente.</div>
+        </div>
+        <button class="admin_etl-card-btn" onclick="window.location.href='/admin/etl/import-dw-tesouro'">Entrar</button>
+      </div>
+      <!-- Card 5 -->
+      <div class="admin_etl-card">
+        <div>
+          <div class="admin_etl-card-title">Importar dados do Compras para o Postgres Local</div>
+          <div class="admin_etl-card-desc">Importe dados do sistema Compras diretamente para o banco Postgres local.</div>
+        </div>
+        <button class="admin_etl-card-btn" onclick="window.location.href='/admin/etl/import-compras'">Entrar</button>
+      </div>
+      <!-- Card 6 -->
+      <div class="admin_etl-card">
+        <div>
+          <div class="admin_etl-card-title">Atualizar dados do Compras no Postgres Local</div>
+          <div class="admin_etl-card-desc">Atualize os dados do Compras já existentes no banco Postgres local.</div>
+        </div>
+        <button class="admin_etl-card-btn" onclick="window.location.href='/admin/etl/atualizar-compras'">Entrar</button>
+      </div>
+      <!-- Card 7 -->
+      <div class="admin_etl-card">
+        <div>
+          <div class="admin_etl-card-title">Comparar a origem dos dados com o Postgres Local</div>
+          <div class="admin_etl-card-desc">Compare os dados das fontes originais com o que está armazenado no Postgres local para garantir integridade.</div>
+        </div>
+        <button class="admin_etl-card-btn" onclick="window.location.href='/admin/etl/comparar-origem'">Entrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
