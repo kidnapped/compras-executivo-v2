@@ -1,0 +1,865 @@
+/* ===================== INDICADORES PAGE ===================== */
+
+.indicadores-page {
+  background: transparent;
+  min-height: 100vh;
+  padding: 1rem;
+  font-family: 'Rawline', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+}
+
+.indicadores-page .container-fluid {
+  max-width: 100%;
+  padding: 0;
+}
+
+/* ===================== ESTILOS GLOBAIS PARA CARDS ===================== */
+
+/* Padding zero para todos os card bodies */
+.indicadores-page .card-body-govbr {
+  padding: 0 !important;
+}
+
+/* Padding zero para todos os card contents */
+.indicadores-page .indicadores-card-content {
+  padding: 0 !important;
+}
+
+/* ===================== ESTILOS PARA 4 CARDS LADO A LADO ===================== */
+
+/* Container dos 4 cards */
+.indicadores-four-cards {
+  margin-top: 1rem;
+}
+
+.indicadores-four-cards .row {
+  margin: 0;
+  padding: 0 !important;
+}
+
+/* Layout das colunas */
+.indicadores-four-cards .col-xl-3 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.indicadores-four-cards .col-xl-3:first-child {
+  padding-left: 0;
+}
+
+.indicadores-four-cards .col-xl-3:last-child {
+  padding-right: 0;
+}
+
+/* Containers dos cards */
+.indicadores-four-cards .indicadores-sidebar,
+.indicadores-four-cards .indicadores-content {
+  height: 150px;
+  min-height: 150px;
+  max-height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards compactos */
+.indicadores-four-cards .sidebar-card {
+  height: 150px !important;
+  min-height: 150px !important;
+  max-height: 150px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Body dos cards */
+.indicadores-four-cards .card-body-govbr {
+  height: calc(150px - 50px) !important;
+  min-height: calc(150px - 50px) !important;
+  max-height: calc(150px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo dos cards */
+.indicadores-four-cards .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* ===================== ESTILOS PARA 2 CARDS LADO A LADO ===================== */
+
+/* Container dos 2 cards */
+.indicadores-two-cards {
+  margin-top: 1rem;
+}
+
+.indicadores-two-cards .row {
+  margin: 0;
+  padding: 0 !important;
+}
+
+/* Layout das colunas */
+.indicadores-two-cards .col-xl-6 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.indicadores-two-cards .col-xl-6:first-child {
+  padding-left: 0;
+}
+
+.indicadores-two-cards .col-xl-6:last-child {
+  padding-right: 0;
+}
+
+/* Containers dos cards */
+.indicadores-two-cards .indicadores-content {
+  height: 150px;
+  min-height: 150px;
+  max-height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards compactos */
+.indicadores-two-cards .sidebar-card {
+  height: 150px !important;
+  min-height: 150px !important;
+  max-height: 150px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Body dos cards */
+.indicadores-two-cards .card-body-govbr {
+  height: calc(150px - 50px) !important;
+  min-height: calc(150px - 50px) !important;
+  max-height: calc(150px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo dos cards */
+.indicadores-two-cards .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* ===================== ESTILOS PARA CARDS ASSIMÉTRICOS (8-4) ===================== */
+
+/* Container dos cards assimétricos */
+.indicadores-asymmetric-cards {
+  margin-top: 1rem;
+}
+
+.indicadores-asymmetric-cards .row {
+  margin: 0;
+  padding: 0 !important;
+}
+
+/* Layout das colunas assimétricas */
+.indicadores-asymmetric-cards .col-xl-8 {
+  padding-left: 0;
+  padding-right: 8px;
+}
+
+.indicadores-asymmetric-cards .col-xl-4 {
+  padding-left: 8px;
+  padding-right: 0;
+}
+
+/* Containers dos cards */
+.indicadores-asymmetric-cards .indicadores-content {
+  height: 150px;
+  min-height: 150px;
+  max-height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards compactos */
+.indicadores-asymmetric-cards .sidebar-card {
+  height: 150px !important;
+  min-height: 150px !important;
+  max-height: 150px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Body dos cards */
+.indicadores-asymmetric-cards .card-body-govbr {
+  height: calc(150px - 50px) !important;
+  min-height: calc(150px - 50px) !important;
+  max-height: calc(150px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo dos cards */
+.indicadores-asymmetric-cards .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* ===================== ESTILOS PARA 3 CARDS LADO A LADO ===================== */
+
+/* Container dos 3 cards */
+.indicadores-three-cards {
+  margin-top: 1rem;
+}
+
+.indicadores-three-cards .row {
+  margin: 0;
+  padding: 0 !important;
+}
+
+/* Layout das colunas */
+.indicadores-three-cards .col-xl-4 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.indicadores-three-cards .col-xl-4:first-child {
+  padding-left: 0;
+}
+
+.indicadores-three-cards .col-xl-4:last-child {
+  padding-right: 0;
+}
+
+/* Containers dos cards */
+.indicadores-three-cards .indicadores-content {
+  height: 150px;
+  min-height: 150px;
+  max-height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards compactos */
+.indicadores-three-cards .sidebar-card {
+  height: 150px !important;
+  min-height: 150px !important;
+  max-height: 150px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Body dos cards */
+.indicadores-three-cards .card-body-govbr {
+  height: calc(150px - 50px) !important;
+  min-height: calc(150px - 50px) !important;
+  max-height: calc(150px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo dos cards */
+.indicadores-three-cards .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* ===================== CARD HEADERS DINAMICOS ===================== */
+
+/* Removido: Todos os estilos de card headers foram removidos para não sobrescrever card_header.css */
+
+/* ===================== CONTENT STYLING ===================== */
+
+/* Card Content */
+.indicadores-card-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  height: 100%;
+}
+
+/* Scrollbar customizada */
+.indicadores-card-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.indicadores-card-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.indicadores-card-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.indicadores-card-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Para Firefox */
+.indicadores-card-content {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* ===================== RESPONSIVE DESIGN ===================== */
+
+/* Desktop (xl) */
+@media (min-width: 1200px) {
+  .indicadores-four-cards .col-xl-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+}
+
+/* Tablet (lg) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .indicadores-four-cards .col-lg-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+/* Tablet pequeno e mobile */
+@media (max-width: 991px) {
+  .indicadores-page {
+    padding: 0.5rem;
+  }
+  
+  .indicadores-four-cards .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  .indicadores-four-cards .col-xl-3 {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  
+  .indicadores-four-cards .sidebar-card {
+    height: 120px !important;
+    min-height: 120px !important;
+    max-height: 120px !important;
+  }
+  
+  .indicadores-four-cards .indicadores-sidebar,
+  .indicadores-four-cards .indicadores-content {
+    height: 120px;
+    min-height: 120px;
+    max-height: 120px;
+  }
+  
+  .indicadores-four-cards .card-body-govbr {
+    height: calc(120px - 45px) !important;
+    min-height: calc(120px - 45px) !important;
+    max-height: calc(120px - 45px) !important;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 767px) {
+  .indicadores-four-cards .col-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 0.75rem;
+  }
+  
+  .indicadores-four-cards .col-xl-3:first-child,
+  .indicadores-four-cards .col-xl-3:last-child {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+/* ===================== LOADING E CHARTS ESPECÍFICOS ===================== */
+
+/* Loading container para mapas e gráficos */
+.indicadores-loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+/* Para a seção de distribuição geográfica, altura maior */
+#indicadores-content-distribuicao-geografica .indicadores-loading-container {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+/* Spinner personalizado para indicadores */
+.indicadores-spinner {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Container do mapa de estados */
+.mapa-estados-container {
+  width: 100%;
+  height: 400px;
+  position: relative;
+}
+
+/* Para o mapa específico da distribuição geográfica, altura maior */
+#indicadores-content-distribuicao-geografica .mapa-estados-container {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+/* Chart do mapa de estados */
+#mapa-estados-chart {
+  width: 100%;
+  height: 100%;
+}
+
+/* Centralização e ajustes específicos para o mapa */
+#indicadoresMapaEstadosContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#indicadoresMapaEstadosContent .mapa-estados-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading placeholder para carregamento de mapas */
+.indicadores-map-loading {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 400px !important;
+  min-height: 400px !important;
+  text-align: center;
+  color: #5F70A5;
+}
+
+.indicadores-map-loading-spinner {
+  margin-bottom: 1rem;
+}
+
+.indicadores-map-loading-spinner .fa-spinner {
+  font-size: 2rem;
+  color: #5F70A5;
+}
+
+.indicadores-map-loading h5 {
+  margin: 0.5rem 0;
+  font-weight: 600;
+  color: #5F70A5;
+  font-size: 1.1rem;
+}
+
+.indicadores-map-loading p {
+  margin: 0;
+  color: #5F70A5;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.indicadores-loading-dots {
+  display: inline-block;
+}
+
+.indicadores-loading-dots span {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #5F70A5;
+  margin: 0 1px;
+  animation: indicadores-loading-dots 1.4s infinite ease-in-out both;
+}
+
+.indicadores-loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.indicadores-loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes indicadores-loading-dots {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* Loading placeholder para contratos por região */
+.contratos-regiao-loading {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
+  min-height: 400px !important;
+  text-align: center;
+  color: #5F70A5;
+}
+
+.contratos-regiao-loading-spinner {
+  margin-bottom: 1rem;
+}
+
+.contratos-regiao-loading-spinner .fa-spinner {
+  font-size: 2rem;
+  color: #5F70A5;
+}
+
+.contratos-regiao-loading h5 {
+  margin: 0.5rem 0;
+  font-weight: 600;
+  color: #5F70A5;
+  font-size: 1.1rem;
+}
+
+.contratos-regiao-loading p {
+  margin: 0;
+  color: #5F70A5;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+/* Container do gráfico de contratos por região */
+.contratos-regiao-container {
+  height: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Chart do gráfico de contratos por região */
+#contratos-regiao-chart {
+  width: 100%;
+  height: 100%;
+}
+
+/* ===================== ALERTAS E MENSAGENS DE ERRO ===================== */
+
+/* Alertas específicos para indicadores */
+.indicadores-page .alert {
+  margin: 0;
+  border-radius: 6px;
+}
+
+.indicadores-page .alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.indicadores-page .alert-danger i {
+  margin-right: 0.5rem;
+}
+
+/* ===================== SEÇÃO ESPECÍFICA - DISTRIBUIÇÃO GEOGRÁFICA ===================== */
+
+/* Altura especial para a seção de distribuição geográfica */
+#indicadores-content-distribuicao-geografica {
+  margin-top: 1rem;
+}
+
+#indicadores-content-distribuicao-geografica .row {
+  margin: 0;
+  padding: 0 !important;
+}
+
+/* Layout das colunas para distribuição geográfica */
+#indicadores-content-distribuicao-geografica .col-xl-8 {
+  padding-left: 0;
+  padding-right: 8px;
+}
+
+#indicadores-content-distribuicao-geografica .col-xl-4 {
+  padding-left: 8px;
+  padding-right: 0;
+}
+
+/* Containers dos cards com altura 4x maior */
+#indicadores-content-distribuicao-geografica .indicadores-content {
+  height: 600px;
+  min-height: 600px;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards com altura 4x maior */
+#indicadores-content-distribuicao-geografica .sidebar-card {
+  height: 600px !important;
+  min-height: 600px !important;
+  max-height: 600px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Body dos cards com altura 4x maior */
+#indicadores-content-distribuicao-geografica .card-body-govbr {
+  height: calc(600px - 50px) !important;
+  min-height: calc(600px - 50px) !important;
+  max-height: calc(600px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo dos cards com altura 4x maior */
+#indicadores-content-distribuicao-geografica .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* Ajustes específicos para o mapa que terá muito mais espaço */
+#indicadoresMapaEstadosContent {
+  height: 100% !important;
+}
+
+/* Container do mapa com altura maior */
+#indicadoresMapaEstadosContent .mapa-estados-container {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+/* Loading para a seção de mapa com altura maior */
+#indicadoresMapaEstadosContent .indicadores-map-loading {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+/* Estilos específicos para a seção de distribuição geográfica */
+#indicadores-content-distribuicao-geografica .indicadores-map-loading {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+#indicadores-content-distribuicao-geografica .contratos-regiao-loading {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+#indicadores-content-distribuicao-geografica .contratos-regiao-container {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+/* Centralização e ajustes específicos para o gráfico de contratos por região */
+#indicadoresPorRegiaoContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100% !important;
+}
+
+#indicadoresPorRegiaoContent .indicadores-grafico-regiao-container {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+/* Estilos específicos para o gráfico de região na seção de distribuição geográfica */
+#indicadores-content-distribuicao-geografica .indicadores-grafico-regiao-container {
+  height: 100% !important;
+  min-height: 530px;
+}
+
+/* ===================== TOOLTIP DO MAPA DO BRASIL ===================== */
+
+/* Centralizar o nome do estado no tooltip */
+.indicadores-tooltip-title {
+  text-align: center !important;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #5F70A5;
+}
+
+/* ===================== RESPONSIVE PARA DISTRIBUIÇÃO GEOGRÁFICA ===================== */
+
+/* Tablet e mobile - ajustes para a seção de distribuição geográfica */
+@media (max-width: 991px) {
+  #indicadores-content-distribuicao-geografica .indicadores-content {
+    height: 450px;
+    min-height: 450px;
+    max-height: 450px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .sidebar-card {
+    height: 450px !important;
+    min-height: 450px !important;
+    max-height: 450px !important;
+  }
+  
+  #indicadores-content-distribuicao-geografica .card-body-govbr {
+    height: calc(450px - 45px) !important;
+    min-height: calc(450px - 45px) !important;
+    max-height: calc(450px - 45px) !important;
+  }
+  
+  #indicadores-content-distribuicao-geografica .mapa-estados-container {
+    min-height: 380px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .indicadores-loading-container {
+    min-height: 380px;
+  }
+  
+  #indicadoresMapaEstadosContent .indicadores-map-loading {
+    min-height: 380px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .indicadores-map-loading {
+    min-height: 380px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .contratos-regiao-loading {
+    min-height: 380px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .contratos-regiao-container {
+    min-height: 380px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .indicadores-grafico-regiao-container {
+    min-height: 380px;
+  }
+}
+
+/* Mobile pequeno - altura menor mas ainda maior que o padrão */
+@media (max-width: 767px) {
+  #indicadores-content-distribuicao-geografica .indicadores-content {
+    height: 400px;
+    min-height: 400px;
+    max-height: 400px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .sidebar-card {
+    height: 400px !important;
+    min-height: 400px !important;
+    max-height: 400px !important;
+  }
+  
+  #indicadores-content-distribuicao-geografica .card-body-govbr {
+    height: calc(400px - 45px) !important;
+    min-height: calc(400px - 45px) !important;
+    max-height: calc(400px - 45px) !important;
+  }
+  
+  #indicadores-content-distribuicao-geografica .col-xl-8,
+  #indicadores-content-distribuicao-geografica .col-xl-4 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .mapa-estados-container {
+    min-height: 330px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .indicadores-loading-container {
+    min-height: 330px;
+  }
+  
+  #indicadoresMapaEstadosContent .indicadores-map-loading {
+    min-height: 330px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .indicadores-map-loading {
+    min-height: 330px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .contratos-regiao-loading {
+    min-height: 330px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .contratos-regiao-container {
+    min-height: 330px;
+  }
+  
+  #indicadores-content-distribuicao-geografica .indicadores-grafico-regiao-container {
+    min-height: 330px;
+  }
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DE REGIÕES DOS INDICADORES ===================== */
+
+.indicadores-grafico-regiao-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 400px !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-grafico-regiao-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 380px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* ===================== OVERFLOW ESPECÍFICO PARA TOOLTIPS DOS INDICADORES ===================== */
+
+/* Containers de cards que podem ter gráficos nos indicadores devem permitir overflow */
+.indicadores-content:has([id*="chart"]),
+.indicadores-sidebar:has([id*="chart"]) {
+  overflow: visible !important;
+}
+
+/* Conteúdo de cards específicos dos indicadores */
+#indicadoresMapaEstadosContent,
+#indicadoresPorRegiaoContent {
+  overflow: visible !important;
+}

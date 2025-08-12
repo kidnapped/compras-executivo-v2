@@ -5,79 +5,30 @@
 {% block content %}
 <div class="admin_dw_tesouro-page">
   <div class="container-fluid">
-    <!-- Breadcrumb Component -->
-    {% set breadcrumb_items = [
-      {'title': 'Página Inicial', 'icon': 'fas fa-home', 'url': '/inicio'},
-      {'title': 'Administração', 'icon': 'fas fa-cog', 'url': '/admin'},
-      {'title': 'ETL', 'icon': 'fas fa-database', 'url': '/admin/etl'},
-      {'title': 'DW Tesouro', 'icon': 'fas fa-chart-bar', 'url': ''}
-    ] %}
-    {% include 'partials/breadcrumb.html' %}
+    <!-- Breadcrumb Component - Dynamic -->
+    <div id="admin-dw-breadcrumb-dynamic-container">
+      <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
+    </div>
 
     <!-- Main Content Layout -->
-    <div class="row h-100 main-content-layout">
+    <div class="row h-100 main-content-layout row-tight">
       <!-- Sidebar - Lista de Tabelas -->
       <div class="col-md-3">
         <div class="tables-sidebar">
-          <div class="sidebar-card h-100">
-            <div class="card-header-govbr">
-              <div class="govbr-header-content">
-                <div class="govbr-icon">
-                  <i class="fas fa-table"></i>
-                </div>
-                <div class="govbr-title">
-                  <h3>Tabelas do DW</h3>
-                  <span class="govbr-subtitle">Selecione uma tabela</span>
-                </div>
-              </div>
+          <div class="sidebar-card">
+            <!-- Card Header Component - Dynamic -->
+            <div id="admin-dw-tables-card-header">
+              <!-- Card header será carregado dinamicamente via JavaScript -->
             </div>
             <div class="card-body-govbr">
               <!-- Search Box -->
-              <div class="search-box mb-3">
+              <div class="search-box mb-3" style="margin:0px !important;">
                 <input type="text" class="form-control search-input" placeholder="🔍 Buscar tabela..." id="tableSearch">
               </div>
               
               <!-- Tables List -->
-              <div class="tables-list">
-                <div class="table-item" data-table="pagamentos">
-                  <span class="table-name">pagamentos</span>
-                </div>
-                
-                <div class="table-item" data-table="receitas">
-                  <span class="table-name">receitas</span>
-                </div>
-                
-                <div class="table-item" data-table="despesas">
-                  <span class="table-name">despesas</span>
-                </div>
-                
-                <div class="table-item" data-table="contratos">
-                  <span class="table-name">contratos</span>
-                </div>
-                
-                <div class="table-item" data-table="fornecedores">
-                  <span class="table-name">fornecedores</span>
-                </div>
-                
-                <div class="table-item" data-table="dim_tempo">
-                  <span class="table-name">dim_tempo</span>
-                </div>
-                
-                <div class="table-item" data-table="dim_orgao">
-                  <span class="table-name">dim_orgao</span>
-                </div>
-                
-                <div class="table-item" data-table="licitacoes">
-                  <span class="table-name">licitacoes</span>
-                </div>
-                
-                <div class="table-item" data-table="empenhos">
-                  <span class="table-name">empenhos</span>
-                </div>
-                
-                <div class="table-item" data-table="liquidacoes">
-                  <span class="table-name">liquidacoes</span>
-                </div>
+              <div class="admin-dw-tesouro-tables-list" id="adminDwTesouroTablesList">
+                <!-- Lista de tabelas será carregada dinamicamente via /admin/etl/dw-tesouro/lista-tabelas -->
               </div>
             </div>
           </div>
@@ -87,58 +38,14 @@
       <!-- Main Content Area -->
       <div class="col-md-9">
         <div class="table-content">
-          <div class="content-card h-100">
-            <div class="card-header-govbr">
-              <div class="govbr-header-content">
-                <div class="govbr-icon">
-                  <i class="fas fa-database"></i>
-                </div>
-                <div class="govbr-title">
-                  <h3 id="selectedTableName">Selecione uma Tabela</h3>
-                  <span class="govbr-subtitle" id="selectedTableDesc">Clique em uma tabela ao lado para visualizar seus dados</span>
-                </div>
-                <div class="govbr-actions">
-                  <button class="btn-govbr secondary" id="refreshBtn" style="display: none;">
-                    <i class="fas fa-sync-alt"></i>
-                    <span>Atualizar</span>
-                  </button>
-                  <button class="btn-govbr primary" id="exportBtn" style="display: none;">
-                    <i class="fas fa-download"></i>
-                    <span>Exportar</span>
-                  </button>
-                </div>
-              </div>
+          <div class="sidebar-card h-100">
+            <!-- Card Header Component - Dynamic -->
+            <div id="admin-dw-main-card-header">
+              <!-- Card header será carregado dinamicamente via JavaScript -->
             </div>
-            <div class="card-body-govbr">
-              <!-- Table Controls -->
-              <div class="table-controls" id="tableControls" style="display: none;">
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <div class="control-group">
-                      <label>Registros por página:</label>
-                      <select class="form-select" id="pageSize">
-                        <option value="10">10</option>
-                        <option value="25" selected>25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="control-group">
-                      <label>Filtrar dados:</label>
-                      <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="fas fa-filter"></i>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Digite para filtrar..." id="dataFilter">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Table Content -->
+            
+            <div class="card-body-govbr" style="padding: 0;">
+              <!-- Table Content com header grudado -->
               <div class="table-wrapper">
                 <div class="empty-state" id="emptyState">
                   <div class="empty-icon">
@@ -156,28 +63,26 @@
                   <p>Aguarde enquanto buscamos os dados da tabela.</p>
                 </div>
 
-                <div class="table-responsive" id="tableContainer" style="display: none;">
-                  <table class="table table-modern" id="dataTable">
-                    <thead>
-                      <!-- Dynamic headers will be inserted here -->
-                    </thead>
-                    <tbody>
-                      <!-- Dynamic data will be inserted here -->
-                    </tbody>
-                  </table>
+                <!-- Container com scroll para tabela -->
+                <div class="dashboard-table-container" id="tableContainer" style="display: none;">
+                  <div class="table-responsive" style="border-bottom: 1px solid #ddd;">
+                    <table class="br-table table-hover table-striped" id="dataTable" style="margin-bottom: 0; border: none;">
+                      <thead
+                        style="
+                          position: sticky;
+                          top: 0;
+                          z-index: 10;
+                        "
+                        id="tableHeaderDW"
+                      >
+                        <!-- Dynamic headers serão inseridos aqui priorizando DT_CARGA_C, depois ID_*, depois resto -->
+                      </thead>
+                      <tbody>
+                        <!-- Dynamic data will be inserted here -->
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-
-              <!-- Pagination -->
-              <div class="pagination-wrapper" id="paginationWrapper" style="display: none;">
-                <div class="pagination-info">
-                  <span id="paginationInfo">Mostrando 1-25 de 150 registros</span>
-                </div>
-                <nav class="pagination-nav">
-                  <ul class="pagination" id="pagination">
-                    <!-- Dynamic pagination will be inserted here -->
-                  </ul>
-                </nav>
               </div>
             </div>
           </div>

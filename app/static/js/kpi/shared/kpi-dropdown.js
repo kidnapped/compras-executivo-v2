@@ -1,6 +1,6 @@
 // KPI dropdown functionality and chart switching
 import { getBaseChartOption } from "./kpi-utils.js";
-import { brazilStatesGeoJson } from "../brazil_states_geojson.js";
+import { brazilStatesGeoJson } from "../../common/brazil_states_geojson.js";
 import getEcharts from "../../util/echarts.js";
 
 // Helper function to format currency

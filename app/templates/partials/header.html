@@ -3,10 +3,10 @@
     <div class="header-top header-top-flex">
 
       <!-- BLOCO ESQUERDO -->
-      <div id="header-esquerda" style="display: flex; align-items: center; gap: 20px;">
-        <div style="display: flex; flex-direction: column; align-items: start;">
+      <div id="header-esquerda">
+        <div class="header-logo-container">
           <!-- LOGO -->
-          <img src="/static/images/govbr-logo.png" alt="gov.br" style="margin-bottom: 0.25rem;">
+          <img src="/static/images/govbr-logo.png" alt="gov.br">
           <!-- BOTÃO HAMBURGUER -->
           <button id="menu-toggle-button" 
                   class="br-button small circle" 
@@ -19,11 +19,11 @@
           </button>
         </div>
         <!-- Textos -->
-        <div style="margin: 30px 0px -30px -30px;">
-          <div class="header-sign" style="color: #1351b4;">
+        <div class="header-texts">
+          <div class="header-sign">
             Compras Executivo
           </div>
-          <div class="header-title" style="color: #555;">
+          <div class="header-title">
             Design System | Versão 3.6.1
           </div>
         </div>
@@ -31,24 +31,23 @@
 
       <!-- BLOCO DIREITO -->
       <!-- VERSÃO DESKTOP -->
-      <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop" style="align-items: center; gap: 10px;">
+      <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop">
         {% if request.session.get('cpf') %}
-          <div style="display: flex; flex-direction: column; align-items: flex-end; margin-right: 10px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="color: #1351b4; font-weight: bold; font-size: 12px; font-family: Arial; margin-top:2px;" 
-                    id="cpf-display"
+          <div class="header-user-info">
+            <div class="header-user-details">
+              <span id="cpf-display"
                     data-tooltip-text="CPF" 
                     data-tooltip-place="bottom" 
                     data-tooltip-type="info">{{ request.session.cpf }})</span>
               {% if request.session.get('usuario_name') %}
-                <span style="color: #555; font-weight: 600; font-size: 14px;"
+                <span class="header-user-name"
                       data-tooltip-text="Usuário" 
                       data-tooltip-place="bottom" 
                       data-tooltip-type="info">{{ request.session.usuario_name }}</span>
               {% endif %}
             </div>
             {% if request.session.get('usuario_role') %}
-              <span style="color: #666; font-size: 12px; font-style: italic;"
+              <span class="header-user-role"
                     data-tooltip-text="Perfil no sistema"
                     data-tooltip-place="bottom" 
                     data-tooltip-type="info">{{ request.session.usuario_role }}</span>
@@ -67,7 +66,7 @@
         {% endif %}
 
         <!-- Separador vertical -->
-        <div style="height: 24px; width: 1px; background-color: #ccc; margin: 0 1rem;"></div>
+        <div class="header-separator"></div>
 
         <!-- Botão Minha Conta -->
         <a href="/minha-conta" 
@@ -108,26 +107,3 @@
     </div>
   </div>
 </header>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  // Format CPF with mask (XXX.XXX.XXX-XX)
-  function formatCPF(cpf) {
-    // Remove any non-numeric characters
-    cpf = cpf.replace(/\D/g, '');
-    
-    // Apply CPF mask
-    if (cpf.length === 11) {
-      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-    }
-    return cpf; // Return original if not 11 digits
-  }
-  
-  // Apply CPF mask to the header display
-  const cpfElement = document.getElementById('cpf-display');
-  if (cpfElement) {
-    const originalCpf = cpfElement.textContent.trim();
-    cpfElement.textContent = formatCPF(originalCpf);
-  }
-});
-</script>

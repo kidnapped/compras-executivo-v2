@@ -1,0 +1,224 @@
+export default {
+  // Auto-inicialização
+  autoInit() {
+    const footerContainer = document.getElementById('footer-dynamic-container');
+    if (footerContainer) {
+      this.renderFooterHTML();
+      this.bindFooterEvents();
+    }
+  },
+
+  // Renderiza HTML do footer
+  renderFooterHTML() {
+    const container = document.getElementById('footer-dynamic-container');
+    if (!container) return;
+    
+    container.innerHTML = `
+      <footer class="br-footer" id="main-footer">
+        <div class="container-lg" style="padding: 18px 20px;">
+          <div class="row">
+            <!-- Coluna 1: Logo e Informações Principais -->
+            <div class="col-12 col-md-4 text-start mb-2">
+              <div class="logo mb-1">
+                <img src="/static/images/govbr-logo.png" alt="gov.br" style="height: 36px;" />
+              </div>
+              <h6 style="color: #fff; font-weight: 600; margin-bottom: 6px; font-size: 15px;">Compras Executivo</h6>
+              <p style="color: #ccc; font-size: 12px; line-height: 1.3; margin-bottom: 0;">
+                Sistema de gestão e acompanhamento de contratos públicos do Poder Executivo Federal.
+              </p>
+            </div>
+
+            <!-- Coluna 2: Links Úteis -->
+            <div class="col-12 col-md-4 text-start mb-2">
+              <h6 style="color: #fff; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; font-size: 13px;">Links Úteis</h6>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 4px;">
+                  <a href="/ajuda" style="color: #ccc; text-decoration: none; font-size: 12px;" 
+                     onmouseover="this.style.color='#fff'" 
+                     onmouseout="this.style.color='#ccc'">
+                    <i class="fas fa-question-circle" style="margin-right: 5px;"></i>Ajuda
+                  </a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                  <a href="/suporte" style="color: #ccc; text-decoration: none; font-size: 12px;" 
+                     onmouseover="this.style.color='#fff'" 
+                     onmouseout="this.style.color='#ccc'">
+                    <i class="fas fa-headset" style="margin-right: 5px;"></i>Suporte
+                  </a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                  <a href="https://www.gov.br/compras/pt-br" target="_blank" style="color: #ccc; text-decoration: none; font-size: 12px;" 
+                     onmouseover="this.style.color='#fff'" 
+                     onmouseout="this.style.color='#ccc'">
+                    <i class="fas fa-external-link-alt" style="margin-right: 5px;"></i>Portal de Compras
+                  </a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                  <a href="https://www.portaltransparencia.gov.br/" target="_blank" style="color: #ccc; text-decoration: none; font-size: 12px;" 
+                     onmouseover="this.style.color='#fff'" 
+                     onmouseout="this.style.color='#ccc'">
+                    <i class="fas fa-eye" style="margin-right: 5px;"></i>Portal da Transparência
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Coluna 3: Informações de Transparência -->
+            <div class="col-12 col-md-4 text-start mb-2">
+              <h6 style="color: #fff; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; font-size: 13px;">Transparência</h6>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 4px;">
+                  <a href="https://www.gov.br/acessoainformacao/pt-br" target="_blank" style="color: #ccc; text-decoration: none; font-size: 12px;" 
+                     onmouseover="this.style.color='#fff'" 
+                     onmouseout="this.style.color='#ccc'">
+                    <i class="fas fa-info-circle" style="margin-right: 5px;"></i>Acesso à Informação
+                  </a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                  <a href="https://www.gov.br/ouvidorias/pt-br" target="_blank" style="color: #ccc; text-decoration: none; font-size: 12px;" 
+                     onmouseover="this.style.color='#fff'" 
+                     onmouseout="this.style.color='#ccc'">
+                    <i class="fas fa-comment" style="margin-right: 5px;"></i>Ouvidoria
+                  </a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                  <a href="https://www.gov.br/controladoriageral/pt-br" target="_blank" style="color: #ccc; text-decoration: none; font-size: 12px;" 
+                     onmouseover="this.style.color='#fff'" 
+                     onmouseout="this.style.color='#ccc'">
+                    <i class="fas fa-shield-alt" style="margin-right: 5px;"></i>CGU
+                  </a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                  <span style="color: #ccc; font-size: 12px;">
+                    <i class="fas fa-chart-line" style="margin-right: 5px;"></i>Design System v3.6.1
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Linha de separação -->
+          <div style="border-top: 1px solid #444; margin: 12px 0 8px 0;"></div>
+
+          <!-- Rodapé inferior -->
+          <div class="row">
+            <div class="col-12 col-md-8 text-start">
+              <p style="color: #ccc; font-size: 11px; margin: 0; line-height: 1.3;">
+                © 2025 Governo Federal. Este sistema é desenvolvido pelo Ministério da Gestão e da Inovação em Serviços Públicos.
+                <br>
+                Dados atualizados em tempo real. Última atualização: <span id="last-update-time">Carregando...</span>
+              </p>
+            </div>
+            <div class="col-12 col-md-4 text-start text-md-end">
+              <div style="margin-top: 2px;">
+                <span style="color: #ccc; font-size: 10px;">
+                  <i class="fas fa-lock" style="margin-right: 3px;"></i>Ambiente Seguro
+                </span>
+                <br>
+                <span style="color: #ccc; font-size: 10px;">
+                  <i class="fas fa-database" style="margin-right: 3px;"></i>Dados Oficiais
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    `;
+  },
+
+  // Vincula eventos do footer
+  bindFooterEvents() {
+    const footer = document.getElementById('main-footer');
+    if (!footer) return;
+    
+    // Atualizar timestamp da última atualização
+    this.updateTimestamp();
+
+    // Função para ajustar o footer quando o menu lateral está aberto
+    this.adjustFooterForSidebar();
+
+    // Observar mudanças no menu lateral
+    const observer = new MutationObserver(() => {
+      this.adjustFooterForSidebar();
+    });
+
+    // Observar mudanças no body e elementos relacionados ao menu
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class', 'data-visible', 'aria-expanded'],
+      childList: true,
+      subtree: true
+    });
+
+    // Escutar cliques no botão do menu
+    const menuToggleButton = document.getElementById('menu-toggle-button');
+    if (menuToggleButton) {
+      menuToggleButton.addEventListener('click', () => {
+        setTimeout(() => this.adjustFooterForSidebar(), 100);
+      });
+    }
+
+    // Verificar periodicamente (fallback)
+    setInterval(() => this.adjustFooterForSidebar(), 1000);
+  },
+
+  // Atualiza o timestamp
+  updateTimestamp() {
+    const updateTimeElement = document.getElementById('last-update-time');
+    if (updateTimeElement && updateTimeElement.textContent.includes('Carregando')) {
+      const now = new Date();
+      const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'America/Sao_Paulo'
+      };
+      updateTimeElement.textContent = now.toLocaleString('pt-BR', options);
+    }
+  },
+
+  // Ajusta footer para menu lateral
+  adjustFooterForSidebar() {
+    const footer = document.getElementById('main-footer');
+    if (!footer) return;
+
+    // Procurar por elementos que indicam que o menu lateral está aberto
+    const sidebar = document.querySelector('.br-menu[data-visible="true"], .sidebar-open, .menu-active, .br-menu.active');
+    const menuToggleButton = document.getElementById('menu-toggle-button');
+    const body = document.body;
+    const menuElement = document.querySelector('.br-menu, .sidebar, .side-menu');
+    
+    // Verificar se o menu está aberto
+    const isMenuOpen = sidebar || 
+                      body.classList.contains('sidebar-open') || 
+                      body.classList.contains('menu-open') ||
+                      document.querySelector('.br-menu.active') ||
+                      (menuToggleButton && menuToggleButton.getAttribute('aria-expanded') === 'true');
+    
+    if (isMenuOpen) {
+      // Tentar obter a largura real do menu
+      let menuWidth = 240; // Valor padrão
+      if (menuElement) {
+        const computedStyle = window.getComputedStyle(menuElement);
+        const elementWidth = parseInt(computedStyle.width);
+        if (elementWidth && elementWidth > 0) {
+          menuWidth = elementWidth;
+        }
+      }
+      
+      // Menu está aberto - footer completamente grudado no menu
+      footer.style.transition = 'margin-left 0.3s ease, width 0.3s ease';
+      footer.style.marginLeft = `${menuWidth}px`;
+      footer.style.width = `calc(100% - ${menuWidth}px)`;
+      footer.style.paddingLeft = '0';
+    } else {
+      // Menu está fechado - footer normal
+      footer.style.transition = 'margin-left 0.3s ease, width 0.3s ease';
+      footer.style.marginLeft = '0';
+      footer.style.width = '100%';
+      footer.style.paddingLeft = '';
+    }
+  }
+};

@@ -145,5 +145,82 @@ export default {
         } else {
             window.history.back();
         }
+    },
+
+    /**
+     * Creates breadcrumb HTML structure dynamically
+     * @param {Array} items - Array of breadcrumb items
+     * @param {string} containerId - ID of the container where breadcrumb will be inserted
+     */
+    breadcrumb_createDynamic(items, containerId) {
+        if (!containerId) {
+            console.error('containerId is required for breadcrumb_createDynamic');
+            return;
+        }
+        
+        const container = document.getElementById(containerId);
+        if (!container) {
+            console.warn(`Container ${containerId} not found for breadcrumb`);
+            return;
+        }
+
+        // Generate breadcrumb items HTML
+        let breadcrumbItemsHTML = '';
+        
+        items.forEach((item, index) => {
+            const isLast = index === items.length - 1;
+            
+            if (isLast) {
+                breadcrumbItemsHTML += `
+                    <div class="breadcrumb-item active">
+                        <i class="${item.icon}"></i>
+                        <span>${item.title}</span>
+                    </div>
+                `;
+            } else {
+                breadcrumbItemsHTML += `
+                    <div class="breadcrumb-item">
+                        <a href="${item.url}">
+                            <i class="${item.icon}"></i>
+                            <span>${item.title}</span>
+                        </a>
+                    </div>
+                `;
+                
+                // Add separator if not last item
+                breadcrumbItemsHTML += `
+                    <div class="breadcrumb-separator">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                `;
+            }
+        });
+
+        // Add back button if there are multiple items
+        const backButtonHTML = items.length > 1 ? `
+            <button class="breadcrumb-back-btn" onclick="App.breadcrumb.breadcrumb_goBackInBreadcrumb()" title="Voltar para a página anterior">
+                <i class="fas fa-arrow-left"></i>
+                <span>Voltar</span>
+            </button>
+        ` : '';
+
+        // Complete breadcrumb HTML
+        const breadcrumbHTML = `
+            <div class="breadcrumb-container">
+                <div class="breadcrumb-modern">
+                    <div class="breadcrumb-items">
+                        ${breadcrumbItemsHTML}
+                        ${backButtonHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Insert into container
+        container.innerHTML = breadcrumbHTML;
+
+        // Initialize functionality
+        this.breadcrumb_handleResponsiveTooltips();
+        this.breadcrumb_setupEventListeners();
     }
 };

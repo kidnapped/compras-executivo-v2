@@ -44,6 +44,10 @@ class Settings(BaseSettings):
 
     USE_GOVBR_LOGIN: bool = False
 
+    # VDB EMULATION - For development
+    VDB_TEIID_EMULATION_MODE: bool = True
+    VDB_TEIID_JSON_MOCK_DIR: str = str(Path(__file__).resolve().parents[2] / "app" / "java" / "json_mock")
+
     # VDB Configuration - DaaS SERPRO Teiid
     VDB_TEIID_HOST: str = "daas.serpro.gov.br"
     VDB_TEIID_PORT: int = 31000
@@ -73,7 +77,13 @@ class Settings(BaseSettings):
     VDB_LOCAL_POSTGRES_PASSWORD: str = "postgres"
     VDB_LOCAL_CONTRATOS_DB: str = "contratos"
     VDB_LOCAL_FINANCEIRO_DB: str = "financeiro"
-
+    
+    # Java VDB Configuration
+    VDB_JAVA_DIR: str = str(Path(__file__).resolve().parents[2] / "app" / "java")
+    VDB_JAR_DIR: str = str(Path(__file__).resolve().parents[2] / "app" / "vdb")
+    VDB_JAR_FILE: str = "jboss-dv-6.3.0-teiid-jdbc.jar"
+    VDB_POSTGRESQL_JAR: str = "postgresql-42.7.2.jar"
+    VDB_KEYSTORE_FILE: str = "daas.serpro.gov.br.jks"
 
     @property
     def GOVBR_BASE_URL(self):

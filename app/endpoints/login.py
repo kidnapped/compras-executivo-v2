@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import text
 from app.core.config import settings
 from app.core.templates import templates
+from app.core.config_menu import get_menu_for_scope
 from app.db.session import get_async_session, get_session_contratos, get_session_blocok
 import time
 
@@ -69,10 +70,17 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
             request.session["cpf"] = '31352752808'
             request.session["uasgs"] = [393003]  # Array de UASGs
             request.session["usuario_id"] = 198756  # Valor único
-            request.session["usuario_role"] = "Consulta Global"  # Valor único
-            request.session["usuario_scope"] = "global"  # Valor único
-            request.session["usuario_name"] = "Adriano Carneiro"  # Nome padrão
-            request.session["usuario_email"] = "adriano.carneiro@sp.gov.br"  # Email padrão
+            request.session["usuario_role"] = "Admin Root"  # Valor único
+            request.session["usuario_scope"] = "root"  # Valor único
+            request.session["usuario_name"] = "Root"  # Nome padrão
+            request.session["usuario_email"] = "root@comprasexecutivo.sistema.gov.br"  # Email padrão
+            # Configurar menu baseado no scope
+            user_scope = request.session.get("usuario_scope")
+            if user_scope:
+                request.session["menu"] = get_menu_for_scope(user_scope)
+                print(f"🍽️ MENU CONFIGURADO para scope '{user_scope}': {len(request.session['menu'])} itens")
+            else:
+                print("❌ Não foi possível configurar menu: usuario_scope não definido")
             print(f"✅ SESSÃO CONFIGURADA: uasgs={request.session['uasgs']}, usuario_id={request.session['usuario_id']}")
         else:
             print(f"🔍 BUSCANDO DADOS PARA CPF: {cpf_logged}")
@@ -171,6 +179,16 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
                 # Se tiver múltiplos scopes, pegar o primeiro ou concatenar
                 request.session["usuario_scope"] = scopes[0] if scopes else None  # Valor único
                 print(f"🎯 Scopes encontrados: {scopes}, usando: {request.session['usuario_scope']}")
+                
+                # Configurar menu baseado no scope descoberto
+                user_scope = request.session.get("usuario_scope")
+                if user_scope:
+                    request.session["menu"] = get_menu_for_scope(user_scope)
+                    print(f"🍽️ MENU CONFIGURADO para scope '{user_scope}': {len(request.session['menu'])} itens")
+                else:
+                    # Se não tem scope, usar menu padrão (unidade)
+                    request.session["menu"] = get_menu_for_scope("unidade")
+                    print(f"🍽️ MENU PADRÃO CONFIGURADO: {len(request.session['menu'])} itens")
 
         print("💾 SESSÃO FINAL GRAVADA:")
         print(f"  cpf={request.session.get('cpf')}")
@@ -180,6 +198,7 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
         print(f"  usuario_email={request.session.get('usuario_email')}")
         print(f"  usuario_role={request.session.get('usuario_role')}")
         print(f"  usuario_scope={request.session.get('usuario_scope')}")
+        print(f"  menu_items={len(request.session.get('menu', []))} itens")
         print(f"📦 SESSÃO COMPLETA: {dict(request.session)}")
 
         login_attempts[client_ip] = []

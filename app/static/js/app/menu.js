@@ -1,19 +1,40 @@
 export default {
-  menuItems: [
-    { texto: "Início", url: "/inicio", icone: "fas fa-home" },
-    { texto: "Contratos", url: "/dashboard", icone: "fas fa-chart-line" },
-    { texto: "Filtro UASG", url: "/uasg-filter", icone: "fas fa-filter" },
-    { texto: "Indicadores", url: "/kpis", icone: "fas fa-tachometer-alt" },
-    { texto: "Administração", url: "/admin", icone: "fas fa-cogs" },
-    { texto: "Minha Conta", url: "/minha-conta", icone: "fas fa-user-circle" },
-    { texto: "Suporte", url: "/suporte", icone: "fas fa-headset" },
-    { texto: "Ajuda", url: "/ajuda", icone: "fas fa-question-circle" },
-    { texto: "dev-ops", url: "/dev-ops", icone: "fas fa-tools" },
-    { texto: "Sair", url: "/logout", icone: "fas fa-sign-out-alt" },
-  ],
-
   // Development-only menu items
   devMenuItems: [],
+
+  // Auto-inicialização
+  autoInit() {
+    const menuContainer = document.getElementById('menu-dynamic-container');
+    if (menuContainer) {
+      this.renderMenuHTML();
+      setTimeout(() => this.menu(), 100); // Chama a função original com delay
+    }
+  },
+
+  // Renderiza HTML do menu
+  renderMenuHTML() {
+    const container = document.getElementById('menu-dynamic-container');
+    if (!container) return;
+    
+    container.innerHTML = `
+      <nav class="br-menu push" id="main-navigation">
+        <div class="menu-header">
+          <div class="menu-title">
+            <img src="/static/images/govbr-logo.png" alt="Logo" style="height: 40px; margin-right: 10px;">
+            Compras Executivo
+          </div>
+          <div class="menu-close">
+            <button class="br-button circle" type="button" aria-label="Fechar o menu" data-dismiss="menu">
+              <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <nav class="menu-body" role="tree">
+          <div id="menu-dinamico"></div>
+        </nav>
+      </nav>
+    `;
+  },
 
   // Check if we're in development mode
   isDevelopmentMode() {
@@ -49,9 +70,50 @@ export default {
     return false;
   },
 
+  // Get menu items from session or show error message
+  getSessionMenuItems() {
+    const container = document.getElementById('menu-dynamic-container');
+    if (container) {
+      const sessionMenuData = container.getAttribute('data-session-menu');
+      console.log('🔍 Raw session menu data:', sessionMenuData);
+      
+      if (sessionMenuData && sessionMenuData.trim() !== '' && sessionMenuData !== '[]') {
+        try {
+          const sessionMenu = JSON.parse(sessionMenuData);
+          // Se há menu na sessão, usar ele
+          if (sessionMenu && Array.isArray(sessionMenu) && sessionMenu.length > 0) {
+            console.log('🍽️ Usando menu da sessão:', sessionMenu);
+            return sessionMenu;
+          } else {
+            console.log('🍽️ Menu da sessão está vazio ou inválido:', sessionMenu);
+          }
+        } catch (e) {
+          console.warn('❌ Erro ao parsear menu da sessão:', e);
+          console.warn('📄 Dados que causaram erro:', sessionMenuData);
+        }
+      } else {
+        console.log('🍽️ Nenhum menu encontrado na sessão ou menu vazio');
+      }
+    } else {
+      console.log('❌ Container menu-dynamic-container não encontrado');
+    }
+    
+    // Se não conseguiu pegar da sessão, retorna null para mostrar mensagem de erro
+    console.log('❌ Não foi possível carregar o menu da sessão');
+    return null;
+  },
+
   // Get menu items based on environment
   getMenuItems() {
-    let items = [...this.menuItems];
+    // Primeiro tenta pegar da sessão
+    const sessionItems = this.getSessionMenuItems();
+    
+    // Se não conseguiu pegar da sessão, retorna null para mostrar erro
+    if (!sessionItems) {
+      return null;
+    }
+    
+    let items = [...sessionItems];
 
     // Add development items if in development mode
     if (this.isDevelopmentMode()) {
@@ -75,16 +137,68 @@ export default {
       // Use getMenuItems() instead of this.menuItems
       const menuItems = this.getMenuItems();
 
+      // Se não conseguiu carregar o menu, mostra mensagem bonitinha
+      if (!menuItems) {
+        container.innerHTML = `
+          <div class="menu-error-loading">
+            <div class="menu-error-loading-spinner">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h5>Menu Indisponível</h5>
+            <p>Não foi possível carregar o menu<br><span class="menu-error-loading-dots"><span></span><span></span><span></span></span></p>
+          </div>
+        `;
+        return; // Para aqui se não tem menu
+      }
+
+      // Se tem menu, renderiza normalmente
       for (const item of menuItems) {
         const link = document.createElement("a");
         link.href = item.url;
         link.className = "menu-item";
         link.setAttribute("role", "treeitem");
 
+        // Verifica se é a página atual para marcar como ativo
+        const currentPath = window.location.pathname;
+        const itemPath = new URL(item.url, window.location.origin).pathname;
+        
+        // Diferentes cenários para considerar um item como ativo:
+        let isActive = false;
+        
+        // 1. URL exata
+        if (currentPath === itemPath) {
+          isActive = true;
+        }
+        // 2. URL raiz vs /inicio
+        else if ((currentPath === '/' && itemPath === '/inicio') || 
+                 (currentPath === '/inicio' && itemPath === '/')) {
+          isActive = true;
+        }
+        // 3. URL contém o caminho do item (para subpáginas)
+        else if (itemPath !== '/' && itemPath !== '/inicio' && currentPath.startsWith(itemPath)) {
+          // Verifica se é realmente uma subpágina (próximo caractere é / ou fim da string)
+          const nextChar = currentPath.charAt(itemPath.length);
+          if (nextChar === '/' || nextChar === '' || nextChar === '?' || nextChar === '#') {
+            isActive = true;
+          }
+        }
+
+        if (isActive) {
+          link.classList.add("active");
+          // Remove o href para tornar não clicável
+          link.removeAttribute("href");
+          link.style.cursor = "default";
+          // Adiciona evento para prevenir clique
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            return false;
+          });
+        }
+
         link.innerHTML = `
-                    <span class="icon"><i class="${item.icone}" aria-hidden="true"></i></span>
-                    <span class="content">${item.texto}</span>
-                `;
+          <span class="icon"><i class="${item.icone}" aria-hidden="true"></i></span>
+          <span class="content">${item.texto}</span>
+        `;
         container.appendChild(link);
       }
     }

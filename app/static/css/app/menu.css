@@ -38,11 +38,73 @@ body:has(.br-header.header-shrink) #main-navigation {
 #menu-toggle-button {
   font-size: 24px;
   line-height: 1;
+  color: #6D7FB7 !important;
+}
+
+#menu-toggle-button:hover {
+  color: #5A6A9B !important; /* Cor mais escura no hover */
+  transform: scale(1.1);
 }
 
 #menu-toggle-button span {
   position: relative;
   top: -3px; /* move só o ícone */
+  color: inherit; 
+}
+
+/* Estilo dos itens do menu */
+.menu-item {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--color-primary-medium, #6D7FB7);
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.menu-item .icon {
+  color: var(--color-primary-medium, #6D7FB7);
+  margin-right: 8px;
+}
+
+.menu-item .content {
+  color: var(--color-primary-medium, #6D7FB7);
+}
+
+.menu-item:hover {
+  background-color: #e7ecf6;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.menu-item:hover .icon {
+  color: var(--govbr-blue-warm-vivid-60, #6D7FB7);
+}
+
+.menu-item:hover .content {
+  color: var(--govbr-blue-warm-vivid-60, #6D7FB7);
+}
+
+/* Estilo do item de menu ativo (página atual) */
+.menu-item.active {
+  background-color: #5F70A5 !important;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: default;
+  pointer-events: none; /* Torna o item não clicável */
+}
+
+.menu-item.active .icon {
+  color: #fff !important;
+}
+
+.menu-item.active .content {
+  color: #fff !important;
+}
+
+.menu-item.active:hover {
+  background-color: #5F70A5 !important;
 }
 
 /* Mobile menu adjustments */
@@ -55,5 +117,96 @@ body:has(.br-header.header-shrink) #main-navigation {
   #main-navigation {
     top: 90px; /* valor do header encolhido no mobile */
     height: calc(100% - 90px);
+  }
+}
+
+/* ===================== MENU ERROR STATES ===================== */
+
+/* Loading state for menu - igual ao admin_dw_tesouro */
+.menu-error-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #64748b;
+  height: 300px;
+}
+
+.menu-error-loading-spinner {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #6D7FB7, #5a6fa8);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-error-loading-spinner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 2s infinite;
+}
+
+.menu-error-loading h5 {
+  margin: 0 0 0.5rem 0;
+  color: #6D7FB7;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.menu-error-loading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+/* Loading dots animation - igual ao admin_dw_tesouro */
+.menu-error-loading-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.menu-error-loading-dots span {
+  width: 6px;
+  height: 6px;
+  background: #6D7FB7;
+  border-radius: 50%;
+  animation: menuLoadingDots 1.4s infinite both;
+}
+
+.menu-error-loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.menu-error-loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+.menu-error-loading-dots span:nth-child(3) { animation-delay: 0s; }
+
+@keyframes menuLoadingDots {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
   }
 }

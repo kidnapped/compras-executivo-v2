@@ -1,0 +1,490 @@
+{% extends "app/base.html" %}
+
+{% block title %}Indicadores - Compras Executivo{% endblock %}
+
+{% block content %}
+<div class="indicadores-page">
+  <div class="container-fluid">
+    <!-- Breadcrumb Component - Dynamic -->
+    <div id="indicadores-breadcrumb-dynamic-container">
+      <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- SEÇÃO 1: WHAT - Visão Geral dos Contratos -->
+    <!-- Topico Component - Dynamic -->
+    <div id="indicadores-topico-visao-geral-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div id="indicadores-content" class="indicadores-four-cards">
+      <!-- Main Content Layout -->
+      <div class="row">
+        <!-- Card 1 - Total de Contratos -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
+          <div class="indicadores-sidebar">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-total-contratos-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              <div class="card-body-govbr">
+                <!-- Content for Card 1 -->
+                <div class="indicadores-card-content" id="indicadoresTotalContratosContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Contratos por Exercício -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-exercicio-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 2 -->
+                <div class="indicadores-card-content" id="indicadoresExercicioContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 - Contratos Vigentes -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-vigentes-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 3 -->
+                <div class="indicadores-card-content" id="indicadoresVigentesContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 - Status Críticos -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-criticos-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 4 -->
+                <div class="indicadores-card-content" id="indicadoresCriticosContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 2: WHY - Análise de Processos -->
+    <!-- Topico Component - Dynamic -->
+    <div id="indicadores-topico-analise-processos-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div id="indicadores-content-analise-processos" class="indicadores-two-cards">
+      <!-- Main Content Layout -->
+      <div class="row">
+        <!-- Card 1 - Contratos sem Licitação -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-sem-licitacao-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 1 -->
+                <div class="indicadores-card-content" id="indicadoresSemLicitacaoContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Contratos com Aditivos -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-com-aditivos-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 2 -->
+                <div class="indicadores-card-content" id="indicadoresComAditivosContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 3: WHO - Fornecedores e Contratantes -->
+    <!-- Topico Component - Dynamic -->
+    <div id="indicadores-topico-fornecedores-contratantes-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div id="indicadores-content-fornecedores-contratantes" class="indicadores-asymmetric-cards">
+      <!-- Main Content Layout -->
+      <div class="row">
+        <!-- Card 1 - Top Fornecedores -->
+        <div class="col-xl-8 col-lg-8 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-top-fornecedores-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 1 -->
+                <div class="indicadores-card-content" id="indicadoresTopFornecedoresContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Análise por Área -->
+        <div class="col-xl-4 col-lg-4 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-por-area-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 2 -->
+                <div class="indicadores-card-content" id="indicadoresPorAreaContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 4: WHERE - Distribuição Geográfica -->
+    <!-- Topico Component - Dynamic -->
+    <div id="indicadores-topico-distribuicao-geografica-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div id="indicadores-content-distribuicao-geografica" class="indicadores-asymmetric-cards">
+      <!-- Main Content Layout -->
+      <div class="row">
+        <!-- Card 1 - Mapa por Estados -->
+        <div class="col-xl-8 col-lg-8 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-mapa-estados-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 1 -->
+                <div class="indicadores-card-content" id="indicadoresMapaEstadosContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Contratos por Região -->
+        <div class="col-xl-4 col-lg-4 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-por-regiao-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 2 -->
+                <div class="indicadores-card-content" id="indicadoresPorRegiaoContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 5: WHEN - Análise Temporal -->
+    <!-- Topico Component - Dynamic -->
+    <div id="indicadores-topico-analise-temporal-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div id="indicadores-content-analise-temporal" class="indicadores-two-cards">
+      <!-- Main Content Layout -->
+      <div class="row">
+        <!-- Card 1 - Cronograma de Vencimentos -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-cronograma-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 1 -->
+                <div class="indicadores-card-content" id="indicadoresCronogramaContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Vigência e Prazos -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-vigencia-prazos-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 2 -->
+                <div class="indicadores-card-content" id="indicadoresVigenciaPrazosContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 6: HOW - Métodos e Eficiência -->
+    <!-- Topico Component - Dynamic -->
+    <div id="indicadores-topico-metodos-eficiencia-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div id="indicadores-content-metodos-eficiencia" class="indicadores-three-cards">
+      <!-- Main Content Layout -->
+      <div class="row">
+        <!-- Card 1 - Contratos com Cláusulas -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-clausulas-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 1 -->
+                <div class="indicadores-card-content" id="indicadoresClausulasContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Modalidades de Contratação -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-modalidades-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 2 -->
+                <div class="indicadores-card-content" id="indicadoresModalidadesContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 - Eficiência Processual -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-eficiencia-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 3 -->
+                <div class="indicadores-card-content" id="indicadoresEficienciaContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 7: HOW MUCH - Análise Financeira -->
+    <!-- Topico Component - Dynamic -->
+    <div id="indicadores-topico-analise-financeira-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div id="indicadores-content-analise-financeira" class="indicadores-two-cards">
+      <!-- Main Content Layout -->
+      <div class="row">
+        <!-- Card 1 - Valores por Categoria -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-valores-categoria-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 1 -->
+                <div class="indicadores-card-content" id="indicadoresValoresCategoriaContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Evolução Financeira -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-evolucao-financeira-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 2 -->
+                <div class="indicadores-card-content" id="indicadoresEvolucaoFinanceiraContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 8: INSIGHTS EXECUTIVOS - Insights e Recomendações -->
+    <!-- Topico Component - Dynamic -->
+    <div id="indicadores-topico-insights-executivos-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div id="indicadores-content-insights-executivos" class="indicadores-three-cards">
+      <!-- Main Content Layout -->
+      <div class="row">
+        <!-- Card 1 - Alertas e Riscos -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-alertas-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 1 -->
+                <div class="indicadores-card-content" id="indicadoresAlertasContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Oportunidades -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-oportunidades-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 2 -->
+                <div class="indicadores-card-content" id="indicadoresOportunidadesContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 - Ações Prioritárias -->
+        <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-2">
+          <div class="indicadores-content">
+            <div class="sidebar-card">
+              <!-- Card Header Component - Dynamic -->
+              <div id="indicadores-acoes-header">
+                <!-- Card header será carregado dinamicamente via JavaScript -->
+              </div>
+              
+              <div class="card-body-govbr">
+                <!-- Content for Card 3 -->
+                <div class="indicadores-card-content" id="indicadoresAcoesContent">
+                  <!-- Conteúdo será carregado dinamicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

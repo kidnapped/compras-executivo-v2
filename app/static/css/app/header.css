@@ -11,26 +11,48 @@
 }
 
 .br-header {
-  transition: all 0.3s ease;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
   min-height: 130px;
-  position: fixed; /* MANTÉM FIXO no topo */
-  top: 0;
-  left: 0;
-  width: 100%;
+  background-color: #fff;
+  transition: all 0.3s ease;
   z-index: 9999 !important;
-  background-color: #fff; /* evita que o conteúdo apareça atrás */
+}
+
+/* BLOCO ESQUERDO */
+#header-esquerda {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.header-logo-container img {
+  margin-bottom: 0.25rem;
+}
+
+.header-texts {
+  margin: 30px 0px -30px -30px;
 }
 
 /* TÍTULOS DO HEADER */
 .header-sign {
-  color: #1351b4;
+  color: #6D7FB7 !important;
   font-size: 24px;
   transition: all 0.3s ease;
   margin-left: 0;
 }
 
 .header-title {
-  color: #555;
+  color: #64748b;
   font-size: 14px;
   transition: all 0.3s ease;
   margin-left: 0;
@@ -51,20 +73,60 @@
 /* BLOCO DIREITO DO HEADER - DESKTOP */
 .header-direita-desktop {
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   margin-left: auto;
   margin-top: -20px;
 }
 
+.header-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 10px;
+}
+
+.header-user-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#cpf-display {
+  color: #6D7FB7 !important;
+  font-weight: bold;
+  font-size: 12px;
+  font-family: Arial;
+  margin-top: 2px;
+}
+
+.header-user-name {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.header-user-role {
+  color: #64748b;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.header-separator {
+  height: 24px;
+  width: 1px;
+  background-color: #ccc;
+  margin: 0 1rem;
+}
+
 .header-direita-desktop a {
-  color: #1351b4;
+  color: #6D7FB7;
   font-weight: 500;
   text-decoration: none;
 }
 
 .header-direita-desktop .header-icon {
   font-size: 20px;
-  color: #1351b4;
+  color: #6D7FB7;
 }
 
 .header-separador {

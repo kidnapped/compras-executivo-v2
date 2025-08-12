@@ -1,0 +1,16 @@
+/* ===================== FOOTER STYLES ===================== */
+/* Footer */
+.br-footer {
+  position: relative;
+  margin: 0;
+  padding-bottom: 0 !important;
+  z-index: var(--z-index-footer);
+}
+
+.br-footer::after {
+  content: "";
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}

@@ -11507,3 +11507,8 @@ export const brazilStatesGeoJson = {
     },
   ],
 };
+
+// Disponibilizar globalmente no window para compatibilidade
+if (typeof window !== 'undefined') {
+  window.brazilStatesGeoJson = brazilStatesGeoJson;
+}

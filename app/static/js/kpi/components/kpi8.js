@@ -5,7 +5,7 @@ import {
   showKpiError,
 } from "../shared/kpi-utils.js";
 import { setupKpiDropdown } from "../shared/kpi-dropdown.js";
-import { brazilStatesGeoJson } from "../brazil_states_geojson.js";
+import { brazilStatesGeoJson } from "../../common/brazil_states_geojson.js";
 import getEcharts from "../../util/echarts.js";
 import card_kpi from "../card.js";
 

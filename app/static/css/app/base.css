@@ -1,7 +1,6 @@
-/* ===================== BASE LAYOUT & TYPOGRAPHY ===================== */
-
-/* Media queries - Responsive typography */
+/* ===================== CSS VARIABLES ===================== */
 :root {
+  /* Typography Scale - Desktop */
   --h1-size: 2.5rem;
   --h2-size: 2rem;
   --h3-size: 1.75rem;
@@ -9,32 +8,197 @@
   --h5-size: 1.25rem;
   --h6-size: 1rem;
   --h7-size: 0.875rem;
+  
+  /* Layout */
+  --header-height: 130px;
+  
+  /* Z-index scale */
+  --z-index-card: 1;
+  --z-index-button: 1000;
+  --z-index-footer: 998;
+  --z-index-scrim: 2040;
+  --z-index-scrim-active: 2050;
+  --z-index-modal: 2060;
+  --z-index-header: 9999;
+  
+  /* Colors */
+  --modal-bg: #ffffff;
+  --modal-shadow: rgba(0, 0, 0, 0.3);
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --border-color: #e9ecef;
+  --bg-light: #f8f9fa;
+  --text-primary: #333;
+  --text-secondary: #6c757d;
+
+  --color-primary-light: #8B9ED6;
+  --color-primary-medium: #6D7FB7;
+  
+  /* Gov.br Design System Colors */
+  --govbr-blue-warm-vivid-70: #071D41;
+  --govbr-blue-warm-vivid-60: #1351B4;
+  --govbr-green-cool-vivid-50: #00B04F;
+  --govbr-yellow-vivid-20: #FFD700;
+  --govbr-orange-warm-50: #F7931E;
+  --govbr-gray-2: #F8F9FA;
+  --govbr-gray-20: #E6ECF7;
+  --govbr-gray-60: #6C757D;
+  --govbr-gray-80: #1E293B;
 }
 
-/* Base styles */
-h1 {
-  font-size: var(--h1-size);
-}
-h2 {
-  font-size: var(--h2-size);
-}
-h3 {
-  font-size: var(--h3-size);
-}
-h4 {
-  font-size: var(--h4-size);
-}
-h5 {
-  font-size: var(--h5-size);
-}
-h6 {
-  font-size: var(--h6-size);
-}
-h7 {
-  font-size: var(--h7-size);
+/* ===================== RESET & BASE STYLES ===================== */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* Small devices (phones, less than 576px) */
+body {
+  font-family: Raleway, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ===================== TYPOGRAPHY ===================== */
+h1, h2, h3, h4, h5, h6, h7 {
+  margin: 0;
+}
+
+h1 { font-size: var(--h1-size); }
+h2 { font-size: var(--h2-size); }
+h3 { font-size: var(--h3-size); }
+h4 { font-size: var(--h4-size); }
+h5 { font-size: var(--h5-size); }
+h6 { font-size: var(--h6-size); }
+h7 { font-size: var(--h7-size); }
+
+/* ===================== LAYOUT COMPONENTS ===================== */
+
+/* Main Content */
+.br-main {
+  flex: 1 0 auto;
+  margin: 0;
+  padding-top: var(--header-height);
+  padding-bottom: 0 !important;
+  transition: margin-left 0.3s ease;
+}
+
+.br-main .container-lg > * {
+  margin-left: calc(-15px + 10px);
+  margin-right: calc(-15px + 10px);
+}
+
+/* Container */
+.container-lg {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* ===================== COMPONENTS ===================== */
+/* Cards */
+.br-card {
+  border-radius: 10px;
+  box-sizing: border-box;
+  z-index: var(--z-index-card) !important;
+}
+
+/* Buttons */
+.br button {
+  z-index: var(--z-index-button);
+}
+
+/* Grid */
+.row-tight > [class*="col"] {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+}
+
+/* ===================== MODALS ===================== */
+/* Modal Overlay */
+.br-scrim[style*="display: block"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: var(--z-index-scrim-active) !important;
+}
+
+.container-lg .br-scrim[style*="display: block"],
+.container .br-scrim[style*="display: block"],
+.container-fluid .br-scrim[style*="display: block"] {
+  background-color: var(--modal-overlay) !important;
+  z-index: var(--z-index-scrim) !important;
+}
+
+/* Modal Dialog */
+.br-modal .br-modal-dialog {
+  background: var(--modal-bg) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px var(--modal-shadow) !important;
+  max-width: 80vw !important;
+  width: 90% !important;
+  max-height: 80vh !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  z-index: var(--z-index-modal) !important;
+}
+
+/* Modal Parts */
+.br-modal .br-modal-header,
+.br-modal .br-modal-footer {
+  padding: 1rem 1.5rem !important;
+  border-color: var(--border-color) !important;
+  background-color: var(--bg-light) !important;
+}
+
+.br-modal .br-modal-header {
+  border-bottom: 1px solid var(--border-color) !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.br-modal .br-modal-footer {
+  border-top: 1px solid var(--border-color) !important;
+  border-radius: 0 0 8px 8px !important;
+}
+
+.br-modal .br-modal-body {
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  padding: 1.5rem !important;
+}
+
+.br-modal .br-modal-title {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+.br-modal .br-modal-close {
+  background: none !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+  cursor: pointer !important;
+  color: var(--text-secondary) !important;
+  padding: 0 !important;
+}
+
+.br-modal .br-modal-close:hover {
+  color: var(--text-primary) !important;
+}
+
+/* ===================== RESPONSIVE DESIGN ===================== */
+/* Mobile - Phones (< 576px) */
 @media (max-width: 575.98px) {
   :root {
     --h1-size: 1rem;
@@ -47,7 +211,7 @@ h7 {
   }
 }
 
-/* Medium devices (tablets, 576px and up) */
+/* Tablet - Medium devices (576px - 768px) */
 @media (min-width: 576px) and (max-width: 767.98px) {
   :root {
     --h1-size: 1.25rem;
@@ -60,7 +224,7 @@ h7 {
   }
 }
 
-/* Large devices (desktops, 768px and up) */
+/* Desktop - Large devices (768px - 992px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
   :root {
     --h1-size: 2.4rem;
@@ -73,7 +237,7 @@ h7 {
   }
 }
 
-/* Extra large devices (large desktops, 992px and up) */
+/* Large Desktop - Extra large devices (≥ 992px) */
 @media (min-width: 992px) {
   :root {
     --h1-size: 2.5rem;
@@ -86,180 +250,9 @@ h7 {
   }
 }
 
-/* GERAL */
-/* html overflow rules removidas - conflitavam com outros CSS */
-
-body {
-  font-family: Raleway, sans-serif;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
+/* ===================== UTILITY CLASSES ===================== */
 @media (max-width: 991.98px) {
   .hide-mobile {
     display: none !important;
   }
-}
-
-/* PAGE LAYOUT & FOOTER */
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  /* overflow rules removidas - deixa outros CSS controlarem */
-}
-
-html {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-body {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.br-main {
-  flex: 1 0 auto;
-  margin-bottom: 0;
-  padding-bottom: 0 !important;
-  margin-left: 0;
-  transition: margin-left 0.3s ease;
-  padding-top: 130px; /* espaço para o header normal - deve coincidir com JS */
-}
-
-.container-lg {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.br-main .container-lg > * {
-  margin-left: calc(-15px + 10px);
-  margin-right: calc(-15px + 10px);
-}
-
-/* FOOTER */
-.br-footer {
-  position: relative;
-  margin-top: 0;
-  margin-bottom: 0; /* Remove espaço extra no final */
-  padding-bottom: 0 !important; /* Força remoção de padding */
-  z-index: 998; /* Menor que o menu lateral (999) para ficar atrás */
-}
-
-.br-footer:after {
-  content: "";
-  display: block;
-  height: 0;
-  margin: 0;
-  padding: 0;
-}
-
-/* CARD GERAL */
-.br-card {
-  border-radius: 10px;
-  box-sizing: border-box;
-  z-index: 1 !important;
-}
-
-.br button {
-  z-index: 1000;
-}
-
-/* Common card patterns */
-.row-tight > [class*="col"] {
-  padding-left: 5px;
-  padding-right: 5px;
-  margin-bottom: 10px;
-}
-
-/* MODAL GERAL */
-.br-scrim[style*="display: block"] {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  max-width: none !important;
-  max-height: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  z-index: 2050 !important;
-}
-
-/* Ensure scrim has proper background when inside containers */
-.container-lg .br-scrim[style*="display: block"],
-.container .br-scrim[style*="display: block"],
-.container-fluid .br-scrim[style*="display: block"] {
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  z-index: 2040 !important;
-}
-
-/* Modal dialog container - Updated to match KPI modal with center popup */
-.br-modal .br-modal-dialog {
-  background: white !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
-  max-width: 80vw !important;
-  width: 90% !important;
-  max-height: 80vh !important;
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  margin: 0 !important;
-  z-index: 2060 !important;
-}
-
-.br-modal .br-modal-body {
-  max-height: 60vh !important;
-  overflow-y: auto !important;
-  padding: 1.5rem !important;
-}
-
-.br-modal .br-modal-header {
-  padding: 1rem 1.5rem !important;
-  border-bottom: 1px solid #e9ecef !important;
-  background-color: #f8f9fa !important;
-  border-radius: 8px 8px 0 0 !important;
-}
-
-.br-modal .br-modal-footer {
-  padding: 1rem 1.5rem !important;
-  border-top: 1px solid #e9ecef !important;
-  background-color: #f8f9fa !important;
-  border-radius: 0 0 8px 8px !important;
-}
-
-.br-modal .br-modal-title {
-  font-size: 1.25rem !important;
-  font-weight: 600 !important;
-  color: #333 !important;
-  margin: 0 !important;
-}
-
-.br-modal .br-modal-close {
-  background: none !important;
-  border: none !important;
-  font-size: 1.5rem !important;
-  cursor: pointer !important;
-  color: #6c757d !important;
-  padding: 0 !important;
-}
-
-.br-modal .br-modal-close:hover {
-  color: #333 !important;
-}
-
-/* ===================== CORREÇÃO HEADER FIXO ===================== */
-/* Garante que o header sempre fique fixo no topo, mesmo com scroll */
-.br-header {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  z-index: 9999 !important;
 }

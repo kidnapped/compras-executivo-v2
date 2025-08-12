@@ -1,42 +1,116 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - Compras Executivo</title>
-    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
-    {% if config.API_ENV == "production" -%}
+  <!-- Básico -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - Compras Executivo</title>
+  <meta name="description" content="Painel executivo de contratos e indicadores do Compras Executivo (GovBR).">
+  {% if config.ROBOTS and config.ROBOTS|lower in ['noindex','none','nofollow'] -%}
+  <meta name="robots" content="{{ config.ROBOTS }}">
+  {%- endif %}
+
+  <!-- Ícones / PWA -->
+  <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <meta name="application-name" content="Compras Executivo">
+  <meta name="theme-color" content="#1351B4">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- SEO/Social -->
+  <link rel="canonical" href="{{ config.CANONICAL_URL or request.url }}">
+  <meta property="og:title" content="Dashboard - Compras Executivo">
+  <meta property="og:description" content="Indicadores, KPIs e visão integrada de contratos.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ config.CANONICAL_URL or request.url }}">
+  <meta property="og:image" content="{{ config.OG_IMAGE or '/static/images/comprasexecutivo_logo.png' }}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- CSP via <meta> (headers HTTP ainda são o ideal) -->
+  {# frame-ancestors e X-Frame-Options DEVEM vir via header HTTP, não via <meta> #}
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    img-src 'self' data:;
+    style-src 'self' 'unsafe-inline';
+    {% if csp_nonce %}script-src 'self' 'nonce-{{ csp_nonce }}'{% else %}script-src 'self' 'unsafe-inline'{% endif %};
+    font-src 'self';
+    connect-src 'self';
+    upgrade-insecure-requests">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Preloads críticos -->
+  {% if config.API_ENV == "production" -%}
+  <link rel="preload" href="/static/dist/fonts/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/dist/fonts/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/dist/fonts/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+  {%- else -%}
+  <link rel="preload" href="/static/fonts/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+  {%- endif %}
+  <link rel="preload" href="/static/images/govbr-logo.png" as="image">
+  {# REMOVIDO: preload do favicon para evitar warning #}
+  {% block extra_preloads %}{% endblock %}
+
+  <!-- Assets -->
+  {% if config.API_ENV == "production" -%}
     <link rel="stylesheet" href="/static/dist/bundle.css" />
-    <script src="/static/dist/bundle.js"></script>
-    {%- else -%}
+    <script defer src="/static/dist/bundle.js"></script>
+  {%- else -%}
     {%- for css_file in base_css_files %}
     <link rel="stylesheet" href="{{ css_file }}" />
     {%- endfor %}
     {%- if template_name -%}
-    {%- for css_file in get_template_specific_css(template_name) %}
-    <link rel="stylesheet" href="{{ css_file }}" />
-    {%- endfor %}
+      {%- for css_file in get_template_specific_css(template_name) %}
+      <link rel="stylesheet" href="{{ css_file }}" />
+      {%- endfor %}
     {%- endif %}
-    <script>window.process={env:{ENVIRONMENT:"{{ config.API_ENV }}"}};</script>
+
+    <!-- ENV inline com nonce; seguro se csp_nonce vier do servidor -->
+    <script nonce="{{ csp_nonce|default('') }}">window.process={env:{ENVIRONMENT:"{{ config.API_ENV }}"}};</script>
+
+    {# Scripts não-modulares (libs legadas) #}
     {%- for js_file in dev_js_files %}
-    <script src="{{ js_file }}"></script>
+    <script defer src="{{ js_file }}"></script>
     {%- endfor %}
+
+    {# Módulos ES #}
     {%- for js_file in dev_js_modules %}
     <script type="module" src="{{ js_file }}"></script>
     {%- endfor %}
-    {%- endif %}
+  {%- endif %}
+  <noscript><style>body{opacity:1!important} .no-js{display:block}</style></noscript>
 </head>
 
 <body data-uasgs="{{ request.session.get('uasgs', []) | join(',') }}">
-    {% include 'partials/header.html' %}
-    {% include 'partials/menu.html' %}
+  <noscript class="no-js" style="display:none;padding:1rem;background:#ffefc1;border-bottom:1px solid #e0c97f;">
+    Este sistema requer JavaScript habilitado.
+  </noscript>
 
-    <main class="br-main">
-        <div class="container-lg">
-            {% block content %}{% endblock %}
-        </div>
-    </main>
+  <!-- Header dinâmico -->
+  <div id="header-dynamic-container"
+       data-session-cpf="{{ request.session.get('cpf', '') }}"
+       data-session-usuario-name="{{ request.session.get('usuario_name', '') }}"
+       data-session-usuario-role="{{ request.session.get('usuario_role', '') }}"
+       data-session-usuario-email="{{ request.session.get('usuario_email', '') }}">
+  </div>
 
-    {% include 'partials/footer.html' %}
+  <!-- Menu dinâmico -->
+  <div id="menu-dynamic-container"
+       data-session-menu='{{ request.session.get("menu", []) | tojson }}'>
+  </div>
+
+  <main class="br-main">
+    <div class="container-lg">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <!-- Footer dinâmico -->
+  <div id="footer-dynamic-container"></div>
 </body>
 </html>

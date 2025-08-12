@@ -1,0 +1,283 @@
+/* Topico Component Styles - Inspirado no card_header e breadcrumb */
+.topico-container {
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+
+.topico-modern {
+  background: linear-gradient(90deg, #E6ECF7 0%, #F8F9FA 100%);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(109, 127, 183, 0.08);
+  position: relative;
+  min-height: 48px;
+}
+
+.topico-content {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 29px;
+}
+
+.topico-icon {
+  width: 32px;
+  height: 32px;
+  background: #6D7FB7;
+  border: 2px solid #6D7FB7;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(109, 127, 183, 0.2);
+  transition: all 0.3s ease;
+}
+
+.topico-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.topico-title h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6D7FB7;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topico-description {
+  margin-top: 2px;
+}
+
+.topico-description span {
+  font-size: 0.7rem;
+  color: #64748b;
+  line-height: 1.1;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topico-tags {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.topico-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.topico-tag.default {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.topico-tag.primary {
+  background: #6D7FB7;
+  color: white;
+  border: 1px solid #6D7FB7;
+}
+
+.topico-tag.success {
+  background: #059669;
+  color: white;
+  border: 1px solid #059669;
+}
+
+.topico-tag.warning {
+  background: #d97706;
+  color: white;
+  border: 1px solid #d97706;
+}
+
+.topico-tag.danger {
+  background: #dc2626;
+  color: white;
+  border: 1px solid #dc2626;
+}
+
+.topico-tag.info {
+  background: #0284c7;
+  color: white;
+  border: 1px solid #0284c7;
+}
+
+.topico-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.topico-actions {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.btn-topico {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.btn-topico.primary {
+  background: #6D7FB7;
+  color: white;
+  border: 1px solid #6D7FB7;
+}
+
+.btn-topico.secondary {
+  background: #f8fafc;
+  color: #6D7FB7;
+  border: 1px solid #6D7FB7;
+}
+
+.btn-topico.success {
+  background: #059669;
+  color: white;
+  border: 1px solid #059669;
+}
+
+.btn-topico.warning {
+  background: #d97706;
+  color: white;
+  border: 1px solid #d97706;
+}
+
+.btn-topico.danger {
+  background: #dc2626;
+  color: white;
+  border: 1px solid #dc2626;
+}
+
+.btn-topico:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  opacity: 0.9;
+}
+
+.btn-topico:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .topico-content {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  
+  .topico-info {
+    flex: 1 1 100%;
+    margin-bottom: 0.4rem;
+  }
+  
+  .topico-tags,
+  .topico-actions {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+  
+  .topico-title h4 {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+  
+  .topico-description span {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+}
+
+@media (max-width: 576px) {
+  .topico-modern {
+    padding: 0.6rem;
+  }
+  
+  .topico-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+  
+  .topico-title h4 {
+    font-size: 0.8rem;
+  }
+  
+  .topico-description span {
+    font-size: 0.65rem;
+  }
+  
+  .topico-tag,
+  .btn-topico {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.4rem;
+  }
+}
+
+/* Animation effects */
+.topico-modern {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover effects */
+.topico-modern:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: rgba(109, 127, 183, 0.12);
+}
+
+.topico-icon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(109, 127, 183, 0.3);
+}

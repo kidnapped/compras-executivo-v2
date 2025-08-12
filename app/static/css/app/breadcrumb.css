@@ -1,6 +1,6 @@
 /* Breadcrumb Component Styles - Baseado na página de ajuda */
 .breadcrumb-container {
-  margin-top: 6px;
+  margin-top: 12px;
   margin-bottom: 6px;
 }
 
@@ -9,7 +9,7 @@
   border-radius: 10px;
   padding: 0.6rem 0.9rem;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(19, 81, 180, 0.08);
+  border: 1px solid rgba(109, 127, 183, 0.08);
 }
 
 .breadcrumb-items {
@@ -32,7 +32,7 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  color: #1351b4;
+  color: #6D7FB7;
   text-decoration: none;
   padding: 0.25rem 0.4rem;
   border-radius: 5px;
@@ -55,9 +55,9 @@
 
 .breadcrumb-item a:hover {
   color: white;
-  background: linear-gradient(135deg, #8B9ED6, #A2B2E3);
+  background: linear-gradient(135deg, #6D7FB7, #8B9ED6);
   transform: translateY(-1px);
-  box-shadow: 0 2px 7px rgba(19, 81, 180, 0.3);
+  box-shadow: 0 2px 7px rgba(109, 127, 183, 0.3);
   text-decoration: none;
 }
 
@@ -66,13 +66,13 @@
 }
 
 .breadcrumb-item.active {
-  color: #1e293b;
+  color: #6D7FB7;
   font-weight: 600;
   padding: 0.25rem 0.4rem;
   background: linear-gradient(135deg, #e0f2fe, #e6f7ff);
   border-radius: 5px;
-  border: 1px solid rgba(19, 81, 180, 0.2);
-  box-shadow: 0 1px 2px rgba(19, 81, 180, 0.1);
+  border: 1px solid rgba(109, 127, 183, 0.2);
+  box-shadow: 0 1px 2px rgba(109, 127, 183, 0.1);
   line-height: 1;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .breadcrumb-separator {
-  color: #cbd5e1;
+  color: #64748b;
   font-size: 0.6rem;
 }
 

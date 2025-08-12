@@ -2,42 +2,12 @@
 
 /* Gov.br Design System Styles */
 
-/* Tipografia gov.br */
-body, .admin_dw_tesouro-page {
-  font-family: 'Rawline', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-}
-
-/* Cores oficiais gov.br */
-:root {
-  --govbr-blue-warm-vivid-70: #071D41;
-  --govbr-blue-warm-vivid-60: #1351B4;
-  --govbr-green-cool-vivid-50: #00B04F;
-  --govbr-yellow-vivid-20: #FFD700;
-  --govbr-orange-warm-50: #F7931E;
-  --govbr-gray-2: #F8F9FA;
-  --govbr-gray-20: #E6ECF7;
-  --govbr-gray-60: #6C757D;
-  --govbr-gray-80: #1E293B;
-}
-
-/* Sombras padrão gov.br */
-.govbr-shadow-sm {
-  box-shadow: 0 1px 3px rgba(7, 29, 65, 0.12), 0 1px 2px rgba(7, 29, 65, 0.1);
-}
-
-.govbr-shadow-md {
-  box-shadow: 0 4px 6px rgba(7, 29, 65, 0.1), 0 2px 4px rgba(7, 29, 65, 0.06);
-}
-
-.govbr-shadow-lg {
-  box-shadow: 0 10px 15px rgba(7, 29, 65, 0.1), 0 4px 6px rgba(7, 29, 65, 0.05);
-}
-
 /* Layout Styles */
 .admin_dw_tesouro-page {
   background: transparent;
   min-height: 100vh;
   padding: 1rem;
+  font-family: 'Rawline', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
 .admin_dw_tesouro-page .container-fluid {
@@ -51,6 +21,12 @@ body, .admin_dw_tesouro-page {
   gap: 10px;
   display: flex !important;
   flex-wrap: nowrap !important;
+}
+
+/* Classe row-tight igual ao dashboard */
+.row-tight {
+  margin-left: -5px;
+  margin-right: -5px;
 }
 
 .admin_dw_tesouro-page .main-content-layout {
@@ -78,6 +54,9 @@ body, .admin_dw_tesouro-page {
 .tables-sidebar {
   height: 100%;
   min-height: 500px;
+  max-height: calc(100vh - 200px); /* Altura máxima fixa */
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-card {
@@ -91,196 +70,24 @@ body, .admin_dw_tesouro-page {
   flex-direction: column;
   height: 100%;
   min-height: 500px;
-}
-
-.card-header-govbr {
-  background: linear-gradient(90deg, #E6ECF7 0%, #F8F9FA 100%);
-  color: #1351B4;
-  padding: 0.75rem 0.9rem;
-  border-bottom: 1px solid #E6ECF7;
-  position: relative;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-}
-
-.govbr-header-content {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  width: 100%;
-  min-height: 29px;
-}
-
-.govbr-icon {
-  width: 29px;
-  height: 29px;
-  background: #1351B4;
-  border: 2px solid #1351B4;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  color: white;
-  flex-shrink: 0;
-  box-shadow: 0 2px 5px rgba(19, 81, 180, 0.2);
-}
-
-.govbr-title {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.govbr-title h3 {
-  margin: 0;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #1351B4;
-  font-family: 'Rawline', Arial, sans-serif;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.govbr-subtitle {
-  display: block;
-  font-size: 0.525rem;
-  color: #6C757D;
-  margin-top: 0.075rem;
-  font-weight: 500;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.govbr-actions {
-  display: flex;
-  gap: 0.45rem;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
-}
-
-.btn-govbr {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.45rem 0.6rem;
-  border-radius: 5px;
-  font-weight: 600;
-  font-size: 0.525rem;
-  text-decoration: none;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Rawline', Arial, sans-serif;
-  position: relative;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.btn-govbr::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.btn-govbr:hover::before {
-  left: 100%;
-}
-
-.btn-govbr.primary {
-  background: #00B04F;
-  color: white;
-  border-color: #00B04F;
-}
-
-.btn-govbr.primary:hover {
-  background: #009639;
-  border-color: #009639;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 7px rgba(0, 176, 79, 0.3);
-}
-
-.btn-govbr.secondary {
-  background: white;
-  color: #1351B4;
-  border-color: #1351B4;
-}
-
-.btn-govbr.secondary:hover {
-  background: #1351B4;
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 7px rgba(19, 81, 180, 0.3);
-}
-
-.card-body-govbr {
-  padding: 1.5rem;
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  background: white;
-}
-
-/* Remover estilos antigos não utilizados */
-
-.icon-success {
-  background: linear-gradient(135deg, #00B04F, #009639);
-}
-
-.header-text h3 {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #1e293b;
-  font-family: 'Rawline', Arial, sans-serif;
-}
-
-.header-text p {
-  margin: 0.25rem 0 0 0;
-  color: #64748b;
-  font-size: 0.875rem;
-  font-family: 'Rawline', Arial, sans-serif;
-}
-
-.card-body-modern {
-  padding: 1.5rem;
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  max-height: calc(100vh - 200px); /* Altura máxima fixa */
 }
 
 /* Search Box */
 .search-input {
-  border: 2px solid #E6ECF7;
-  border-radius: 8px;
+  border: 1px solid #E6ECF7;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   background: white;
-  transition: all 0.3s ease;
-  font-family: 'Rawline', Arial, sans-serif;
+  border-radius: 0 !important;
+  margin: 0px !important;
 }
 
 .search-input:focus {
   border-color: #1351B4;
-  box-shadow: 0 0 0 0.2rem rgba(19, 81, 180, 0.15);
   background: white;
   outline: none;
+  box-shadow: none !important;
 }
 
 .search-input::placeholder {
@@ -288,130 +95,206 @@ body, .admin_dw_tesouro-page {
   font-style: normal;
 }
 
-/* Tables List */
-.tables-list {
+/* Admin DW Tesouro Tables List */
+.admin-dw-tesouro-tables-list {
   flex: 1;
   overflow-y: auto;
+  position: relative;
+  height: 100%; /* USA 100% do container pai */
+  /* REMOVIDO: padding para usar todo o espaço */
 }
 
-.table-category {
-  margin-bottom: 1rem;
+/* Scrollbar customizada para a lista de tabelas */
+.admin-dw-tesouro-tables-list::-webkit-scrollbar {
+  width: 6px;
 }
 
-.category-header {
+.admin-dw-tesouro-tables-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.admin-dw-tesouro-tables-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.admin-dw-tesouro-tables-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Para Firefox */
+.admin-dw-tesouro-tables-list {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* Garantir que o card-body também tenha altura limitada */
+.sidebar-card .card-body-govbr {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0px; /* ZERO padding */
+  height: 100%; /* USA 100% da altura */
+}
+
+/* Search box mantém altura fixa */
+.sidebar-card .search-box {
+  flex-shrink: 0; /* NÃO CRESCE NEM DIMINUI */
+  margin: 0; /* REMOVIDO: margem para usar todo o espaço */
+}
+
+/* Loading state for tables list */
+.admin-dw-tesouro-tables-list-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* REMOVIDO: padding para usar todo o espaço */
+  text-align: center;
+  color: #64748b;
+  height: 100%; /* USA toda altura */
+}
+
+.admin-dw-tesouro-tables-list-loading-spinner {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #1351b4, #0f4394);
+  border-radius: 16px;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-dw-tesouro-tables-list-loading-spinner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 2s infinite;
+}
+
+.admin-dw-tesouro-tables-list-loading h5 {
+  margin: 0 0 0.5rem 0;
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.admin-dw-tesouro-tables-list-loading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+/* Loading dots animation */
+.admin-dw-tesouro-loading-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.admin-dw-tesouro-loading-dots span {
+  width: 6px;
+  height: 6px;
+  background: #1351b4;
+  border-radius: 50%;
+  animation: admin_dw_tesouro_loadingDots 1.4s infinite both;
+}
+
+.admin-dw-tesouro-loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.admin-dw-tesouro-loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+.admin-dw-tesouro-loading-dots span:nth-child(3) { animation-delay: 0s; }
+
+@keyframes admin_dw_tesouro_loadingDots {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.admin-dw-tesouro-tables-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-dw-tesouro-tables-list li {
+  margin: 0;
+  padding: 0;
+}
+
+.admin-dw-tesouro-tables-list .schema {
+  display: list-item;
   padding: 0.75rem;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-radius: 12px;
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   color: #1e293b;
   margin-bottom: 0.5rem;
   transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
 }
 
-.category-header:hover {
+.admin-dw-tesouro-tables-list .schema:hover {
   background: linear-gradient(135deg, #e0f2fe 0%, #e6f7ff 100%);
   color: #1351b4;
 }
 
-.category-header .toggle-icon {
-  margin-left: auto;
-  transition: transform 0.3s ease;
+.admin-dw-tesouro-tables-list .schema ul {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
 }
 
-.category-header.collapsed .toggle-icon {
-  transform: rotate(-90deg);
-}
-
-.category-items {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.category-items.collapsed {
-  max-height: 0;
-}
-
-.table-item {
-  display: flex;
-  align-items: center;
+.admin-dw-tesouro-tables-list .tabela {
+  display: list-item;
   padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: 0.25rem;
   border: 1px solid transparent;
   background: white;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1E293B;
 }
 
-.table-item:hover {
+.admin-dw-tesouro-tables-list .tabela:hover {
   background: #F8F9FA;
   border-color: #E6ECF7;
+  color: #1351b4;
 }
 
-.table-item.active {
+.admin-dw-tesouro-tables-list .tabela.active {
   background: #1351B4;
   color: white;
   border-color: #1351B4;
-}
-
-.table-name {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #1E293B;
-  font-family: 'Rawline', Arial, sans-serif;
-}
-
-.table-item.active .table-name {
-  color: white;
-}
-
-/* Search Box */
-.search-input {
-  border: 2px solid #E6ECF7;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  background: white;
-  transition: all 0.3s ease;
-  font-family: 'Rawline', Arial, sans-serif;
-}
-
-.search-input:focus {
-  border-color: #1351B4;
-  box-shadow: 0 0 0 0.2rem rgba(19, 81, 180, 0.15);
-  background: white;
-  outline: none;
-}
-
-.search-input::placeholder {
-  color: #6C757D;
-  font-style: normal;
 }
 
 /* Content Card */
 .table-content {
   height: 100%;
   min-height: 500px;
-}
-
-.content-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(7, 29, 65, 0.1);
-  border: 2px solid #E6ECF7;
-  overflow: hidden;
-  position: relative;
+  max-height: calc(100vh - 200px); /* Altura máxima fixa */
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 500px;
 }
 
 .header-actions {
@@ -475,7 +358,6 @@ body, .admin_dw_tesouro-page {
   font-weight: 600;
   font-size: 0.875rem;
   color: var(--govbr-gray-80);
-  font-family: 'Rawline', Arial, sans-serif;
 }
 
 .form-select,
@@ -483,7 +365,6 @@ body, .admin_dw_tesouro-page {
   border: 2px solid var(--govbr-gray-20);
   border-radius: 8px;
   padding: 0.75rem;
-  font-family: 'Rawline', Arial, sans-serif;
   font-size: 0.875rem;
   transition: all 0.3s ease;
 }
@@ -604,7 +485,6 @@ body, .admin_dw_tesouro-page {
 .pagination-info {
   color: var(--govbr-gray-60);
   font-size: 0.875rem;
-  font-family: 'Rawline', Arial, sans-serif;
   font-weight: 500;
 }
 
@@ -621,7 +501,6 @@ body, .admin_dw_tesouro-page {
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  font-family: 'Rawline', Arial, sans-serif;
   transition: all 0.3s ease;
 }
 
@@ -662,171 +541,171 @@ body, .admin_dw_tesouro-page {
     min-height: 400px;
   }
   
-  .govbr-header-content {
-    flex-wrap: wrap !important;
-    gap: 0.45rem;
-  }
-  
-  .govbr-actions {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-  
-  .govbr-title {
-    min-width: auto;
-    flex: 1 1 100%;
-  }
-  
-  .govbr-title h3 {
-    white-space: normal;
-    font-size: 0.66rem;
-  }
-  
-  .govbr-subtitle {
-    white-space: normal;
-    font-size: 0.45rem;
-  }
-  
-  .card-header-govbr {
-    min-height: auto;
-    padding: 0.6rem;
-  }
-  
   .tables-sidebar,
   .table-content,
   .sidebar-card,
   .content-card {
     min-height: 300px;
+    /* REMOVIDO: max-height que limitava no mobile */
   }
+  
+  /* REMOVIDO: limitação específica da lista no mobile */
 }
 
-.breadcrumb-item.active {
-    color: #1e293b;
-    font-weight: 600;
+/* Header grudado no card - mesmo estilo do dashboard */
+.dashboard-table-container {
+  border: 1px solid #ddd;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+  margin: 0;
+  /* Height automático para se ajustar ao conteúdo dinamicamente */
+  min-height: 400px;
+  max-height: calc(100vh - 350px);
+  display: flex;
+  flex-direction: column;
 }
 
-.breadcrumb-separator {
-    color: #cbd5e1;
-    font-size: 0.8rem;
+.table-responsive {
+  border-bottom: 1px solid #ddd;
+  overflow-y: auto;
+  overflow-x: auto;
+  flex: 1; /* Ocupa o espaço disponível */
+  position: relative;
 }
 
-/* Header Card */
-.header-card {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(19, 81, 180, 0.08);
-    overflow: hidden;
-    position: relative;
-    margin-bottom: 10px;
+/* Tabela principal com header sticky e larguras fixas */
+#dataTable {
+  margin-bottom: 0;
+  border: none;
+  width: max-content; /* Permite a tabela ser mais larga que o container */
+  min-width: 100%; /* Garante largura mínima */
+  table-layout: fixed;
+  border-collapse: collapse;
 }
 
-.header-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #1351b4, #10b981);
+#dataTable thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f8f8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #ddd;
 }
 
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 2rem;
-    gap: 2rem;
+#dataTable th {
+  text-align: center;
+  border-right: 1px solid #ddd;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #f8f8f8;
+  color: #374151;
+  white-space: nowrap;
+  vertical-align: middle;
+  position: relative;
+  min-width: 50px;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+  /* Remove width automática para usar width calculada */
+  box-sizing: border-box;
 }
 
-.header-info {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex: 1;
+#dataTable th:last-child {
+  border-right: none;
 }
 
-.header-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #1351b4, #0f4394);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 2rem;
-    box-shadow: 0 12px 24px rgba(19, 81, 180, 0.3);
-    position: relative;
-    overflow: hidden;
+/* Resizer de colunas */
+.column-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 1;
 }
 
-.header-icon::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transform: rotate(45deg);
-    animation: shimmer 3s infinite;
+.column-resizer:hover {
+  background: rgba(19, 81, 180, 0.3);
 }
 
-@keyframes shimmer {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
+/* Estilo para as células da tabela de dados */
+#dataTable tbody td {
+  text-align: center;
+  border-right: 1px solid #ddd;
+  padding: 8px 12px;
+  font-size: 12px;
+  vertical-align: middle;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 50px;
+  max-width: 400px;
+  box-sizing: border-box;
 }
 
-.header-text h1 {
-    margin: 0 0 0.5rem 0;
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #1e293b;
-    line-height: 1.2;
+#dataTable tbody td:last-child {
+  border-right: none;
 }
 
-.header-text p {
-    margin: 0;
-    color: #64748b;
-    font-size: 1.1rem;
+/* Hover effect nas linhas da tabela */
+#dataTable tbody tr:hover {
+  background-color: rgba(19, 81, 180, 0.05);
 }
 
-/* Content Card */
-.content-card {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(19, 81, 180, 0.08);
-    overflow: hidden;
-    position: relative;
+/* Scrollbar customizada para scroll horizontal */
+.table-responsive::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.content-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #1351b4, #10b981);
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
 }
 
-.content-body {
-    padding: 2rem;
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
 }
 
-.content-body h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #1e293b;
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
-.content-body p {
-    margin: 0;
-    color: #64748b;
-    font-size: 1rem;
-    line-height: 1.6;
+.table-responsive::-webkit-scrollbar-corner {
+  background: #f1f1f1;
+}
+
+/* Para Firefox */
+.table-responsive {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Remove bordas da table-modern para manter só da estrutura principal */
+.table-modern {
+  border: none !important;
+}
+
+/* Indicador visual de que há scroll horizontal */
+.table-responsive::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: linear-gradient(to left, rgba(0,0,0,0.1), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.table-responsive:hover::after {
+  opacity: 1;
 }

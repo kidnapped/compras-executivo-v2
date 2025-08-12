@@ -1,0 +1,51 @@
+{
+  "name": "Compras Executivo",
+  "short_name": "ComprasExec",
+  "description": "Painel executivo de contratos e indicadores do Compras Executivo (GovBR)",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1351B4",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/static/icons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["government", "business", "productivity"],
+  "screenshots": [
+    {
+      "src": "/static/images/comprasexecutivo_logo.png",
+      "sizes": "1069x340",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Compras Executivo Dashboard"
+    }
+  ]
+}

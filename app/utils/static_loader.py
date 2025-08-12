@@ -41,10 +41,10 @@ def collect_static_files():
     def css_sort_key(x):
         # Priority order for specific CSS files
         priority_files = {
-            '/static/css/app.css': 10,
-            '/static/css/base.css': 11,
-            '/static/css/header.css': 12,
-            '/static/css/menu.css': 13
+            '/static/css/app/app.css': 10,
+            '/static/css/app/base.css': 11,
+            '/static/css/app/header.css': 12,
+            '/static/css/app/menu.css': 13
         }
         
         if "/css/common/govbr-ds/" in x:
@@ -55,8 +55,14 @@ def collect_static_files():
             return (2, x)
         elif x in priority_files:
             return (3, priority_files[x], x)
+        elif x.startswith('/static/css/app/'):  # App subdirectory files come first
+            return (4, x)
+        elif x.startswith('/static/css/') and x.count('/') == 3:  # Root CSS files (/static/css/file.css)
+            return (5, x)
+        elif x.startswith('/static/css/') and x.count('/') > 3:  # Other subdirectory CSS files
+            return (6, x)
         else:
-            return (4, x)  # Rest alphabetically
+            return (7, x)  # Rest alphabetically
     
     base_css.sort(key=css_sort_key)
 

@@ -1,0 +1,28 @@
+<!-- Card Header Component -->
+<div class="card-header-govbr">
+  <div class="govbr-header-content">
+    <div class="govbr-icon">
+      <i class="{{ icon }}"></i>
+    </div>
+    <div class="govbr-title">
+      <h3 {% if title_id %}id="{{ title_id }}"{% endif %}>{{ title }}</h3>
+      {% if subtitle %}
+        <span class="govbr-subtitle" {% if subtitle_id %}id="{{ subtitle_id }}"{% endif %}>{{ subtitle }}</span>
+      {% endif %}
+    </div>
+    {% if actions %}
+      <div class="govbr-actions">
+        {% for action in actions %}
+          <button class="btn-govbr {{ action.type | default('primary') }}" 
+                  {% if action.id %}id="{{ action.id }}"{% endif %}
+                  {% if action.style %}style="{{ action.style }}"{% endif %}
+                  {% if action.onclick %}onclick="{{ action.onclick }}"{% endif %}
+                  {% if action.title %}title="{{ action.title }}"{% endif %}>
+            {% if action.icon %}<i class="{{ action.icon }}"></i>{% endif %}
+            {% if action.text %}<span>{{ action.text }}</span>{% endif %}
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>

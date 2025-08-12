@@ -125,26 +125,11 @@
   padding: 20px 10px;
 }
 
-/* Ensure tooltips and labels are not clipped */
-.br-card {
-  overflow: visible;
-}
-
-.br-card.list-card {
-  overflow: visible;
-}
-
 /* Additional spacing for chart elements that extend beyond bounds */
 .kpi-chart-inner .echarts-tooltip,
 .kpi-chart-inner .echarts-legend,
 .kpi-chart-inner .echarts-label {
   z-index: 100;
-}
-
-/* Ensure cards have enough space for chart elements */
-.br-card.list-card {
-  padding-bottom: 1rem;
-  min-height: fit-content;
 }
 
 /* Special handling for full-width KPI 8 */

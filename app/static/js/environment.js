@@ -31,6 +31,28 @@ export default {
     App.adminCards();
     App.adminUsuarios();
     App.initModal();
+    App.formatCPFDisplay();
+  },
+
+  // Formata o CPF exibido no header
+  formatCPFDisplay() {
+    const formatCPF = (cpf) => {
+      // Remove any non-numeric characters
+      cpf = cpf.replace(/\D/g, '');
+      
+      // Apply CPF mask
+      if (cpf.length === 11) {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+      }
+      return cpf; // Return original if not 11 digits
+    };
+    
+    // Apply CPF mask to the header display
+    const cpfElement = document.getElementById('cpf-display');
+    if (cpfElement) {
+      const originalCpf = cpfElement.textContent.trim();
+      cpfElement.textContent = formatCPF(originalCpf);
+    }
   },
 
   // Comportamento de encolhimento do cabeçalho com base no scroll
