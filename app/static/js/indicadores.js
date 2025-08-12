@@ -710,6 +710,484 @@ export default {
     }
   },
 
+  // Função para inicializar o gráfico donut de contratos sem licitação
+  async indicadores_initGraficoSemLicitacao() {
+    try {
+      const containerId = 'indicadoresSemLicitacaoContent';
+      console.log('Iniciando carregamento do gráfico de contratos sem licitação...');
+      
+      const container = document.getElementById(containerId);
+      
+      if (!container) {
+        console.warn('Container do gráfico sem licitação não encontrado:', containerId);
+        return;
+      }
+
+      console.log('Container encontrado, aguardando loading inicial...');
+      
+      // Delay para que o loading seja bem visível
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      console.log('Buscando dados dos contratos sem licitação...');
+
+      // Buscar dados dos contratos sem licitação
+      const response = await fetch('/indicadores/contratos-sem-licitacao');
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Preparar dados para o gráfico donut
+      const chartData = (data.tipos_contratacao || []).map((tipo) => ({
+        name: tipo.tipo,
+        value: Number(tipo.total_contratos) || 0,
+      }));
+
+      console.log('Dados do gráfico preparados:', chartData);
+
+      // Verificar se há dados para exibir
+      if (!chartData || chartData.length === 0) {
+        container.innerHTML = `
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nenhum dado de licitação encontrado
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível globalmente
+      if (typeof echarts === 'undefined') {
+        throw new Error('ECharts não está disponível globalmente');
+      }
+      
+      console.log('ECharts disponível, versão:', echarts.version || 'desconhecida');
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-sem-licitacao-container">
+          <div id="indicadores-sem-licitacao-chart"></div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById('indicadores-sem-licitacao-chart');
+      
+      // Verificar se o elemento foi criado corretamente
+      if (!chartDiv) {
+        throw new Error('Elemento do gráfico não foi criado corretamente');
+      }
+
+      console.log('Container do gráfico criado:', chartDiv.offsetWidth, 'x', chartDiv.offsetHeight);
+
+      // Aguardar o DOM estar totalmente renderizado
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Verificar dimensões do container
+      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
+        console.warn('Container tem dimensões inválidas, tentando forçar layout...');
+        chartDiv.style.width = '100%';
+        chartDiv.style.height = '250px';
+        chartDiv.style.display = 'block';
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      // Cores para o gráfico donut
+      const colors = ['#5F70A5', '#8B9ED6', '#A2B2E3', '#B9C6ED', '#D0D9F6'];
+
+      // Configuração do gráfico donut
+      const chartOption = {
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderColor: '#5F70A5',
+          borderWidth: 2,
+          borderRadius: 8,
+          padding: [12, 16],
+          textStyle: {
+            fontSize: 14,
+            fontFamily: 'Rawline, Arial, sans-serif'
+          },
+          formatter: (params) => {
+            const valor = typeof params.value === "number" && !isNaN(params.value)
+              ? params.value.toLocaleString('pt-BR')
+              : '0';
+            const percentual = typeof params.percent === "number" && !isNaN(params.percent)
+              ? params.percent.toFixed(1)
+              : '0.0';
+            
+            return `<div class="indicadores-tooltip">
+              <div class="indicadores-tooltip-title">
+                ${params.name}
+              </div>
+              <div class="indicadores-tooltip-value">
+                <span class="indicadores-tooltip-number">${valor}</span> contratos
+                <br>
+                <span class="indicadores-tooltip-percent">${percentual}%</span> do total
+              </div>
+            </div>`;
+          }
+        },
+        legend: {
+          bottom: '5%',
+          left: 'center',
+          textStyle: {
+            fontSize: 11,
+            fontFamily: 'Rawline, Arial, sans-serif',
+            color: '#333'
+          },
+          itemGap: 15
+        },
+        series: [
+          {
+            name: 'Contratos por Tipo de Licitação',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            center: ['50%', '45%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 6,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: false,
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '#5F70A5',
+                formatter: (params) => {
+                  const valor = typeof params.value === "number" && !isNaN(params.value)
+                    ? params.value.toLocaleString('pt-BR')
+                    : '0';
+                  return `${params.name}\n${valor}`;
+                }
+              },
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: chartData.map((item, index) => ({
+              name: item.name,
+              value: item.value,
+              itemStyle: {
+                color: colors[index % colors.length]
+              }
+            }))
+          }
+        ],
+        backgroundColor: 'transparent'
+      };
+
+      // Inicializar o chart
+      console.log('Inicializando gráfico donut ECharts...', chartData);
+      console.log('Dimensões finais do container:', chartDiv.offsetWidth, 'x', chartDiv.offsetHeight);
+      
+      const chart = echarts.init(chartDiv);
+      
+      // Verificar se o chart foi inicializado
+      if (!chart) {
+        throw new Error('Falha ao inicializar o gráfico ECharts');
+      }
+      
+      console.log('Aplicando configurações do gráfico...');
+      chart.setOption(chartOption);
+      
+      // Forçar o redimensionamento inicial com múltiplas tentativas
+      setTimeout(() => {
+        chart.resize();
+        console.log('Gráfico donut redimensionado (1ª tentativa)');
+      }, 100);
+      
+      setTimeout(() => {
+        chart.resize();
+        console.log('Gráfico donut redimensionado (2ª tentativa)');
+      }, 500);
+
+      // Listener para redimensionamento
+      let resizeTimeout;
+      const resizeListener = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (chart && !chart.isDisposed()) {
+            chart.resize();
+          }
+        }, 150);
+      };
+
+      window.addEventListener("resize", resizeListener);
+
+      // Armazenar referência para cleanup
+      if (!window.indicadoresCharts) window.indicadoresCharts = {};
+      window.indicadoresCharts[containerId] = {
+        chart: chart,
+        resizeListener: resizeListener
+      };
+
+      console.log('Gráfico donut de contratos sem licitação inicializado com sucesso');
+
+    } catch (error) {
+      console.error('Erro ao inicializar gráfico de contratos sem licitação:', error);
+      const container = document.getElementById('indicadoresSemLicitacaoContent');
+      if (container) {
+        container.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro ao carregar o gráfico de contratos sem licitação: ${error.message}
+          </div>
+        `;
+      }
+    }
+  },
+
+  // Função para inicializar o gráfico donut de contratos com aditivos
+  async indicadores_initGraficoComAditivos() {
+    try {
+      const containerId = 'indicadoresComAditivosContent';
+      console.log('Iniciando carregamento do gráfico de contratos com aditivos...');
+      
+      const container = document.getElementById(containerId);
+      
+      if (!container) {
+        console.warn('Container do gráfico com aditivos não encontrado:', containerId);
+        return;
+      }
+
+      console.log('Container encontrado, aguardando loading inicial...');
+      
+      // Delay para que o loading seja bem visível
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      console.log('Buscando dados dos contratos com aditivos...');
+
+      // Buscar dados dos contratos com aditivos
+      const response = await fetch('/indicadores/contratos-com-aditivos');
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Preparar dados para o gráfico donut
+      const chartData = (data.tipos_contratacao || []).map((tipo) => ({
+        name: tipo.tipo,
+        value: Number(tipo.total_contratos) || 0,
+      }));
+
+      console.log('Dados do gráfico preparados:', chartData);
+
+      // Verificar se há dados para exibir
+      if (!chartData || chartData.length === 0) {
+        container.innerHTML = `
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nenhum dado de aditivos encontrado
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível globalmente
+      if (typeof echarts === 'undefined') {
+        throw new Error('ECharts não está disponível globalmente');
+      }
+      
+      console.log('ECharts disponível, versão:', echarts.version || 'desconhecida');
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-com-aditivos-container">
+          <div id="indicadores-com-aditivos-chart"></div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById('indicadores-com-aditivos-chart');
+      
+      // Verificar se o elemento foi criado corretamente
+      if (!chartDiv) {
+        throw new Error('Elemento do gráfico não foi criado corretamente');
+      }
+
+      console.log('Container do gráfico criado:', chartDiv.offsetWidth, 'x', chartDiv.offsetHeight);
+
+      // Aguardar o DOM estar totalmente renderizado
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Verificar dimensões do container
+      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
+        console.warn('Container tem dimensões inválidas, tentando forçar layout...');
+        chartDiv.style.width = '100%';
+        chartDiv.style.height = '250px';
+        chartDiv.style.display = 'block';
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      // Cores para o gráfico donut (tons de laranja esmaecidos, seguindo o padrão dos azuis)
+      const colors = ['#D2691E', '#F4A460', '#FFB347', '#FFDAB9', '#FFF8DC'];
+
+      // Configuração do gráfico donut
+      const chartOption = {
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderColor: '#D2691E',
+          borderWidth: 2,
+          borderRadius: 8,
+          padding: [12, 16],
+          textStyle: {
+            fontSize: 14,
+            fontFamily: 'Rawline, Arial, sans-serif'
+          },
+          formatter: (params) => {
+            const valor = typeof params.value === "number" && !isNaN(params.value)
+              ? params.value.toLocaleString('pt-BR')
+              : '0';
+            const percentual = typeof params.percent === "number" && !isNaN(params.percent)
+              ? params.percent.toFixed(1)
+              : '0.0';
+            
+            return `<div class="indicadores-tooltip">
+              <div class="indicadores-tooltip-title">
+                ${params.name}
+              </div>
+              <div class="indicadores-tooltip-value">
+                <span class="indicadores-tooltip-number">${valor}</span> contratos
+                <br>
+                <span class="indicadores-tooltip-percent">${percentual}%</span> do total
+              </div>
+            </div>`;
+          }
+        },
+        legend: {
+          bottom: '5%',
+          left: 'center',
+          textStyle: {
+            fontSize: 11,
+            fontFamily: 'Rawline, Arial, sans-serif',
+            color: '#333'
+          },
+          itemGap: 15
+        },
+        series: [
+          {
+            name: 'Contratos por Tipo de Aditivo',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            center: ['50%', '45%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 6,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: false,
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '#D2691E',
+                formatter: (params) => {
+                  const valor = typeof params.value === "number" && !isNaN(params.value)
+                    ? params.value.toLocaleString('pt-BR')
+                    : '0';
+                  return `${params.name}\n${valor}`;
+                }
+              },
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: chartData.map((item, index) => ({
+              name: item.name,
+              value: item.value,
+              itemStyle: {
+                color: colors[index % colors.length]
+              }
+            }))
+          }
+        ],
+        backgroundColor: 'transparent'
+      };
+
+      // Inicializar o chart
+      console.log('Inicializando gráfico donut ECharts...', chartData);
+      console.log('Dimensões finais do container:', chartDiv.offsetWidth, 'x', chartDiv.offsetHeight);
+      
+      const chart = echarts.init(chartDiv);
+      
+      // Verificar se o chart foi inicializado
+      if (!chart) {
+        throw new Error('Falha ao inicializar o gráfico ECharts');
+      }
+      
+      console.log('Aplicando configurações do gráfico...');
+      chart.setOption(chartOption);
+      
+      // Forçar o redimensionamento inicial com múltiplas tentativas
+      setTimeout(() => {
+        chart.resize();
+        console.log('Gráfico donut aditivos redimensionado (1ª tentativa)');
+      }, 100);
+      
+      setTimeout(() => {
+        chart.resize();
+        console.log('Gráfico donut aditivos redimensionado (2ª tentativa)');
+      }, 500);
+
+      // Listener para redimensionamento
+      let resizeTimeout;
+      const resizeListener = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (chart && !chart.isDisposed()) {
+            chart.resize();
+          }
+        }, 150);
+      };
+
+      window.addEventListener("resize", resizeListener);
+
+      // Armazenar referência para cleanup
+      if (!window.indicadoresCharts) window.indicadoresCharts = {};
+      window.indicadoresCharts[containerId] = {
+        chart: chart,
+        resizeListener: resizeListener
+      };
+
+      console.log('Gráfico donut de contratos com aditivos inicializado com sucesso');
+
+    } catch (error) {
+      console.error('Erro ao inicializar gráfico de contratos com aditivos:', error);
+      const container = document.getElementById('indicadoresComAditivosContent');
+      if (container) {
+        container.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro ao carregar o gráfico de contratos com aditivos: ${error.message}
+          </div>
+        `;
+      }
+    }
+  },
+
   indicadores_init() {
     // Só inicializa se estivermos na página correta
     if (!this.indicadores_initElements()) {
@@ -735,6 +1213,16 @@ export default {
       this.indicadores_initGraficoRegiao();
     }, 1000);
     
+    // Inicializar o gráfico donut de contratos sem licitação
+    setTimeout(() => {
+      this.indicadores_initGraficoSemLicitacao();
+    }, 1500);
+    
+    // Inicializar o gráfico donut de contratos com aditivos
+    setTimeout(() => {
+      this.indicadores_initGraficoComAditivos();
+    }, 2000);
+    
     console.log('Indicadores initialized successfully');
   },
 
@@ -757,10 +1245,26 @@ export default {
     // SEÇÃO 2: WHY - Análise de Processos
 
     // Card 1 - Contratos sem Licitação
-    document.getElementById('indicadoresSemLicitacaoContent').innerHTML = ``;
+    document.getElementById('indicadoresSemLicitacaoContent').innerHTML = `
+      <div class="indicadores-map-loading">
+        <div class="indicadores-map-loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <h5>Carregando contratos sem licitação</h5>
+        <p>Buscando dados de dispensas e inexigibilidades<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+      </div>
+    `;
 
     // Card 2 - Contratos com Aditivos
-    document.getElementById('indicadoresComAditivosContent').innerHTML = ``;
+    document.getElementById('indicadoresComAditivosContent').innerHTML = `
+      <div class="indicadores-map-loading">
+        <div class="indicadores-map-loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <h5>Carregando contratos com aditivos</h5>
+        <p>Buscando dados de termos aditivos e prorrogações<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+      </div>
+    `;
 
     // SEÇÃO 3: WHO - Fornecedores e Contratantes
 

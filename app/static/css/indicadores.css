@@ -594,6 +594,75 @@
   margin-right: 0.5rem;
 }
 
+/* ===================== SEÇÃO ESPECÍFICA - ANÁLISE DE PROCESSOS ===================== */
+
+/* Altura especial para a seção de análise de processos */
+#indicadores-content-analise-processos {
+  margin-top: 1rem;
+}
+
+#indicadores-content-analise-processos .row {
+  margin: 0;
+  padding: 0 !important;
+}
+
+/* Layout das colunas para análise de processos */
+#indicadores-content-analise-processos .col-xl-6 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+#indicadores-content-analise-processos .col-xl-6:first-child {
+  padding-left: 0;
+}
+
+#indicadores-content-analise-processos .col-xl-6:last-child {
+  padding-right: 0;
+}
+
+/* Containers dos cards com altura dobrada */
+#indicadores-content-analise-processos .indicadores-content {
+  height: 300px;
+  min-height: 300px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards com altura dobrada */
+#indicadores-content-analise-processos .sidebar-card {
+  height: 300px !important;
+  min-height: 300px !important;
+  max-height: 300px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Body dos cards com altura dobrada */
+#indicadores-content-analise-processos .card-body-govbr {
+  height: calc(300px - 50px) !important;
+  min-height: calc(300px - 50px) !important;
+  max-height: calc(300px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo dos cards com altura dobrada */
+#indicadores-content-analise-processos .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
 /* ===================== SEÇÃO ESPECÍFICA - DISTRIBUIÇÃO GEOGRÁFICA ===================== */
 
 /* Altura especial para a seção de distribuição geográfica */
@@ -722,10 +791,43 @@
   color: #5F70A5;
 }
 
+/* Estilo para números no tooltip */
+.indicadores-tooltip-number {
+  font-weight: bold;
+  color: #5F70A5;
+}
+
+/* Estilo para percentual no tooltip */
+.indicadores-tooltip-percent {
+  font-size: 0.9em;
+  color: #666;
+  font-style: italic;
+}
+
 /* ===================== RESPONSIVE PARA DISTRIBUIÇÃO GEOGRÁFICA ===================== */
 
 /* Tablet e mobile - ajustes para a seção de distribuição geográfica */
 @media (max-width: 991px) {
+  /* Análise de Processos - Responsive */
+  #indicadores-content-analise-processos .indicadores-content {
+    height: 250px;
+    min-height: 250px;
+    max-height: 250px;
+  }
+  
+  #indicadores-content-analise-processos .sidebar-card {
+    height: 250px !important;
+    min-height: 250px !important;
+    max-height: 250px !important;
+  }
+  
+  #indicadores-content-analise-processos .card-body-govbr {
+    height: calc(250px - 45px) !important;
+    min-height: calc(250px - 45px) !important;
+    max-height: calc(250px - 45px) !important;
+  }
+  
+  /* Distribuição Geográfica - Responsive */
   #indicadores-content-distribuicao-geografica .indicadores-content {
     height: 450px;
     min-height: 450px;
@@ -775,6 +877,31 @@
 
 /* Mobile pequeno - altura menor mas ainda maior que o padrão */
 @media (max-width: 767px) {
+  /* Análise de Processos - Mobile */
+  #indicadores-content-analise-processos .indicadores-content {
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+  }
+  
+  #indicadores-content-analise-processos .sidebar-card {
+    height: 200px !important;
+    min-height: 200px !important;
+    max-height: 200px !important;
+  }
+  
+  #indicadores-content-analise-processos .card-body-govbr {
+    height: calc(200px - 45px) !important;
+    min-height: calc(200px - 45px) !important;
+    max-height: calc(200px - 45px) !important;
+  }
+  
+  #indicadores-content-analise-processos .col-xl-6 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  /* Distribuição Geográfica - Mobile */
   #indicadores-content-distribuicao-geografica .indicadores-content {
     height: 400px;
     min-height: 400px;
@@ -848,6 +975,62 @@
   min-height: 380px !important;
   display: block !important;
   position: relative !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DONUT SEM LICITAÇÃO ===================== */
+
+.indicadores-sem-licitacao-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-sem-licitacao-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 230px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de análise de processos */
+#indicadores-content-analise-processos .indicadores-sem-licitacao-container {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DONUT COM ADITIVOS ===================== */
+
+.indicadores-com-aditivos-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-com-aditivos-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 230px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de análise de processos */
+#indicadores-content-analise-processos .indicadores-com-aditivos-container {
+  height: 100% !important;
+  min-height: 250px !important;
 }
 
 /* ===================== OVERFLOW ESPECÍFICO PARA TOOLTIPS DOS INDICADORES ===================== */

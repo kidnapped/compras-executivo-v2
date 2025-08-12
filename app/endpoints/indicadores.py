@@ -99,3 +99,80 @@ async def get_indicadores_contratos_por_regiao(
     return {
         "regioes": regioes
     }
+
+@router.get("/indicadores/contratos-sem-licitacao")
+async def get_indicadores_contratos_sem_licitacao(
+    db: AsyncSession = Depends(get_session_contratos)
+):
+    query = """
+        SELECT 
+          total.total_contratos,
+          sem_licitacao.contratos_sem_licitacao
+        FROM
+          (
+            SELECT COUNT(DISTINCT contrato_id) AS total_contratos
+            FROM contratohistorico
+            WHERE deleted_at IS NULL
+          ) AS total,
+          (
+            SELECT COUNT(DISTINCT contrato_id) AS contratos_sem_licitacao
+            FROM contratohistorico
+            WHERE deleted_at IS NULL AND modalidade_id IN (74, 75)
+          ) AS sem_licitacao;
+    """
+    result = await db.execute(text(query))
+    row = result.mappings().first() or {}
+
+    total_contratos = row.get("total_contratos", 0) or 0
+    contratos_sem_licitacao = row.get("contratos_sem_licitacao", 0) or 0
+    contratos_com_licitacao = total_contratos - contratos_sem_licitacao
+
+    tipos_contratacao = [
+        {
+            "tipo": "Sem Licitação",
+            "total_contratos": contratos_sem_licitacao
+        },
+        {
+            "tipo": "Com Licitação", 
+            "total_contratos": contratos_com_licitacao
+        }
+    ]
+
+    return {
+        "tipos_contratacao": tipos_contratacao
+    }
+
+@router.get("/indicadores/contratos-com-aditivos")
+async def get_indicadores_contratos_com_aditivos(
+    db: AsyncSession = Depends(get_session_contratos)
+):
+    query = """
+        SELECT
+          COUNT(DISTINCT ch.contrato_id) FILTER (WHERE ch.tipo_id IS NOT NULL AND cit.descricao ILIKE '%aditivo%') AS contratos_com_aditivos,
+          COUNT(DISTINCT ch.contrato_id) AS total_contratos_ativos
+        FROM contratohistorico ch
+        LEFT JOIN codigoitens cit ON cit.id = ch.tipo_id
+        WHERE ch.deleted_at IS NULL
+          AND CURRENT_DATE BETWEEN ch.vigencia_inicio AND ch.vigencia_fim;
+    """
+    result = await db.execute(text(query))
+    row = result.mappings().first() or {}
+
+    contratos_com_aditivos = row.get("contratos_com_aditivos", 0) or 0
+    total_contratos_ativos = row.get("total_contratos_ativos", 0) or 0
+    contratos_sem_aditivos = total_contratos_ativos - contratos_com_aditivos
+
+    tipos_contratacao = [
+        {
+            "tipo": "Com Aditivos",
+            "total_contratos": contratos_com_aditivos
+        },
+        {
+            "tipo": "Sem Aditivos", 
+            "total_contratos": contratos_sem_aditivos
+        }
+    ]
+
+    return {
+        "tipos_contratacao": tipos_contratacao
+    }

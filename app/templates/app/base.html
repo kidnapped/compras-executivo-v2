@@ -42,6 +42,35 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="no-referrer">
 
+  <!-- CSS crítico inline para loading (garante que apareça imediatamente) -->
+  <style>
+    /* Loading crítico - inline para garantir carregamento imediato */
+    .page-loader {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: #ffffff !important;
+      z-index: 9999 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+    body.loading {
+      overflow: hidden !important;
+    }
+    body.loading main,
+    body.loading header,
+    body.loading footer,
+    body.loading #header-dynamic-container,
+    body.loading #menu-dynamic-container,
+    body.loading #footer-dynamic-container {
+      visibility: hidden !important;
+    }
+  </style>
+
   <!-- Preloads críticos -->
   {% if config.API_ENV == "production" -%}
   <link rel="preload" href="/static/dist/fonts/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
@@ -55,6 +84,9 @@
   <link rel="preload" href="/static/images/govbr-logo.png" as="image">
   {# REMOVIDO: preload do favicon para evitar warning #}
   {% block extra_preloads %}{% endblock %}
+
+  <!-- Loading Screen CSS - Carregado primeiro -->
+  <link rel="stylesheet" href="/static/css/app/loading.css" />
 
   <!-- Assets -->
   {% if config.API_ENV == "production" -%}
@@ -70,6 +102,9 @@
       {%- endfor %}
     {%- endif %}
 
+    <!-- Page Loader Script - Carregado primeiro -->
+    <script src="/static/js/app/page_loader.js"></script>
+
     <!-- ENV inline com nonce; seguro se csp_nonce vier do servidor -->
     <script nonce="{{ csp_nonce|default('') }}">window.process={env:{ENVIRONMENT:"{{ config.API_ENV }}"}};</script>
 
@@ -84,11 +119,47 @@
     {%- endfor %}
   {%- endif %}
   <noscript><style>body{opacity:1!important} .no-js{display:block}</style></noscript>
+  
+  <!-- Script inline para inicialização imediata do loading -->
+  <script nonce="{{ csp_nonce|default('') }}">
+    // Garantir que o loading apareça imediatamente
+    document.documentElement.style.visibility = 'visible';
+    document.body.classList.add('loading');
+  </script>
 </head>
 
-<body data-uasgs="{{ request.session.get('uasgs', []) | join(',') }}">
+<body class="loading" data-uasgs="{{ request.session.get('uasgs', []) | join(',') }}">
+  <!-- Page Loader -->
+  <div id="page-loader" class="page-loader">
+    <div class="loader-container">
+      <img src="/static/images/govbr-logo.png" alt="GovBR" class="loader-logo" />
+      <div class="loader-spinner"></div>
+      <div class="loader-text">Compras Executivo</div>
+      <div class="loader-progress">
+        <div class="loader-progress-bar" id="loader-progress-bar"></div>
+      </div>
+      <div class="loader-status" id="loader-status">Inicializando...</div>
+    </div>
+  </div>
+
   <noscript class="no-js" style="display:none;padding:1rem;background:#ffefc1;border-bottom:1px solid #e0c97f;">
     Este sistema requer JavaScript habilitado.
+  </noscript>
+  
+  <!-- Fallback para quando JS está desabilitado -->
+  <noscript>
+    <style>
+      .page-loader { display: none !important; }
+      body.loading { overflow: visible !important; }
+      body.loading main,
+      body.loading header,
+      body.loading footer,
+      body.loading #header-dynamic-container,
+      body.loading #menu-dynamic-container,
+      body.loading #footer-dynamic-container {
+        visibility: visible !important;
+      }
+    </style>
   </noscript>
 
   <!-- Header dinâmico -->
