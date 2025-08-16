@@ -21,6 +21,7 @@ import * as kpis_kpi from "./kpi/kpis.js";
 import breadcrumb from "./app/breadcrumb.js";
 import card_header from "./app/card_header.js";
 import topico from "./app/topico.js";
+import SPARouter from "./spa_router.js";
 
 const App = {
   ...environment,
@@ -41,6 +42,7 @@ const App = {
   breadcrumb,
   card_header,
   topico,
+  SPARouter,
   // Don't spread encontroInit since it's an object with its own init method
 };
 
@@ -69,6 +71,40 @@ document.addEventListener("DOMContentLoaded", () => {
   // Auto-inicialização dos indicadores se estivermos na página correta
   if (indicadores.autoInit) {
     indicadores.autoInit();
+  }
+  
+  // Inicializar SPA Router
+  if (SPARouter) {
+    window.SPARouter = SPARouter;
+    let attempts = 0;
+    const maxAttempts = 50;
+    
+    function tryInitSPA() {
+      attempts++;
+      
+      if (window.SPARouter) {
+        window.spaRouter = new window.SPARouter();
+        console.log('🚀 SPA Router inicializado');
+        
+        // Integrar com sistema de menu se disponível
+        if (window.menuApp && typeof window.menuApp.updateActiveMenuItem === 'function') {
+          // Escutar mudanças de rota
+          window.addEventListener('popstate', function() {
+            setTimeout(() => window.menuApp.updateActiveMenuItem(), 100);
+          });
+          
+          // Atualizar menu inicial
+          setTimeout(() => window.menuApp.updateActiveMenuItem(), 200);
+        }
+        
+      } else if (attempts < maxAttempts) {
+        setTimeout(tryInitSPA, 100);
+      } else {
+        console.warn('⚠️ SPA Router não pôde ser inicializado');
+      }
+    }
+    
+    tryInitSPA();
   }
   
   App.init();

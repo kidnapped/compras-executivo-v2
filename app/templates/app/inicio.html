@@ -260,7 +260,7 @@ function toggleSidebar() {
         const sidebar = document.querySelector('.br-menu');
         const body = document.body;
         
-        if (sidebar) {
+        if (sidebar && body) {
             const isOpen = sidebar.classList.contains('active');
             sidebar.classList.toggle('active', !isOpen);
             body.classList.toggle('menu-open', !isOpen);
@@ -270,6 +270,12 @@ function toggleSidebar() {
 
 // Garantir que a página responde corretamente ao estado do menu
 document.addEventListener('DOMContentLoaded', function() {
+    // Verificar se o body existe antes de observar
+    if (!document.body) {
+        console.warn('Body element not found');
+        return;
+    }
+    
     // Observar mudanças na classe menu-open do body
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {

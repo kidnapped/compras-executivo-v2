@@ -41,6 +41,7 @@ def collect_static_files():
     def css_sort_key(x):
         # Priority order for specific CSS files
         priority_files = {
+            '/static/css/app/spa.css': 9,
             '/static/css/app/app.css': 10,
             '/static/css/app/base.css': 11,
             '/static/css/app/header.css': 12,

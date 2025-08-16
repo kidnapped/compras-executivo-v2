@@ -6,7 +6,7 @@ import logging
 
 from babel.dates import format_date
 from fastapi import APIRouter, Depends, Request, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +15,7 @@ from app.core.templates import templates
 from app.utils.session_utils import get_uasgs_str
 from app.db.session import get_session_contratos, get_session_blocok
 from app.utils.static_loader import collect_static_files
+from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 from app.core import config as app_config
 
 import logging
@@ -119,10 +120,25 @@ async def render_dashboard(
         except Exception as e:
             logger.warning(f"Error fetching UASG info: {e}")
     
-    return templates.TemplateResponse("dashboard.html", {
+    # Criar contexto
+    context = {
         "request": request,
-        "template_name": "dashboard"
-    })
+        "template_name": "dashboard",
+        "uasg_info": uasg_info
+    }
+    
+    # Adicionar contexto SPA
+    context = add_spa_context(context, request)
+    
+    # Usar o handler SPA
+    return spa_route_handler(
+        template_name="dashboard.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Dashboard - Compras Executivo",
+        scripts=get_page_scripts("dashboard")
+    )
 
 # Endpoints do dashboard para contratos
 @router.get("/dashboard/contratos")

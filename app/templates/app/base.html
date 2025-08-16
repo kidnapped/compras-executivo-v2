@@ -42,35 +42,6 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="no-referrer">
 
-  <!-- CSS crítico inline para loading (garante que apareça imediatamente) -->
-  <style>
-    /* Loading crítico - inline para garantir carregamento imediato */
-    .page-loader {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      background: #ffffff !important;
-      z-index: 9999 !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: center !important;
-      align-items: center !important;
-    }
-    body.loading {
-      overflow: hidden !important;
-    }
-    body.loading main,
-    body.loading header,
-    body.loading footer,
-    body.loading #header-dynamic-container,
-    body.loading #menu-dynamic-container,
-    body.loading #footer-dynamic-container {
-      visibility: hidden !important;
-    }
-  </style>
-
   <!-- Preloads críticos -->
   {% if config.API_ENV == "production" -%}
   <link rel="preload" href="/static/dist/fonts/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
@@ -84,9 +55,6 @@
   <link rel="preload" href="/static/images/govbr-logo.png" as="image">
   {# REMOVIDO: preload do favicon para evitar warning #}
   {% block extra_preloads %}{% endblock %}
-
-  <!-- Loading Screen CSS - Carregado primeiro -->
-  <link rel="stylesheet" href="/static/css/app/loading.css" />
 
   <!-- Assets -->
   {% if config.API_ENV == "production" -%}
@@ -124,7 +92,6 @@
   <script nonce="{{ csp_nonce|default('') }}">
     // Garantir que o loading apareça imediatamente
     document.documentElement.style.visibility = 'visible';
-    document.body.classList.add('loading');
   </script>
 </head>
 
@@ -176,7 +143,7 @@
   </div>
 
   <main class="br-main">
-    <div class="container-lg">
+    <div class="container-lg" id="main-content">
       {% block content %}{% endblock %}
     </div>
   </main>

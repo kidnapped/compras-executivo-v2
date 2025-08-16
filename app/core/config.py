@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     REDIRECT_URI: str = "https://www.comprasexecutivo.sistema.gov.br/login/callback"
 
     USE_GOVBR_LOGIN: bool = False
+    USE_ALIAS_LOGIN: bool = True
 
     # VDB EMULATION - For development
     VDB_TEIID_EMULATION_MODE: bool = True

@@ -1,0 +1,862 @@
+/*
+ * - Sincroniza tabelas do DaaS SERPRO (Teiid) -> PostgreSQL local.
+ * - Usa arquivo CloneContratosToPostgres.ini para configuração das tabelas.
+ * - Incremental por `id` (quando existir): lê origem com WHERE id > MAX(id) do destino.
+ * - Incremental por `updated_at` (quando existir): lê registros atualizados desde last_run_init_date - 1 day.
+ * - Se vier coluna nova na origem: cria automaticamente no destino (em minúsculas).
+ * - Se faltar coluna no destino: ignora na inserção (usa interseção de colunas).
+ * - Lotes com autocommit desativado + commit a cada 5k linhas (configurável).
+ * - "Upsert":
+ *     * Com updated_at: ON CONFLICT (id) DO UPDATE (atualiza registros existentes).
+ *     * Sem updated_at: ON CONFLICT (id) DO NOTHING (apenas insere novos).
+ *     * Sem UNIQUE/PK: fallback para INSERT ... SELECT ... WHERE NOT EXISTS (...).
+ * - Log detalhado de tudo. O log é zerado no início.
+ * - Atualiza arquivo INI com status e tempo de execução.
+ *
+ * - Sincroniza tabelas do DaaS SERPRO (Teiid) -> PostgreSQL local.
+ * - Usa arquivo CloneContratosToPostgres.ini para configuração das tabelas.
+ * - Incremental por `id` (quando existir): lê origem com WHERE id > MAX(id) do destino.
+ * - Se vier coluna nova na origem: cria automaticamente no destino (em minúsculas).
+ * - Se faltar coluna no destino: ignora na inserção (usa interseção de colunas).
+ * - Lotes com autocommit desativado + commit a cada 5k linhas (configurável).
+ * - “Upsert”:
+ *     * Preferido: ON CONFLICT (id) DO NOTHING (se houver UNIQUE/PK em id).
+ *     * Sem UNIQUE/PK: fallback para INSERT ... SELECT ... WHERE NOT EXISTS (...).
+ * - Log detalhado de tudo. O log é zerado no início.
+ * - Ao final, valida duplicatas por `id` e registra no log.
+ * - Atualiza arquivo INI com status e tempo de execução.
+ *
+ * 🔧 Compilação:
+ *   javac -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneContratosToPostgres.java
+ *
+ * ▶️ Execução em segundo plano:
+ *   nohup java -cp .:jboss-dv-6.3.0-teiid-jdbc.jar:postgresql-42.7.2.jar CloneContratosToPostgres </dev/null &>/dev/null & disown ; tail -f CloneContratosToPostgres.log
+ *
+ * 🛑 Parar:
+ *   pkill -f CloneContratosToPostgres
+ * ───────────────────────────────────────────────────────────────────────────────
+ */
+
+import java.sql.*;
+import java.nio.file.*;
+import java.util.*;
+import java.io.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.nio.charset.StandardCharsets;
+
+public class CloneContratosToPostgres {
+
+    // Classe para armazenar configurações de uma tabela
+    static class TabelaConfig {
+        String nome;
+        List<String> columns;
+        String rules;
+        
+        TabelaConfig(String nome) {
+            this.nome = nome;
+            this.columns = new ArrayList<>();
+        }
+    }
+    
+    // Classe para armazenar configurações do environment
+    static class EnvironmentConfig {
+        Duration lastTimeElapsed;
+        LocalDateTime lastRunInitDate;
+        LocalDateTime lastRunEndDate;
+        String lastRunStatus;
+        
+        EnvironmentConfig() {
+            this.lastTimeElapsed = Duration.ZERO;
+            this.lastRunInitDate = LocalDateTime.now();
+            this.lastRunEndDate = LocalDateTime.now();
+            this.lastRunStatus = "";
+        }
+    }
+
+    // ===== CONFIG =====
+    private static final String TRUSTSTORE_PATH = "/home/ec2-user/java/daas.serpro.gov.br.jks";
+    private static final String TEIID_URL  = "jdbc:teiid:ContratosGovBr_usr_ComprasExecutivo@mms://daas.serpro.gov.br:31000";
+    private static final String TEIID_USER = "70267715153";
+    private static final String TEIID_PASS = "t#Hlbr*tr8";
+
+    private static final String PG_URL  = "jdbc:postgresql://localhost:5432/contratos";
+    private static final String PG_USER = "postgres";
+    private static final String PG_PASS = "postgres";
+
+    private static final String CONFIG_FILE = "CloneContratosToPostgres.ini";
+    private static final String LOG_FILE   = "CloneContratosToPostgres.log";
+
+    private static final String SRC_SCHEMA = "ContratosGovBr_usr_ComprasExecutivo_VBL";
+    private static final String DST_SCHEMA = "public";
+
+    private static final int BATCH_SIZE = 5000;
+    private static final int FETCH_SIZE = 2000;
+
+    public static void main(String[] args) {
+        try {
+            FileOutputStream fos = new FileOutputStream(LOG_FILE, false); // false = sobrescreve/esvazia
+            fos.write(new byte[0]); // escreve array vazio para garantir que está zerado
+            fos.flush();
+            fos.close();
+        } catch (Exception ignored) {}
+        
+        // ZERA o log no início
+        try (PrintStream log = new PrintStream(new FileOutputStream(LOG_FILE, false), true, "UTF-8")) {
+            System.setOut(log);
+            System.setErr(log);
+            run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void run() {
+        long inicioGlobal = System.currentTimeMillis();
+        try {
+            System.out.println("──────────────────────────────────────────────────────────────────────────────");
+            System.out.println("🚀 [START] Execução CloneContratosToPostgres");
+            System.out.println("📅 [INFO] Data de execução: " + new java.util.Date());
+
+            // SSL/Truststore para Teiid
+            System.setProperty("javax.net.ssl.trustStore", TRUSTSTORE_PATH);
+            System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+            System.out.println("🔐 [INFO] Truststore configurado: " + TRUSTSTORE_PATH);
+
+            // Drivers
+            Class.forName("org.teiid.jdbc.TeiidDriver");
+            Class.forName("org.postgresql.Driver");
+            System.out.println("✅ [INFO] Drivers carregados com sucesso");
+
+            try (Connection daasConn = DriverManager.getConnection(TEIID_URL, TEIID_USER, TEIID_PASS);
+                 Connection pgConn   = DriverManager.getConnection(PG_URL, PG_USER, PG_PASS)) {
+
+                // Ler configuração do arquivo INI
+                EnvironmentConfig envConfig = new EnvironmentConfig();
+                Map<String, TabelaConfig> tabelasConfig = lerArquivoConfiguracao(Paths.get(CONFIG_FILE), envConfig);
+                
+                // Marcar início da execução
+                envConfig.lastRunInitDate = LocalDateTime.now();
+                envConfig.lastRunStatus = "running";
+                
+                try {
+                    atualizarArquivoConfiguracao(Paths.get(CONFIG_FILE), envConfig);
+                } catch (Exception ce) {
+                    System.err.println("⚠ [CONFIG] Falhou ao atualizar status inicial: " + ce.getMessage());
+                }
+
+                // Tuning PG
+                pgConn.setAutoCommit(false);
+                try (Statement s = pgConn.createStatement()) {
+                    s.execute("SET search_path TO " + qi(DST_SCHEMA));
+                }
+
+                System.out.println("📂 [INFO] Total de tabelas na configuração: " + tabelasConfig.size());
+
+                for (TabelaConfig tabelaConfig : tabelasConfig.values()) {
+                    String tabela = tabelaConfig.nome;
+                    
+                    long t0 = System.currentTimeMillis();
+                    System.out.println("\n🔄 [SYNC] Iniciando: " + tabela);
+                    if (tabelaConfig.columns != null && !tabelaConfig.columns.isEmpty()) {
+                        System.out.println("📋 [INFO] Colunas específicas: " + tabelaConfig.columns);
+                    }
+                    if (tabelaConfig.rules != null && !tabelaConfig.rules.isEmpty()) {
+                        System.out.println("� [INFO] Regras: " + tabelaConfig.rules);
+                    }
+                    
+                    try {
+                        syncTable(daasConn, pgConn, tabela, tabelaConfig, envConfig);
+                        System.out.println("✅ [FIM] " + tabela + " | Tempo: " + ((System.currentTimeMillis() - t0) / 1000) + "s");
+                    } catch (Exception ex) {
+                        System.err.println("❌ [ERRO_TABELA] " + tabela + ": " + ex.getMessage());
+                        ex.printStackTrace();
+                        // segue para próxima tabela
+                    }
+                }
+
+                // Atualizar arquivo de configuração com status de conclusão
+                try {
+                    envConfig.lastRunEndDate = LocalDateTime.now();
+                    envConfig.lastTimeElapsed = Duration.between(envConfig.lastRunInitDate, envConfig.lastRunEndDate);
+                    envConfig.lastRunStatus = "success";
+                    atualizarArquivoConfiguracao(Paths.get(CONFIG_FILE), envConfig);
+                } catch (Exception ce) {
+                    System.err.println("⚠ [CONFIG] Falhou ao atualizar configuração: " + ce.getMessage());
+                }
+            }
+
+            System.out.println("\n🏁 [DONE] Duração total: " + ((System.currentTimeMillis() - inicioGlobal) / 1000) + "s");
+            System.out.println("──────────────────────────────────────────────────────────────────────────────");
+
+        } catch (Throwable e) {
+            System.err.println("❌ [FATAL] " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Método para ler o arquivo de configuração no formato INI
+    private static Map<String, TabelaConfig> lerArquivoConfiguracao(Path path, EnvironmentConfig envConfig) throws IOException {
+        Map<String, TabelaConfig> tabelas = new LinkedHashMap<>();
+        List<String> linhas = Files.readAllLines(path, StandardCharsets.UTF_8);
+        
+        TabelaConfig tabelaAtual = null;
+        DateTimeFormatter datetimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        
+        for (String linha : linhas) {
+            String trimmed = linha.trim();
+            if (trimmed.isEmpty() || trimmed.startsWith("#") || trimmed.startsWith(";"))
+                continue;
+                
+            if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+                // Nova seção
+                String secaoNome = trimmed.substring(1, trimmed.length() - 1);
+                if ("ENVIRONMENT".equals(secaoNome)) {
+                    tabelaAtual = null; // Processaremos ENVIRONMENT separadamente
+                } else {
+                    tabelaAtual = new TabelaConfig(secaoNome);
+                    tabelas.put(secaoNome, tabelaAtual);
+                }
+            } else if (trimmed.contains("=")) {
+                String[] partes = trimmed.split("=", 2);
+                if (partes.length == 2) {
+                    String chave = partes[0].trim();
+                    String valor = partes[1].trim();
+                    
+                    if (tabelaAtual == null) {
+                        // Estamos na seção ENVIRONMENT
+                        switch (chave) {
+                            case "last_time_elapsed":
+                                try {
+                                    String[] parts = valor.split(":");
+                                    if (parts.length == 3) {
+                                        long hours = Long.parseLong(parts[0]);
+                                        long minutes = Long.parseLong(parts[1]);
+                                        double seconds = Double.parseDouble(parts[2]);
+                                        envConfig.lastTimeElapsed = Duration.ofHours(hours)
+                                            .plusMinutes(minutes)
+                                            .plusSeconds((long) seconds)
+                                            .plusNanos((long) ((seconds - (long) seconds) * 1_000_000_000));
+                                    }
+                                } catch (Exception e) {
+                                    // Ignorar erro de parsing
+                                }
+                                break;
+                            case "last_run_init_date":
+                                try {
+                                    envConfig.lastRunInitDate = LocalDateTime.parse(valor, datetimeFormatter);
+                                } catch (Exception e) {
+                                    // Ignorar erro de parsing
+                                }
+                                break;
+                            case "last_run_end_date":
+                                try {
+                                    envConfig.lastRunEndDate = LocalDateTime.parse(valor, datetimeFormatter);
+                                } catch (Exception e) {
+                                    // Ignorar erro de parsing
+                                }
+                                break;
+                            case "last_run_status":
+                                envConfig.lastRunStatus = valor;
+                                break;
+                        }
+                    } else {
+                        // Estamos em uma seção de tabela
+                        switch (chave) {
+                            case "columns":
+                                String[] cols = valor.split(",");
+                                for (String col : cols) {
+                                    String colTrimmed = col.trim();
+                                    if (!colTrimmed.isEmpty()) {
+                                        tabelaAtual.columns.add(colTrimmed);
+                                    }
+                                }
+                                break;
+                            case "rules":
+                                tabelaAtual.rules = valor;
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return tabelas;
+    }
+
+    private static void syncTable(Connection daasConn, Connection pgConn, String tabela, TabelaConfig tabelaConfig, EnvironmentConfig envConfig) throws Exception {
+        // 1) Usar apenas as colunas especificadas no .ini (não carregar todas)
+        List<Col> srcCols = new ArrayList<>();
+        
+        if (tabelaConfig.columns != null && !tabelaConfig.columns.isEmpty()) {
+            // Carregar metadados APENAS das colunas especificadas no .ini
+            srcCols = loadSpecificColumns(daasConn, tabela, tabelaConfig.columns);
+            System.out.println("🎯 [FILTER] " + tabela + " -> carregando apenas " + srcCols.size() + " colunas do .ini");
+        } else {
+            // Se não tem colunas especificadas, ERRO - deve sempre especificar
+            System.err.println("❌ [CONFIG] Tabela " + tabela + " sem colunas especificadas no .ini - OBRIGATÓRIO");
+            return;
+        }
+        
+        if (srcCols.isEmpty()) {
+            System.out.println("⚠ [SKIP] " + tabela + " -> nenhuma coluna válida encontrada");
+            return;
+        }
+
+        // 2) Verificar se tabela existe no destino, criar se não existir
+        if (!tableExists(pgConn, tabela)) {
+            System.out.println("🏗️ [CREATE] Tabela " + tabela + " não existe. Criando...");
+            createTableFromSource(pgConn, tabela, srcCols);
+        }
+
+        // 3) Colunas do destino: mapa lower -> nome real
+        Map<String,String> dstColsMap = getPgColumnsMap(pgConn, tabela);
+        System.out.println("🧭 [META] Destino " + tabela + " -> colunas: " + dstColsMap.size());
+
+        // 3.1) Criar colunas novas (em minúsculas) para as que existem na origem e não no destino
+        List<String> newColumns = new ArrayList<>();
+        for (Col c : srcCols) {
+            if (!dstColsMap.containsKey(c.name.toLowerCase())) {
+                String newName = c.name.toLowerCase();         // normaliza no destino
+                String pgType  = mapearTipoPg(c.typeName);
+                String sql = "ALTER TABLE " + qi(DST_SCHEMA) + "." + qi(tabela)
+                           + " ADD COLUMN " + qi(newName) + " " + pgType;
+                try {
+                    execDDL(pgConn, sql);
+                    pgConn.commit();
+                    System.out.println("🧱 [DDL] + coluna " + tabela + "." + newName + " " + pgType + " (criada da origem: " + c.name + ")");
+                    dstColsMap.put(newName, newName);
+                    newColumns.add(newName);
+                } catch (SQLException ex) {
+                    pgConn.rollback();
+                    System.err.println("⚠ [DDL] Falha ao criar coluna " + tabela + "." + newName + " (" + c.typeName + "): " + ex.getMessage());
+                    // segue sem essa coluna (será ignorada)
+                }
+            }
+        }
+        
+        // 3.1.1) Se temos novas colunas, forçar atualização de registros existentes para populá-las
+        if (!newColumns.isEmpty() && tableHasData(pgConn, tabela)) {
+            System.out.println("🔄 [NEW_COLS] Detectadas " + newColumns.size() + " colunas novas. Forçando atualização completa.");
+            // Força carga completa para preencher novas colunas em registros existentes
+            // (isso será feito na próxima seção com a lógica incremental normal)
+        }
+
+        // 3.2) Interseção de colunas + mapeamento src->dst (corrige case)
+        List<ColMap> cols = new ArrayList<>();
+        for (Col c : srcCols) {
+            String key = c.name.toLowerCase();
+            if (dstColsMap.containsKey(key)) {
+                String dstName = dstColsMap.get(key);
+                if (!dstName.equals(c.name)) {
+                    System.out.println("🔁 [MAP] " + tabela + ": origem '" + c.name + "' → destino '" + dstName + "'");
+                }
+                cols.add(new ColMap(c.name, dstName, c.typeName));
+            } else {
+                System.out.println("↪ [IGNORA] " + tabela + ": coluna só na origem (não criada): " + c.name);
+            }
+        }
+        if (cols.isEmpty()) {
+            System.out.println("⚠ [INFO] Interseção de colunas vazia. Pulando " + tabela);
+            return;
+        }
+
+        // 4) Incremental por id ou updated_at
+        boolean temId = cols.stream().anyMatch(c -> c.dstName.equalsIgnoreCase("id") || c.srcName.equalsIgnoreCase("id"));
+        boolean temUpdatedAt = cols.stream().anyMatch(c -> c.dstName.equalsIgnoreCase("updated_at") || c.srcName.equalsIgnoreCase("updated_at"));
+        
+        long maxId = 0L;
+        if (temId) {
+            maxId = getMaxId(pgConn, tabela);
+            System.out.println("🔎 [INCR] MAX(id) destino em " + tabela + " = " + maxId);
+        } else {
+            System.out.println("ℹ [INCR] Sem coluna `id` em " + tabela + " (carga completa).");
+        }
+
+        // 5) SELECT origem - apenas colunas necessárias (não SELECT *)
+        StringBuilder selectCols = new StringBuilder();
+        for (int i = 0; i < cols.size(); i++) {
+            if (i > 0) selectCols.append(", ");
+            selectCols.append(qi(cols.get(i).srcName));
+        }
+        String select = "SELECT " + selectCols + " FROM " + qi(SRC_SCHEMA) + "." + qi(tabela);
+        
+        List<String> whereConditions = new ArrayList<>();
+        
+        // Se tem novas colunas, forçar carga completa para tabelas com updated_at
+        boolean forceFullReload = !newColumns.isEmpty() && temUpdatedAt;
+        
+        // Condição incremental por ID (apenas se não forçar reload completo)
+        if (temId && maxId > 0 && !forceFullReload) {
+            whereConditions.add("id > " + maxId);
+        }
+        
+        // Condição incremental por updated_at (se tabela tem updated_at e não é primeira execução)
+        if (temUpdatedAt && envConfig.lastRunInitDate != null && !envConfig.lastRunStatus.equals("never_run") && !forceFullReload) {
+            // Subtrai 1 dia da última execução para pegar registros atualizados
+            LocalDateTime cutoffDate = envConfig.lastRunInitDate.minusDays(1);
+            String formattedDate = cutoffDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            whereConditions.add("updated_at >= '" + formattedDate + "'");
+            System.out.println("🕐 [INCR] Buscando registros com updated_at >= " + formattedDate);
+        }
+        
+        if (forceFullReload) {
+            System.out.println("🔄 [FULL] Carga completa devido a novas colunas: " + String.join(", ", newColumns));
+        }
+        
+        if (!whereConditions.isEmpty()) {
+            select += " WHERE " + String.join(" OR ", whereConditions);
+        }
+        
+        System.out.println("🟦 [SQL_ORIGEM] " + select);
+
+        // 6) Preparar upsert: ON CONFLICT (id) se possível; senão, fallback WHERE NOT EXISTS
+        boolean usarOnConflict = false;
+        if (temId) {
+            if (hasUniqueOnId(pgConn, tabela)) {
+                usarOnConflict = true;
+                System.out.println("🧩 [UPSERT] UNIQUE/PK(id) detectado -> ON CONFLICT (id) DO NOTHING");
+            } else {
+                String idx = "ux_" + tabela + "_id";
+                String ddl = "CREATE UNIQUE INDEX IF NOT EXISTS " + qi(idx)
+                           + " ON " + qi(DST_SCHEMA) + "." + qi(tabela) + " (id)";
+                try {
+                    execDDL(pgConn, ddl);
+                    pgConn.commit();
+                    usarOnConflict = true;
+                    System.out.println("🧩 [UPSERT] UNIQUE(id) criado -> ON CONFLICT (id) DO NOTHING");
+                } catch (SQLException ix) {
+                    pgConn.rollback();
+                    System.out.println("↪ [UPSERT] UNIQUE(id) não criado (" + ix.getMessage() + "). Fallback para WHERE NOT EXISTS.");
+                    usarOnConflict = false;
+                }
+            }
+        }
+
+        // 7) Montar INSERT (usa SEMPRE os nomes do destino)
+        StringBuilder colsCsv = new StringBuilder();
+        StringBuilder qmarks  = new StringBuilder();
+        for (int i = 0; i < cols.size(); i++) {
+            if (i > 0) { colsCsv.append(", "); qmarks.append(", "); }
+            colsCsv.append(qi(cols.get(i).dstName));
+            qmarks.append("?");
+        }
+
+        String insertSQL;
+        boolean fallbackWhereNotExists = false;
+        if (temId && usarOnConflict && (temUpdatedAt || !newColumns.isEmpty())) {
+            // Se tem updated_at OU novas colunas, fazemos UPDATE para campos essenciais
+            StringBuilder updateSet = new StringBuilder();
+            List<String> updateCols = Arrays.asList("updated_at", "created_at", "deleted_at"); // Campos padrão
+            
+            // Se tem novas colunas, incluí-las no UPDATE
+            for (String newCol : newColumns) {
+                updateCols = new ArrayList<>(updateCols);
+                updateCols.add(newCol.toLowerCase());
+                break; // Força atualização se tem qualquer coluna nova
+            }
+            
+            for (int i = 0; i < cols.size(); i++) {
+                String colName = cols.get(i).dstName;
+                boolean shouldUpdate = !colName.equalsIgnoreCase("id") && 
+                    (updateCols.contains(colName.toLowerCase()) || 
+                     colName.toLowerCase().contains("_at") || 
+                     newColumns.contains(colName.toLowerCase()));
+                
+                if (shouldUpdate) {
+                    if (updateSet.length() > 0) updateSet.append(", ");
+                    updateSet.append(qi(colName)).append(" = EXCLUDED.").append(qi(colName));
+                }
+            }
+            
+            // Se não tem campos para atualizar, usar DO NOTHING
+            if (updateSet.length() == 0) {
+                insertSQL = "INSERT INTO " + qi(DST_SCHEMA) + "." + qi(tabela)
+                          + " (" + colsCsv + ") VALUES (" + qmarks + ") ON CONFLICT (id) DO NOTHING";
+                System.out.println("🧩 [UPSERT] Sem campos para atualizar -> DO NOTHING");
+            } else {
+                insertSQL = "INSERT INTO " + qi(DST_SCHEMA) + "." + qi(tabela)
+                          + " (" + colsCsv + ") VALUES (" + qmarks + ") "
+                          + "ON CONFLICT (id) DO UPDATE SET " + updateSet;
+                String reason = !newColumns.isEmpty() ? "novas colunas + campos essenciais" : "campos essenciais";
+                System.out.println("🔄 [UPSERT] DO UPDATE para " + reason);
+            }
+        } else if (temId && usarOnConflict) {
+            insertSQL = "INSERT INTO " + qi(DST_SCHEMA) + "." + qi(tabela)
+                      + " (" + colsCsv + ") VALUES (" + qmarks + ") ON CONFLICT (id) DO NOTHING";
+            System.out.println("🧩 [UPSERT] Sem updated_at -> ON CONFLICT (id) DO NOTHING");
+        } else if (temId) {
+            insertSQL = "INSERT INTO " + qi(DST_SCHEMA) + "." + qi(tabela)
+                      + " (" + colsCsv + ") SELECT " + qmarks
+                      + " WHERE NOT EXISTS (SELECT 1 FROM " + qi(DST_SCHEMA) + "." + qi(tabela) + " WHERE id = ?)";
+            fallbackWhereNotExists = true;
+        } else {
+            insertSQL = "INSERT INTO " + qi(DST_SCHEMA) + "." + qi(tabela)
+                      + " (" + colsCsv + ") VALUES (" + qmarks + ")";
+        }
+        System.out.println("🟩 [SQL_DESTINO] " + insertSQL);
+
+        // 8) Inserção em lotes
+        long inseridos = 0, atualizados = 0;
+        boolean isUpdateMode = (temId && usarOnConflict && (temUpdatedAt || !newColumns.isEmpty()) && insertSQL.contains("DO UPDATE"));
+        
+        try (Statement s = daasConn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
+            s.setFetchSize(FETCH_SIZE);
+            try (ResultSet rs = s.executeQuery(select);
+                 PreparedStatement ps = pgConn.prepareStatement(insertSQL)) {
+
+                int batchCount = 0;
+
+                while (rs.next()) {
+                    Object idValue = null;
+                    for (int i = 0; i < cols.size(); i++) {
+                        Object v = rs.getObject(cols.get(i).srcName);
+                        ps.setObject(i + 1, v);
+                        if (cols.get(i).dstName.equalsIgnoreCase("id")) {
+                            idValue = v;
+                        }
+                    }
+                    if (fallbackWhereNotExists) {
+                        ps.setObject(cols.size() + 1, idValue); // parâmetro do WHERE NOT EXISTS
+                    }
+
+                    ps.addBatch();
+                    batchCount++;
+
+                    if (batchCount >= BATCH_SIZE) {
+                        long[] counts = execAndCountDetailed(pgConn, ps, isUpdateMode);
+                        inseridos += counts[0];
+                        atualizados += counts[1];
+                        batchCount = 0;
+                    }
+                }
+                if (batchCount > 0) {
+                    long[] counts = execAndCountDetailed(pgConn, ps, isUpdateMode);
+                    inseridos += counts[0];
+                    atualizados += counts[1];
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println("❌ [INSERÇÃO] Falha em " + tabela + ": " + ex.getMessage());
+            throw ex;
+        }
+
+        // Resumo limpo - sempre mostra inseridos e atualizados
+        System.out.println("📊 [RESUMO] " + tabela + " | inseridos: " + inseridos + " | atualizados: " + atualizados);
+    }
+
+    // Executa batch, faz commit e retorna quantidade de "linhas consideradas" inseridas (aproximação)
+    // Executa batch, faz commit e retorna [inseridos, atualizados]
+    private static long[] execAndCountDetailed(Connection pgConn, PreparedStatement ps, boolean isUpdateMode) throws SQLException {
+        long ins = 0, upd = 0;
+        try {
+            int[] ret = ps.executeBatch();
+            pgConn.commit();
+            for (int r : ret) {
+                if (r > 0) {
+                    if (isUpdateMode) {
+                        // Em modo UPDATE, registros existentes são atualizados, novos são inseridos
+                        // Como não sabemos distinguir, contamos todos como atualizados quando em modo UPDATE
+                        upd++;
+                    } else {
+                        ins++;
+                    }
+                } else if (r == Statement.SUCCESS_NO_INFO || r == 0) {
+                    // 0 = ON CONFLICT DO NOTHING (registro já existe)
+                    // SUCCESS_NO_INFO = sucesso mas sem info de quantidade
+                    ins++; // Contamos como processado
+                }
+            }
+        } catch (SQLException e) {
+            pgConn.rollback();
+            throw e;
+        } finally {
+            try { ps.clearBatch(); } catch (Exception ignore) {}
+        }
+        return new long[]{ins, upd};
+    }
+
+    // Metadados da origem - APENAS colunas específicas
+    private static List<Col> loadSpecificColumns(Connection daasConn, String tabela, List<String> columnNames) throws SQLException {
+        // Monta SELECT apenas com as colunas desejadas
+        StringBuilder colList = new StringBuilder();
+        for (int i = 0; i < columnNames.size(); i++) {
+            if (i > 0) colList.append(", ");
+            colList.append(qi(columnNames.get(i).trim()));
+        }
+        
+        String sql = "SELECT " + colList + " FROM " + qi(SRC_SCHEMA) + "." + qi(tabela) + " LIMIT 1";
+        List<Col> cols = new ArrayList<>();
+        
+        try (Statement s = daasConn.createStatement();
+             ResultSet rs = s.executeQuery(sql)) {
+            ResultSetMetaData m = rs.getMetaData();
+            for (int i = 1; i <= m.getColumnCount(); i++) {
+                String name = m.getColumnName(i);
+                String type = m.getColumnTypeName(i);
+                cols.add(new Col(name, (type == null ? "TEXT" : type.toUpperCase())));
+            }
+        } catch (SQLException ex) {
+            System.err.println("⚠ [COLUMNS] Erro ao carregar colunas específicas de " + tabela + ": " + ex.getMessage());
+            System.err.println("    Colunas solicitadas: " + columnNames);
+            throw ex;
+        }
+        
+        return cols;
+    }
+
+    // Colunas do destino: lower -> nomeReal
+    private static Map<String,String> getPgColumnsMap(Connection pgConn, String tabela) throws SQLException {
+        String q = "SELECT column_name FROM information_schema.columns WHERE table_schema=? AND table_name=?";
+        Map<String,String> out = new HashMap<>();
+        try (PreparedStatement ps = pgConn.prepareStatement(q)) {
+            ps.setString(1, DST_SCHEMA);
+            ps.setString(2, tabela);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String real = rs.getString(1);
+                    out.put(real.toLowerCase(), real);
+                }
+            }
+        }
+        return out;
+    }
+
+    // MAX(id) do destino (0 se vazio/sem id)
+    private static long getMaxId(Connection pgConn, String tabela) {
+        String sql = "SELECT COALESCE(MAX(id), 0) FROM " + qi(DST_SCHEMA) + "." + qi(tabela);
+        try (Statement s = pgConn.createStatement();
+             ResultSet rs = s.executeQuery(sql)) {
+            if (rs.next()) return rs.getLong(1);
+        } catch (SQLException e) {
+            System.err.println("⚠ [INCR] Falha ao obter MAX(id) de " + tabela + ": " + e.getMessage());
+        }
+        return 0L;
+    }
+
+    // Verifica se existe UNIQUE/PK(id)
+    private static boolean hasUniqueOnId(Connection pgConn, String tabela) throws SQLException {
+        String sql =
+            "SELECT 1 " +
+            "FROM pg_catalog.pg_index i " +
+            "JOIN pg_catalog.pg_class t ON t.oid = i.indrelid " +
+            "JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace " +
+            "JOIN pg_catalog.pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(i.indkey) " +
+            "WHERE n.nspname = ? AND t.relname = ? AND i.indisunique = TRUE " +
+            "GROUP BY i.indexrelid, i.indkey " +
+            "HAVING array_length(i.indkey,1) = 1 AND MIN(a.attname) = 'id'";
+        try (PreparedStatement ps = pgConn.prepareStatement(sql)) {
+            ps.setString(1, DST_SCHEMA);
+            ps.setString(2, tabela);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    // Executa DDL (quem chama controla commit/rollback)
+    private static void execDDL(Connection pgConn, String sql) throws SQLException {
+        try (Statement s = pgConn.createStatement()) {
+            s.execute(sql);
+        }
+    }
+
+    // Verifica se tabela existe no destino
+    private static boolean tableExists(Connection pgConn, String tabela) throws SQLException {
+        String sql = "SELECT 1 FROM information_schema.tables WHERE table_schema=? AND table_name=?";
+        try (PreparedStatement ps = pgConn.prepareStatement(sql)) {
+            ps.setString(1, DST_SCHEMA);
+            ps.setString(2, tabela);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    // Verifica se tabela tem dados (para saber se deve atualizar registros existentes)
+    private static boolean tableHasData(Connection pgConn, String tabela) throws SQLException {
+        String sql = "SELECT 1 FROM " + qi(DST_SCHEMA) + "." + qi(tabela) + " LIMIT 1";
+        try (PreparedStatement ps = pgConn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            return rs.next();
+        }
+    }
+
+    // Cria tabela no destino baseada na estrutura da origem
+    private static void createTableFromSource(Connection pgConn, String tabela, List<Col> srcCols) throws SQLException {
+        StringBuilder createSQL = new StringBuilder();
+        createSQL.append("CREATE TABLE ").append(qi(DST_SCHEMA)).append(".").append(qi(tabela)).append(" (");
+        
+        for (int i = 0; i < srcCols.size(); i++) {
+            if (i > 0) createSQL.append(", ");
+            
+            Col col = srcCols.get(i);
+            String colName = col.name.toLowerCase(); // normalizar para minúsculas
+            String pgType = mapearTipoPg(col.typeName);
+            
+            createSQL.append(qi(colName)).append(" ").append(pgType);
+            
+            // Se for coluna 'id', adicionar PRIMARY KEY
+            if ("id".equalsIgnoreCase(colName)) {
+                createSQL.append(" PRIMARY KEY");
+            }
+        }
+        
+        createSQL.append(")");
+        
+        try {
+            execDDL(pgConn, createSQL.toString());
+            pgConn.commit();
+            System.out.println("✅ [CREATE] Tabela " + tabela + " criada com " + srcCols.size() + " colunas");
+        } catch (SQLException ex) {
+            pgConn.rollback();
+            System.err.println("❌ [CREATE] Falha ao criar tabela " + tabela + ": " + ex.getMessage());
+            throw ex;
+        }
+    }
+
+    // Quota identificador
+    private static String qi(String ident) {
+        return "\"" + ident.replace("\"", "\"\"") + "\"";
+        // Nota: sempre citei identificadores para lidar com case e palavras reservadas.
+    }
+
+    // Mapeia tipo do Teiid -> tipo do PostgreSQL
+    private static String mapearTipoPg(String tipoTeiid) {
+        if (tipoTeiid == null) return "TEXT";
+        switch (tipoTeiid.toUpperCase()) {
+            case "STRING": case "VARCHAR": case "CHAR":
+                return "TEXT";
+            case "INTEGER": case "INT": case "INT4":
+                return "INTEGER";
+            case "BIGINT": case "INT8":
+                return "BIGINT";
+            case "DOUBLE": case "FLOAT": case "FLOAT8":
+                return "DOUBLE PRECISION";
+            case "DECIMAL": case "NUMERIC":
+                return "NUMERIC";
+            case "BOOLEAN":
+                return "BOOLEAN";
+            case "DATE":
+                return "DATE";
+            case "TIMESTAMP":
+                return "TIMESTAMP";
+            default:
+                return "TEXT";
+        }
+    }
+
+    // ===== MÉTODOS PARA ATUALIZAR ARQUIVO INI =====
+    
+    private static void atualizarArquivoConfiguracao(Path path, EnvironmentConfig env) {
+        try {
+            List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+            boolean changed = false;
+
+            // Atualizar sempre ENVIRONMENT
+            changed |= upsertEnvironment(lines, env);
+
+            if (changed) {
+                Files.write(path, lines, StandardCharsets.UTF_8);
+                System.out.println("📝 [INFO] Arquivo de configuração atualizado: " + path.getFileName());
+            }
+        } catch (IOException e) {
+            System.err.println(timestamp() + " ❌ Erro ao atualizar INI: " + e.getMessage());
+        }
+    }
+
+    private static boolean upsertEnvironment(List<String> lines, EnvironmentConfig env) {
+        boolean anyChange = false;
+        int[] range = findSectionRange(lines, "ENVIRONMENT");
+        if (range == null) return false;
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Sempre atualizar no início: init/status
+        anyChange |= upsertKeyInRange(lines, range, "last_run_init_date", "last_run_init_date = " + env.lastRunInitDate.format(dtf));
+        anyChange |= upsertKeyInRange(lines, range, "last_run_status", "last_run_status = " + (env.lastRunStatus == null ? "" : env.lastRunStatus));
+
+        // Atualizar end/elapsed só quando não está 'running'
+        if (!"running".equalsIgnoreCase(env.lastRunStatus)) {
+            anyChange |= upsertKeyInRange(lines, range, "last_run_end_date", "last_run_end_date = " + env.lastRunEndDate.format(dtf));
+            long totalSeconds = env.lastTimeElapsed.getSeconds();
+            long hours = totalSeconds / 3600;
+            long minutes = (totalSeconds % 3600) / 60;
+            long seconds = totalSeconds % 60;
+            long nanos = env.lastTimeElapsed.getNano();
+            String timeStr = String.format("%02d:%02d:%02d.%06d", hours, minutes, seconds, nanos / 1000);
+            anyChange |= upsertKeyInRange(lines, range, "last_time_elapsed", "last_time_elapsed = " + timeStr);
+        }
+
+        return anyChange;
+    }
+
+    private static int[] findSectionRange(List<String> lines, String sectionName) {
+        int start = -1;
+        for (int i = 0; i < lines.size(); i++) {
+            String trimmed = lines.get(i).trim();
+            if (trimmed.equals("[" + sectionName + "]")) {
+                start = i;
+                break;
+            }
+        }
+        if (start == -1) return null;
+        
+        int end = lines.size();
+        for (int j = start + 1; j < lines.size(); j++) {
+            String trimmed = lines.get(j).trim();
+            if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+                end = j;
+                break;
+            }
+        }
+        return new int[]{start, end}; // [inclusiveHeaderIndex, exclusiveEnd]
+    }
+
+    private static int findKeyIndexInRange(List<String> lines, int[] range, String key) {
+        for (int i = range[0] + 1; i < range[1]; i++) {
+            String line = lines.get(i).trim();
+            if (line.startsWith(key + " =") || line.startsWith(key + "=")) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean upsertKeyInRange(List<String> lines, int[] range, String key, String fullLine) {
+        int idx = findKeyIndexInRange(lines, range, key);
+        if (idx >= 0) {
+            String existingLine = lines.get(idx);
+            if (!existingLine.equals(fullLine)) {
+                lines.set(idx, fullLine);
+                return true;
+            }
+            return false;
+        }
+        // Inserir chave ausente logo após o header da seção
+        lines.add(range[0] + 1, fullLine);
+        return true;
+    }
+
+    private static String timestamp() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss"));
+    }
+
+    // ===== TIPOS AUXILIARES =====
+    static class Col {
+        final String name;
+        final String typeName;
+        Col(String name, String typeName) { this.name = name; this.typeName = typeName; }
+    }
+
+    static class ColMap {
+        final String srcName;  // nome na origem (Teiid)
+        final String dstName;  // nome no destino (PG)
+        final String typeName;
+        ColMap(String srcName, String dstName, String typeName) {
+            this.srcName = srcName;
+            this.dstName = dstName;
+            this.typeName = typeName;
+        }
+    }
+}

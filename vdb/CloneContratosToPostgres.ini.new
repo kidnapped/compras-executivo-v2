@@ -1,0 +1,72 @@
+[ENVIRONMENT]
+last_time_elapsed = 00:13:50.000000
+last_run_init_date = 2025-08-15 22:15:21
+last_run_end_date = 2025-08-15 22:29:11
+last_run_status = success
+
+[users]
+columns = id, cpf, name, email, ugprimaria
+# rules = if (situacao == 'INATIVO') skip
+
+[unidades]
+columns = id, orgao_id, codigo, gestao, nome, nomeresumido, codigosiafi
+# rules = if (situacao == 'INATIVA') skip
+
+[unidadesusers]
+columns = user_id, unidade_id
+# rules = if (user_id <= 0 || unidade_id <= 0) skip
+
+[orgaos]
+columns = id, orgaosuperior_id, nome
+# rules = if (situacao == 'INATIVO') skip
+
+[orgaossuperiores]
+columns = id, nome
+# rules = if (situacao == 'INATIVO') skip
+
+[contratos]
+columns = id, numero, unidade_id, fornecedor_id, tipo_id, categoria_id, processo, objeto, modalidade_id, data_assinatura, data_publicacao, vigencia_inicio, vigencia_fim, valor_inicial, valor_global, situacao, publicado
+# rules = if (situacao == 'CANCELADO' || valor_global <= 0) skip
+
+[contratohistorico]
+columns = id, contrato_id, objeto, observacao, data_assinatura, data_publicacao, vigencia_inicio, vigencia_fim, valor_inicial, valor_global, novo_valor_global, subtipo
+# rules = if (contrato_id <= 0) skip
+
+[contratoempenhos]
+columns = id, contrato_id, empenho_id
+# rules = if (contrato_id <= 0 || empenho_id <= 0) skip
+
+[empenhos]
+columns = id, numero, unidade_id, naturezadespesa_id, empenhado, pago, data_emissao
+# rules = if (empenhado <= 0 && liquidado <= 0 && pago <= 0) skip
+
+[fornecedores]
+columns = id, tipo_fornecedor, cpf_cnpj_idgener, nome
+# rules = if (cpf_cnpj_idgener == '' || nome == '') skip
+
+[fornecedorsicaf]
+columns = created_at, date_certidao_fgts, date_certidao_trabalhista, date_receita_estadual_distrital, date_receita_federal_pgfn, date_receita_municipal, fornecedor_id, id, updated_at, validade_certidao_fgts, validade_certidao_trabalhista, validade_receita_federal_pgfn, validade_receita_municipal, validate_receita_estadual_distrital
+
+[naturezadespesa]
+columns = id, codigo, descricao
+# rules = if (situacao == 'INATIVA') skip
+
+[codigoitens]
+columns = id, descricao
+# rules = if (visivel == false) skip
+
+[municipios]
+columns = id, codigo_ibge, nome
+# rules = if (codigo_ibge == '' || nome == '') skip
+
+[contratoresponsaveis]
+columns = id, contrato_id, user_id, funcao_id, data_inicio, data_fim
+# rules = if (contrato_id <= 0 || user_id <= 0) skip
+
+[model_has_roles]
+columns = role_id, model_id
+# rules = if (role_id <= 0 || model_id <= 0) skip
+
+[roles]
+columns = id, name
+# rules = if (name == '' || guard_name == '') skip

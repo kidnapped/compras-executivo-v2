@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Depends, Form, Query
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import func
@@ -11,6 +11,7 @@ from app.db.session import get_session_blocok
 from app.db.models.user import User
 from app.core.templates import templates
 from app.core.config import settings
+from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 
 router = APIRouter()
 
@@ -37,7 +38,21 @@ def executar_java(vdb_tipo: str, query: str):
 
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_index(request: Request):
-    return templates.TemplateResponse("admin/admin.html", {"request": request, "template_name": "admin"})
+    context = {
+        "request": request, 
+        "template_name": "admin"
+    }
+    
+    context = add_spa_context(context, request)
+    
+    return spa_route_handler(
+        template_name="admin/admin.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Administração - Compras Executivo",
+        scripts=get_page_scripts("admin")
+    )
 
 # Página HTML
 @router.get("/admin/usuarios", response_class=HTMLResponse)

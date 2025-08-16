@@ -1,13 +1,24 @@
-export default {
+    const menuExport = {
   // Development-only menu items
   devMenuItems: [],
 
   // Auto-inicialização
   autoInit() {
+    // Proteção contra inicialização dupla
+    if (this._isInitialized) {
+      console.log('🔄 Menu já inicializado, ignorando autoInit');
+      return;
+    }
+    
     const menuContainer = document.getElementById('menu-dynamic-container');
     if (menuContainer) {
+      this._isInitialized = true;
+      console.log('🎯 Inicializando menu...');
       this.renderMenuHTML();
-      setTimeout(() => this.menu(), 100); // Chama a função original com delay
+      // Simples: espera renderizar e chama a função original
+      setTimeout(() => {
+        this.menu();
+      }, 100);
     }
   },
 
@@ -157,6 +168,13 @@ export default {
         link.href = item.url;
         link.className = "menu-item";
         link.setAttribute("role", "treeitem");
+        
+        // Adicionar atributo para SPA navigation
+        link.dataset.spa = "true";
+
+                // Configurar o link como SPA
+        link.dataset.spa = "true";
+        link.dataset.originalHref = item.url; // Salvar href original
 
         // Verifica se é a página atual para marcar como ativo
         const currentPath = window.location.pathname;
@@ -188,11 +206,28 @@ export default {
           // Remove o href para tornar não clicável
           link.removeAttribute("href");
           link.style.cursor = "default";
+          link.style.pointerEvents = "none";
+          
           // Adiciona evento para prevenir clique
-          link.addEventListener('click', function(e) {
+          link._clickHandler = function(e) {
             e.preventDefault();
             return false;
-          });
+          };
+          link.addEventListener('click', link._clickHandler);
+        } else {
+          // Garantir que itens não ativos sejam clicáveis
+          link.style.cursor = "pointer";
+          link.style.pointerEvents = "auto";
+          
+          // Adicionar marcação para o SPA Router identificar como link do menu
+          link.dataset.spa = "true";
+          link.dataset.menuItem = "true";
+          
+          // Remover qualquer listener anterior se existir
+          if (link._clickHandler) {
+            link.removeEventListener('click', link._clickHandler);
+            link._clickHandler = null;
+          }
         }
 
         link.innerHTML = `
@@ -288,4 +323,89 @@ export default {
       });
     }
   },
+
+  // Atualiza o item ativo do menu (usado pelo SPA Router)
+  updateActiveMenuItem() {
+    const currentPath = window.location.pathname;
+    const menuItems = document.querySelectorAll('.menu-item[data-spa="true"]');
+    
+    menuItems.forEach(link => {
+      const itemPath = new URL(link.dataset.originalHref || link.href, window.location.origin).pathname;
+      
+      // Salvar href original se não foi salvo ainda
+      if (!link.dataset.originalHref) {
+        link.dataset.originalHref = link.href;
+      }
+      
+      // Diferentes cenários para considerar um item como ativo:
+      let isActive = false;
+      
+      // 1. URL exata
+      if (currentPath === itemPath) {
+        isActive = true;
+      }
+      // 2. URL raiz vs /inicio
+      else if ((currentPath === '/' && itemPath === '/inicio') || 
+               (currentPath === '/inicio' && itemPath === '/')) {
+        isActive = true;
+      }
+      // 3. URL contém o caminho do item (para subpáginas)
+      else if (itemPath !== '/' && itemPath !== '/inicio' && currentPath.startsWith(itemPath)) {
+        // Verifica se é realmente uma subpágina (próximo caractere é / ou fim da string)
+        const nextChar = currentPath.charAt(itemPath.length);
+        if (nextChar === '/' || nextChar === '' || nextChar === '?' || nextChar === '#') {
+          isActive = true;
+        }
+      }
+
+      if (isActive) {
+        // Item ativo
+        link.classList.add("active");
+        link.removeAttribute("href");
+        link.style.cursor = "default";
+        link.style.pointerEvents = "none";
+        
+        // Remover listener anterior se existir
+        if (link._clickHandler) {
+          link.removeEventListener('click', link._clickHandler);
+        }
+        
+        // Adicionar evento para prevenir clique
+        link._clickHandler = function(e) {
+          e.preventDefault();
+          return false;
+        };
+        link.addEventListener('click', link._clickHandler);
+      } else {
+        // Item não ativo - restaurar clicabilidade
+        link.classList.remove("active");
+        link.href = link.dataset.originalHref;
+        link.style.cursor = "pointer";
+        link.style.pointerEvents = "auto"; // Garantir que é clicável
+        
+        // Adicionar marcação para o SPA Router identificar como link do menu
+        link.dataset.spa = "true";
+        link.dataset.menuItem = "true";
+        
+        // Remover listener de prevenção de clique se existir
+        if (link._clickHandler) {
+          link.removeEventListener('click', link._clickHandler);
+          link._clickHandler = null;
+        }
+      }
+    });
+  }
+
 };
+
+// Expor globalmente para uso no SPA Router
+window.menuApp = menuExport;
+
+// Auto-inicialização quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => menuExport.autoInit());
+} else {
+  menuExport.autoInit();
+}
+
+export default menuExport;

@@ -11,6 +11,7 @@ from app.core.templates import templates
 from app.core import config as app_config
 from app.core.config import settings
 from app.utils.session_utils import get_uasgs_str
+from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 from app.db.session import get_session_contratos
 
 
@@ -22,10 +23,21 @@ router = APIRouter()
 # Renderiza a página do kpis
 @router.get("/kpis", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
-    return templates.TemplateResponse("kpi.html", {
+    context = {
         "request": request,
         "template_name": "kpi"
-    })
+    }
+    
+    context = add_spa_context(context, request)
+    
+    return spa_route_handler(
+        template_name="kpi.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="KPIs - Compras Executivo",
+        scripts=get_page_scripts("kpis")
+    )
 
 
 #Endpoints do kpi 1

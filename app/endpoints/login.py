@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Request, Form, status
-from fastapi.responses import HTMLResponse, RedirectResponse
-from sqlalchemy import text
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from app.core.config import settings
 from app.core.templates import templates
 from app.core.config_menu import get_menu_for_scope
-from app.db.session import get_async_session, get_session_contratos, get_session_blocok
+from app.dao.login_dao import login as dao_login
+from app.utils.spa_utils import spa_route_handler, add_spa_context
 import time
 
 router = APIRouter()
@@ -45,150 +45,31 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
             "template_name": "login"
         })
 
-    # Verifica no banco
-    async for session in get_async_session():
-        stmt = text("""
-            SELECT cpf FROM usuario
-            WHERE cpf = :cpf AND senha = crypt(:senha, senha)
-              AND ativo IS TRUE
-            LIMIT 1
-        """)
-        result = await session.execute(stmt, {
-            "cpf": cpf.replace(".", "").replace("-", ""),
-            "senha": senha
-        })
-        row = result.fetchone()
+    # Usar o DAO para autenticação
+    login_result = await dao_login(cpf, senha)
 
-    if row:
+    if login_result.success:
         print("✅ LOGIN VALIDADO NO BANCO")
-        cpf_logged = row[0]
-        request.session["cpf"] = cpf_logged
+        user_data = login_result.user_data
         
-        # Se CPF for tudo zero, usar valores padrão
-        if cpf_logged == "00000000000":  # CPF sem formatação do banco
-            print("🔧 USANDO VALORES PADRÃO PARA CPF DE TESTE")
-            request.session["cpf"] = '31352752808'
-            request.session["uasgs"] = [393003]  # Array de UASGs
-            request.session["usuario_id"] = 198756  # Valor único
-            request.session["usuario_role"] = "Admin Root"  # Valor único
-            request.session["usuario_scope"] = "root"  # Valor único
-            request.session["usuario_name"] = "Root"  # Nome padrão
-            request.session["usuario_email"] = "root@comprasexecutivo.sistema.gov.br"  # Email padrão
-            # Configurar menu baseado no scope
-            user_scope = request.session.get("usuario_scope")
-            if user_scope:
-                request.session["menu"] = get_menu_for_scope(user_scope)
-                print(f"🍽️ MENU CONFIGURADO para scope '{user_scope}': {len(request.session['menu'])} itens")
-            else:
-                print("❌ Não foi possível configurar menu: usuario_scope não definido")
-            print(f"✅ SESSÃO CONFIGURADA: uasgs={request.session['uasgs']}, usuario_id={request.session['usuario_id']}")
+        # Configurar sessão com os dados do usuário
+        request.session["cpf"] = user_data["cpf"]
+        request.session["uasgs"] = user_data["uasgs"]
+        request.session["usuario_id"] = user_data["usuario_id"]
+        request.session["usuario_role"] = user_data["usuario_role"]
+        request.session["usuario_scope"] = user_data["usuario_scope"]
+        request.session["usuario_name"] = user_data["usuario_name"]
+        request.session["usuario_email"] = user_data["usuario_email"]
+        
+        # Configurar menu baseado no scope
+        user_scope = user_data["usuario_scope"]
+        if user_scope:
+            request.session["menu"] = get_menu_for_scope(user_scope)
+            print(f"🍽️ MENU CONFIGURADO para scope '{user_scope}': {len(request.session['menu'])} itens")
         else:
-            print(f"🔍 BUSCANDO DADOS PARA CPF: {cpf_logged}")
-            # Buscar dados no banco "contratos"
-            # O banco contratos pode usar CPF formatado, então vamos tentar ambos os formatos
-            cpf_formatted = f"{cpf_logged[:3]}.{cpf_logged[3:6]}.{cpf_logged[6:9]}-{cpf_logged[9:]}"
-            print(f"📋 CPF formatado para busca: {cpf_formatted}")
-            
-            async for contratos_session in get_session_contratos():
-                # Buscar UASGs - tentar primeiro com CPF formatado
-                stmt_uasgs = text("""
-                    SELECT u3.codigosiafi 
-                    FROM users u 
-                    JOIN unidadesusers u2 ON u.id = u2.user_id
-                    JOIN unidades u3 ON u2.unidade_id = u3.id
-                    WHERE u.cpf = :cpf
-                """)
-                
-                # Tentar primeiro com CPF formatado
-                result_uasgs = await contratos_session.execute(stmt_uasgs, {
-                    "cpf": cpf_formatted
-                })
-                uasgs_rows = result_uasgs.fetchall()
-                
-                # Se não encontrar, tentar sem formatação
-                if not uasgs_rows:
-                    print("❌ Não encontrou com CPF formatado, tentando sem formatação...")
-                    result_uasgs = await contratos_session.execute(stmt_uasgs, {
-                        "cpf": cpf_logged
-                    })
-                    uasgs_rows = result_uasgs.fetchall()
-                
-                uasgs = [row[0] for row in uasgs_rows] if uasgs_rows else []
-                request.session["uasgs"] = uasgs
-                print(f"🏢 UASGs encontradas: {uasgs}")
-                
-                # Buscar usuario_id - usar mesmo CPF que funcionou acima
-                cpf_for_search = cpf_formatted if uasgs else cpf_logged
-                stmt_user_id = text("""
-                    SELECT id, name, email FROM users WHERE cpf = :cpf LIMIT 1
-                """)
-                result_user_id = await contratos_session.execute(stmt_user_id, {
-                    "cpf": cpf_for_search
-                })
-                user_id_row = result_user_id.fetchone()
-                if user_id_row:
-                    usuario_id = user_id_row[0]
-                    usuario_name = user_id_row[1]
-                    usuario_email = user_id_row[2]
-                else:
-                    usuario_id = None
-                    usuario_name = None
-                    usuario_email = None
-                
-                request.session["usuario_id"] = usuario_id  # Valor único, não array
-                request.session["usuario_name"] = usuario_name
-                request.session["usuario_email"] = usuario_email
-                print(f"👤 Usuario ID encontrado: {usuario_id}")
-                print(f"👤 Nome do usuário: {usuario_name}")
-                print(f"📧 Email do usuário: {usuario_email}")
-                
-                # Buscar roles
-                stmt_roles = text("""
-                    SELECT r.name 
-                    FROM model_has_roles mhr
-                    JOIN roles r ON mhr.role_id = r.id
-                    JOIN users u ON mhr.model_id::numeric = u.id
-                    WHERE u.cpf = :cpf
-                """)
-                result_roles = await contratos_session.execute(stmt_roles, {
-                    "cpf": cpf_for_search
-                })
-                roles_rows = result_roles.fetchall()
-                roles = [row[0] for row in roles_rows] if roles_rows else []
-                # Se tiver múltiplas roles, pegar a primeira ou concatenar
-                request.session["usuario_role"] = roles[0] if roles else None  # Valor único
-                print(f"🎭 Roles encontradas: {roles}, usando: {request.session['usuario_role']}")
-            
-            # Buscar scope no banco "blocok"
-            async for blocok_session in get_session_blocok():
-                scopes = []
-                # Usar a role que foi armazenada na sessão
-                current_role = request.session.get("usuario_role")
-                if current_role:
-                    stmt_scope = text("""
-                        SELECT abrangencia FROM perfil_acesso WHERE perfil = :perfil
-                    """)
-                    result_scope = await blocok_session.execute(stmt_scope, {
-                        "perfil": current_role
-                    })
-                    scope_rows = result_scope.fetchall()
-                    for scope_row in scope_rows:
-                        if scope_row[0] not in scopes:
-                            scopes.append(scope_row[0])
-                
-                # Se tiver múltiplos scopes, pegar o primeiro ou concatenar
-                request.session["usuario_scope"] = scopes[0] if scopes else None  # Valor único
-                print(f"🎯 Scopes encontrados: {scopes}, usando: {request.session['usuario_scope']}")
-                
-                # Configurar menu baseado no scope descoberto
-                user_scope = request.session.get("usuario_scope")
-                if user_scope:
-                    request.session["menu"] = get_menu_for_scope(user_scope)
-                    print(f"🍽️ MENU CONFIGURADO para scope '{user_scope}': {len(request.session['menu'])} itens")
-                else:
-                    # Se não tem scope, usar menu padrão (unidade)
-                    request.session["menu"] = get_menu_for_scope("unidade")
-                    print(f"🍽️ MENU PADRÃO CONFIGURADO: {len(request.session['menu'])} itens")
+            # Se não tem scope, usar menu padrão (unidade)
+            request.session["menu"] = get_menu_for_scope("unidade")
+            print(f"🍽️ MENU PADRÃO CONFIGURADO: {len(request.session['menu'])} itens")
 
         print("💾 SESSÃO FINAL GRAVADA:")
         print(f"  cpf={request.session.get('cpf')}")
@@ -213,7 +94,7 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
     print("❌ LOGIN FALHOU")
     return templates.TemplateResponse("login.html", {
         "request": request,
-        "error": "CPF ou senha incorretos.",
+        "error": login_result.error or "CPF ou senha incorretos.",
         "next": request.query_params.get("next") or "/inicio",
         "template_name": "login"
     })
@@ -230,11 +111,24 @@ async def inicio(request: Request):
     if not cpf:
         return RedirectResponse(url="/login?next=/inicio")
     
-    return templates.TemplateResponse("app/inicio.html", {
+    # Criar contexto
+    context = {
         "request": request,
         "cpf": cpf,
         "template_name": "inicio"
-    })
+    }
+    
+    # Adicionar contexto SPA
+    context = add_spa_context(context, request)
+    
+    # Usar o handler SPA
+    return spa_route_handler(
+        template_name="app/inicio.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Início - Compras Executivo"
+    )
 
 @router.get("/bloqueado", response_class=HTMLResponse)
 async def render_dashboard(request: Request):
@@ -245,17 +139,37 @@ async def render_dashboard(request: Request):
 
 @router.get("/suporte", response_class=HTMLResponse)
 async def render_suporte(request: Request):
-    return templates.TemplateResponse("suporte.html", {
+    context = {
         "request": request,
         "template_name": "outros-templates"
-    })
+    }
+    
+    context = add_spa_context(context, request)
+    
+    return spa_route_handler(
+        template_name="suporte.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Suporte - Compras Executivo"
+    )
 
 @router.get("/ajuda", response_class=HTMLResponse)
 async def render_ajuda(request: Request):
-    return templates.TemplateResponse("ajuda.html", {
+    context = {
         "request": request,
         "template_name": "outros-templates"
-    })
+    }
+    
+    context = add_spa_context(context, request)
+    
+    return spa_route_handler(
+        template_name="ajuda.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Ajuda - Compras Executivo"
+    )
 
 @router.get("/login/success")
 async def login_success(request: Request):

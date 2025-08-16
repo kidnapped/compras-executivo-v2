@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from app.core.templates import templates
 from app.db.session import get_session_contratos
+from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 
 router = APIRouter()
 
@@ -21,10 +22,24 @@ class ValidateCpfRequest(BaseModel):
 # Renderiza a página do dev-ops
 @router.get("/dev-ops", response_class=HTMLResponse)
 async def render_dev_ops(request: Request):
-    return templates.TemplateResponse("dev-ops.html", {
+    # Criar contexto
+    context = {
         "request": request,
         "template_name": "outros-templates"
-    })
+    }
+    
+    # Adicionar contexto SPA
+    context = add_spa_context(context, request)
+    
+    # Usar o handler SPA
+    return spa_route_handler(
+        template_name="dev-ops.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Dev Ops - Compras Executivo",
+        scripts=get_page_scripts("dev-ops")
+    )
 
 # Endpoint para buscar unidades organizacionais
 @router.get("/dev-ops/unidades")

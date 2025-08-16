@@ -10,6 +10,7 @@ from app.utils.static_loader import collect_static_files
 from app.core import config as app_config
 from app.utils.session_utils import get_uasgs_str, get_usuario_id
 from app.db.session import get_session_contratos
+from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 
 logger = logging.getLogger(__name__)
 
@@ -21,18 +22,24 @@ async def render_uasg_filter(request: Request, search: Optional[str] = Query(Non
     """
     Renderiza a página de filtro UASG
     """
-    dev_js_files, dev_js_modules, base_css_files, template_css_files = collect_static_files()
-    return templates.TemplateResponse(
-        "uasg_filter.html", 
-        {
-            "request": request,
-            "search": search,
-            "dev_css_files": base_css_files + template_css_files,  # Combined for backward compatibility
-            "dev_js_modules": dev_js_modules,
-            "dev_js_files": dev_js_files, 
-            "config": app_config,
-            "template_name": "outros-templates"
-        }
+    # Criar contexto
+    context = {
+        "request": request,
+        "search": search,
+        "template_name": "outros-templates"
+    }
+    
+    # Adicionar contexto SPA
+    context = add_spa_context(context, request)
+    
+    # Usar o handler SPA
+    return spa_route_handler(
+        template_name="uasg_filter.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Filtro UASG - Compras Executivo",
+        scripts=get_page_scripts("uasg-filter")
     )
 
 # Endpoint para buscar dados UASG com filtros

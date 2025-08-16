@@ -4,6 +4,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.templates import templates
 from app.db.session import get_session_contratos
+from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 
 router = APIRouter()
 
@@ -14,10 +15,24 @@ async def indicadores(request: Request):
     if not cpf:
         return RedirectResponse(url="/login?next=/indicadores")
     
-    return templates.TemplateResponse("indicadores.html", {
+    # Criar contexto
+    context = {
         "request": request,
         "template_name": "indicadores"
-    })
+    }
+    
+    # Adicionar contexto SPA
+    context = add_spa_context(context, request)
+    
+    # Usar o handler SPA
+    return spa_route_handler(
+        template_name="indicadores.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Indicadores - Compras Executivo",
+        scripts=get_page_scripts("indicadores")
+    )
 
 @router.get("/indicadores/mapa-estados")
 async def get_indicadores_mapa_estados(

@@ -1,26 +1,68 @@
 export default {
+  // Variável para controlar execuções múltiplas
+  lastAutoInitTime: 0,
+  isInitializing: false,
+  
   // Método para inicialização automática quando o módulo é carregado
   autoInit() {
+    console.log('🔧 Indicadores.autoInit() chamado');
+    
+    // Evitar execuções múltiplas muito próximas (debounce de 1 segundo)
+    const now = Date.now();
+    if (now - this.lastAutoInitTime < 1000) {
+      console.log('⚠️ autoInit() ignorado - muito recente (debounce)');
+      return;
+    }
+    
+    // Evitar sobreposição de execuções
+    if (this.isInitializing) {
+      console.log('⚠️ autoInit() ignorado - já está inicializando');
+      return;
+    }
+    
+    this.lastAutoInitTime = now;
+    this.isInitializing = true;
+    
     // Verifica se estamos na página correta procurando pelo elemento principal
-    if (document.querySelector('.indicadores-page')) {
+    const indicadoresPage = document.querySelector('.indicadores-page');
+    console.log('🔍 Elemento .indicadores-page encontrado:', !!indicadoresPage);
+    
+    if (indicadoresPage) {
+      console.log('✅ Página de indicadores detectada - iniciando componentes...');
+      
       // Se encontrou o elemento, inicializa automaticamente
       setTimeout(() => {
-        this.indicadores_initBreadcrumb();
-        this.initTopicoVisaoGeral();
-        this.initTopicoAnaliseProcessos();
-        this.initTopicoFornecedoresContratantes();
-        this.initTopicoDistribuicaoGeografica();
-        this.initTopicoAnaliseTemporal();
-        this.initTopicoMetodosEficiencia();
-        this.initTopicoAnaliseFinanceira();
-        this.initTopicoInsightsExecutivos();
-        this.indicadores_init();
+        console.log('🔧 Inicializando componentes dos indicadores...');
+        
+        try {
+          this.indicadores_initBreadcrumb();
+          this.initTopicoVisaoGeral();
+          this.initTopicoAnaliseProcessos();
+          this.initTopicoFornecedoresContratantes();
+          this.initTopicoDistribuicaoGeografica();
+          this.initTopicoAnaliseTemporal();
+          this.initTopicoMetodosEficiencia();
+          this.initTopicoAnaliseFinanceira();
+          this.initTopicoInsightsExecutivos();
+          this.indicadores_init();
+          
+          console.log('✅ Todos os componentes dos indicadores foram inicializados!');
+        } catch (error) {
+          console.error('❌ Erro ao inicializar componentes dos indicadores:', error);
+        } finally {
+          this.isInitializing = false;
+        }
       }, 100); // Pequeno delay para garantir que todos os elementos estejam carregados
+    } else {
+      console.log('⚠️ Página de indicadores não detectada - elemento .indicadores-page não encontrado');
+      this.isInitializing = false;
     }
   },
 
   // Nova função para inicializar o breadcrumb dinamicamente
   indicadores_initBreadcrumb() {
+    console.log('🔧 Inicializando breadcrumb dos indicadores...');
+    
     // Verifica se o módulo breadcrumb está disponível
     if (typeof App !== "undefined" && App.breadcrumb && App.breadcrumb.breadcrumb_createDynamic) {
       const breadcrumbItems = [
@@ -29,9 +71,10 @@ export default {
       ];
       
       App.breadcrumb.breadcrumb_createDynamic(breadcrumbItems, 'indicadores-breadcrumb-dynamic-container');
-      console.log('Breadcrumb Indicadores initialized dynamically');
+      console.log('✅ Breadcrumb Indicadores initialized dynamically');
     } else {
-      console.warn('Breadcrumb module not available - retrying in 500ms');
+      console.warn('❌ Breadcrumb module not available - App:', typeof App, 'breadcrumb:', App?.breadcrumb ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
       // Retry after a short delay if breadcrumb is not available yet
       setTimeout(() => {
         this.indicadores_initBreadcrumb();
@@ -41,6 +84,8 @@ export default {
 
   // Nova função para inicializar o tópico de visão geral dinamicamente
   initTopicoVisaoGeral() {
+    console.log('🔧 Inicializando tópico Visão Geral...');
+    
     // Verifica se o módulo topico está disponível
     if (typeof App !== "undefined" && App.topico && App.topico.topico_createDynamic) {
       const topicoConfig = {
@@ -74,9 +119,10 @@ export default {
       };
       
       App.topico.topico_createDynamic(topicoConfig, 'indicadores-topico-visao-geral-container');
-      console.log('Topico Visão Geral initialized dynamically');
+      console.log('✅ Topico Visão Geral initialized dynamically');
     } else {
-      console.warn('Topico module not available - retrying in 500ms');
+      console.warn('❌ Topico module not available - App:', typeof App, 'topico:', App?.topico ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
       // Retry after a short delay if topico is not available yet
       setTimeout(() => {
         this.initTopicoVisaoGeral();
@@ -1189,11 +1235,21 @@ export default {
   },
 
   indicadores_init() {
-    // Só inicializa se estivermos na página correta
-    if (!this.indicadores_initElements()) {
-      console.log('Indicadores elements not found, skipping initialization');
+    console.log('🔧 indicadores_init() chamado');
+    
+    // Evitar execuções múltiplas dos gráficos
+    if (this.isInitializingGraphics) {
+      console.log('⚠️ indicadores_init() ignorado - gráficos já estão sendo inicializados');
       return;
     }
+    
+    // Só inicializa se estivermos na página correta
+    if (!this.indicadores_initElements()) {
+      console.log('❌ Indicadores elements not found, skipping initialization');
+      return;
+    }
+    
+    console.log('✅ Elementos encontrados, inicializando cards...');
     
     // Inicializa os headers dos cards
     this.indicadores_initCardHeaders();
@@ -1203,27 +1259,42 @@ export default {
     // Preenche o conteúdo dos cards
     this.indicadores_fillCardContent();
     
+    console.log('✅ Card headers e conteúdo inicializados, iniciando gráficos...');
+    
+    // Marcar que estamos inicializando gráficos
+    this.isInitializingGraphics = true;
+    
     // Inicializa o mapa do Brasil e gráfico de regiões de forma assíncrona
     setTimeout(() => {
+      console.log('🗺️ Inicializando mapa do Brasil...');
       this.indicadores_initMapaBrasil();
     }, 500);
     
     // Inicializar o gráfico de regiões com delay adicional
     setTimeout(() => {
+      console.log('📊 Inicializando gráfico de regiões...');
       this.indicadores_initGraficoRegiao();
     }, 1000);
     
     // Inicializar o gráfico donut de contratos sem licitação
     setTimeout(() => {
+      console.log('🍩 Inicializando gráfico sem licitação...');
       this.indicadores_initGraficoSemLicitacao();
     }, 1500);
     
     // Inicializar o gráfico donut de contratos com aditivos
     setTimeout(() => {
+      console.log('🍩 Inicializando gráfico com aditivos...');
       this.indicadores_initGraficoComAditivos();
+      
+      // Resetar flag após todos os gráficos serem inicializados
+      setTimeout(() => {
+        this.isInitializingGraphics = false;
+        console.log('🔄 Flag de inicialização de gráficos resetada');
+      }, 1000);
     }, 2000);
     
-    console.log('Indicadores initialized successfully');
+    console.log('✅ Indicadores initialized successfully');
   },
 
   // Nova função para preencher o conteúdo de todos os cards
@@ -1340,21 +1411,27 @@ export default {
   },
 
   indicadores_initElements() {
+    console.log('🔍 Verificando elementos da página de indicadores...');
+    
     this.container = document.querySelector('.indicadores-page');
     
     // Verifica se os elementos essenciais existem
     if (!this.container) {
+      console.log('❌ Container .indicadores-page não encontrado');
       return false;
     }
     
-    console.log('Indicadores elements initialized successfully');
+    console.log('✅ Indicadores elements initialized successfully');
     return true;
   },
 
   // Nova função para inicializar os headers dos cards dinamicamente
   indicadores_initCardHeaders() {
+    console.log('🔧 Inicializando card headers...');
+    
     // Verifica se o módulo card header está disponível
     if (typeof App !== "undefined" && App.card_header && App.card_header.card_header_createDynamic) {
+      console.log('✅ Módulo card_header disponível, criando headers...');
       
       // === Cards Principais da Página ===
       
@@ -1390,9 +1467,10 @@ export default {
         actions: [] // Sem botões para economizar espaço
       }, 'indicadores-criticos-header');
 
-      console.log('Indicadores card headers (4 cards) initialized dynamically');
+      console.log('✅ Indicadores card headers (4 cards) initialized dynamically');
     } else {
-      console.warn('CardHeader module not available - retrying in 500ms');
+      console.warn('❌ CardHeader module not available - App:', typeof App, 'card_header:', App?.card_header ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
       // Retry after a short delay if card header is not available yet
       setTimeout(() => {
         this.indicadores_initCardHeaders();

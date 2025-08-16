@@ -53,4 +53,5 @@ alias comprasexecutivo_start="sudo systemctl start fastapi"
 alias comprasexecutivo_stop="sudo systemctl stop fastapi"
 alias comprasexecutivo_service="cat /etc/systemd/system/fastapi.service"
 
+alias pg='function _pg(){ psql -U postgres -d "$1"; }; _pg'
 alias check_pg='function _check_pg(){ psql -U postgres -d "$1" -c "SELECT pid, usename, state, query_start, query FROM pg_stat_activity WHERE state != '\''idle'\'';" ; }; _check_pg'
