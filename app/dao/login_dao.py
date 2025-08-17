@@ -63,17 +63,19 @@ async def login(cpf: str, password: str) -> LoginResult:
     # Normalizar CPF removendo formatação
     cpf_normalized = cpf.replace(".", "").replace("-", "")
     
-    # Se USE_ALIAS_LOGIN estiver habilitado, tentar autenticação por alias primeiro
-    real_cpf = None
+    # Se USE_ALIAS_LOGIN estiver habilitado, autenticar APENAS no banco blocok
     if settings.USE_ALIAS_LOGIN:
         real_cpf = await check_alias_authentication(cpf_normalized, password)
         if real_cpf:
             print(f"✅ ALIAS AUTHENTICATION: CPF {cpf_normalized} autenticado como {real_cpf}")
-            # Usar o CPF real para continuar o processo
-            cpf_normalized = real_cpf.replace(".", "").replace("-", "")
-    
-    # Se não foi autenticado por alias, verificar credenciais no banco principal
-    if not real_cpf:
+            # Normalizar o CPF real (alias) removendo formatação, caso tenha
+            cpf_logged = real_cpf.replace(".", "").replace("-", "").strip()
+            print(f"🔧 CPF normalizado: {cpf_logged}")
+        else:
+            # Se USE_ALIAS_LOGIN = True e não autenticou no blocok, falha imediatamente
+            return LoginResult(success=False, error="CPF ou senha incorretos.")
+    else:
+        # Se USE_ALIAS_LOGIN = False, usar autenticação tradicional no banco principal
         async for session in get_async_session():
             stmt = text("""
                 SELECT cpf FROM usuario
@@ -87,26 +89,10 @@ async def login(cpf: str, password: str) -> LoginResult:
             })
             row = result.fetchone()
         
-        if not row:
-            return LoginResult(success=False, error="CPF ou senha incorretos.")
-        
-        cpf_logged = row[0]
-    else:
-        # Se foi autenticado por alias, usar o CPF real
-        cpf_logged = cpf_normalized
-    
-    # Se CPF for de teste (00000000000), usar valores padrão
-    if cpf_logged == "00000000000":
-        user_data = {
-            "cpf": "31352752808",
-            "uasgs": [393003],
-            "usuario_id": 198756,
-            "usuario_role": "Admin Root",
-            "usuario_scope": "root",
-            "usuario_name": "Root",
-            "usuario_email": "root@comprasexecutivo.sistema.gov.br"
-        }
-        return LoginResult(success=True, user_data=user_data)
+            if not row:
+                return LoginResult(success=False, error="CPF ou senha incorretos.")
+            
+            cpf_logged = row[0]
     
     # Para usuários reais, buscar dados nos outros bancos
     user_data = {
@@ -121,6 +107,9 @@ async def login(cpf: str, password: str) -> LoginResult:
     
     # Buscar dados no banco "contratos"
     cpf_formatted = f"{cpf_logged[:3]}.{cpf_logged[3:6]}.{cpf_logged[6:9]}-{cpf_logged[9:]}"
+    print(f"🔍 BUSCANDO DADOS NO BANCO CONTRATOS:")
+    print(f"  CPF logado: '{cpf_logged}'")
+    print(f"  CPF formatado: '{cpf_formatted}'")
     
     async for contratos_session in get_session_contratos():
         # Buscar UASGs - tentar primeiro com CPF formatado
@@ -133,22 +122,28 @@ async def login(cpf: str, password: str) -> LoginResult:
         """)
         
         # Tentar primeiro com CPF formatado
+        print(f"🔍 Tentando buscar UASGs com CPF formatado: {cpf_formatted}")
         result_uasgs = await contratos_session.execute(stmt_uasgs, {
             "cpf": cpf_formatted
         })
         uasgs_rows = result_uasgs.fetchall()
+        print(f"  Resultado: {len(uasgs_rows)} UASGs encontradas")
         
         # Se não encontrar, tentar sem formatação
         if not uasgs_rows:
+            print(f"🔍 Tentando buscar UASGs com CPF sem formatação: {cpf_logged}")
             result_uasgs = await contratos_session.execute(stmt_uasgs, {
                 "cpf": cpf_logged
             })
             uasgs_rows = result_uasgs.fetchall()
+            print(f"  Resultado: {len(uasgs_rows)} UASGs encontradas")
         
         user_data["uasgs"] = [row[0] for row in uasgs_rows] if uasgs_rows else []
+        print(f"📊 UASGs finais: {user_data['uasgs']}")
         
         # Buscar dados do usuário - usar mesmo CPF que funcionou acima
         cpf_for_search = cpf_formatted if user_data["uasgs"] else cpf_logged
+        print(f"🔍 Buscando dados do usuário com CPF: {cpf_for_search}")
         stmt_user_id = text("""
             SELECT id, name, email FROM users WHERE cpf = :cpf LIMIT 1
         """)
@@ -161,8 +156,12 @@ async def login(cpf: str, password: str) -> LoginResult:
             user_data["usuario_id"] = user_id_row[0]
             user_data["usuario_name"] = user_id_row[1]
             user_data["usuario_email"] = user_id_row[2]
+            print(f"✅ Dados do usuário encontrados: ID={user_id_row[0]}, Name={user_id_row[1]}")
+        else:
+            print(f"❌ Nenhum dado de usuário encontrado para CPF: {cpf_for_search}")
         
         # Buscar roles
+        print(f"🔍 Buscando roles para CPF: {cpf_for_search}")
         stmt_roles = text("""
             SELECT r.name 
             FROM model_has_roles mhr
@@ -175,6 +174,7 @@ async def login(cpf: str, password: str) -> LoginResult:
         })
         roles_rows = result_roles.fetchall()
         roles = [row[0] for row in roles_rows] if roles_rows else []
+        print(f"📋 Roles encontradas: {roles}")
         # Se tiver múltiplas roles, pegar a primeira
         user_data["usuario_role"] = roles[0] if roles else None
     
@@ -196,5 +196,14 @@ async def login(cpf: str, password: str) -> LoginResult:
         
         # Se tiver múltiplos scopes, pegar o primeiro
         user_data["usuario_scope"] = scopes[0] if scopes else None
+    
+    print(f"📊 DADOS FINAIS DO USUÁRIO:")
+    print(f"  CPF: {user_data['cpf']}")
+    print(f"  UASGs: {user_data['uasgs']} (quantidade: {len(user_data['uasgs'])})")
+    print(f"  ID: {user_data['usuario_id']}")
+    print(f"  Nome: {user_data['usuario_name']}")
+    print(f"  Email: {user_data['usuario_email']}")
+    print(f"  Role: {user_data['usuario_role']}")
+    print(f"  Scope: {user_data['usuario_scope']}")
     
     return LoginResult(success=True, user_data=user_data)
