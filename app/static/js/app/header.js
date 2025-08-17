@@ -2,13 +2,20 @@ export default {
   // Variável para controlar execuções múltiplas
   lastAutoInitTime: 0,
   isInitializing: false,
+  isInitialized: false, // Flag para evitar reinicializações desnecessárias
 
   // Método único para inicialização completa via SPA
   header_initComplete() {
     console.log('🔧 header_initComplete() chamado via SPA');
     
-    // Evitar execução dupla
+    // Se já foi inicializado recentemente, evitar nova inicialização
     const now = Date.now();
+    if (this.isInitialized && (now - this.lastAutoInitTime) < 2000) {
+      console.log('⚠️ Header já inicializado recentemente, ignorando');
+      return;
+    }
+    
+    this.lastAutoInitTime = now;
     if (now - this.lastAutoInitTime < 1000) {
       console.log('⚠️ Header: execução muito próxima, ignorando');
       return;
@@ -84,6 +91,9 @@ export default {
     console.log('✅ Elementos encontrados, renderizando header...');
     this.header_render();
     this.header_bindEvents();
+    
+    // Marcar como inicializado
+    this.isInitialized = true;
     
     console.log('✅ Header initialized successfully');
   },
@@ -178,7 +188,14 @@ export default {
     // Evento do botão de menu hamburguer
     const menuToggleButton = document.getElementById('menu-toggle-button');
     if (menuToggleButton) {
-      menuToggleButton.addEventListener('click', this.header_handleMenuToggle.bind(this));
+      // Remover listener anterior se existir
+      if (menuToggleButton._headerToggleHandler) {
+        menuToggleButton.removeEventListener('click', menuToggleButton._headerToggleHandler);
+      }
+      
+      // Criar e armazenar referência do novo handler
+      menuToggleButton._headerToggleHandler = this.header_handleMenuToggle.bind(this);
+      menuToggleButton.addEventListener('click', menuToggleButton._headerToggleHandler);
     }
 
     // Eventos da busca mobile

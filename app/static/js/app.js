@@ -93,10 +93,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // Auto-inicialização dos indicadores apenas se estivermos na página correta
-  // Removido para evitar carregamento desnecessário em outras páginas
-  // if (indicadores.autoInit) {
-  //   indicadores.autoInit();
-  // }
+  if (indicadores.autoInit) {
+    indicadores.autoInit();
+  }
   
   // Auto-inicialização da página minha conta se estivermos na página correta
   if (minha_conta.autoInit) {
