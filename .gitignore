@@ -112,3 +112,5 @@ dist-ssr
 *.sln
 *.sw?
 
+app/static/govbr-ds/core.min.css
+app/static/govbr-ds/core.min.js
