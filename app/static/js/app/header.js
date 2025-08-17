@@ -152,7 +152,7 @@ export default {
             <span style="color: #555; font-weight: 600; font-size: 14px;"
                   data-tooltip-text="Usuário" 
                   data-tooltip-place="bottom" 
-                  data-tooltip-type="info">${sessionData.usuario_name}</span>
+                  data-tooltip-type="info">${sessionData.usuario_name.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</span>
           ` : ''}
         </div>
         ${sessionData.usuario_role ? `
