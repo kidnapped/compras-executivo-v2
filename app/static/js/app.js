@@ -17,7 +17,7 @@ import contratos_dashboard from "./contrato/dashboard.js";
 import admin_dw_tesouro from "./admin/admin_dw_tesouro.js";
 import indicadores from "./indicadores.js";
 import minha_conta from "./minha_conta.js";
-import * as kpis_kpi from "./kpi/kpis.js";
+// KPIs will be loaded dynamically only when needed
 // import encontroInit from "./encontro/encontro-init.js";
 import breadcrumb from "./app/breadcrumb.js";
 import card_header from "./app/card_header.js";
@@ -35,7 +35,6 @@ const App = {
   ...admin_dw_tesouro,
   ...indicadores,
   ...minha_conta,
-  ...kpis_kpi,
   ...modalManager,
   // ...tooltip, // Disabled - using GovBR DS tooltips instead
   ...aditivosHandler,
@@ -46,6 +45,33 @@ const App = {
   topico,
   SPARouter,
   // Don't spread encontroInit since it's an object with its own init method
+  
+  // Dynamic KPI initialization method
+  async kpisInit() {
+    console.log('🔧 Loading KPIs dynamically...');
+    try {
+      const { initializeAllKpis } = await import('./kpi/kpis.js');
+      await initializeAllKpis();
+      console.log('✅ KPIs loaded and initialized successfully!');
+    } catch (error) {
+      console.error('❌ Error loading KPIs:', error);
+    }
+  },
+  
+  // Dynamic Indicadores initialization method
+  indicadoresInit() {
+    console.log('🔧 Loading Indicadores dynamically...');
+    try {
+      if (indicadores.indicadores_initComplete) {
+        indicadores.indicadores_initComplete();
+        console.log('✅ Indicadores loaded and initialized successfully!');
+      } else {
+        console.warn('⚠️ indicadores.indicadores_initComplete not available');
+      }
+    } catch (error) {
+      console.error('❌ Error loading Indicadores:', error);
+    }
+  }
 };
 
 window.App = App;
@@ -73,10 +99,11 @@ document.addEventListener("DOMContentLoaded", () => {
     admin_dw_tesouro.autoInit();
   }
   
-  // Auto-inicialização dos indicadores se estivermos na página correta
-  if (indicadores.autoInit) {
-    indicadores.autoInit();
-  }
+  // Auto-inicialização dos indicadores apenas se estivermos na página correta
+  // Removido para evitar carregamento desnecessário em outras páginas
+  // if (indicadores.autoInit) {
+  //   indicadores.autoInit();
+  // }
   
   // Auto-inicialização da página minha conta se estivermos na página correta
   if (minha_conta.autoInit) {

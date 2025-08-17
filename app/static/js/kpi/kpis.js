@@ -43,9 +43,21 @@ const initializeAllKpis = async () => {
   }
 };
 
-// Start initialization when DOM is ready
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeAllKpis);
-} else {
-  initializeAllKpis();
+// Export function for manual initialization (only when needed)
+export { initializeAllKpis };
+
+// Only initialize automatically if we're on the KPI page
+const shouldAutoInit = () => {
+  return window.location.pathname.includes('/kpis') || 
+         document.querySelector('.kpi-page') ||
+         document.querySelector('[data-page="kpis"]');
+};
+
+// Start initialization when DOM is ready, but only if on KPI page
+if (shouldAutoInit()) {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeAllKpis);
+  } else {
+    initializeAllKpis();
+  }
 }

@@ -495,10 +495,9 @@ class SPARouter {
     if (data.route && data.route.includes('/indicadores')) {
       console.log('🎯 Rota de indicadores detectada:', data.route);
       console.log('🔍 Window.App disponível:', !!window.App);
-      console.log('🔍 indicadores_initComplete disponível:', !!(window.App && window.App.indicadores_initComplete));
-      console.log('🔍 autoInit disponível:', !!(window.App && window.App.autoInit));
+      console.log('🔍 indicadoresInit disponível:', !!(window.App && window.App.indicadoresInit));
       
-      if (window.App && window.App.indicadores_initComplete) {
+      if (window.App && window.App.indicadoresInit) {
         // Evitar execução dupla com um flag temporal
         const now = Date.now();
         if (this.lastIndicadoresInit && (now - this.lastIndicadoresInit) < 1500) {
@@ -506,27 +505,20 @@ class SPARouter {
           return;
         }
         
-        console.log('✅ Página Indicadores detectada - inicializando módulo já carregado...', data.route);
+        console.log('✅ Página Indicadores detectada - inicializando módulo...', data.route);
         this.lastIndicadoresInit = now;
         
         setTimeout(() => {
           try {
-            window.App.indicadores_initComplete();
-            console.log('✅ Módulo Indicadores re-inicializado via SPA!');
+            window.App.indicadoresInit();
+            console.log('✅ Módulo Indicadores inicializado via SPA!');
           } catch (error) {
-            console.error('Erro ao re-inicializar Indicadores:', error);
+            console.error('Erro ao inicializar Indicadores:', error);
           }
         }, 300);
         return;
-      } else if (window.App && window.App.autoInit) {
-        console.log('📋 Tentando autoInit como fallback...');
-        try {
-          window.App.autoInit();
-        } catch (error) {
-          console.error('Erro no autoInit:', error);
-        }
       } else {
-        console.warn('⚠️ Módulo Indicadores não disponível para inicialização via SPA');
+        console.warn('⚠️ Método indicadoresInit não disponível');
       }
     }
     
@@ -707,7 +699,7 @@ class SPARouter {
     }
     
     // Verificação final: se é página de indicadores e não foi inicializado ainda, forçar inicialização
-    if (data.route && data.route.includes('/indicadores') && window.App && window.App.indicadores_initComplete) {
+    if (data.route && data.route.includes('/indicadores') && window.App && window.App.indicadoresInit) {
       const now = Date.now();
       // Usar um timeout um pouco maior para dar tempo dos scripts processarem
       if (!this.lastIndicadoresInit || (now - this.lastIndicadoresInit) > 3000) {
@@ -719,7 +711,7 @@ class SPARouter {
             const indicadoresPage = document.querySelector('.indicadores-page');
             if (indicadoresPage) {
               console.log('✅ Elemento .indicadores-page encontrado, executando inicialização final...');
-              window.App.indicadores_initComplete();
+              window.App.indicadoresInit();
               console.log('✅ Indicadores inicializado via verificação final!');
             } else {
               console.log('⚠️ Elemento .indicadores-page não encontrado na verificação final');

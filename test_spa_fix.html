@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test SPA Fix</title>
+</head>
+<body>
+    <h1>Test SPA Fix</h1>
+    <p>Verificar se as requisições não são feitas automaticamente ao carregar esta página</p>
+    
+    <script>
+        // Monitor fetch requests
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            console.log('🌐 FETCH REQUEST:', args[0]);
+            return originalFetch.apply(this, args);
+        };
+        
+        // Monitor XMLHttpRequest
+        const originalXHR = window.XMLHttpRequest;
+        window.XMLHttpRequest = function() {
+            const xhr = new originalXHR();
+            const originalOpen = xhr.open;
+            xhr.open = function(method, url, ...rest) {
+                console.log('🌐 XHR REQUEST:', method, url);
+                return originalOpen.call(this, method, url, ...rest);
+            };
+            return xhr;
+        };
+        
+        console.log('🔍 Monitor de requisições ativado');
+    </script>
+    
+    <!-- Carregar o app.js para testar -->
+    <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>
