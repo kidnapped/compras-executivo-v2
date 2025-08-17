@@ -78,6 +78,12 @@
   margin-top: -20px;
 }
 
+.header-user-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .header-user-info {
   display: flex;
   flex-direction: column;
@@ -91,8 +97,9 @@
   gap: 8px;
 }
 
+.header-cpf-display,
 #cpf-display {
-  color: #6D7FB7 !important;
+  color: #1351b4 !important;
   font-weight: bold;
   font-size: 12px;
   font-family: Arial;
@@ -100,13 +107,13 @@
 }
 
 .header-user-name {
-  color: #64748b;
+  color: #555;
   font-weight: 600;
   font-size: 14px;
 }
 
 .header-user-role {
-  color: #64748b;
+  color: #666;
   font-size: 12px;
   font-style: italic;
 }

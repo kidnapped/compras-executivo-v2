@@ -148,17 +148,16 @@ export default {
   // Função para renderizar usuário logado
   header_renderLoggedInUser(sessionData) {
     return `
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <div style="display: flex; flex-direction: column; align-items: flex-end;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="color: #1351b4; font-weight: bold; font-size: 12px; font-family: Arial; margin-top:2px;" 
-                  id="cpf-display">${sessionData.cpf}</span>
+      <div class="header-user-container">
+        <div class="header-user-info">
+          <div class="header-user-details">
+            <span class="header-cpf-display" id="cpf-display">${sessionData.cpf}</span>
             ${sessionData.usuario_name ? `
-              <span style="color: #555; font-weight: 600; font-size: 14px;">${sessionData.usuario_name.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</span>
+              <span class="header-user-name">${sessionData.usuario_name.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</span>
             ` : ''}
           </div>
           ${sessionData.usuario_role ? `
-            <span style="color: #666; font-size: 12px; font-style: italic;">${sessionData.usuario_role}</span>
+            <span class="header-user-role">${sessionData.usuario_role}</span>
           ` : ''}
         </div>
       </div>
