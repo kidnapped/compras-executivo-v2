@@ -1,475 +1,497 @@
 {% extends "app/base.html" %} {% block title %}Dashboard - Compras Executivo{%
 endblock %} {% block content %}
 
-
-<!-- Filtros ativos visuais -->
-<div id="active-filters-container" class="mb-2" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-
-<div class="row row-tight">
-  <!-- CONTRATOS E RENOVAÇÕES -->
-  <div class="col-12 col-lg-3" id="card-contratos-container">
-    <div
-      class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-      style="min-height: 180px"
-    >
-      <div
-        class="br-loading medium"
-        role="progressbar"
-        aria-label="carregando contratos"
-      ></div>
+<div class="dashboard-page">
+  <div class="container-fluid">
+    <!-- Breadcrumb Component - Dynamic -->
+    <div id="dashboard-breadcrumb-dynamic-container">
+      <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
     </div>
-  </div>
 
-  <!-- CONTRATOS POR EXERCÍCIO -->
-  <div class="col-12 col-lg-3" id="card-contratos-exercicio-container">
-    <div
-      class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-      style="min-height: 180px"
-    >
-      <div
-        class="br-loading medium"
-        role="progressbar"
-        aria-label="carregando gráfico"
-      ></div>
+    <!-- Filter Component - Dynamic -->
+    <div id="dashboard-filter-dynamic-container">
+      <!-- Filter será carregado dinamicamente via JavaScript -->
     </div>
-  </div>
 
-  <!-- REPRESENTAÇÃO ANUAL DE VALORES -->
-  <div class="col-12 col-lg-3" id="card-representacao-anual-valores">
-    <div
-      class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-      style="min-height: 180px"
-    >
-      <div
-        class="br-loading medium"
-        role="progressbar"
-        aria-label="carregando gráfico"
-      ></div>
-    </div>
-  </div>
-
-  <!-- PRÓXIMAS ATIVIDADES -->
-  <div class="col-12 col-lg-3" id="card-proximas-atividades">
-    <div
-      class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-      style="min-height: 180px"
-    >
-      <div
-        class="br-loading medium"
-        role="progressbar"
-        aria-label="carregando gráfico"
-      ></div>
-    </div>
-  </div>
-</div>
-
-<div class="row row-tight" style="margin-top: -18px">
-  <div class="col-12">
-
-    <!-- GRID CONTRATOS -->
-    <div class="br-card card-contratos-grid">
-      <div
-        class="card-header d-flex align-items-center justify-content-between header-grid-custom"
-      >
-        <div class="d-flex align-items-center" style="margin-top: -14px">
-          <i class="fas fa-table" style="color: #00366f; font-size: 14px"></i>
-          {% if uasg_info %}
-          <span class="titulo-grid-uasg">{{ uasg_info.display }}</span>
-          {% else %}
-          <span class="titulo-grid-uasg">Contratos</span>
-          {% endif %}
-        </div>
-
+    <div class="row row-tight">
+      <!-- CONTRATOS E RENOVAÇÕES -->
+      <div class="col-12 col-lg-3" id="card-contratos-container">
         <div
-          class="d-flex align-items-center ms-auto gap-2"
-          style="margin-top: -18px"
+          class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+          style="min-height: 180px"
         >
-          <!-- Campo de busca -->
           <div
-            class="br-input input-highlight"
-            style="height: 32px; position: relative"
-          >
-            <i
-              class="fas fa-search"
-              style="
-                position: absolute;
-                left: 10px;
-                top: 45%;
-                transform: translateY(-50%);
-                color: #555;
-                font-size: 12px;
-              "
-            ></i>
-            <input
-              id="pesquisa-contratos"
-              type="text"
-              placeholder="Pesquisar contratos"
-              autocomplete="off"
-              aria-autocomplete="list"
-              style="height: 24px; font-size: 12px; padding-left: 32px"
-            />
-          </div>
+            class="br-loading medium"
+            role="progressbar"
+            aria-label="carregando contratos"
+          ></div>
+        </div>
+      </div>
 
-          <!-- Botão de filtro -->
-          <div class="filter-menu-container" style="position: relative">
-            <button
-              class="br-button small"
-              type="button"
-              aria-label="Opções de exibição"
-              onclick="App.dashboardGridFiltroOpcoes()"
-              id="btn-filtro-opcoes"
-              style="height: 20px; margin-left: 10px"
-            >
-              <i class="fas fa-sliders-h"></i> Opções de exibição
-            </button>
+      <!-- CONTRATOS POR EXERCÍCIO -->
+      <div class="col-12 col-lg-3" id="card-contratos-exercicio-container">
+        <div
+          class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+          style="min-height: 180px"
+        >
+          <div
+            class="br-loading medium"
+            role="progressbar"
+            aria-label="carregando gráfico"
+          ></div>
+        </div>
+      </div>
+
+      <!-- REPRESENTAÇÃO ANUAL DE VALORES -->
+      <div class="col-12 col-lg-3" id="card-representacao-anual-valores">
+        <div
+          class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+          style="min-height: 180px"
+        >
+          <div
+            class="br-loading medium"
+            role="progressbar"
+            aria-label="carregando gráfico"
+          ></div>
+        </div>
+      </div>
+
+      <!-- PRÓXIMAS ATIVIDADES -->
+      <div class="col-12 col-lg-3" id="card-proximas-atividades">
+        <div
+          class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
+          style="min-height: 180px"
+        >
+          <div
+            class="br-loading medium"
+            role="progressbar"
+            aria-label="carregando gráfico"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-tight" style="margin-top: -18px">
+      <div class="col-12">
+        <!-- GRID CONTRATOS -->
+        <div class="br-card card-contratos-grid">
+          <div
+            class="card-header d-flex align-items-center justify-content-between header-grid-custom"
+          >
+            <div class="d-flex align-items-center" style="margin-top: -14px">
+              <i
+                class="fas fa-table"
+                style="color: #00366f; font-size: 14px"
+              ></i>
+              {% if uasg_info %}
+              <span class="titulo-grid-uasg">{{ uasg_info.display }}</span>
+              {% else %}
+              <span class="titulo-grid-uasg">Contratos</span>
+              {% endif %}
+            </div>
+
             <div
-              class="filter-dropdown"
-              id="filtro-opcoes-menu"
-              style="
-                display: none;
-                position: absolute;
-                top: 100%;
-                right: 0;
-                z-index: 999;
-                background: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                padding: 8px;
-                min-width: 250px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                margin-top: 4px;
-              "
+              class="d-flex align-items-center ms-auto gap-2"
+              style="margin-top: -18px"
             >
-              <div style="margin-bottom: 8px">
-                <div class="br-checkbox">
-                  <input id="check-favoritos" type="checkbox" />
-                  <label for="check-favoritos">Somente favoritos</label>
+              <!-- Campo de busca -->
+              <div
+                class="br-input input-highlight"
+                style="height: 32px; position: relative"
+              >
+                <i
+                  class="fas fa-search"
+                  style="
+                    position: absolute;
+                    left: 10px;
+                    top: 45%;
+                    transform: translateY(-50%);
+                    color: #555;
+                    font-size: 12px;
+                  "
+                ></i>
+                <input
+                  id="pesquisa-contratos"
+                  type="text"
+                  placeholder="Pesquisar contratos"
+                  autocomplete="off"
+                  aria-autocomplete="list"
+                  style="height: 24px; font-size: 12px; padding-left: 32px"
+                />
+              </div>
+
+              <!-- Botão de filtro -->
+              <div class="filter-menu-container" style="position: relative">
+                <button
+                  class="br-button small"
+                  type="button"
+                  aria-label="Opções de exibição"
+                  onclick="App.dashboardGridFiltroOpcoes()"
+                  id="btn-filtro-opcoes"
+                  style="height: 20px; margin-left: 10px"
+                >
+                  <i class="fas fa-sliders-h"></i> Opções de exibição
+                </button>
+                <div
+                  class="filter-dropdown"
+                  id="filtro-opcoes-menu"
+                  style="
+                    display: none;
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    z-index: 999;
+                    background: white;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    padding: 8px;
+                    min-width: 250px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    margin-top: 4px;
+                  "
+                >
+                  <div style="margin-bottom: 8px">
+                    <div class="br-checkbox">
+                      <input id="check-favoritos" type="checkbox" />
+                      <label for="check-favoritos">Somente favoritos</label>
+                    </div>
+                  </div>
+
+                  <div style="margin-bottom: 8px">
+                    <details>
+                      <summary
+                        style="
+                          cursor: pointer;
+                          font-weight: bold;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Minhas UASGS
+                      </summary>
+                      <div style="margin-left: 16px">
+                        <div class="br-checkbox" style="margin-bottom: 4px">
+                          <input id="check-todas-uasgs" type="checkbox" />
+                          <label for="check-todas-uasgs">Todas</label>
+                        </div>
+                        <div class="br-checkbox" style="margin-bottom: 4px">
+                          <input id="check-dnit-sede" type="checkbox" />
+                          <label for="check-dnit-sede"
+                            >393003 - DNIT Sede</label
+                          >
+                        </div>
+                        <div style="margin-top: 4px">
+                          <button
+                            class="br-button circle small"
+                            title="Atualizar"
+                          >
+                            <i class="fas fa-sync-alt"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </details>
+                  </div>
+
+                  <div style="margin-bottom: 8px">
+                    <details>
+                      <summary
+                        style="
+                          cursor: pointer;
+                          font-weight: bold;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Organizar por
+                      </summary>
+                      <div style="margin-left: 16px">
+                        <div class="br-radio" style="margin-bottom: 4px">
+                          <input
+                            id="radio-numero"
+                            type="radio"
+                            name="ordenar"
+                            checked
+                          />
+                          <label for="radio-numero">Número</label>
+                        </div>
+                        <div class="br-radio" style="margin-bottom: 4px">
+                          <input
+                            id="radio-vigencia"
+                            type="radio"
+                            name="ordenar"
+                          />
+                          <label for="radio-vigencia">Vigência</label>
+                        </div>
+                        <div class="br-radio" style="margin-bottom: 4px">
+                          <input id="radio-valor" type="radio" name="ordenar" />
+                          <label for="radio-valor">Valor</label>
+                        </div>
+                      </div>
+                    </details>
+                  </div>
+
+                  <div style="margin-bottom: 8px">
+                    <details>
+                      <summary
+                        style="
+                          cursor: pointer;
+                          font-weight: bold;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Filtrar contratos
+                      </summary>
+                      <div style="margin-left: 16px">
+                        <div class="br-checkbox" style="margin-bottom: 4px">
+                          <input id="check-pf" type="checkbox" />
+                          <label for="check-pf">Pessoa Física</label>
+                        </div>
+                        <div class="br-checkbox" style="margin-bottom: 4px">
+                          <input id="check-pj" type="checkbox" />
+                          <label for="check-pj">Pessoa Jurídica</label>
+                        </div>
+                      </div>
+                    </details>
+                  </div>
                 </div>
               </div>
-
-              <div style="margin-bottom: 8px">
-                <details>
-                  <summary
-                    style="
-                      cursor: pointer;
-                      font-weight: bold;
-                      margin-bottom: 4px;
-                    "
-                  >
-                    Minhas UASGS
-                  </summary>
-                  <div style="margin-left: 16px">
-                    <div class="br-checkbox" style="margin-bottom: 4px">
-                      <input id="check-todas-uasgs" type="checkbox" />
-                      <label for="check-todas-uasgs">Todas</label>
-                    </div>
-                    <div class="br-checkbox" style="margin-bottom: 4px">
-                      <input id="check-dnit-sede" type="checkbox" />
-                      <label for="check-dnit-sede">393003 - DNIT Sede</label>
-                    </div>
-                    <div style="margin-top: 4px">
-                      <button class="br-button circle small" title="Atualizar">
-                        <i class="fas fa-sync-alt"></i>
-                      </button>
-                    </div>
-                  </div>
-                </details>
-              </div>
-
-              <div style="margin-bottom: 8px">
-                <details>
-                  <summary
-                    style="
-                      cursor: pointer;
-                      font-weight: bold;
-                      margin-bottom: 4px;
-                    "
-                  >
-                    Organizar por
-                  </summary>
-                  <div style="margin-left: 16px">
-                    <div class="br-radio" style="margin-bottom: 4px">
-                      <input
-                        id="radio-numero"
-                        type="radio"
-                        name="ordenar"
-                        checked
-                      />
-                      <label for="radio-numero">Número</label>
-                    </div>
-                    <div class="br-radio" style="margin-bottom: 4px">
-                      <input id="radio-vigencia" type="radio" name="ordenar" />
-                      <label for="radio-vigencia">Vigência</label>
-                    </div>
-                    <div class="br-radio" style="margin-bottom: 4px">
-                      <input id="radio-valor" type="radio" name="ordenar" />
-                      <label for="radio-valor">Valor</label>
-                    </div>
-                  </div>
-                </details>
-              </div>
-
-              <div style="margin-bottom: 8px">
-                <details>
-                  <summary
-                    style="
-                      cursor: pointer;
-                      font-weight: bold;
-                      margin-bottom: 4px;
-                    "
-                  >
-                    Filtrar contratos
-                  </summary>
-                  <div style="margin-left: 16px">
-                    <div class="br-checkbox" style="margin-bottom: 4px">
-                      <input id="check-pf" type="checkbox" />
-                      <label for="check-pf">Pessoa Física</label>
-                    </div>
-                    <div class="br-checkbox" style="margin-bottom: 4px">
-                      <input id="check-pj" type="checkbox" />
-                      <label for="check-pj">Pessoa Jurídica</label>
-                    </div>
-                  </div>
-                </details>
-              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div
-        class="dashboard-table-container"
-        style="
-          border: 1px solid #ddd;
-          border-radius: 0 0 8px 8px;
-          overflow: hidden;
-          margin: 0;
-        "
-      >
-        <div class="table-responsive" style="border-bottom: 1px solid #ddd">
-          <table
-            class="br-table table-hover table-striped"
-            style="margin-bottom: 0; border: none"
-          >
-            <thead
-              style="
-                position: sticky;
-                top: 0;
-                z-index: 10;
-                background-color: #f8f8f8;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                border-bottom: 1px solid #ddd;
-              "
-            >
-              <tr>
-                <th style="text-align: left; border-right: 1px solid #ddd">
-                  Detalhes do contrato
-                </th>
-                <th
-                  class="hide-mobile"
-                  style="text-align: center; border-right: 1px solid #ddd"
-                >
-                  Vigência
-                </th>
-                {% if show_renewal_column %}
-                <th
-                  class="hide-mobile"
-                  style="text-align: center; border-right: 1px solid #ddd"
-                >
-                  Renovação
-                </th>
-                {% endif %}
-                <th
-                  class="hide-mobile"
-                  style="
-                    text-align: center;
-                    min-width: 93px;
-                    border-right: 1px solid #ddd;
-                  "
-                >
-                  Contratado
-                </th>
-                <th
-                  class="hide-mobile"
-                  style="
-                    text-align: center;
-                    min-width: 93px;
-                    border-right: 1px solid #ddd;
-                  "
-                >
-                  Empenhado
-                </th>
-                <th
-                  class="hide-mobile"
-                  style="
-                    text-align: center;
-                    min-width: 93px;
-                    border-right: 1px solid #ddd;
-                  "
-                >
-                  Pagamentos
-                </th>
-                <th class="hide-mobile" style="text-align: center">Equipe</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Dynamic content will be loaded here -->
-            </tbody>
-          </table>
-
-          <!-- Loading centralizado no grid -->
           <div
-            id="grid-loading"
+            class="dashboard-table-container"
             style="
-              display: none;
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              text-align: center;
-              z-index: 100;
+              border: 1px solid #ddd;
+              border-radius: 0 0 8px 8px;
+              overflow: hidden;
+              margin: 0;
             "
           >
-            <div class="br-loading medium" role="progressbar"></div>
+            <div class="table-responsive" style="border-bottom: 1px solid #ddd">
+              <table
+                class="br-table table-hover table-striped"
+                style="margin-bottom: 0; border: none"
+              >
+                <thead
+                  style="
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                    background-color: #f8f8f8;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    border-bottom: 1px solid #ddd;
+                  "
+                >
+                  <tr>
+                    <th style="text-align: left; border-right: 1px solid #ddd">
+                      Detalhes do contrato
+                    </th>
+                    <th
+                      class="hide-mobile"
+                      style="text-align: center; border-right: 1px solid #ddd"
+                    >
+                      Vigência
+                    </th>
+                    {% if show_renewal_column %}
+                    <th
+                      class="hide-mobile"
+                      style="text-align: center; border-right: 1px solid #ddd"
+                    >
+                      Renovação
+                    </th>
+                    {% endif %}
+                    <th
+                      class="hide-mobile"
+                      style="
+                        text-align: center;
+                        min-width: 93px;
+                        border-right: 1px solid #ddd;
+                      "
+                    >
+                      Contratado
+                    </th>
+                    <th
+                      class="hide-mobile"
+                      style="
+                        text-align: center;
+                        min-width: 93px;
+                        border-right: 1px solid #ddd;
+                      "
+                    >
+                      Empenhado
+                    </th>
+                    <th
+                      class="hide-mobile"
+                      style="
+                        text-align: center;
+                        min-width: 93px;
+                        border-right: 1px solid #ddd;
+                      "
+                    >
+                      Pagamentos
+                    </th>
+                    <th class="hide-mobile" style="text-align: center">
+                      Equipe
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Dynamic content will be loaded here -->
+                </tbody>
+              </table>
+
+              <!-- Loading centralizado no grid -->
+              <div
+                id="grid-loading"
+                style="
+                  display: none;
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  text-align: center;
+                  z-index: 100;
+                "
+              >
+                <div class="br-loading medium" role="progressbar"></div>
+                <div
+                  style="
+                    position: absolute;
+                    top: 50px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    color: #6c757d;
+                    font-size: 0.875rem;
+                    white-space: nowrap;
+                  "
+                >
+                  Carregando contratos...
+                </div>
+              </div>
+            </div>
+
+            <!-- Bloco de paginação com fundo igual ao thead -->
             <div
+              class="pagination-container"
               style="
-                position: absolute;
-                top: 50px;
-                left: 50%;
-                transform: translateX(-50%);
-                color: #6c757d;
-                font-size: 0.875rem;
-                white-space: nowrap;
+                background: #f8f8f8;
+                border-top: 1px solid #ddd;
+                padding: 8px 16px;
               "
             >
-              Carregando contratos...
-            </div>
-          </div>
-        </div>
-
-        <!-- Bloco de paginação com fundo igual ao thead -->
-        <div
-          class="pagination-container"
-          style="
-            background: #f8f8f8;
-            border-top: 1px solid #ddd;
-            padding: 8px 16px;
-          "
-        >
-          <div
-            class="d-flex flex-wrap align-items-center justify-content-between"
-            style="font-size: 12px"
-          >
-            <!-- Controles de paginação -->
-            <div class="d-flex flex-wrap align-items-center gap-1">
-              <button
-                class="br-button circle small"
-                title="Primeira página"
-                onclick="App.irParaPrimeiraPagina()"
+              <div
+                class="d-flex flex-wrap align-items-center justify-content-between"
+                style="font-size: 12px"
               >
-                <i class="fas fa-angle-double-left"></i>
-              </button>
-              <button
-                class="br-button circle small"
-                title="Página anterior"
-                onclick="App.irParaAnterior()"
-              >
-                <i class="fas fa-angle-left"></i>
-              </button>
+                <!-- Controles de paginação -->
+                <div class="d-flex flex-wrap align-items-center gap-1">
+                  <button
+                    class="br-button circle small"
+                    title="Primeira página"
+                    onclick="App.irParaPrimeiraPagina()"
+                  >
+                    <i class="fas fa-angle-double-left"></i>
+                  </button>
+                  <button
+                    class="br-button circle small"
+                    title="Página anterior"
+                    onclick="App.irParaAnterior()"
+                  >
+                    <i class="fas fa-angle-left"></i>
+                  </button>
 
-              <!-- Página atual (input) -->
-              <input
-                type="number"
-                min="1"
-                value="1"
-                id="pagina-atual"
-                class="br-input"
-                style="width: 60px; height: 20px; font-size: 12px"
-                onchange="App.irParaPaginaEspecifica(this.value)"
-              />
-              <span class="mx-1">de <strong>151</strong></span>
+                  <!-- Página atual (input) -->
+                  <input
+                    type="number"
+                    min="1"
+                    value="1"
+                    id="pagina-atual"
+                    class="br-input"
+                    style="width: 60px; height: 20px; font-size: 12px"
+                    onchange="App.irParaPaginaEspecifica(this.value)"
+                  />
+                  <span class="mx-1">de <strong>151</strong></span>
 
-              <button
-                class="br-button circle small"
-                title="Próxima página"
-                onclick="App.irParaProxima()"
-              >
-                <i class="fas fa-angle-right"></i>
-              </button>
-              <button
-                class="br-button circle small"
-                title="Última página"
-                onclick="App.irParaUltima()"
-              >
-                <i class="fas fa-angle-double-right"></i>
-              </button>
+                  <button
+                    class="br-button circle small"
+                    title="Próxima página"
+                    onclick="App.irParaProxima()"
+                  >
+                    <i class="fas fa-angle-right"></i>
+                  </button>
+                  <button
+                    class="br-button circle small"
+                    title="Última página"
+                    onclick="App.irParaUltima()"
+                  >
+                    <i class="fas fa-angle-double-right"></i>
+                  </button>
 
-              <!-- Botão de refresh -->
-              <button
-                class="br-button circle small"
-                title="Atualizar contratos"
-                onclick="App.atualizarTabelaContratos()"
-              >
-                <i class="fas fa-sync-alt"></i>
-              </button>
-            </div>
+                  <!-- Botão de refresh -->
+                  <button
+                    class="br-button circle small"
+                    title="Atualizar contratos"
+                    onclick="App.atualizarTabelaContratos()"
+                  >
+                    <i class="fas fa-sync-alt"></i>
+                  </button>
+                </div>
 
-            <!-- Texto à direita -->
-            <div
-              class="ms-auto text-muted small"
-              style="font-size: 12px; position: relative; top: -1px"
-            >
-              Exibindo 1–20 de 3023 contratos
+                <!-- Texto à direita -->
+                <div
+                  class="ms-auto text-muted small"
+                  style="font-size: 12px; position: relative; top: -1px"
+                >
+                  Exibindo 1–20 de 3023 contratos
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <script>
-    // Configuration from backend
-    window.dashboardConfig = {
-            showRenewalColumn: {{ 'true' if show_renewal_column else 'false' }}
+      <script>
+                // Configuration from backend
+                window.dashboardConfig = {
+                    showRenewalColumn: {{ 'true' if show_renewal_column else 'false' }}
         };
-  </script>
-</div>
+      </script>
+    </div>
 
-<div class="br-scrim" data-dismiss="br-modal" style="display: none"></div>
-<div
-  id="reusable-modal"
-  class="br-modal reusable-modal-container large"
-  style="display: none"
->
-  <div class="br-modal-dialog">
-    <div class="br-modal-content">
-      <div class="br-modal-header">
-        <h2 class="br-modal-title" id="reusable-modal-title">
-          Título do Modal
-        </h2>
-        <button
-          class="br-button circle"
-          type="button"
-          aria-label="Close"
-          data-dismiss="br-modal"
-        >
-          <i class="fas fa-times" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="br-modal-body" id="reusable-modal-body">
-        <!-- Content will be loaded here by JavaScript -->
-        <div class="br-loading medium" role="progressbar"></div>
-      </div>
-      <div class="br-modal-footer">
-        <button
-          class="br-button secondary"
-          type="button"
-          data-dismiss="br-modal"
-        >
-          <i class="fas fa-times"></i> Fechar
-        </button>
+    <div class="br-scrim" data-dismiss="br-modal" style="display: none"></div>
+    <div
+      id="reusable-modal"
+      class="br-modal reusable-modal-container large"
+      style="display: none"
+    >
+      <div class="br-modal-dialog">
+        <div class="br-modal-content">
+          <div class="br-modal-header">
+            <h2 class="br-modal-title" id="reusable-modal-title">
+              Título do Modal
+            </h2>
+            <button
+              class="br-button circle"
+              type="button"
+              aria-label="Close"
+              data-dismiss="br-modal"
+            >
+              <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="br-modal-body" id="reusable-modal-body">
+            <!-- Content will be loaded here by JavaScript -->
+            <div class="br-loading medium" role="progressbar"></div>
+          </div>
+          <div class="br-modal-footer">
+            <button
+              class="br-button secondary"
+              type="button"
+              data-dismiss="br-modal"
+            >
+              <i class="fas fa-times"></i> Fechar
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
-

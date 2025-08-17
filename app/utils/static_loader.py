@@ -204,7 +204,9 @@ def collect_static_files():
             '/static/css/app/app.css': 10,
             '/static/css/app/base.css': 11,
             '/static/css/app/header.css': 12,
-            '/static/css/app/menu.css': 13
+            '/static/css/app/menu.css': 13,
+            '/static/css/app/breadcrumb.css': 14,
+            '/static/css/app/filter.css': 15
         }
         
         if "/css/common/govbr-ds/" in x:
