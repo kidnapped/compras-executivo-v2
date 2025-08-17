@@ -16,6 +16,7 @@ import admin_dw_tesouro from "./admin/admin_dw_tesouro.js";
 import indicadores from "./indicadores.js";
 import minha_conta from "./minha_conta.js";
 import breadcrumb from "./app/breadcrumb.js";
+import filter from "./app/filter.js";
 import card_header from "./app/card_header.js";
 import topico from "./app/topico.js";
 import SPARouter from "./spa_router.js";
@@ -35,6 +36,7 @@ const App = {
   ...aditivosHandler,
   ...devOps,
   breadcrumb,
+  filter,
   card_header,
   topico,
   SPARouter,
@@ -82,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
   modalManager.initialize();
   // tooltip.initialize(); // Disabled - using GovBR DS tooltips instead
   breadcrumb.breadcrumb_init();
+  filter.filter_init();
   card_header.card_header_init();
   topico.topico_init();
   // Fix: Call the init method on the EncontroInit object

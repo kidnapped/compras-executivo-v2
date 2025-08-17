@@ -4,10 +4,60 @@ import DashboardEvents from "./dashboard-events.js";
 import financialBars from "./financial-bars.js";
 
 export default {
-  // Renderiza os chips de filtro visual
+  // Filter management using the new filter module
+  addDashboardFilter(filterKey, filterValue, displayText, filterType = 'status') {
+    if (window.App && window.App.filter) {
+      window.App.filter.filter_addFilter(filterKey, filterValue, displayText, filterType);
+    }
+  },
+
+  removeDashboardFilter(filterKey, filterValue) {
+    if (window.App && window.App.filter) {
+      window.App.filter.filter_removeFilter(filterKey, filterValue);
+    }
+  },
+
+  clearAllDashboardFilters() {
+    if (window.App && window.App.filter) {
+      window.App.filter.filter_clearAllFilters();
+    }
+  },
+
+  getDashboardFilters() {
+    if (window.App && window.App.filter) {
+      return window.App.filter.filter_getCurrentFilters();
+    }
+    return {};
+  },
+
+  // Helper method to convert filters to API parameters
+  getApiFiltersFromFilterSystem() {
+    const apiParams = {};
+    
+    if (window.App && window.App.filter) {
+      const currentFilters = window.App.filter.filter_getCurrentFilters();
+      
+      // Convert each filter type to API parameters
+      Object.keys(currentFilters).forEach(filterKey => {
+        const filterValues = currentFilters[filterKey].map(f => f.value);
+        if (filterValues.length > 0) {
+          apiParams[`${filterKey}_filters`] = filterValues.join(",");
+        }
+      });
+    }
+    
+    return apiParams;
+  },
+
+  // Legacy compatibility function - redirects to new filter system
   renderActiveFilters() {
-    const container = document.getElementById("active-filters-container");
-    if (!container) return;
+    // This function is now handled by the filter module
+    console.warn('renderActiveFilters is deprecated. Use the filter module instead.');
+  },
+
+  // Legacy compatibility function - redirects to new filter system
+  removeActiveFilter(filtro) {
+    // Convert old filter format to new format
     const filterNames = {
       vigentes: "Vigentes",
       finalizados: "Finalizados",
@@ -21,27 +71,9 @@ export default {
       pf: "Pessoa Física",
       pj: "Pessoa Jurídica",
     };
-    const filtros = window._dashboardVisualFilters || [];
-    container.innerHTML = filtros
-      .map(
-        (filtro) => `
-      <span class="filter-chip" style="background:#e3eaf3; color:#084a8a; border-radius:16px; padding:4px 12px; display:inline-flex; align-items:center; font-size:13px; margin-bottom:2px;">
-        ${filterNames[filtro] || filtro}
-        <button type="button" aria-label="Remover filtro" style="background:none; border:none; color:#084a8a; margin-left:6px; font-size:15px; cursor:pointer; line-height:1;" onclick="App.removeActiveFilter('${filtro}')">&times;</button>
-      </span>
-    `
-      )
-      .join("");
-  },
-
-  // Remove chip de filtro visual
-  removeActiveFilter(filtro) {
-    if (!window._dashboardVisualFilters) return;
-    const idx = window._dashboardVisualFilters.indexOf(filtro);
-    if (idx !== -1) {
-      window._dashboardVisualFilters.splice(idx, 1);
-      this.renderActiveFilters();
-    }
+    
+    const displayText = filterNames[filtro] || filtro;
+    this.removeDashboardFilter('status', filtro);
   },
   // State management for the table
   tableState: {
@@ -194,17 +226,10 @@ export default {
       chart.off && chart.off("click");
       chart.on("click", (params) => {
         if (params.componentType === "series" && params.seriesType === "bar") {
-          if (!window._dashboardVisualFilters)
-            window._dashboardVisualFilters = [];
           const filter = params.name;
-          const idx = window._dashboardVisualFilters.indexOf(filter);
-          if (idx === -1) {
-            window._dashboardVisualFilters.push(filter);
-          } else {
-            window._dashboardVisualFilters.splice(idx, 1);
-          }
-          if (typeof App !== "undefined" && App.renderActiveFilters) {
-            App.renderActiveFilters();
+          // Use the new filter system for year filters
+          if (window.App && window.App.filter) {
+            window.App.filter.filter_toggleFilter('ano', filter, `Ano ${filter}`, 'date');
           }
         }
       });
@@ -367,14 +392,13 @@ export default {
     outros = 0,
     icone = "/static/images/doc2.png",
   }) {
-    // Helper to check if filter is active
-    const isActive = (filter) =>
-      this.tableState &&
-      this.tableState.filters &&
-      this.tableState.filters.tipo &&
-      this.tableState.filters.tipo.includes(filter)
-        ? "active"
-        : "";
+    // Helper to check if filter is active using new filter system
+    const isActive = (filter) => {
+      if (window.App && window.App.filter) {
+        return window.App.filter.filter_hasFilter('status', filter) ? "active" : "";
+      }
+      return "";
+    };
     // Card HTML with clickable/filterable fields
     const html = `
       <div class="col-12 col-lg-3">
@@ -436,37 +460,41 @@ export default {
       .querySelectorAll(".dashboard-card-filter.clickable")
       .forEach((el) => {
         el.addEventListener("click", (e) => {
-          if (!window._dashboardVisualFilters)
-            window._dashboardVisualFilters = [];
           const filter = el.getAttribute("data-filter");
-          const idx = window._dashboardVisualFilters.indexOf(filter);
-          if (idx === -1) {
-            window._dashboardVisualFilters.push(filter);
-          } else {
-            window._dashboardVisualFilters.splice(idx, 1);
-          }
-          this.renderActiveFilters();
+          this.toggleDashboardCardFilter(filter, el);
         });
         el.addEventListener("keydown", (e) => {
           if (e.key === "Enter" || e.key === " ") {
-            if (!window._dashboardVisualFilters)
-              window._dashboardVisualFilters = [];
             const filter = el.getAttribute("data-filter");
-            const idx = window._dashboardVisualFilters.indexOf(filter);
-            if (idx === -1) {
-              window._dashboardVisualFilters.push(filter);
-            } else {
-              window._dashboardVisualFilters.splice(idx, 1);
-            }
-            this.renderActiveFilters();
+            this.toggleDashboardCardFilter(filter, el);
           }
         });
       });
   },
 
-  // Toggle filter in tableState.filters.tipo and update dashboard
-  // Não faz mais nada, só para compatibilidade
-  toggleDashboardCardFilter(filter, el) {},
+  // Toggle filter in new filter system
+  toggleDashboardCardFilter(filter, el) {
+    const filterNames = {
+      vigentes: "Vigentes",
+      finalizados: "Finalizados",
+      criticos: "Críticos",
+      "120dias": "120 dias",
+      "90dias": "90 dias",
+      "45dias": "45 dias",
+      outros: "Outros",
+      todos: "Todos",
+      mais120: "Mais de 120 dias",
+      pf: "Pessoa Física",
+      pj: "Pessoa Jurídica",
+    };
+
+    const displayText = filterNames[filter] || filter;
+    
+    // Use the new filter system
+    if (window.App && window.App.filter) {
+      window.App.filter.filter_toggleFilter('status', filter, displayText, 'status');
+    }
+  },
 
   // Reload all dashboard cards, grids, and charts using the new filters
   updateDashboardFilters() {
@@ -832,9 +860,7 @@ export default {
 
   // Initialize dashboard - called from DOMContentLoaded
   initDashboard() {
-    if (!window._dashboardVisualFilters) window._dashboardVisualFilters = [];
-    this.renderActiveFilters();
-    // ...existing code...
+    // Initialize the new filter system (filters are now managed by the filter module)
     console.log("Initializing dashboard...");
     this.loadContractsTable();
     this.setupTableEventListeners();
@@ -859,19 +885,19 @@ export default {
       searchInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const value = e.target.value.trim();
-          if (!window._dashboardVisualFilters)
-            window._dashboardVisualFilters = [];
-          // Remove o filtro anterior se existir
-          if (lastSearch) {
-            const idx = window._dashboardVisualFilters.indexOf(lastSearch);
-            if (idx !== -1) window._dashboardVisualFilters.splice(idx, 1);
+          
+          // Use the new filter system for search
+          if (window.App && window.App.filter) {
+            // Remove the previous search filter if it exists
+            if (lastSearch) {
+              window.App.filter.filter_removeFilter('search', lastSearch);
+            }
+            // Add the new search filter if not empty
+            if (value) {
+              window.App.filter.filter_addFilter('search', value, `Busca: "${value}"`, 'default');
+            }
+            lastSearch = value;
           }
-          // Adiciona o novo filtro se não vazio
-          if (value) {
-            window._dashboardVisualFilters.push(value);
-          }
-          lastSearch = value;
-          this.renderActiveFilters();
         }
       });
     }
@@ -993,7 +1019,7 @@ export default {
         params.append("sort", JSON.stringify(sortCriteria));
       }
 
-      // Add filters
+      // Add filters from tableState (legacy filters)
       if (this.tableState.filters.favoritos) {
         params.append("favoritos", "true");
       }
@@ -1004,6 +1030,41 @@ export default {
 
       if (this.tableState.search) {
         params.append("search", this.tableState.search);
+      }
+
+      // Add filters from new filter system
+      if (window.App && window.App.filter) {
+        const currentFilters = window.App.filter.filter_getCurrentFilters();
+        
+        // Add status filters
+        if (currentFilters.status && currentFilters.status.length > 0) {
+          const statusValues = currentFilters.status.map(f => f.value);
+          params.append("status_filters", statusValues.join(","));
+        }
+        
+        // Add search filters
+        if (currentFilters.search && currentFilters.search.length > 0) {
+          const searchValues = currentFilters.search.map(f => f.value);
+          params.append("search_filters", searchValues.join(","));
+        }
+        
+        // Add year filters
+        if (currentFilters.ano && currentFilters.ano.length > 0) {
+          const yearValues = currentFilters.ano.map(f => f.value);
+          params.append("year_filters", yearValues.join(","));
+        }
+        
+        // Add processo filters
+        if (currentFilters.processo && currentFilters.processo.length > 0) {
+          const processoValues = currentFilters.processo.map(f => f.value);
+          params.append("processo_filters", processoValues.join(","));
+        }
+        
+        // Add UASG filters
+        if (currentFilters.uasg && currentFilters.uasg.length > 0) {
+          const uasgValues = currentFilters.uasg.map(f => f.value);
+          params.append("uasg_filters", uasgValues.join(","));
+        }
       }
 
       // Fetch data
@@ -1109,34 +1170,22 @@ export default {
       });
       document.querySelectorAll(".processo-filter").forEach((el) => {
         el.addEventListener("click", (e) => {
-          if (!window._dashboardVisualFilters)
-            window._dashboardVisualFilters = [];
           const processo = el.getAttribute("data-processo");
           if (!processo) return;
-          const idx = window._dashboardVisualFilters.indexOf(processo);
-          if (idx === -1) {
-            window._dashboardVisualFilters.push(processo);
-          } else {
-            window._dashboardVisualFilters.splice(idx, 1);
-          }
-          if (typeof App !== "undefined" && App.renderActiveFilters) {
-            App.renderActiveFilters();
+          
+          // Use the new filter system for processo filters
+          if (window.App && window.App.filter) {
+            window.App.filter.filter_toggleFilter('processo', processo, `Processo: ${processo}`, 'category');
           }
         });
         el.addEventListener("keydown", (e) => {
           if (e.key === "Enter" || e.key === " ") {
-            if (!window._dashboardVisualFilters)
-              window._dashboardVisualFilters = [];
             const processo = el.getAttribute("data-processo");
             if (!processo) return;
-            const idx = window._dashboardVisualFilters.indexOf(processo);
-            if (idx === -1) {
-              window._dashboardVisualFilters.push(processo);
-            } else {
-              window._dashboardVisualFilters.splice(idx, 1);
-            }
-            if (typeof App !== "undefined" && App.renderActiveFilters) {
-              App.renderActiveFilters();
+            
+            // Use the new filter system for processo filters
+            if (window.App && window.App.filter) {
+              window.App.filter.filter_toggleFilter('processo', processo, `Processo: ${processo}`, 'category');
             }
           }
         });
@@ -1810,6 +1859,32 @@ export default {
     }
   },
 
+  // Nova função para inicializar o filtro dinamicamente
+  dashboard_initFilter() {
+    console.log('🔧 Inicializando filter do dashboard...');
+    
+    // Verifica se o módulo filter está disponível
+    if (typeof App !== "undefined" && App.filter && App.filter.filter_createDynamic) {
+      App.filter.filter_createDynamic('dashboard-filter-dynamic-container');
+      console.log('✅ Filter Dashboard initialized dynamically');
+      
+      // Listen for filter changes to update dashboard
+      document.addEventListener('filtersChanged', (event) => {
+        console.log('🔄 Filters changed:', event.detail.filters);
+        // Here you can trigger dashboard updates when filters change
+        this.updateDashboardFilters();
+      });
+      
+    } else {
+      console.warn('❌ Filter module not available - App:', typeof App, 'filter:', App?.filter ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
+      // Retry after a short delay if filter is not available yet
+      setTimeout(() => {
+        this.dashboard_initFilter();
+      }, 500);
+    }
+  },
+
   // Dashboard initialization function with proper naming convention
   dashboard_autoInit() {
     // Initialize the dashboard with dynamic table loading
@@ -1818,6 +1893,9 @@ export default {
       
       // Inicializar breadcrumb
       this.dashboard_initBreadcrumb();
+      
+      // Inicializar filtros
+      this.dashboard_initFilter();
       
       App.initDashboard();
     } else {
@@ -1828,6 +1906,9 @@ export default {
           
           // Inicializar breadcrumb
           this.dashboard_initBreadcrumb();
+          
+          // Inicializar filtros
+          this.dashboard_initFilter();
           
           App.initDashboard();
         } else {
