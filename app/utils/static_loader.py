@@ -2,38 +2,136 @@ from pathlib import Path
 import re
 
 def get_app_js_imports():
-    """Extrai os arquivos JS que já são importados no app.js"""
+    """Extrai recursivamente todos os arquivos JS que são importados direta ou indiretamente pelo app.js"""
     app_js_path = Path(__file__).resolve().parents[1] / "static" / "js" / "app.js"
     
     if not app_js_path.exists():
         return set()
     
     imported_files = set()
+    processed_files = set()  # Para evitar loops infinitos
     
-    try:
-        with open(app_js_path, 'r', encoding='utf-8') as f:
-            content = f.read()
+    def extract_imports_from_file(file_path, relative_to_js_dir=True):
+        """Extrai imports de um arquivo JS específico, ignorando comentários"""
+        if not file_path.exists():
+            return set()
         
-        # Regex para capturar imports ES6
-        # Captura: import ... from "./path/file.js"
-        import_patterns = [
-            r'import\s+.*?\s+from\s+["\']\./(.*?\.js)["\']',
-            r'import\s+["\']\./(.*?\.js)["\']',
-            r'import\(["\']\./(.*?\.js)["\']\)',
-        ]
+        # Evitar processar o mesmo arquivo várias vezes
+        file_key = str(file_path.resolve())
+        if file_key in processed_files:
+            return set()
+        processed_files.add(file_key)
         
-        for pattern in import_patterns:
-            matches = re.findall(pattern, content, re.MULTILINE)
-            for match in matches:
-                # Converter path relativo para path absoluto usado no HTML
-                full_path = f"/static/js/{match}"
-                imported_files.add(full_path)
+        file_imports = set()
         
-        if imported_files:
-            print(f"📋 {len(imported_files)} arquivos JS importados detectados no app.js (excluídos do HTML)")
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Remover comentários de linha (//) e comentários de bloco (/* */)
+            # Primeiro, remover comentários de bloco
+            content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+            # Depois, remover comentários de linha (mas preservar strings que contenham //)
+            lines = content.split('\n')
+            cleaned_lines = []
+            for line in lines:
+                # Encontrar // que não estão dentro de strings
+                in_string = False
+                string_char = None
+                comment_pos = None
+                
+                for i, char in enumerate(line):
+                    if not in_string and char in ['"', "'"]:
+                        in_string = True
+                        string_char = char
+                    elif in_string and char == string_char and (i == 0 or line[i-1] != '\\'):
+                        in_string = False
+                        string_char = None
+                    elif not in_string and char == '/' and i + 1 < len(line) and line[i + 1] == '/':
+                        comment_pos = i
+                        break
+                
+                if comment_pos is not None:
+                    line = line[:comment_pos]
+                
+                cleaned_lines.append(line)
+            
+            content = '\n'.join(cleaned_lines)
+            
+            # Regex para capturar imports ES6 (tanto ./ quanto ../)
+            import_patterns = [
+                r'import\s+.*?\s+from\s+["\'](\./.*?\.js)["\']',   # import something from "./path/file.js"
+                r'import\s+.*?\s+from\s+["\'](\.\./.*?\.js)["\']', # import something from "../path/file.js"
+                r'import\s+["\'](\./.*?\.js)["\']',                # import "./path/file.js" 
+                r'import\s+["\'](\.\./.*?\.js)["\']',              # import "../path/file.js"
+                r'import\(["\'](\./.*?\.js)["\']\)',               # import("./path/file.js")
+                r'import\(["\'](\.\./.*?\.js)["\']\)',             # import("../path/file.js")
+            ]
+            
+            js_dir = Path(__file__).resolve().parents[1] / "static" / "js"
+            
+            for pattern in import_patterns:
+                matches = re.findall(pattern, content, re.MULTILINE)
+                for match in matches:
+                    # Resolver path relativo para path absoluto
+                    if relative_to_js_dir:
+                        # Import relativo ao diretório js/ (para app.js)
+                        # Para app.js, todos os imports são relativos ao diretório js/
+                        if match.startswith('./'):
+                            clean_path = match[2:]  # Remove ./
+                            import_file_path = js_dir / clean_path
+                        elif match.startswith('../'):
+                            # Para app.js, ../algo seria relativo ao parent de js/, mas não deveria acontecer
+                            # Trata como se fosse relativo ao js/ mesmo
+                            clean_path = match[3:]  # Remove ../
+                            import_file_path = js_dir / clean_path
+                        else:
+                            import_file_path = js_dir / match
+                    else:
+                        # Import relativo ao arquivo atual (para arquivos dentro de subdiretórios)
+                        import_file_path = file_path.parent / match
+                    
+                    # Normalizar o path
+                    try:
+                        import_file_path = import_file_path.resolve()
+                        # Verificar se o arquivo está dentro do diretório js/
+                        js_dir_resolved = js_dir.resolve()
+                        
+                        if js_dir_resolved in import_file_path.parents or import_file_path.parent == js_dir_resolved:
+                            # Converter para path relativo para usar no HTML
+                            rel_path = import_file_path.relative_to(js_dir_resolved.parent)
+                            full_path = f"/static/{rel_path.as_posix()}"
+                            
+                            # Garantir que o path está correto (deve conter /js/)
+                            if "/js/" in full_path:
+                                file_imports.add(full_path)
+                                
+                                # Recursivamente buscar imports no arquivo importado
+                                # SEMPRE usar relative_to_js_dir=False para arquivos recursivos
+                                recursive_imports = extract_imports_from_file(import_file_path, False)
+                                file_imports.update(recursive_imports)
+                    except (ValueError, OSError):
+                        # Ignorar paths que não conseguimos resolver
+                        continue
+            
+        except Exception as e:
+            print(f"⚠️ Erro ao ler {file_path}: {e}")
         
-    except Exception as e:
-        print(f"⚠️ Erro ao ler app.js: {e}")
+        return file_imports
+    
+    # Começar a análise recursiva a partir do app.js
+    imported_files = extract_imports_from_file(app_js_path, True)
+    
+    if imported_files:
+        print(f"📋 {len(imported_files)} arquivos JS importados detectados recursivamente no app.js (excluídos do HTML)")
+        # Para debug, mostrar alguns dos arquivos encontrados
+        if len(imported_files) <= 10:
+            for f in sorted(imported_files):
+                print(f"   - {f}")
+        else:
+            for f in sorted(list(imported_files)[:5]):
+                print(f"   - {f}")
+            print(f"   ... e mais {len(imported_files) - 5} arquivos")
     
     return imported_files
 
