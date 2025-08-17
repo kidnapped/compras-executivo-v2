@@ -8,7 +8,7 @@ import header from "./app/header.js";
 import footer from "./app/footer.js";
 import admin from "./admin.js";
 import modalManager from "./common/modal-manager.js";
-import tooltip from "./common/tooltip.js";
+// import tooltip from "./common/tooltip.js"; // Disabled - using GovBR DS tooltips instead
 import aditivosHandler from "./contrato/aditivos-handler.js";
 import financialBars from "./contrato/financial-bars.js";
 import devOps from "./dev-ops/dev-ops.js";
@@ -37,7 +37,7 @@ const App = {
   ...minha_conta,
   ...kpis_kpi,
   ...modalManager,
-  ...tooltip,
+  // ...tooltip, // Disabled - using GovBR DS tooltips instead
   ...aditivosHandler,
   ...financialBars,
   ...devOps,
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (footer.autoInit) footer.autoInit();
   
   modalManager.initialize();
-  tooltip.initialize();
+  // tooltip.initialize(); // Disabled - using GovBR DS tooltips instead
   financialBars.initialize();
   breadcrumb.breadcrumb_init();
   card_header.card_header_init();

@@ -118,7 +118,7 @@ export default {
 
   // Função para renderizar o header dinamicamente
   header_render() {
-    console.log('🔧 Renderizando header dinamicamente...');
+    console.log('🔧 Renderizando dados dinâmicos do header...');
     
     const sessionData = this.header_getSessionData();
     const isLoggedIn = sessionData.cpf && sessionData.cpf.length > 0;
@@ -126,124 +126,42 @@ export default {
     console.log('📊 Dados de sessão:', sessionData);
     console.log('🔐 Usuário logado:', isLoggedIn);
     
-    const headerHTML = `
-      <header class="br-header" data-sticky="data-sticky">
-        <div class="header-container">
-          <div class="header-top header-top-flex">
-
-            <!-- BLOCO ESQUERDO -->
-            <div id="header-esquerda">
-              <div class="header-logo-container">
-                <!-- LOGO -->
-                <img src="/static/images/govbr-logo.png" alt="gov.br">
-                <!-- BOTÃO HAMBURGUER -->
-                <button id="menu-toggle-button" 
-                        class="br-button small circle" 
-                        type="button" 
-                        aria-label="Abrir Menu"
-                        data-tooltip-text="Menu" 
-                        data-tooltip-place="bottom" 
-                        data-tooltip-type="info">
-                  <span>&#9776;</span>
-                </button>
-              </div>
-              <!-- Textos -->
-              <div class="header-texts">
-                <div class="header-sign">
-                  Compras Executivo
-                </div>
-                <div class="header-title">
-                  Design System | Versão 3.6.1
-                </div>
-              </div>
-            </div>
-
-            <!-- BLOCO DIREITO -->
-            <!-- VERSÃO DESKTOP -->
-            <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop">
-              ${isLoggedIn ? this.header_renderLoggedInUser(sessionData) : this.header_renderLoginButton()}
-
-              <!-- Separador vertical -->
-              <div class="header-separator"></div>
-
-              <!-- Botão Minha Conta -->
-              <a href="/minha-conta" 
-                 class="br-button small circle spa-link" 
-                 data-spa="true"
-                 data-tooltip-text="Minha conta" 
-                 data-tooltip-place="bottom" 
-                 data-tooltip-type="info"
-                 aria-label="Minha Conta">
-                <i class="fas fa-user-circle"></i>
-              </a>
-            </div>
-
-            <!-- VERSÃO MOBILE -->
-            <div id="header-direita-mobile" class="d-flex d-lg-none header-direita-mobile">
-              <button id="abrir-pesquisa" class="br-button small circle" type="button" aria-label="Buscar">
-                <i class="fas fa-search header-icon"></i>
-              </button>
-            </div>
-
-            <!-- CAMPO DE BUSCA MOBILE -->
-            <div id="busca-mobile" class="d-lg-none">
-              <div class="br-input input-highlight">
-                <input id="campo-pesquisa-mobile" type="text" placeholder="Buscar..." autocomplete="off" aria-autocomplete="list">
-                <i class="fas fa-search"></i>
-                <button id="fechar-pesquisa">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- BARRA DE PESQUISA -->
-          <div class="header-bottom" id="header-search-bar">
-            <div class="br-input input-highlight">
-              <input id="campo-pesquisa" type="text" placeholder="O que você procura?" autocomplete="off" aria-autocomplete="list">
-              <i class="fas fa-search"></i>
-            </div>
-          </div>
-        </div>
-      </header>
+    // Apenas preenche os textos dinâmicos no container
+    this.headerContainer.innerHTML = `
+      <div class="header-sign">
+        Compras Executivo
+      </div>
+      <div class="header-title">
+        Design System | Versão 3.6.1
+      </div>
     `;
     
-    this.headerContainer.innerHTML = headerHTML;
-    console.log('✅ Header HTML renderizado com sucesso');
+    // Preenche os dados do usuário no container específico
+    const userContainer = document.getElementById('header-user-dynamic-container');
+    if (userContainer) {
+      userContainer.innerHTML = isLoggedIn ? this.header_renderLoggedInUser(sessionData) : this.header_renderLoginButton();
+    }
+    
+    console.log('✅ Header dados dinâmicos renderizados com sucesso');
   },
 
   // Função para renderizar usuário logado
   header_renderLoggedInUser(sessionData) {
     return `
-      <div style="display: flex; flex-direction: column; align-items: flex-end; margin-right: 10px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="color: #1351b4; font-weight: bold; font-size: 12px; font-family: Arial; margin-top:2px;" 
-                id="cpf-display"
-                data-tooltip-text="CPF" 
-                data-tooltip-place="bottom" 
-                data-tooltip-type="info">${sessionData.cpf}</span>
-          ${sessionData.usuario_name ? `
-            <span style="color: #555; font-weight: 600; font-size: 14px;"
-                  data-tooltip-text="Usuário" 
-                  data-tooltip-place="bottom" 
-                  data-tooltip-type="info">${sessionData.usuario_name.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</span>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: #1351b4; font-weight: bold; font-size: 12px; font-family: Arial; margin-top:2px;" 
+                  id="cpf-display">${sessionData.cpf}</span>
+            ${sessionData.usuario_name ? `
+              <span style="color: #555; font-weight: 600; font-size: 14px;">${sessionData.usuario_name.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}</span>
+            ` : ''}
+          </div>
+          ${sessionData.usuario_role ? `
+            <span style="color: #666; font-size: 12px; font-style: italic;">${sessionData.usuario_role}</span>
           ` : ''}
         </div>
-        ${sessionData.usuario_role ? `
-          <span style="color: #666; font-size: 12px; font-style: italic;"
-                data-tooltip-text="Perfil no sistema"
-                data-tooltip-place="bottom" 
-                data-tooltip-type="info">${sessionData.usuario_role}</span>
-        ` : ''}
       </div>
-      <a href="/logout" 
-         class="br-button small circle" 
-         data-tooltip-text="Sair do sistema" 
-         data-tooltip-place="bottom" 
-         data-tooltip-type="info"
-         aria-label="Sair">
-        <i class="fas fa-sign-out-alt"></i>
-      </a>
     `;
   },
 
