@@ -1787,17 +1787,48 @@ export default {
     }
   },
 
+  // Nova função para inicializar o breadcrumb dinamicamente
+  dashboard_initBreadcrumb() {
+    console.log('🔧 Inicializando breadcrumb do dashboard...');
+    
+    // Verifica se o módulo breadcrumb está disponível
+    if (typeof App !== "undefined" && App.breadcrumb && App.breadcrumb.breadcrumb_createDynamic) {
+      const breadcrumbItems = [
+        {title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio'},
+        {title: 'Dashboard', icon: 'fas fa-tachometer-alt', url: ''}
+      ];
+      
+      App.breadcrumb.breadcrumb_createDynamic(breadcrumbItems, 'dashboard-breadcrumb-dynamic-container');
+      console.log('✅ Breadcrumb Dashboard initialized dynamically');
+    } else {
+      console.warn('❌ Breadcrumb module not available - App:', typeof App, 'breadcrumb:', App?.breadcrumb ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
+      // Retry after a short delay if breadcrumb is not available yet
+      setTimeout(() => {
+        this.dashboard_initBreadcrumb();
+      }, 500);
+    }
+  },
+
   // Dashboard initialization function with proper naming convention
   dashboard_autoInit() {
     // Initialize the dashboard with dynamic table loading
     if (typeof App !== "undefined" && App.initDashboard) {
       console.log("Initializing dashboard...");
+      
+      // Inicializar breadcrumb
+      this.dashboard_initBreadcrumb();
+      
       App.initDashboard();
     } else {
       // Fallback: try again after a short delay if App is not ready
-      setTimeout(function () {
+      setTimeout(() => {
         if (typeof App !== "undefined" && App.initDashboard) {
           console.log("Initializing dashboard (delayed)...");
+          
+          // Inicializar breadcrumb
+          this.dashboard_initBreadcrumb();
+          
           App.initDashboard();
         } else {
           console.warn("App.initDashboard not available");
