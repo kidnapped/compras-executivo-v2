@@ -309,3 +309,30 @@ div[style*="position: absolute"][style*="pointer-events: none"][style*="z-index"
 .card-body-govbr:has([id*="chart"]) {
   overflow: visible !important;
 }
+
+/* ===================== TOOLTIP STYLING ===================== */
+
+/* Custom tooltip background color */
+.br-tooltip, 
+[data-tooltip], 
+.tooltip,
+.tooltip-inner {
+  background-color: #5F70A5 !important;
+}
+
+/* Tooltip arrow color matching background - preserving shape */
+.br-tooltip[data-popper-placement^="top"] > .arrow {
+  border-top-color: #5F70A5 !important;
+}
+
+.br-tooltip[data-popper-placement^="bottom"] > .arrow {
+  border-bottom-color: #5F70A5 !important;
+}
+
+.br-tooltip[data-popper-placement^="left"] > .arrow {
+  border-left-color: #5F70A5 !important;
+}
+
+.br-tooltip[data-popper-placement^="right"] > .arrow {
+  border-right-color: #5F70A5 !important;
+}

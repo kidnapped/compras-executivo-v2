@@ -95,6 +95,10 @@ body:has(.br-header.header-shrink) #main-navigation {
   /* Removendo pointer-events: none para permitir controle via JavaScript */
 }
 
+.menu-item.active::before {
+  display: none !important; /* Remove a barra azul à esquerda */
+}
+
 .menu-item.active .icon {
   color: #fff !important;
 }
