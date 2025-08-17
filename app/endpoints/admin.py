@@ -1,19 +1,40 @@
-from fastapi import APIRouter, Request, Depends, Form, Query
+from fastapi import APIRouter, Request, Depends, Form, Query, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import func
 import subprocess
 import json
+import secrets
+import base64
 from pathlib import Path
 
 from app.db.session import get_session_blocok
 from app.db.models.user import User
 from app.core.templates import templates
 from app.core.config import settings
+from app.core.config_menu import MENU_CONFIG, get_menu_for_scope
 from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 
 router = APIRouter()
+security = HTTPBasic()
+
+# Basic Auth credentials (same as VDB endpoint)
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "Z4s8p!rTq9@bLm7K"
+
+def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
+    """Verify Basic Auth credentials"""
+    is_correct_username = secrets.compare_digest(credentials.username, ADMIN_USERNAME)
+    is_correct_password = secrets.compare_digest(credentials.password, ADMIN_PASSWORD)
+    if not (is_correct_username and is_correct_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
 
 def executar_java(vdb_tipo: str, query: str):
     """Execute Java VDB query using configuration from settings"""
@@ -388,3 +409,72 @@ def listar_campos_tabela_dw_tesouro(schema: str = Query(...), tabela: str = Quer
             "schema": schema,
             "tabela": tabela
         }
+
+# Scope change endpoint for developers
+@router.get("/admin/scope/{scope_name}")
+async def change_user_scope(
+    request: Request,
+    scope_name: str
+):
+    """
+    Developer endpoint to change user scope with basic auth protection.
+    Validates the scope against MENU_CONFIG and updates session.
+    """
+    # Manual Basic Auth check (similar to VDB endpoint)
+    import base64
+    
+    auth_header = request.headers.get("authorization")
+    if not auth_header or not auth_header.startswith("Basic "):
+        return JSONResponse(
+            {"error": "Basic authentication required"},
+            status_code=401,
+            headers={"WWW-Authenticate": "Basic"}
+        )
+    
+    try:
+        encoded_credentials = auth_header.split(" ", 1)[1]
+        decoded_credentials = base64.b64decode(encoded_credentials).decode("utf-8")
+        username, password = decoded_credentials.split(":", 1)
+        
+        # Verify credentials
+        is_correct_username = secrets.compare_digest(username, ADMIN_USERNAME)
+        is_correct_password = secrets.compare_digest(password, ADMIN_PASSWORD)
+        
+        if not (is_correct_username and is_correct_password):
+            return JSONResponse(
+                {"error": "Incorrect username or password"},
+                status_code=401,
+                headers={"WWW-Authenticate": "Basic"}
+            )
+    except Exception:
+        return JSONResponse(
+            {"error": "Invalid authentication format"},
+            status_code=401,
+            headers={"WWW-Authenticate": "Basic"}
+        )
+    
+    # Check if user is logged in
+    cpf = request.session.get("cpf")
+    if not cpf:
+        return JSONResponse(
+            {"error": "User not logged in. Please login first."},
+            status_code=400
+        )
+    
+    # Validate scope exists in MENU_CONFIG
+    if scope_name not in MENU_CONFIG:
+        available_scopes = list(MENU_CONFIG.keys())
+        return JSONResponse(
+            {
+                "error": f"Invalid scope '{scope_name}'. Available scopes: {available_scopes}"
+            },
+            status_code=400
+        )
+    
+    # Update session with new scope
+    old_scope = request.session.get("usuario_scope")
+    request.session["usuario_scope"] = scope_name
+    request.session["menu"] = get_menu_for_scope(scope_name)
+    
+    # Redirect to home page after successful scope change
+    return RedirectResponse(url="/", status_code=303)
