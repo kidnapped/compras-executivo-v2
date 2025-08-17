@@ -140,18 +140,13 @@ install: java-build
 	python3 -m pip install --user --break-system-packages uvicorn -q
 	@echo "Setup completo."
 
-install-win: java-build
-	@echo "Instalando pacotes NPM..."
-	npm install
-	@echo "Instalando dependências Python..."
-	python -m pip install --user --break-system-packages -r requirements.txt
-	@echo "Copiando arquivos do Design System gov.br para app/static/govbr-ds/..."
-	mkdir app\static\govbr-ds
-	copy "node_modules\@govbr-ds\core\dist\core.min.css" "app\static\govbr-ds\"
-	copy "node_modules\@govbr-ds\core\dist\core.min.js" "app\static\govbr-ds\"
-	@echo "Instalando uvicorn globalmente (modo --user)..."
-	python -m pip install --user --break-system-packages uvicorn
-	@echo "Setup completo."
+install-win:
+	-npm install
+	-python -m pip install --user -r requirements.txt
+	-@powershell -Command "if (-Not (Test-Path 'app/static/govbr-ds')) { New-Item -ItemType Directory -Path 'app/static/govbr-ds' -Force | Out-Null }"
+	-@powershell -Command "Copy-Item 'node_modules/@govbr-ds/core/dist/core.min.css' 'app/static/govbr-ds/' -Force 2>$$null"
+	-@powershell -Command "Copy-Item 'node_modules/@govbr-ds/core/dist/core.min.js' 'app/static/govbr-ds/' -Force 2>$$null"
+	-python -m pip install --user uvicorn
 
 install-verbose: java-build
 	@echo "Instalando pacotes NPM..."
