@@ -1,6 +1,42 @@
 from pathlib import Path
 import re
 
+def get_app_js_imports():
+    """Extrai os arquivos JS que já são importados no app.js"""
+    app_js_path = Path(__file__).resolve().parents[1] / "static" / "js" / "app.js"
+    
+    if not app_js_path.exists():
+        return set()
+    
+    imported_files = set()
+    
+    try:
+        with open(app_js_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Regex para capturar imports ES6
+        # Captura: import ... from "./path/file.js"
+        import_patterns = [
+            r'import\s+.*?\s+from\s+["\']\./(.*?\.js)["\']',
+            r'import\s+["\']\./(.*?\.js)["\']',
+            r'import\(["\']\./(.*?\.js)["\']\)',
+        ]
+        
+        for pattern in import_patterns:
+            matches = re.findall(pattern, content, re.MULTILINE)
+            for match in matches:
+                # Converter path relativo para path absoluto usado no HTML
+                full_path = f"/static/js/{match}"
+                imported_files.add(full_path)
+        
+        if imported_files:
+            print(f"📋 {len(imported_files)} arquivos JS importados detectados no app.js (excluídos do HTML)")
+        
+    except Exception as e:
+        print(f"⚠️ Erro ao ler app.js: {e}")
+    
+    return imported_files
+
 def collect_static_files():
     base = Path(__file__).resolve().parents[1] / "static"
     css_dir = base / "css"
@@ -23,6 +59,31 @@ def collect_static_files():
     # Get all CSS and JS files dynamically
     all_css = get_files_in_dir(css_dir, (".css",))
     all_js = get_files_in_dir(js_dir, (".js",))
+    
+    # Get imports from app.js to exclude duplicates
+    app_js_imports = get_app_js_imports()
+    
+    # Exclude JS files that are already imported in app.js
+    # Keep app.js itself and spa_router.js as they are entry points
+    essential_files = {"/static/js/app.js", "/static/js/spa_router.js"}
+    
+    filtered_js = []
+    excluded_count = 0
+    
+    for js_file in all_js:
+        if js_file in essential_files:
+            # Always include essential entry point files
+            filtered_js.append(js_file)
+        elif js_file in app_js_imports:
+            # Exclude files that are imported in app.js
+            excluded_count += 1
+        else:
+            # Include files not imported in app.js
+            filtered_js.append(js_file)
+    
+    if excluded_count > 0:
+        print(f"📊 {excluded_count} arquivos JS excluídos para evitar duplicação com app.js")
+    all_js = filtered_js
     
     # Add other static files (fonts only - echarts and govbr-ds now moved to common/)
     for subdir in ["fonts"]:
