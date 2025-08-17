@@ -51,6 +51,9 @@ const App = {
 window.App = App;
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Configurar window.menuApp corretamente
+  window.menuApp = menu;
+  
   // Inicializar componentes dinâmicos
   if (header.autoInit) header.autoInit();
   if (menu.autoInit) menu.autoInit();

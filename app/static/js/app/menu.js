@@ -1,24 +1,46 @@
-    const menuExport = {
+export default {
+  // Variável para controlar execuções múltiplas
+  lastAutoInitTime: 0,
+  isInitializing: false,
+  
   // Development-only menu items
   devMenuItems: [],
 
   // Auto-inicialização
   autoInit() {
-    // Proteção contra inicialização dupla
-    if (this._isInitialized) {
-      console.log('🔄 Menu já inicializado, ignorando autoInit');
+    console.log('🔧 Menu.autoInit() chamado');
+    
+    // Evitar execuções múltiplas muito próximas (debounce de 1 segundo)
+    const now = Date.now();
+    if (now - this.lastAutoInitTime < 1000) {
+      console.log('🔄 Menu autoInit executado recentemente, ignorando');
       return;
     }
     
+    // Evitar sobreposição de execuções
+    if (this.isInitializing) {
+      console.log('🔄 Menu já está sendo inicializado, ignorando');
+      return;
+    }
+    
+    this.lastAutoInitTime = now;
+    this.isInitializing = true;
+    
     const menuContainer = document.getElementById('menu-dynamic-container');
+    console.log('🔍 Elemento #menu-dynamic-container encontrado:', !!menuContainer);
+    
     if (menuContainer) {
-      this._isInitialized = true;
       console.log('🎯 Inicializando menu...');
       this.renderMenuHTML();
       // Simples: espera renderizar e chama a função original
       setTimeout(() => {
         this.menu();
+        this.isInitializing = false;
+        console.log('✅ Menu initialized successfully');
       }, 100);
+    } else {
+      console.log('⚠️ Container #menu-dynamic-container não encontrado, menu não será inicializado');
+      this.isInitializing = false;
     }
   },
 
@@ -397,15 +419,3 @@
   }
 
 };
-
-// Expor globalmente para uso no SPA Router
-window.menuApp = menuExport;
-
-// Auto-inicialização quando o DOM estiver pronto
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => menuExport.autoInit());
-} else {
-  menuExport.autoInit();
-}
-
-export default menuExport;
