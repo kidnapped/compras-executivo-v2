@@ -109,9 +109,18 @@ class SPARouter {
         const isMenuLink = target.closest('.menu-item') || 
                           target.closest('#menu-dinamico') ||
                           target.closest('.br-menu') ||
+                          target.closest('.br-header') ||
+                          target.classList.contains('spa-link') ||
                           (target.classList && target.classList.contains('nav-link')) ||
                           target.dataset.spa === 'true' ||
                           target.dataset.menuItem === 'true';
+
+        console.log('🔍 Debug SPA:', {
+          href: href,
+          isMenuLink: isMenuLink,
+          dataSpa: target.dataset.spa,
+          targetElement: target.outerHTML.substring(0, 100)
+        });
 
         if (isMenuLink) {
           // Verificar se este link específico foi clicado recentemente com debounce mais agressivo
@@ -356,12 +365,12 @@ class SPARouter {
           return;
         }
         
-        if (typeof window.App.autoInit === 'function') {
+        if (typeof window.App.indicadores_initComplete === 'function') {
           console.log('🔧 Inicializando Indicadores para rota:', route);
           this.lastIndicadoresPageInit = now;
           
           try {
-            window.App.autoInit();
+            window.App.indicadores_initComplete();
             console.log('✅ Indicadores inicializado via initializePageModules!');
           } catch (error) {
             console.error('Erro ao inicializar Indicadores via initializePageModules:', error);
@@ -391,6 +400,28 @@ class SPARouter {
             console.log('✅ KPIs inicializado via initializePageModules!');
           } catch (error) {
             console.error('Erro ao inicializar KPIs via initializePageModules:', error);
+          }
+        }
+      }
+      
+      // Página de Minha Conta
+      else if (route.includes('/minha-conta') && window.App) {
+        // Evitar execução dupla
+        const now = Date.now();
+        if (this.lastMinhaContaPageInit && (now - this.lastMinhaContaPageInit) < 2000) {
+          console.log('⚠️ initializePageModules Minha Conta ignorado - muito recente');
+          return;
+        }
+        
+        if (typeof window.App.minha_conta_init === 'function') {
+          console.log('🔧 Inicializando Minha Conta para rota:', route);
+          this.lastMinhaContaPageInit = now;
+          
+          try {
+            window.App.minha_conta_init();
+            console.log('✅ Minha Conta inicializado via initializePageModules!');
+          } catch (error) {
+            console.error('Erro ao inicializar Minha Conta via initializePageModules:', error);
           }
         }
       }
@@ -450,7 +481,7 @@ class SPARouter {
    */
   executePageScripts(data) {
     // Verificar se é a página de indicadores e se o módulo já está carregado globalmente
-    if (data.route === '/indicadores' && window.App && window.App.autoInit) {
+    if (data.route === '/indicadores' && window.App && window.App.indicadores_initComplete) {
       // Evitar execução dupla com um flag temporal
       const now = Date.now();
       if (this.lastIndicadoresInit && (now - this.lastIndicadoresInit) < 2000) {
@@ -463,10 +494,33 @@ class SPARouter {
       
       setTimeout(() => {
         try {
-          window.App.autoInit();
+          window.App.indicadores_initComplete();
           console.log('✅ Módulo Indicadores re-inicializado via SPA!');
         } catch (error) {
           console.error('Erro ao re-inicializar Indicadores:', error);
+        }
+      }, 200);
+      return;
+    }
+    
+    // Verificar se é a página de minha conta e se o módulo já está carregado globalmente
+    if (data.route === '/minha-conta' && window.App && window.App.minha_conta_init) {
+      // Evitar execução dupla com um flag temporal
+      const now = Date.now();
+      if (this.lastMinhaContaInit && (now - this.lastMinhaContaInit) < 2000) {
+        console.log('⚠️ Execução de Minha Conta ignorada - muito recente');
+        return;
+      }
+      
+      console.log('✅ Página Minha Conta detectada - inicializando módulo já carregado...');
+      this.lastMinhaContaInit = now;
+      
+      setTimeout(() => {
+        try {
+          window.App.minha_conta_init();
+          console.log('✅ Módulo Minha Conta re-inicializado via SPA!');
+        } catch (error) {
+          console.error('Erro ao re-inicializar Minha Conta:', error);
         }
       }, 200);
       return;
@@ -495,7 +549,7 @@ class SPARouter {
           
           // Verificar se é indicadores e se o App já existe
           if (script.src.includes('indicadores.js')) {
-            if (window.App && window.App.autoInit) {
+            if (window.App && window.App.indicadores_initComplete) {
               // Evitar execução dupla
               const now = Date.now();
               if (this.lastIndicadoresScriptInit && (now - this.lastIndicadoresScriptInit) < 2000) {
@@ -508,10 +562,35 @@ class SPARouter {
               
               setTimeout(() => {
                 try {
-                  window.App.autoInit();
+                  window.App.indicadores_initComplete();
                   console.log('✅ Módulo Indicadores re-inicializado!');
                 } catch (error) {
                   console.error('Erro ao re-inicializar Indicadores:', error);
+                }
+              }, 200);
+              return;
+            }
+          }
+          
+          // Verificar se é minha_conta e se o App já existe
+          if (script.src.includes('minha_conta.js')) {
+            if (window.App && window.App.minha_conta_init) {
+              // Evitar execução dupla
+              const now = Date.now();
+              if (this.lastMinhaContaScriptInit && (now - this.lastMinhaContaScriptInit) < 2000) {
+                console.log('⚠️ Script Minha Conta ignorado - muito recente');
+                return;
+              }
+              
+              console.log('✅ Minha Conta já carregado, apenas re-inicializando...');
+              this.lastMinhaContaScriptInit = now;
+              
+              setTimeout(() => {
+                try {
+                  window.App.minha_conta_init();
+                  console.log('✅ Módulo Minha Conta re-inicializado!');
+                } catch (error) {
+                  console.error('Erro ao re-inicializar Minha Conta:', error);
                 }
               }, 200);
               return;
@@ -535,6 +614,14 @@ class SPARouter {
               // Para indicadores, chamar autoInit diretamente
               if (module.default && typeof module.default.autoInit === 'function') {
                 console.log('🔧 Inicializando módulo Indicadores:', scriptUrl);
+                setTimeout(() => {
+                  module.default.autoInit();
+                }, 200);
+              }
+            } else if (scriptUrl.includes('minha_conta.js')) {
+              // Para minha conta, chamar autoInit diretamente
+              if (module.default && typeof module.default.autoInit === 'function') {
+                console.log('🔧 Inicializando módulo Minha Conta:', scriptUrl);
                 setTimeout(() => {
                   module.default.autoInit();
                 }, 200);

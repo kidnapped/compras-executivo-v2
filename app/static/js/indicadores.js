@@ -3,6 +3,61 @@ export default {
   lastAutoInitTime: 0,
   isInitializing: false,
   
+  // Método único para inicialização completa via SPA
+  indicadores_initComplete() {
+    console.log('🔧 indicadores_initComplete() chamado via SPA');
+    
+    // Evitar execução dupla
+    const now = Date.now();
+    if (now - this.lastAutoInitTime < 1000) {
+      console.log('⚠️ indicadores_initComplete() ignorado - muito recente (debounce)');
+      return;
+    }
+    
+    // Evitar sobreposição de execuções
+    if (this.isInitializing) {
+      console.log('⚠️ indicadores_initComplete() ignorado - já está inicializando');
+      return;
+    }
+    
+    this.lastAutoInitTime = now;
+    this.isInitializing = true;
+    
+    // Verifica se estamos na página correta
+    const indicadoresPage = document.querySelector('.indicadores-page');
+    console.log('🔍 Elemento .indicadores-page encontrado:', !!indicadoresPage);
+    
+    if (indicadoresPage) {
+      console.log('✅ Página de indicadores detectada - iniciando componentes...');
+      
+      setTimeout(() => {
+        console.log('🔧 Inicializando componentes dos indicadores...');
+        
+        try {
+          this.indicadores_initBreadcrumb();
+          this.initTopicoVisaoGeral();
+          this.initTopicoAnaliseProcessos();
+          this.initTopicoFornecedoresContratantes();
+          this.initTopicoDistribuicaoGeografica();
+          this.initTopicoAnaliseTemporal();
+          this.initTopicoMetodosEficiencia();
+          this.initTopicoAnaliseFinanceira();
+          this.initTopicoInsightsExecutivos();
+          this.indicadores_init();
+          
+          console.log('✅ Todos os componentes dos indicadores foram inicializados!');
+        } catch (error) {
+          console.error('❌ Erro ao inicializar componentes dos indicadores:', error);
+        } finally {
+          this.isInitializing = false;
+        }
+      }, 100);
+    } else {
+      console.log('⚠️ Página de indicadores não detectada - elemento .indicadores-page não encontrado');
+      this.isInitializing = false;
+    }
+  },
+
   // Método para inicialização automática quando o módulo é carregado
   autoInit() {
     console.log('🔧 Indicadores.autoInit() chamado');

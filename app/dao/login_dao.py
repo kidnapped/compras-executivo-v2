@@ -141,6 +141,11 @@ async def login(cpf: str, password: str) -> LoginResult:
         user_data["uasgs"] = [row[0] for row in uasgs_rows] if uasgs_rows else []
         print(f"📊 UASGs finais: {user_data['uasgs']}")
         
+        # Se não encontrou UASGs, usar UASG padrão para CPFs de alias
+        if not user_data["uasgs"] and settings.USE_ALIAS_LOGIN:
+            print("⚠️ CPF de alias sem UASGs no banco contratos, usando UASG padrão: 393003")
+            user_data["uasgs"] = [393003]  # UASG padrão para testes
+        
         # Buscar dados do usuário - usar mesmo CPF que funcionou acima
         cpf_for_search = cpf_formatted if user_data["uasgs"] else cpf_logged
         print(f"🔍 Buscando dados do usuário com CPF: {cpf_for_search}")
@@ -159,6 +164,12 @@ async def login(cpf: str, password: str) -> LoginResult:
             print(f"✅ Dados do usuário encontrados: ID={user_id_row[0]}, Name={user_id_row[1]}")
         else:
             print(f"❌ Nenhum dado de usuário encontrado para CPF: {cpf_for_search}")
+            # Se é login por alias e não encontrou dados, usar dados padrão
+            if settings.USE_ALIAS_LOGIN:
+                print("🔧 Usando dados padrão para CPF de alias")
+                user_data["usuario_id"] = 999999
+                user_data["usuario_name"] = f"Usuário Alias {cpf_logged[:3]}***"
+                user_data["usuario_email"] = f"alias_{cpf_logged}@sistema.gov.br"
         
         # Buscar roles
         print(f"🔍 Buscando roles para CPF: {cpf_for_search}")
@@ -177,6 +188,11 @@ async def login(cpf: str, password: str) -> LoginResult:
         print(f"📋 Roles encontradas: {roles}")
         # Se tiver múltiplas roles, pegar a primeira
         user_data["usuario_role"] = roles[0] if roles else None
+        
+        # Se é login por alias e não tem role, usar role padrão
+        if not user_data["usuario_role"] and settings.USE_ALIAS_LOGIN:
+            print("🔧 Usando role padrão para CPF de alias: Administrador Geral")
+            user_data["usuario_role"] = "Administrador Geral"
     
     # Buscar scope no banco "blocok"
     async for blocok_session in get_session_blocok():

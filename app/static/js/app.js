@@ -16,6 +16,7 @@ import card_kpi from "./kpi/card.js";
 import contratos_dashboard from "./contrato/dashboard.js";
 import admin_dw_tesouro from "./admin/admin_dw_tesouro.js";
 import indicadores from "./indicadores.js";
+import minha_conta from "./minha_conta.js";
 import * as kpis_kpi from "./kpi/kpis.js";
 // import encontroInit from "./encontro/encontro-init.js";
 import breadcrumb from "./app/breadcrumb.js";
@@ -33,6 +34,7 @@ const App = {
   ...contratos_dashboard,
   ...admin_dw_tesouro,
   ...indicadores,
+  ...minha_conta,
   ...kpis_kpi,
   ...modalManager,
   ...tooltip,
@@ -71,6 +73,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Auto-inicialização dos indicadores se estivermos na página correta
   if (indicadores.autoInit) {
     indicadores.autoInit();
+  }
+  
+  // Auto-inicialização da página minha conta se estivermos na página correta
+  if (minha_conta.autoInit) {
+    minha_conta.autoInit();
   }
   
   // Inicializar SPA Router

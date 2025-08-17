@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from app.core.templates import templates
+from app.utils.spa_utils import spa_route_handler, add_spa_context
 
 router = APIRouter()
 
@@ -22,8 +23,21 @@ async def minha_conta(request: Request):
         "uasgs": request.session.get("uasgs", [])
     }
     
-    return templates.TemplateResponse("minha_conta.html", {
+    # Criar contexto
+    context = {
         "request": request,
         "user_data": user_data,
         "template_name": "outros-templates"
-    })
+    }
+    
+    # Adicionar contexto SPA
+    context = add_spa_context(context, request)
+    
+    # Usar o handler SPA
+    return spa_route_handler(
+        template_name="minha_conta.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Minha Conta - Compras Executivo"
+    )

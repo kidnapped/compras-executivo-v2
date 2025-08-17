@@ -1,0 +1,760 @@
+/* Reset e base styles */
+.minha_conta_profile_page {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+/* Container com largura máxima para telas muito grandes */
+.minha_conta_profile_page .container-fluid {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Breadcrumb Moderno */
+.minha_conta_breadcrumb_modern {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+}
+
+.minha_conta_breadcrumb_items {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.minha_conta_breadcrumb_item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.minha_conta_breadcrumb_item a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1351b4;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.minha_conta_breadcrumb_item a:hover {
+    color: #0f4394;
+    transform: translateX(2px);
+}
+
+.minha_conta_breadcrumb_item.active {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.minha_conta_breadcrumb_separator {
+    color: #cbd5e1;
+    font-size: 0.8rem;
+}
+
+/* Content Section */
+.minha_conta_profile_content {
+    position: relative;
+    z-index: 3;
+    padding: 3rem 0 4rem;
+}
+
+/* Profile Header Card */
+.minha_conta_profile_header_card {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+/* Avatar */
+.minha_conta_avatar_section {
+    position: relative;
+}
+
+.minha_conta_avatar_circle {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #1351b4;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border: 4px solid rgba(19, 81, 180, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.minha_conta_avatar_circle::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    animation: minha_conta_shimmer 3s infinite;
+}
+
+.minha_conta_avatar_status {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.minha_conta_avatar_status.online {
+    background: #10b981;
+    animation: minha_conta_pulse 2s ease-in-out infinite;
+}
+
+/* Profile Info */
+.minha_conta_profile_info h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #1e293b;
+}
+
+.minha_conta_profile_role {
+    font-size: 1.2rem;
+    margin: 0 0 1rem 0;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.minha_conta_profile_badges {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.minha_conta_badge {
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.minha_conta_badge_primary {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+    border: 1px solid #1351b4;
+}
+
+.minha_conta_badge_secondary {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: 1px solid #10b981;
+}
+
+/* Section Spacer */
+.minha_conta_section_spacer {
+    height: 3rem;
+}
+
+/* Info Cards */
+.minha_conta_info_card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(19, 81, 180, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.minha_conta_info_card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1351b4, #10b981);
+}
+
+.minha_conta_info_card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.minha_conta_card_header_modern {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 2rem 1rem;
+}
+
+.minha_conta_header_icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 16px rgba(19, 81, 180, 0.3);
+}
+
+.minha_conta_header_text h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.minha_conta_header_text p {
+    margin: 0.25rem 0 0 0;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.minha_conta_card_body_modern {
+    padding: 0 2rem 2rem;
+}
+
+/* Info Grid */
+.minha_conta_info_grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Força uma coluna única */
+    gap: 1rem; /* Reduz o gap entre os itens */
+}
+
+.minha_conta_info_item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.minha_conta_info_item:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #e6f7ff 100%);
+    border-color: #1351b4;
+    transform: translateY(-2px);
+}
+
+/* Clickable items styles */
+.minha_conta_clickable_item {
+    cursor: pointer;
+    user-select: none;
+}
+
+.minha_conta_clickable_item:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #e6f7ff 100%);
+    border-color: #1351b4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(19, 81, 180, 0.15);
+}
+
+.minha_conta_clickable_item:active {
+    transform: translateY(0);
+}
+
+.minha_conta_clickable_item.copied {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    border-color: #10b981;
+    transform: scale(1.02);
+}
+
+.minha_conta_copy_indicator {
+    opacity: 0;
+    transition: all 0.3s ease;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.minha_conta_clickable_item:hover .minha_conta_copy_indicator {
+    opacity: 1;
+}
+
+.minha_conta_clickable_item.copied .minha_conta_copy_indicator {
+    opacity: 1;
+    color: #10b981;
+}
+
+.minha_conta_info_icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #1351b4, #10b981);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.minha_conta_info_content {
+    flex: 1;
+}
+
+.minha_conta_info_content label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.minha_conta_info_content span {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    display: block;
+}
+
+/* Quick Actions */
+.minha_conta_quick_actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.minha_conta_quick_action_item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.minha_conta_quick_action_item:hover {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 8px 16px rgba(19, 81, 180, 0.3);
+}
+
+.minha_conta_action_icon {
+    width: 36px;
+    height: 36px;
+    background: #1351b4;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.minha_conta_quick_action_item:hover .minha_conta_action_icon {
+    background: white;
+    color: #1351b4;
+}
+
+.minha_conta_action_content {
+    flex: 1;
+}
+
+.minha_conta_action_content span {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.minha_conta_action_content small {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-top: 0.2rem;
+}
+
+.minha_conta_action_arrow {
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.minha_conta_quick_action_item:hover .minha_conta_action_arrow {
+    opacity: 1;
+    transform: translateX(4px);
+}
+
+/* Status Items */
+.minha_conta_status_items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.minha_conta_status_item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.minha_conta_status_indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #94a3b8;
+    flex-shrink: 0;
+}
+
+.minha_conta_status_indicator.online {
+    background: #10b981;
+    animation: minha_conta_pulse 2s ease-in-out infinite;
+}
+
+.minha_conta_status_content {
+    flex: 1;
+}
+
+.minha_conta_status_content label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.minha_conta_status_content span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* UASG Grid */
+.minha_conta_uasg_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.minha_conta_uasg_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.minha_conta_uasg_item:hover {
+    background: linear-gradient(135deg, #1351b4, #0f4394);
+    color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(19, 81, 180, 0.3);
+}
+
+.minha_conta_uasg_icon {
+    width: 48px;
+    height: 48px;
+    background: #1351b4;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.minha_conta_uasg_item:hover .minha_conta_uasg_icon {
+    background: white;
+    color: #1351b4;
+}
+
+.minha_conta_uasg_code {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+    transition: color 0.3s ease;
+}
+
+.minha_conta_uasg_item:hover .minha_conta_uasg_code {
+    color: white;
+}
+
+.minha_conta_uasg_status {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.minha_conta_uasg_status.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.minha_conta_uasg_item:hover .minha_conta_uasg_status.active {
+    background: white;
+    color: #10b981;
+}
+
+/* Security Card */
+.minha_conta_security_card {
+    border-color: #f59e0b;
+}
+
+.minha_conta_security_card::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.minha_conta_security_notice {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 16px;
+    border: 1px solid #f59e0b;
+    margin-bottom: 1.5rem;
+}
+
+.minha_conta_notice_icon {
+    width: 40px;
+    height: 40px;
+    background: #f59e0b;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.minha_conta_notice_content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #92400e;
+}
+
+.minha_conta_notice_content p {
+    margin: 0;
+    color: #a16207;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.minha_conta_security_features {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.minha_conta_feature_item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    opacity: 0.6;
+}
+
+.minha_conta_feature_item.disabled {
+    cursor: not-allowed;
+}
+
+.minha_conta_feature_icon {
+    width: 36px;
+    height: 36px;
+    background: #94a3b8;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.minha_conta_feature_content {
+    flex: 1;
+}
+
+.minha_conta_feature_content span {
+    display: block;
+    font-weight: 600;
+    color: #475569;
+}
+
+.minha_conta_feature_content small {
+    display: block;
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+.minha_conta_feature_status {
+    color: #94a3b8;
+    font-size: 1.2rem;
+}
+
+/* Copy Notification */
+.minha_conta_copy_notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 10000;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    max-width: 300px;
+    backdrop-filter: blur(10px);
+}
+
+.minha_conta_copy_notification.success {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    border: 1px solid #10b981;
+    color: #166534;
+}
+
+.minha_conta_copy_notification.error {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    border: 1px solid #ef4444;
+    color: #dc2626;
+}
+
+.minha_conta_copy_notification.show {
+    transform: translateX(0);
+}
+
+.minha_conta_notification_content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.minha_conta_notification_content i {
+    font-size: 1.1rem;
+}
+
+/* Animations */
+@keyframes minha_conta_pulse {
+    0%, 100% { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+    50% { 
+        opacity: 0.8; 
+        transform: scale(1.1); 
+    }
+}
+
+@keyframes minha_conta_shimmer {
+    0% { 
+        transform: translateX(-100%) translateY(-100%) rotate(45deg); 
+    }
+    100% { 
+        transform: translateX(100%) translateY(100%) rotate(45deg); 
+    }
+}
+
+@keyframes minha_conta_fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.minha_conta_info_card {
+    animation: minha_conta_fadeInUp 0.6s ease-out;
+}
+
+.minha_conta_info_card:nth-child(1) { animation-delay: 0.1s; }
+.minha_conta_info_card:nth-child(2) { animation-delay: 0.2s; }
+.minha_conta_info_card:nth-child(3) { animation-delay: 0.3s; }
+.minha_conta_info_card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .minha_conta_profile_header_card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .minha_conta_avatar_circle {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+    }
+    
+    .minha_conta_profile_info h1 {
+        font-size: 2rem;
+    }
+    
+    .minha_conta_profile_content {
+        padding: 2rem 0;
+    }
+    
+    .minha_conta_info_grid {
+        grid-template-columns: 1fr; /* Mantém uma coluna em mobile */
+        gap: 0.75rem; /* Gap menor em mobile */
+    }
+    
+    .minha_conta_uasg_grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    
+    .minha_conta_card_header_modern {
+        padding: 1.5rem 1.5rem 1rem;
+    }
+    
+    .minha_conta_card_body_modern {
+        padding: 0 1.5rem 1.5rem;
+    }
+    
+    .minha_conta_copy_notification {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
