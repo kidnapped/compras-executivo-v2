@@ -1,6 +1,6 @@
 .PHONY: help run run-mac run-win run-prod \
 		migrate upgrade downgrade makemigrations \
-		install install-win uninstall \
+		install install-win install-verbose uninstall \
 		java-build java-query-contratos java-query-financeiro java-test java-clean \
 		docker-build docker-run docker-push docker-compose-up docker-deploy docker-export \
 		build-static restart logs status \
@@ -41,13 +41,14 @@ help:
 	@echo "  make build-static         - Gera o bundle.js com Webpack + compila Java (legado)"
 	@echo ""
 	@echo "▶ Setup / Instalação:"
-	@echo "  make install              - Instala dependências Python, NPM e copia o Design System"
+	@echo "  make install              - Instala dependências Python, NPM e copia o Design System (modo silencioso)"
+	@echo "  make install-verbose      - Mesmo que install, mas mostra detalhes completos do pip"
 	@echo "  make install-win          - Mesmo que install, adaptado para Windows"
-	@echo "  make uninstall            - Remove dependências e artefatos gerados (node_modules, __pycache__, dist etc)"
+	@echo "  make uninstall            - Remove dependências e artefatos gerados (node_modules, .class, __pycache__, webpack, govbr-ds, build, etc)"
 	@echo ""
 	@echo "▶ Java / DaaS SERPRO:"
-	@echo "  make java-build           - Compila os códigos Java"
-	@echo "  make java-clean           - Remove arquivos .class Java compilados"
+	@echo "  make java-build           - Compila os códigos Java (vdb/ e app/java/)"
+	@echo "  make java-clean           - Remove todos os arquivos .class Java compilados (busca recursiva)"
 	@echo "  make java-test            - Testa conexão com QueryContratos (SELECT 1)"
 	@echo "  make java-query-contratos QUERY=\"...\""
 	@echo "                            - Executa uma query SQL no DaaS Contratos"
@@ -130,13 +131,13 @@ install: java-build
 	@echo "Instalando pacotes NPM..."
 	npm install
 	@echo "Instalando dependências Python..."
-	python3 -m pip install --user --break-system-packages -r requirements.txt
+	python3 -m pip install --user --break-system-packages -r requirements.txt -q
 	@echo "Copiando arquivos do Design System gov.br para app/static/govbr-ds/..."
 	mkdir -p app/static/govbr-ds
 	cp node_modules/@govbr-ds/core/dist/core.min.css app/static/govbr-ds/
 	cp node_modules/@govbr-ds/core/dist/core.min.js app/static/govbr-ds/
 	@echo "Instalando uvicorn globalmente (modo --user)..."
-	python3 -m pip install --user --break-system-packages uvicorn
+	python3 -m pip install --user --break-system-packages uvicorn -q
 	@echo "Setup completo."
 
 install-win: java-build
@@ -152,18 +153,43 @@ install-win: java-build
 	python -m pip install --user --break-system-packages uvicorn
 	@echo "Setup completo."
 
+install-verbose: java-build
+	@echo "Instalando pacotes NPM..."
+	npm install
+	@echo "Instalando dependências Python (verbose)..."
+	python3 -m pip install --user --break-system-packages -r requirements.txt
+	@echo "Copiando arquivos do Design System gov.br para app/static/govbr-ds/..."
+	mkdir -p app/static/govbr-ds
+	cp node_modules/@govbr-ds/core/dist/core.min.css app/static/govbr-ds/
+	cp node_modules/@govbr-ds/core/dist/core.min.js app/static/govbr-ds/
+	@echo "Instalando uvicorn globalmente (modo --user)..."
+	python3 -m pip install --user --break-system-packages uvicorn
+	@echo "Setup completo."
+
 uninstall:
 	@echo "Removendo arquivos Java compilados..."
 	make java-clean
 	@echo "Removendo node_modules e package-lock.json..."
-	chmod -R u+w node_modules || true
-	rm -rf node_modules package-lock.json
+	-chmod -R u+w node_modules 2>/dev/null
+	-rm -rf node_modules package-lock.json 2>/dev/null
 	@echo "Removendo dist do React..."
 	rm -rf react/dist
+	@echo "Removendo webpack output..."
+	rm -rf app/static/webpack
+	@echo "Removendo govbr-ds copiados..."
+	rm -rf app/static/govbr-ds
 	@echo "Removendo __pycache__..."
-	find . -type d -name '__pycache__' -exec rm -r {} +
+	find . -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true
+	@echo "Removendo .pyc e .pyo..."
+	find . -name "*.pyc" -o -name "*.pyo" | xargs rm -f 2>/dev/null || true
 	@echo "Removendo .DS_Store..."
-	find . -type f -name '.DS_Store' -exec rm -f {} +
+	find . -type f -name '.DS_Store' -exec rm -f {} + 2>/dev/null || true
+	@echo "Removendo .pytest_cache..."
+	find . -type d -name '.pytest_cache' -exec rm -rf {} + 2>/dev/null || true
+	@echo "Removendo .mypy_cache..."
+	find . -type d -name '.mypy_cache' -exec rm -rf {} + 2>/dev/null || true
+	@echo "Removendo *.egg-info..."
+	find . -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
 	@echo "Removendo build..."
 	rm -rf build
 	@echo "Uninstall completo."
@@ -176,6 +202,7 @@ java-build:
 	@echo "Compilando código Java..."
 	cd vdb && javac -cp jboss-dv-6.3.0-teiid-jdbc.jar QueryContratos.java
 	cd vdb && javac -cp jboss-dv-6.3.0-teiid-jdbc.jar QueryFinanceiro.java
+	cd app/java && javac -cp ../../vdb/jboss-dv-6.3.0-teiid-jdbc.jar QueryFinanceiro.java
 	cd ..
 	@echo "Compilação Java concluída."
 
@@ -199,7 +226,7 @@ java-test:
 
 java-clean:
 	@echo "Removendo arquivos Java compilados (.class)..."
-	rm -f vdb/*.class
+	find . -name "*.class" -type f -exec rm -f {} +
 	@echo "Arquivos .class removidos."
 
 ## ----------------------------------------
