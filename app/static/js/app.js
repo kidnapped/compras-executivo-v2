@@ -6,9 +6,9 @@ import environment from "./environment.js";
 import menu from "./app/menu.js";
 import header from "./app/header.js";
 import footer from "./app/footer.js";
+import cookie from "./app/cookie.js";
 import admin from "./admin.js";
 import modalManager from "./common/modal-manager.js";
-// import tooltip from "./common/tooltip.js"; // Disabled - using GovBR DS tooltips instead
 import aditivosHandler from "./contrato/aditivos-handler.js";
 import financialBars from "./contrato/financial-bars.js";
 import devOps from "./dev-ops/dev-ops.js";
@@ -17,8 +17,6 @@ import contratos_dashboard from "./contrato/dashboard.js";
 import admin_dw_tesouro from "./admin/admin_dw_tesouro.js";
 import indicadores from "./indicadores.js";
 import minha_conta from "./minha_conta.js";
-// KPIs will be loaded dynamically only when needed
-// import encontroInit from "./encontro/encontro-init.js";
 import breadcrumb from "./app/breadcrumb.js";
 import card_header from "./app/card_header.js";
 import topico from "./app/topico.js";
@@ -29,6 +27,7 @@ const App = {
   ...menu,
   ...header,
   ...footer,
+  ...cookie,
   ...admin,
   ...card_kpi,
   ...contratos_dashboard,
@@ -36,7 +35,6 @@ const App = {
   ...indicadores,
   ...minha_conta,
   ...modalManager,
-  // ...tooltip, // Disabled - using GovBR DS tooltips instead
   ...aditivosHandler,
   ...financialBars,
   ...devOps,
@@ -44,7 +42,6 @@ const App = {
   card_header,
   topico,
   SPARouter,
-  // Don't spread encontroInit since it's an object with its own init method
   
   // Dynamic KPI initialization method
   async kpisInit() {
@@ -84,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (header.autoInit) header.autoInit();
   if (menu.autoInit) menu.autoInit();
   if (footer.autoInit) footer.autoInit();
+  if (cookie.cookieAutoInit) cookie.cookieAutoInit();
   
   modalManager.initialize();
   // tooltip.initialize(); // Disabled - using GovBR DS tooltips instead
