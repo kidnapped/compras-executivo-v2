@@ -21,7 +21,11 @@
         <!-- Textos -->
         <div class="header-texts">
           <!-- Header Component - Dynamic -->
-          <div id="header-dynamic-container">
+          <div id="header-dynamic-container"
+               data-session-cpf="{{ request.session.get('cpf', '') }}"
+               data-session-usuario-name="{{ request.session.get('usuario_name', '') }}"
+               data-session-usuario-role="{{ request.session.get('usuario_role', '') }}"
+               data-session-usuario-email="{{ request.session.get('usuario_email', '') }}">
             <!-- Textos serão carregados dinamicamente via JavaScript -->
           </div>
         </div>
