@@ -1,27 +1,29 @@
 export default {
-  // Variável para controlar execuções múltiplas
+  // Variáveis para controlar execuções múltiplas
   lastAutoInitTime: 0,
+  lastInitCompleteTime: 0,
   isInitializing: false,
+  isInitializingComplete: false,
   
   // Método único para inicialização completa via SPA
   indicadores_initComplete() {
     console.log('🔧 indicadores_initComplete() chamado via SPA');
     
-    // Evitar execução dupla
+    // Evitar execução dupla - usar controle separado do autoInit
     const now = Date.now();
-    if (now - this.lastAutoInitTime < 1000) {
+    if (now - this.lastInitCompleteTime < 800) {
       console.log('⚠️ indicadores_initComplete() ignorado - muito recente (debounce)');
       return;
     }
     
     // Evitar sobreposição de execuções
-    if (this.isInitializing) {
+    if (this.isInitializingComplete) {
       console.log('⚠️ indicadores_initComplete() ignorado - já está inicializando');
       return;
     }
     
-    this.lastAutoInitTime = now;
-    this.isInitializing = true;
+    this.lastInitCompleteTime = now;
+    this.isInitializingComplete = true;
     
     // Verifica se estamos na página correta
     const indicadoresPage = document.querySelector('.indicadores-page');
@@ -49,12 +51,12 @@ export default {
         } catch (error) {
           console.error('❌ Erro ao inicializar componentes dos indicadores:', error);
         } finally {
-          this.isInitializing = false;
+          this.isInitializingComplete = false;
         }
       }, 100);
     } else {
       console.log('⚠️ Página de indicadores não detectada - elemento .indicadores-page não encontrado');
-      this.isInitializing = false;
+      this.isInitializingComplete = false;
     }
   },
 
@@ -78,40 +80,59 @@ export default {
     this.lastAutoInitTime = now;
     this.isInitializing = true;
     
-    // Verifica se estamos na página correta procurando pelo elemento principal
-    const indicadoresPage = document.querySelector('.indicadores-page');
-    console.log('🔍 Elemento .indicadores-page encontrado:', !!indicadoresPage);
-    
-    if (indicadoresPage) {
-      console.log('✅ Página de indicadores detectada - iniciando componentes...');
+    // Função para verificar e inicializar
+    const checkAndInit = () => {
+      // Verifica se estamos na página correta procurando pelo elemento principal
+      const indicadoresPage = document.querySelector('.indicadores-page');
+      console.log('🔍 Elemento .indicadores-page encontrado:', !!indicadoresPage);
+      console.log('🔍 Pathname atual:', window.location.pathname);
       
-      // Se encontrou o elemento, inicializa automaticamente
-      setTimeout(() => {
-        console.log('🔧 Inicializando componentes dos indicadores...');
+      // Também verificar pela URL se o elemento não foi encontrado ainda
+      const isIndicadoresRoute = window.location.pathname.includes('/indicadores');
+      console.log('🔍 É rota de indicadores:', isIndicadoresRoute);
+      
+      if (indicadoresPage || isIndicadoresRoute) {
+        console.log('✅ Página de indicadores detectada - iniciando componentes...');
         
-        try {
-          this.indicadores_initBreadcrumb();
-          this.initTopicoVisaoGeral();
-          this.initTopicoAnaliseProcessos();
-          this.initTopicoFornecedoresContratantes();
-          this.initTopicoDistribuicaoGeografica();
-          this.initTopicoAnaliseTemporal();
-          this.initTopicoMetodosEficiencia();
-          this.initTopicoAnaliseFinanceira();
-          this.initTopicoInsightsExecutivos();
-          this.indicadores_init();
+        // Se encontrou o elemento ou está na rota correta, inicializa automaticamente
+        setTimeout(() => {
+          console.log('🔧 Inicializando componentes dos indicadores...');
           
-          console.log('✅ Todos os componentes dos indicadores foram inicializados!');
-        } catch (error) {
-          console.error('❌ Erro ao inicializar componentes dos indicadores:', error);
-        } finally {
-          this.isInitializing = false;
-        }
-      }, 100); // Pequeno delay para garantir que todos os elementos estejam carregados
-    } else {
-      console.log('⚠️ Página de indicadores não detectada - elemento .indicadores-page não encontrado');
-      this.isInitializing = false;
-    }
+          try {
+            this.indicadores_initBreadcrumb();
+            this.initTopicoVisaoGeral();
+            this.initTopicoAnaliseProcessos();
+            this.initTopicoFornecedoresContratantes();
+            this.initTopicoDistribuicaoGeografica();
+            this.initTopicoAnaliseTemporal();
+            this.initTopicoMetodosEficiencia();
+            this.initTopicoAnaliseFinanceira();
+            this.initTopicoInsightsExecutivos();
+            this.indicadores_init();
+            
+            console.log('✅ Todos os componentes dos indicadores foram inicializados!');
+          } catch (error) {
+            console.error('❌ Erro ao inicializar componentes dos indicadores:', error);
+          } finally {
+            this.isInitializing = false;
+          }
+        }, 100); // Pequeno delay para garantir que todos os elementos estejam carregados
+      } else {
+        console.log('⚠️ Página de indicadores não detectada ainda');
+        this.isInitializing = false;
+        
+        // Se não encontrou ainda, tentar novamente após um tempo
+        setTimeout(() => {
+          if (window.location.pathname.includes('/indicadores')) {
+            console.log('🔄 Tentando novamente a inicialização de indicadores...');
+            this.autoInit();
+          }
+        }, 500);
+      }
+    };
+    
+    // Executar verificação
+    checkAndInit();
   },
 
   // Nova função para inicializar o breadcrumb dinamicamente

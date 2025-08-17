@@ -267,46 +267,12 @@ export default {
       'button[aria-label="Abrir Menu"], button[aria-label="Fechar Menu"]'
     );
 
-    // Funções para gerenciar cookies
-    function setCookie(name, value, days = 365) {
-      const expires = new Date();
-      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
-    }
-    
-    function getCookie(name) {
-      const nameEQ = name + "=";
-      const ca = document.cookie.split(';');
-      for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-      }
-      return null;
-    }
-
     if (menuButtons.length && menu) {
-      // Verifica estado inicial do cookie
-      const menuState = getCookie('menu');
-      const shouldOpen = menuState === '1';
-      
-      if (shouldOpen) {
-        menu.classList.add("active");
-        body.classList.add("menu-open");
-        menuButtons.forEach((btn) => {
-          btn.innerHTML = "<span>&times;</span>";
-          btn.setAttribute('aria-label', 'Fechar Menu');
-        });
-      }
-
       menuButtons.forEach((menuButton) => {
         menuButton.addEventListener("click", () => {
           const isOpen = menu.classList.contains("active");
           menu.classList.toggle("active", !isOpen);
           body.classList.toggle("menu-open", !isOpen);
-          
-          // Salva estado no cookie
-          setCookie('menu', !isOpen ? '1' : '0');
           
           // Atualiza todos os botões
           menuButtons.forEach((btn) => {

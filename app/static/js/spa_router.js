@@ -367,26 +367,12 @@ class SPARouter {
         }
       }
 
-      // Página de Indicadores
-      if (route.includes('/indicadores') && window.App) {
-        // Evitar execução dupla
-        const now = Date.now();
-        if (this.lastIndicadoresPageInit && (now - this.lastIndicadoresPageInit) < 2000) {
-          console.log('⚠️ initializePageModules Indicadores ignorado - muito recente');
-          return;
-        }
-        
-        if (typeof window.App.indicadores_initComplete === 'function') {
-          console.log('🔧 Inicializando Indicadores para rota:', route);
-          this.lastIndicadoresPageInit = now;
-          
-          try {
-            window.App.indicadores_initComplete();
-            console.log('✅ Indicadores inicializado via initializePageModules!');
-          } catch (error) {
-            console.error('Erro ao inicializar Indicadores via initializePageModules:', error);
-          }
-        }
+      // Página de Indicadores - DESABILITADO para evitar duplicação
+      // A inicialização de indicadores é feita apenas em executePageScripts
+      if (route && route.includes('/indicadores')) {
+        console.log('🎯 initializePageModules - Rota de indicadores detectada (mas será processada em executePageScripts):', route);
+        // Não executar aqui para evitar duplicação
+        return;
       }
       
       // Página de Dashboard 
@@ -491,6 +477,9 @@ class SPARouter {
    * Executa scripts específicos da página carregada
    */
   executePageScripts(data) {
+    console.log('🔧 executePageScripts chamado para rota:', data.route);
+    console.log('📝 Scripts disponíveis:', data.scripts);
+    
     // Header - deve ser executado em todas as páginas
     if (window.App && window.App.header_initComplete) {
       console.log('🔧 Executando Header para rota:', data.route);
@@ -503,26 +492,42 @@ class SPARouter {
     }
 
     // Verificar se é a página de indicadores e se o módulo já está carregado globalmente
-    if (data.route === '/indicadores' && window.App && window.App.indicadores_initComplete) {
-      // Evitar execução dupla com um flag temporal
-      const now = Date.now();
-      if (this.lastIndicadoresInit && (now - this.lastIndicadoresInit) < 2000) {
-        console.log('⚠️ Execução de Indicadores ignorada - muito recente');
-        return;
-      }
+    if (data.route && data.route.includes('/indicadores')) {
+      console.log('🎯 Rota de indicadores detectada:', data.route);
+      console.log('🔍 Window.App disponível:', !!window.App);
+      console.log('🔍 indicadores_initComplete disponível:', !!(window.App && window.App.indicadores_initComplete));
+      console.log('🔍 autoInit disponível:', !!(window.App && window.App.autoInit));
       
-      console.log('✅ Página Indicadores detectada - inicializando módulo já carregado...');
-      this.lastIndicadoresInit = now;
-      
-      setTimeout(() => {
-        try {
-          window.App.indicadores_initComplete();
-          console.log('✅ Módulo Indicadores re-inicializado via SPA!');
-        } catch (error) {
-          console.error('Erro ao re-inicializar Indicadores:', error);
+      if (window.App && window.App.indicadores_initComplete) {
+        // Evitar execução dupla com um flag temporal
+        const now = Date.now();
+        if (this.lastIndicadoresInit && (now - this.lastIndicadoresInit) < 1500) {
+          console.log('⚠️ Execução de Indicadores ignorada - muito recente');
+          return;
         }
-      }, 200);
-      return;
+        
+        console.log('✅ Página Indicadores detectada - inicializando módulo já carregado...', data.route);
+        this.lastIndicadoresInit = now;
+        
+        setTimeout(() => {
+          try {
+            window.App.indicadores_initComplete();
+            console.log('✅ Módulo Indicadores re-inicializado via SPA!');
+          } catch (error) {
+            console.error('Erro ao re-inicializar Indicadores:', error);
+          }
+        }, 300);
+        return;
+      } else if (window.App && window.App.autoInit) {
+        console.log('📋 Tentando autoInit como fallback...');
+        try {
+          window.App.autoInit();
+        } catch (error) {
+          console.error('Erro no autoInit:', error);
+        }
+      } else {
+        console.warn('⚠️ Módulo Indicadores não disponível para inicialização via SPA');
+      }
     }
     
     // Verificar se é a página de minha conta e se o módulo já está carregado globalmente
@@ -549,8 +554,11 @@ class SPARouter {
     }
     
     if (!data.scripts || !Array.isArray(data.scripts)) {
+      console.log('📜 Nenhum script para processar ou scripts não é array');
       return;
     }
+    
+    console.log('📜 Processando', data.scripts.length, 'scripts...');
     
     data.scripts.forEach(script => {
       if (!script.src) {
@@ -571,6 +579,10 @@ class SPARouter {
           
           // Verificar se é indicadores e se o App já existe
           if (script.src.includes('indicadores.js')) {
+            console.log('🎯 Script de indicadores detectado:', script.src);
+            console.log('🔍 Window.App existe:', !!window.App);
+            console.log('🔍 indicadores_initComplete existe:', !!(window.App && window.App.indicadores_initComplete));
+            
             if (window.App && window.App.indicadores_initComplete) {
               // Evitar execução dupla
               const now = Date.now();
@@ -591,6 +603,8 @@ class SPARouter {
                 }
               }, 200);
               return;
+            } else {
+              console.log('⚠️ Módulo Indicadores não disponível globalmente, tentando carregamento dinâmico...');
             }
           }
 
@@ -690,6 +704,31 @@ class SPARouter {
     // Executar callback de inicialização da página se existir
     if (data.initCallback && typeof window[data.initCallback] === 'function') {
       window[data.initCallback]();
+    }
+    
+    // Verificação final: se é página de indicadores e não foi inicializado ainda, forçar inicialização
+    if (data.route && data.route.includes('/indicadores') && window.App && window.App.indicadores_initComplete) {
+      const now = Date.now();
+      // Usar um timeout um pouco maior para dar tempo dos scripts processarem
+      if (!this.lastIndicadoresInit || (now - this.lastIndicadoresInit) > 3000) {
+        console.log('🔧 Verificação final: forçando inicialização de indicadores...');
+        this.lastIndicadoresInit = now;
+        
+        setTimeout(() => {
+          try {
+            const indicadoresPage = document.querySelector('.indicadores-page');
+            if (indicadoresPage) {
+              console.log('✅ Elemento .indicadores-page encontrado, executando inicialização final...');
+              window.App.indicadores_initComplete();
+              console.log('✅ Indicadores inicializado via verificação final!');
+            } else {
+              console.log('⚠️ Elemento .indicadores-page não encontrado na verificação final');
+            }
+          } catch (error) {
+            console.error('Erro na inicialização final de indicadores:', error);
+          }
+        }, 500);
+      }
     }
   }
 

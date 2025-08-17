@@ -231,11 +231,6 @@ export default {
       const btn = event.currentTarget;
       btn.innerHTML = isOpen ? "<span>&#9776;</span>" : "<span>&times;</span>";
       btn.setAttribute('aria-label', isOpen ? 'Abrir Menu' : 'Fechar Menu');
-      
-      // Salva no cookie
-      const expires = new Date();
-      expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
-      document.cookie = `menu=${!isOpen ? '1' : '0'};expires=${expires.toUTCString()};path=/`;
     }
   },
 
