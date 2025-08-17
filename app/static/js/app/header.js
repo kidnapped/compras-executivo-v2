@@ -1,36 +1,105 @@
 export default {
+  // Variável para controlar execuções múltiplas
+  lastAutoInitTime: 0,
+  isInitializing: false,
+
+  // Método único para inicialização completa via SPA
+  header_initComplete() {
+    console.log('🔧 header_initComplete() chamado via SPA');
+    
+    // Evitar execução dupla
+    const now = Date.now();
+    if (now - this.lastAutoInitTime < 1000) {
+      console.log('⚠️ Header: execução muito próxima, ignorando');
+      return;
+    }
+    
+    // Evitar sobreposição de execuções
+    if (this.isInitializing) {
+      console.log('⚠️ Header: já está inicializando, ignorando');
+      return;
+    }
+    
+    this.lastAutoInitTime = now;
+    this.isInitializing = true;
+    
+    // Verifica se estamos na página correta
+    const headerContainer = document.getElementById('header-dynamic-container');
+    console.log('🔍 Elemento header-dynamic-container encontrado:', !!headerContainer);
+    
+    if (headerContainer) {
+      console.log('✅ Container encontrado, inicializando header...');
+      this.header_init();
+    } else {
+      console.log('❌ Container do header não encontrado, pulando inicialização');
+    }
+    
+    this.isInitializing = false;
+  },
+
   // Método para inicialização automática quando o módulo é carregado
   autoInit() {
-    // Verifica se estamos em uma página que precisa do header
-    const headerContainer = document.getElementById('header-dynamic-container');
-    if (headerContainer) {
-      console.log('Inicializando header dinamicamente...');
-      this.header_init();
+    console.log('🔧 Header.autoInit() chamado');
+    
+    // Evitar execuções múltiplas muito próximas (debounce de 1 segundo)
+    const now = Date.now();
+    if (now - this.lastAutoInitTime < 1000) {
+      console.log('⚠️ Header: execução muito próxima, ignorando');
+      return;
     }
+    
+    // Evitar sobreposição de execuções
+    if (this.isInitializing) {
+      console.log('⚠️ Header: já está inicializando, ignorando');
+      return;
+    }
+    
+    this.lastAutoInitTime = now;
+    this.isInitializing = true;
+    
+    // Verifica se estamos na página correta procurando pelo elemento principal
+    const headerContainer = document.getElementById('header-dynamic-container');
+    console.log('🔍 Elemento header-dynamic-container encontrado:', !!headerContainer);
+    
+    if (headerContainer) {
+      console.log('✅ Container encontrado, inicializando header...');
+      this.header_init();
+    } else {
+      console.log('❌ Container do header não encontrado, pulando inicialização');
+    }
+    
+    this.isInitializing = false;
   },
 
   // Função principal para inicializar o header
   header_init() {
+    console.log('🔧 header_init() chamado');
+    
     // Só inicializa se o container existir
     if (!this.header_initElements()) {
       console.error('Elementos essenciais do header não encontrados');
       return;
     }
     
+    console.log('✅ Elementos encontrados, renderizando header...');
     this.header_render();
     this.header_bindEvents();
+    
+    console.log('✅ Header initialized successfully');
   },
 
   header_initElements() {
+    console.log('🔍 Verificando elementos da página do header...');
+    
     this.headerContainer = document.getElementById('header-dynamic-container');
     
     // Verifica se o elemento essencial existe
     if (!this.headerContainer) {
-      console.error('Container do header não encontrado');
+      console.error('❌ Container do header não encontrado');
       return false;
     }
     
-    console.log('Header elements initialized successfully');
+    console.log('✅ Header elements initialized successfully');
     return true;
   },
 
@@ -49,10 +118,13 @@ export default {
 
   // Função para renderizar o header dinamicamente
   header_render() {
+    console.log('🔧 Renderizando header dinamicamente...');
+    
     const sessionData = this.header_getSessionData();
     const isLoggedIn = sessionData.cpf && sessionData.cpf.length > 0;
     
-    console.log('Renderizando header com dados:', sessionData);
+    console.log('📊 Dados de sessão:', sessionData);
+    console.log('🔐 Usuário logado:', isLoggedIn);
     
     const headerHTML = `
       <header class="br-header" data-sticky="data-sticky">
@@ -60,10 +132,10 @@ export default {
           <div class="header-top header-top-flex">
 
             <!-- BLOCO ESQUERDO -->
-            <div id="header-esquerda" style="display: flex; align-items: center; gap: 20px;">
-              <div style="display: flex; flex-direction: column; align-items: start;">
+            <div id="header-esquerda">
+              <div class="header-logo-container">
                 <!-- LOGO -->
-                <img src="/static/images/govbr-logo.png" alt="gov.br" style="margin-bottom: 0.25rem;">
+                <img src="/static/images/govbr-logo.png" alt="gov.br">
                 <!-- BOTÃO HAMBURGUER -->
                 <button id="menu-toggle-button" 
                         class="br-button small circle" 
@@ -76,11 +148,11 @@ export default {
                 </button>
               </div>
               <!-- Textos -->
-              <div style="margin: 30px 0px -30px -30px;">
-                <div class="header-sign" style="color: #1351b4;">
+              <div class="header-texts">
+                <div class="header-sign">
                   Compras Executivo
                 </div>
-                <div class="header-title" style="color: #555;">
+                <div class="header-title">
                   Design System | Versão 3.6.1
                 </div>
               </div>
@@ -88,15 +160,16 @@ export default {
 
             <!-- BLOCO DIREITO -->
             <!-- VERSÃO DESKTOP -->
-            <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop" style="align-items: center; gap: 10px;">
+            <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop">
               ${isLoggedIn ? this.header_renderLoggedInUser(sessionData) : this.header_renderLoginButton()}
 
               <!-- Separador vertical -->
-              <div style="height: 24px; width: 1px; background-color: #ccc; margin: 0 1rem;"></div>
+              <div class="header-separator"></div>
 
               <!-- Botão Minha Conta -->
               <a href="/minha-conta" 
-                 class="br-button small circle" 
+                 class="br-button small circle spa-link" 
+                 data-spa="true"
                  data-tooltip-text="Minha conta" 
                  data-tooltip-place="bottom" 
                  data-tooltip-type="info"
@@ -136,6 +209,7 @@ export default {
     `;
     
     this.headerContainer.innerHTML = headerHTML;
+    console.log('✅ Header HTML renderizado com sucesso');
   },
 
   // Função para renderizar usuário logado
@@ -182,6 +256,8 @@ export default {
 
   // Função para vincular eventos do header
   header_bindEvents() {
+    console.log('🔧 Vinculando eventos do header...');
+    
     // Evento do botão de menu hamburguer
     const menuToggleButton = document.getElementById('menu-toggle-button');
     if (menuToggleButton) {
@@ -219,7 +295,7 @@ export default {
       campoPesquisaMobile.addEventListener('keypress', this.header_handleSearch.bind(this));
     }
 
-    console.log('Header events bound successfully');
+    console.log('✅ Header events bound successfully');
   },
 
   // Handler para o toggle do menu

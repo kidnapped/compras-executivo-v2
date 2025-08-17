@@ -20,11 +20,9 @@
         </div>
         <!-- Textos -->
         <div class="header-texts">
-          <div class="header-sign">
-            Compras Executivo
-          </div>
-          <div class="header-title">
-            Design System | Versão 3.6.1
+          <!-- Header Component - Dynamic -->
+          <div id="header-dynamic-container">
+            <!-- Textos serão carregados dinamicamente via JavaScript -->
           </div>
         </div>
       </div>
@@ -32,38 +30,10 @@
       <!-- BLOCO DIREITO -->
       <!-- VERSÃO DESKTOP -->
       <div id="header-direita-desktop" class="d-none d-lg-flex header-direita-desktop">
-        {% if request.session.get('cpf') %}
-          <div class="header-user-info">
-            <div class="header-user-details">
-              <span id="cpf-display"
-                    data-tooltip-text="CPF" 
-                    data-tooltip-place="bottom" 
-                    data-tooltip-type="info">{{ request.session.cpf }})</span>
-              {% if request.session.get('usuario_name') %}
-                <span class="header-user-name"
-                      data-tooltip-text="Usuário" 
-                      data-tooltip-place="bottom" 
-                      data-tooltip-type="info">{{ request.session.usuario_name }}</span>
-              {% endif %}
-            </div>
-            {% if request.session.get('usuario_role') %}
-              <span class="header-user-role"
-                    data-tooltip-text="Perfil no sistema"
-                    data-tooltip-place="bottom" 
-                    data-tooltip-type="info">{{ request.session.usuario_role }}</span>
-            {% endif %}
-          </div>
-          <a href="/logout" 
-             class="br-button small circle" 
-             data-tooltip-text="Sair do sistema" 
-             data-tooltip-place="bottom" 
-             data-tooltip-type="info"
-             aria-label="Sair">
-            <i class="fas fa-sign-out-alt"></i>
-          </a>
-        {% else %}
-          <a href="/login" class="br-button small" title="Entrar">Entrar</a>
-        {% endif %}
+        <!-- Header User Component - Dynamic -->
+        <div id="header-user-dynamic-container">
+          <!-- Dados do usuário serão carregados dinamicamente via JavaScript -->
+        </div>
 
         <!-- Separador vertical -->
         <div class="header-separator"></div>

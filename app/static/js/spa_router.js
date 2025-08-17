@@ -356,6 +356,17 @@ class SPARouter {
     
     // Aguardar o DOM estar pronto antes de inicializar módulos
     setTimeout(() => {
+      // Header - deve ser inicializado em todas as páginas
+      if (window.App && typeof window.App.header_initComplete === 'function') {
+        console.log('🔧 Inicializando Header para rota:', route);
+        try {
+          window.App.header_initComplete();
+          console.log('✅ Header inicializado via initializePageModules!');
+        } catch (error) {
+          console.error('Erro ao inicializar Header via initializePageModules:', error);
+        }
+      }
+
       // Página de Indicadores
       if (route.includes('/indicadores') && window.App) {
         // Evitar execução dupla
@@ -480,6 +491,17 @@ class SPARouter {
    * Executa scripts específicos da página carregada
    */
   executePageScripts(data) {
+    // Header - deve ser executado em todas as páginas
+    if (window.App && window.App.header_initComplete) {
+      console.log('🔧 Executando Header para rota:', data.route);
+      try {
+        window.App.header_initComplete();
+        console.log('✅ Header executado via executePageScripts!');
+      } catch (error) {
+        console.error('Erro ao executar Header via executePageScripts:', error);
+      }
+    }
+
     // Verificar se é a página de indicadores e se o módulo já está carregado globalmente
     if (data.route === '/indicadores' && window.App && window.App.indicadores_initComplete) {
       // Evitar execução dupla com um flag temporal
@@ -566,6 +588,23 @@ class SPARouter {
                   console.log('✅ Módulo Indicadores re-inicializado!');
                 } catch (error) {
                   console.error('Erro ao re-inicializar Indicadores:', error);
+                }
+              }, 200);
+              return;
+            }
+          }
+
+          // Verificar se é header e se o App já existe
+          if (script.src.includes('header.js')) {
+            if (window.App && window.App.header_initComplete) {
+              console.log('✅ Header já carregado, apenas re-inicializando...');
+              
+              setTimeout(() => {
+                try {
+                  window.App.header_initComplete();
+                  console.log('✅ Módulo Header re-inicializado!');
+                } catch (error) {
+                  console.error('Erro ao re-inicializar Header:', error);
                 }
               }, 200);
               return;
