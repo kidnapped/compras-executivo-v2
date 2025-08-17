@@ -153,9 +153,19 @@ export default {
     // Escutar cliques no botão do menu
     const menuToggleButton = document.getElementById('menu-toggle-button');
     if (menuToggleButton) {
-      menuToggleButton.addEventListener('click', () => {
+      // Remover listener antigo se existir para evitar duplicação
+      const existingHandler = menuToggleButton._footerAdjustHandler;
+      if (existingHandler) {
+        menuToggleButton.removeEventListener('click', existingHandler);
+      }
+      
+      // Criar novo handler e armazenar referência
+      const newHandler = () => {
         setTimeout(() => this.adjustFooterForSidebar(), 100);
-      });
+      };
+      
+      menuToggleButton._footerAdjustHandler = newHandler;
+      menuToggleButton.addEventListener('click', newHandler);
     }
 
     // Verificar periodicamente (fallback)

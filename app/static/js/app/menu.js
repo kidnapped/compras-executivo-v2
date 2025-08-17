@@ -269,7 +269,14 @@ export default {
 
     if (menuButtons.length && menu) {
       menuButtons.forEach((menuButton) => {
-        menuButton.addEventListener("click", () => {
+        // Remover listeners antigos antes de adicionar novos para evitar duplicação
+        const existingHandler = menuButton._menuToggleHandler;
+        if (existingHandler) {
+          menuButton.removeEventListener("click", existingHandler);
+        }
+        
+        // Criar novo handler e armazenar referência
+        const newHandler = () => {
           const isOpen = menu.classList.contains("active");
           menu.classList.toggle("active", !isOpen);
           body.classList.toggle("menu-open", !isOpen);
@@ -281,7 +288,10 @@ export default {
               : "<span>&times;</span>";
             btn.setAttribute('aria-label', isOpen ? 'Abrir Menu' : 'Fechar Menu');
           });
-        });
+        };
+        
+        menuButton._menuToggleHandler = newHandler;
+        menuButton.addEventListener("click", newHandler);
       });
     }
   },

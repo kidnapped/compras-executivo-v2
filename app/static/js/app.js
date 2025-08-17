@@ -10,9 +10,7 @@ import cookie from "./app/cookie.js";
 import admin from "./admin.js";
 import modalManager from "./common/modal-manager.js";
 import aditivosHandler from "./contrato/aditivos-handler.js";
-import financialBars from "./contrato/financial-bars.js";
 import devOps from "./dev-ops/dev-ops.js";
-import card_kpi from "./kpi/card.js";
 import contratos_dashboard from "./contrato/dashboard.js";
 import admin_dw_tesouro from "./admin/admin_dw_tesouro.js";
 import indicadores from "./indicadores.js";
@@ -29,14 +27,12 @@ const App = {
   ...footer,
   ...cookie,
   ...admin,
-  ...card_kpi,
   ...contratos_dashboard,
   ...admin_dw_tesouro,
   ...indicadores,
   ...minha_conta,
   ...modalManager,
   ...aditivosHandler,
-  ...financialBars,
   ...devOps,
   breadcrumb,
   card_header,
@@ -85,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   modalManager.initialize();
   // tooltip.initialize(); // Disabled - using GovBR DS tooltips instead
-  financialBars.initialize();
   breadcrumb.breadcrumb_init();
   card_header.card_header_init();
   topico.topico_init();
@@ -98,14 +93,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // Auto-inicialização dos indicadores apenas se estivermos na página correta
-  // Removido para evitar carregamento desnecessário em outras páginas
-  // if (indicadores.autoInit) {
-  //   indicadores.autoInit();
-  // }
+  if (indicadores.autoInit) {
+    indicadores.autoInit();
+  }
   
   // Auto-inicialização da página minha conta se estivermos na página correta
   if (minha_conta.autoInit) {
     minha_conta.autoInit();
+  }
+  
+  // Auto-inicialização do dashboard se estivermos na página correta
+  if (contratos_dashboard.dashboard_autoInit) {
+    contratos_dashboard.dashboard_autoInit();
   }
   
   // Inicializar SPA Router

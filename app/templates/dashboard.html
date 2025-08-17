@@ -431,23 +431,6 @@ endblock %} {% block content %}
     window.dashboardConfig = {
             showRenewalColumn: {{ 'true' if show_renewal_column else 'false' }}
         };
-    document.addEventListener("DOMContentLoaded", function () {
-        // Initialize the dashboard with dynamic table loading
-        if (typeof App !== "undefined" && App.initDashboard) {
-            console.log("Initializing dashboard...");
-            App.initDashboard();
-        } else {
-            // Fallback: try again after a short delay if App is not ready
-            setTimeout(function () {
-                if (typeof App !== "undefined" && App.initDashboard) {
-                    console.log("Initializing dashboard (delayed)...");
-                    App.initDashboard();
-                } else {
-                    console.warn("App.initDashboard not available");
-                }
-            }, 1000);
-        }
-    });
   </script>
 </div>
 

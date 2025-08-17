@@ -379,7 +379,7 @@ export default {
     const html = `
       <div class="col-12 col-lg-3">
         <div class="br-card h-100 card-contratos">
-          ${this.cardHeader({ titulo, subtitulo, icone })}
+          ${Card.cardHeader({ titulo, subtitulo, icone })}
           <div class="card-content" style="padding-top: 8px;">
             <div class="valor-principal">${quantidade_total}</div>
             <div class="linha">
@@ -1784,6 +1784,25 @@ export default {
     } finally {
       // Restore opacity
       imgElement.style.opacity = "1";
+    }
+  },
+
+  // Dashboard initialization function with proper naming convention
+  dashboard_autoInit() {
+    // Initialize the dashboard with dynamic table loading
+    if (typeof App !== "undefined" && App.initDashboard) {
+      console.log("Initializing dashboard...");
+      App.initDashboard();
+    } else {
+      // Fallback: try again after a short delay if App is not ready
+      setTimeout(function () {
+        if (typeof App !== "undefined" && App.initDashboard) {
+          console.log("Initializing dashboard (delayed)...");
+          App.initDashboard();
+        } else {
+          console.warn("App.initDashboard not available");
+        }
+      }, 1000);
     }
   },
 };
