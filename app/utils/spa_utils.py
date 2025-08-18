@@ -51,10 +51,10 @@ def create_spa_response(
     if not title:
         title = extract_title_from_html(full_html)
     
-    response_data = {
+        response_data = {
         "content": content,
         "title": title,
-        "route": str(request.url.path),
+        "route": str(request.url.path) + (str(request.url.query) and f"?{request.url.query}" or ""),
         "scripts": scripts or []
     }
     
@@ -204,7 +204,7 @@ def add_spa_context(context: Dict[str, Any], request: Request) -> Dict[str, Any]
     """
     context.update({
         "is_spa_request": is_spa_request(request),
-        "current_route": str(request.url.path),
+        "current_route": str(request.url.path) + (str(request.url.query) and f"?{request.url.query}" or ""),
         "spa_enabled": True
     })
     

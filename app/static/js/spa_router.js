@@ -6,7 +6,7 @@
 class SPARouter {
   constructor() {
     this.isLoading = false;
-    this.currentRoute = window.location.pathname;
+    this.currentRoute = window.location.pathname + window.location.search;
     this.lastNavigationTime = 0;
     this.pendingRoute = null;
     this.clickHandler = null;
@@ -28,6 +28,10 @@ class SPARouter {
     this.popstateHandler = (event) => {
       if (event.state && event.state.route) {
         this.loadPage(event.state.route, false);
+      } else {
+        // Fallback: usar a URL atual do browser (incluindo query parameters)
+        const currentFullRoute = window.location.pathname + window.location.search;
+        this.loadPage(currentFullRoute, false);
       }
     };
     window.addEventListener("popstate", this.popstateHandler);
