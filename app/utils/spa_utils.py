@@ -51,7 +51,7 @@ def create_spa_response(
     if not title:
         title = extract_title_from_html(full_html)
     
-        response_data = {
+    response_data = {
         "content": content,
         "title": title,
         "route": str(request.url.path) + (str(request.url.query) and f"?{request.url.query}" or ""),

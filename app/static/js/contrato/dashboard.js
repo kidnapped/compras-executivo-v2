@@ -1986,10 +1986,8 @@ export default {
 
   // Dashboard initialization function with proper naming convention
   dashboard_autoInit() {
-    // Only initialize dashboard if we're on a dashboard page
-    if (!window.location.pathname.includes("/dashboard") && 
-        !window.location.pathname.includes("/inicio") &&
-        window.location.pathname !== "/") {
+    // Only initialize dashboard if we're specifically on the dashboard page
+    if (!window.location.pathname.includes("/dashboard")) {
       console.log("⚠️ Skipping dashboard auto-init - not on dashboard page");
       return;
     }
@@ -2008,10 +2006,8 @@ export default {
     } else {
       // Fallback: try again after a short delay if App is not ready
       setTimeout(() => {
-        // Only initialize dashboard if we're on a dashboard page (check again after delay)
-        if (!window.location.pathname.includes("/dashboard") && 
-            !window.location.pathname.includes("/inicio") &&
-            window.location.pathname !== "/") {
+        // Only initialize dashboard if we're specifically on the dashboard page (check again after delay)
+        if (!window.location.pathname.includes("/dashboard")) {
           console.log("⚠️ Skipping dashboard delayed init - not on dashboard page");
           return;
         }
