@@ -1,5 +1,89 @@
 /* ===================== ENCONTRO DE CONTAS SPECIFIC STYLES ===================== */
 
+/* Apply ultimos-lancamentos-container styles to new structure */
+#ultimos-lancamentos-container .valor-principal {
+  margin: 0px 0px 4px 20px !important;
+  font-size: 30px;
+  color: #ff8000;
+  text-align: left;
+}
+
+#ultimos-lancamentos-container .valor-principal span {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+#ultimos-lancamentos-container .linha {
+  display: flex;
+  align-items: flex-start;
+  margin: 0px 0px 0px 16px !important;
+  font-size: 10px;
+  white-space: nowrap;
+  justify-content: flex-start;
+  gap: 16px;
+}
+
+#ultimos-lancamentos-container .linha div {
+  text-align: left;
+}
+
+#ultimos-lancamentos-container .linha .valor-azul {
+  color: #00366f;
+  font-weight: bold;
+}
+
+#ultimos-lancamentos-container .linha .valor-vermelho {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+#ultimos-lancamentos-container .linha .divider {
+  border-left: 1px solid #ccc;
+  height: 32px;
+}
+
+/* Apply card-contratos styles to new structure */
+#empenhos-card .valor-principal {
+  margin: 0px 0px 4px 20px !important;
+  font-size: 30px;
+  color: #ff8000;
+  text-align: left;
+}
+
+#empenhos-card .valor-principal span {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+#empenhos-card .linha {
+  display: flex;
+  align-items: flex-start;
+  margin: 0px 0px 0px 16px !important;
+  font-size: 10px;
+  white-space: nowrap;
+  justify-content: flex-start;
+  gap: 16px;
+}
+
+#empenhos-card .linha div {
+  text-align: left;
+}
+
+#empenhos-card .linha .valor-azul {
+  color: #00366f;
+  font-weight: bold;
+}
+
+#empenhos-card .linha .valor-vermelho {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+#empenhos-card .linha .divider {
+  border-left: 1px solid #ccc;
+  height: 32px;
+}
+
 /* Encontro de contas specific card styling */
 .encontro-card {
   border-radius: 8px;
