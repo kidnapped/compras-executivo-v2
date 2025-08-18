@@ -593,84 +593,30 @@ class SPARouter {
     try {
       console.log("🔧 Inicializando módulos do Encontro de Contas...");
 
-      // Verificar se já existe uma instância e limpar se necessário
-      if (window.EncontroContas && typeof window.EncontroContas === "object") {
-        console.log("🗑️ Limpando instância anterior do EncontroContas...");
-        window.EncontroContas = null;
+      // Agora o encontroContas é parte do App global
+      if (window.App && window.App.encontroDeContas_forceInit) {
+        console.log("✅ EncontroContas encontrado no App, inicializando...");
+        await window.App.encontroDeContas_forceInit();
+        console.log("🚀 Encontro de Contas inicializado com sucesso via App!");
+        return;
       }
 
-      // Aguardar módulos estarem disponíveis
+      // Fallback: aguardar App estar disponível
       let attempts = 0;
       const maxAttempts = 15;
 
       while (attempts < maxAttempts) {
-        // Primeiro, tentar usar EncontroInit se disponível
-        if (
-          window.EncontroInit &&
-          typeof window.EncontroInit.init === "function"
-        ) {
-          console.log("✅ EncontroInit encontrado, inicializando...");
-          await window.EncontroInit.init();
-          console.log(
-            "🚀 Encontro de Contas inicializado com sucesso via EncontroInit!"
-          );
+        // Aguardar App estar disponível
+        if (window.App && window.App.encontroDeContas_forceInit) {
+          console.log("✅ App carregado, inicializando Encontro de Contas...");
+          await window.App.encontroDeContas_forceInit();
+          console.log("🚀 Encontro de Contas inicializado com sucesso!");
           return;
-        }
-
-        // Se EncontroContas estiver disponível como classe
-        if (
-          window.EncontroContas &&
-          typeof window.EncontroContas === "function"
-        ) {
-          console.log(
-            "✅ Classe EncontroContas encontrada, criando instância..."
-          );
-          window.EncontroContas = new window.EncontroContas();
-          console.log("🚀 Nova instância de EncontroContas criada!");
-          return;
-        }
-
-        // Se nenhum dos módulos estiver disponível, tentar importá-los dinamicamente
-        if (attempts === 5) {
-          console.log("🔄 Tentando importar módulos dinamicamente...");
-          try {
-            // Tentar importar o módulo diretamente
-            const EncontroContasModule = await import(
-              "/static/js/encontro/encontro-contas.js"
-            );
-            const EncontroInitModule = await import(
-              "/static/js/encontro/encontro-init.js"
-            );
-
-            if (EncontroInitModule.default) {
-              console.log("📦 Módulo EncontroInit importado, inicializando...");
-              window.EncontroInit = EncontroInitModule.default;
-              await window.EncontroInit.init();
-              console.log("🚀 Encontro inicializado via import dinâmico!");
-              return;
-            }
-
-            if (EncontroContasModule.default) {
-              console.log(
-                "📦 Módulo EncontroContas importado, criando instância..."
-              );
-              window.EncontroContas = new EncontroContasModule.default();
-              console.log(
-                "🚀 EncontroContas inicializado via import dinâmico!"
-              );
-              return;
-            }
-          } catch (importError) {
-            console.warn(
-              "⚠️ Erro ao importar módulos dinamicamente:",
-              importError
-            );
-          }
         }
 
         attempts++;
         console.log(
-          `⏳ Tentativa ${attempts}/${maxAttempts} - Aguardando módulos...`
+          `⏳ Tentativa ${attempts}/${maxAttempts} - Aguardando App...`
         );
         await new Promise((resolve) => setTimeout(resolve, 300));
       }
@@ -955,20 +901,17 @@ class SPARouter {
                 }
               }, 300);
               return;
-            } else if (
-              window.EncontroContas &&
-              typeof window.EncontroContas === "function"
-            ) {
+            } else if (window.App && window.App.encontroDeContas_forceInit) {
               console.log(
-                "✅ Classe EncontroContas já carregada, criando nova instância..."
+                "✅ App com EncontroContas já carregado, re-inicializando..."
               );
               setTimeout(() => {
                 try {
-                  window.EncontroContas = new window.EncontroContas();
-                  console.log("✅ Nova instância de EncontroContas criada!");
+                  window.App.encontroDeContas_forceInit();
+                  console.log("✅ Encontro de Contas re-inicializado!");
                 } catch (error) {
                   console.error(
-                    "Erro ao criar nova instância EncontroContas:",
+                    "Erro ao re-inicializar Encontro de Contas:",
                     error
                   );
                 }

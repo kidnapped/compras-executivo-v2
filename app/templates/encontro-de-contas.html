@@ -410,6 +410,8 @@ Executivo{% endblock %} {% block content %}
 </div>
 
 <script type="module">
-  import EncontroContas from "/static/js/encontro/encontro-contas.js";
+  // O módulo encontroContas agora é carregado automaticamente via app.js
+  // e se auto-inicializa quando detecta que está na página correta
+  console.log("📋 Encontro de Contas page loaded - waiting for auto-initialization...");
 </script>
 {% endblock %}

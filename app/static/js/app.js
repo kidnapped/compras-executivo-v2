@@ -21,6 +21,7 @@ import card_header from "./app/card_header.js";
 import topico from "./app/topico.js";
 import tooltip from "./app/tooltip.js";
 import SPARouter from "./spa_router.js";
+import encontroContas from "./encontro/encontro-contas.js";
 
 const App = {
   ...environment,
@@ -36,6 +37,7 @@ const App = {
   ...modalManager,
   ...aditivosHandler,
   ...devOps,
+  ...encontroContas,
   breadcrumb,
   filter,
   card_header,
@@ -110,6 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Auto-inicialização do dashboard se estivermos na página correta
   if (contratos_dashboard.dashboard_autoInit) {
     contratos_dashboard.dashboard_autoInit();
+  }
+
+  // Auto-inicialização do encontro de contas se estivermos na página correta
+  if (encontroContas.encontroDeContas_autoInit) {
+    encontroContas.encontroDeContas_autoInit();
   }
 
   // Inicializar SPA Router
