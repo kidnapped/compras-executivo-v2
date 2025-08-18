@@ -75,6 +75,7 @@ const EncontroInit = {
   isEncontroPage() {
     return (
       window.location.pathname.includes("encontro-de-contas") ||
+      document.querySelector("#empenhos-originais-tbody") !== null ||
       document.querySelector("#ultimos-lancamentos-container") !== null
     );
   },
@@ -88,6 +89,12 @@ const EncontroInit = {
     // Verify CardGenerator is available
     if (!CardGenerator) {
       console.error("❌ CardGenerator not available for createPageCards");
+      return;
+    }
+
+    // Skip card creation if EncontroContas from App is already handling the page
+    if (window.App && window.App.encontroDeContas_autoInit) {
+      console.log("ℹ️ EncontroContas from App is handling initialization, skipping card creation");
       return;
     }
 
@@ -421,19 +428,30 @@ const EncontroInit = {
       console.log(`🔍 Found contract ID: ${contratoId}`);
 
       try {
-        // Load and instantiate the EncontroContas class
-        console.log("📦 Loading EncontroContas module...");
-        const EncontroContasModule = await import(
-          "/static/js/encontro/encontro-contas.js"
-        );
-        const EncontroContas = EncontroContasModule.default;
-
-        console.log("🏗️ Creating EncontroContas instance...");
-        window.EncontroContas = new EncontroContas();
-
-        console.log(
-          "✅ EncontroContas instance created and assigned to window.EncontroContas"
-        );
+        // Use the EncontroContas object from the App (it's already loaded and available)
+        console.log("📦 Using EncontroContas from App...");
+        
+        if (window.App && window.App.encontroDeContas_init) {
+          console.log("🏗️ Initializing EncontroContas from App...");
+          await window.App.encontroDeContas_init();
+          
+          // Also make it available as window.EncontroContas for compatibility
+          window.EncontroContas = window.App;
+          
+          console.log("✅ EncontroContas initialized and available");
+        } else {
+          // Fallback: load the module directly
+          console.log("⚠️ App not available, loading module directly...");
+          const EncontroContasModule = await import(
+            "/static/js/encontro/encontro-contas.js"
+          );
+          const EncontroContas = EncontroContasModule.default;
+          
+          window.EncontroContas = EncontroContas;
+          await EncontroContas.encontroDeContas_init();
+          
+          console.log("✅ EncontroContas loaded and initialized as fallback");
+        }
       } catch (error) {
         console.error("❌ Error loading EncontroContas:", error);
       }
@@ -509,8 +527,28 @@ const EncontroInit = {
   },
 };
 
-// Auto-initialize when script loads
-EncontroInit.init();
+// Auto-initialize when script loads, but only if App is not handling it
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    // Check if App is available and handling encontro initialization
+    if (window.App && window.App.encontroDeContas_autoInit) {
+      console.log("ℹ️ App is handling EncontroContas initialization, skipping EncontroInit auto-init");
+    } else {
+      console.log("🔧 App not available, using EncontroInit fallback");
+      EncontroInit.init();
+    }
+  });
+} else {
+  // DOM already loaded
+  setTimeout(() => {
+    if (window.App && window.App.encontroDeContas_autoInit) {
+      console.log("ℹ️ App is handling EncontroContas initialization, skipping EncontroInit auto-init");
+    } else {
+      console.log("🔧 App not available, using EncontroInit fallback");
+      EncontroInit.init();
+    }
+  }, 100);
+}
 
 // Expose to global scope for debugging/manual control
 window.EncontroInit = EncontroInit;
