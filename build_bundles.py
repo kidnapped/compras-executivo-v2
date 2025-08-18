@@ -496,7 +496,7 @@ def fix_all_variable_references(content, modules_info):
     all_exported_vars.update([
         'modalManager', 'tooltip', 'financialBars', 'aditivosHandler', 'devOps',
         'environment', 'menu', 'admin', 'card_kpi', 'contratos_dashboard', 
-        'kpis_kpi', 'encontroInit', 'getBaseChartOption', 'BR_COLORS', 
+        'kpis_kpi', 'getBaseChartOption', 'BR_COLORS', 
         'fetchKpiData', 'renderKpiData', 'displayValueInH2', 'showKpiError'
     ])
     
@@ -712,7 +712,7 @@ def convert_es6_module(content, file_path):
     common_module_vars = [
         'modalManager', 'tooltip', 'financialBars', 'aditivosHandler', 'devOps',
         'environment', 'menu', 'admin', 'card_kpi', 'contratos_dashboard', 
-        'kpis_kpi', 'encontroInit', 'getBaseChartOption', 'BR_COLORS', 
+        'kpis_kpi', 'getBaseChartOption', 'BR_COLORS', 
         'fetchKpiData', 'renderKpiCard', 'displayValueInH2', 'showKpiError'
     ]
     

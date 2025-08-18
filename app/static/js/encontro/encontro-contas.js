@@ -447,26 +447,15 @@ export default {
     console.log("Looking for #ultimos-lancamentos-container:", !!document.querySelector("#ultimos-lancamentos-container"));
     
     // Check if we're on the correct page
-    if (
-      window.location.pathname.includes("encontro-de-contas") ||
-      document.querySelector("#empenhos-originais-tbody") ||
-      document.querySelector("#ultimos-lancamentos-container")
-    ) {
+    if (this.encontroDeContas_isEncontroPage()) {
       console.log("🎯 Auto-initializing Encontro de Contas...");
       
-      // Try immediate initialization first
-      if (document.readyState === 'complete') {
-        console.log("📄 DOM is complete, initializing immediately");
-        this.encontroDeContas_init();
-      } else {
-        console.log("⏳ DOM not ready, using timeout");
-        setTimeout(() => {
-          console.log("🚀 Timeout reached, initializing now");
-          this.encontroDeContas_init();
-        }, 1000); // Increased timeout to ensure DOM is ready
-      }
+      // Use the full initialization that includes card management
+      this.encontroDeContas_fullInit();
     } else {
       console.log("❌ Not on encontro-de-contas page, skipping initialization");
+      // Setup window API even if not on the page for potential manual calls
+      this.encontroDeContas_setupWindowAPI();
     }
   },
 
@@ -1582,6 +1571,19 @@ export default {
     }
 
     try {
+      // Use the internal EmpenhosCard component
+      const empenhosCard = new this.EmpenhosCard({
+        containerId: "empenhos-card",
+        data: this.state.rawData.empenhos_data,
+        title: "Empenhos",
+        subtitle: "Total de empenhos desde 2019"
+      }, this);
+
+      console.log("✅ Empenhos card rendered with component");
+    } catch (error) {
+      console.error("❌ Error rendering empenhos card with component:", error);
+      
+      // Fallback to the old manual method
       const empenhosData = this.state.rawData.empenhos_data;
       let totalEmpenhos = 0;
       let emExecucao = 0;
@@ -1620,14 +1622,12 @@ export default {
       if (finalizadosDisplay) finalizadosDisplay.textContent = finalizados;
       if (rapDisplay) rapDisplay.textContent = rapCount;
 
-      console.log("✅ Empenhos card updated:", {
+      console.log("✅ Empenhos card updated with fallback method:", {
         total: totalEmpenhos,
         emExecucao: emExecucao,
         finalizados: finalizados,
         rap: rapCount
       });
-    } catch (error) {
-      console.error("❌ Error updating empenhos card:", error);
     }
   },
 
@@ -2025,34 +2025,1231 @@ export default {
     // Basic formatting - can be enhanced
     return ws;
   },
-};
 
-// Static method for HTML button access
-if (typeof window !== 'undefined') {
-  window.exportToExcel = function () {
-    if (window.App && window.App.encontroDeContas_exportToExcel) {
-      window.App.encontroDeContas_exportToExcel();
-    } else {
-      alert(
-        "Sistema não inicializado. Aguarde o carregamento completo da página."
-      );
-    }
-  };
+  // ===== WINDOW API SETUP =====
 
-  // Add debug helper after App is loaded
-  setTimeout(() => {
-    if (window.App) {
-      window.EncontroContasDebug = {
-        getState: () => window.App.state,
-        forceInit: () => window.App.encontroDeContas_init(),
-        renderTables: () => window.App.encontroDeContas_renderAllTables(),
-        getContainers: () => window.App.encontroDeContas_initContainers(),
-        loadData: (contractId) => {
-          window.App.state.currentContractId = contractId;
-          return window.App.encontroDeContas_loadInitialData();
+  encontroDeContas_setupWindowAPI() {
+    // Static method for HTML button access
+    if (typeof window !== 'undefined') {
+      window.exportToExcel = () => {
+        if (window.App && window.App.encontroDeContas_exportToExcel) {
+          window.App.encontroDeContas_exportToExcel();
+        } else {
+          alert(
+            "Sistema não inicializado. Aguarde o carregamento completo da página."
+          );
         }
       };
-      console.log("🛠️ EncontroContasDebug available in window.EncontroContasDebug");
+
+      // Add debug helper after App is loaded
+      setTimeout(() => {
+        if (window.App) {
+          window.EncontroContasDebug = {
+            getState: () => window.App.state,
+            forceInit: () => window.App.encontroDeContas_init(),
+            renderTables: () => window.App.encontroDeContas_renderAllTables(),
+            getContainers: () => window.App.encontroDeContas_initContainers(),
+            loadData: (contractId) => {
+              window.App.state.currentContractId = contractId;
+              return window.App.encontroDeContas_loadInitialData();
+            }
+          };
+          console.log("🛠️ EncontroContasDebug available in window.EncontroContasDebug");
+        }
+      }, 2000);
+
+      // Setup legacy EncontroInit API
+      this.encontroDeContas_setupLegacyAPI();
     }
-  }, 2000);
-}
+  },
+
+  // ===== CARD GENERATOR INTEGRATION =====
+
+  async encontroDeContas_loadCardGenerator() {
+    try {
+      // Return the internal CardGenerator component
+      return this.CardGenerator;
+    } catch (error) {
+      console.error("Failed to load CardGenerator:", error);
+      // Fallback to window.CardGenerator if exists
+      return window.CardGenerator || this.CardGenerator;
+    }
+  },
+
+  // ===== INITIALIZATION ORCHESTRATION =====
+
+  /**
+   * Enhanced initialization that includes card creation and data fetching orchestration
+   */
+  async encontroDeContas_fullInit() {
+    try {
+      console.log("🚀 Full Initialization - Encontro de Contas...");
+
+      // Load CardGenerator first if needed
+      const CardGenerator = await this.encontroDeContas_loadCardGenerator();
+
+      if (CardGenerator) {
+        console.log("✅ CardGenerator loaded successfully");
+        window.CardGenerator = CardGenerator;
+        
+        // Also expose our internal components to window
+        window.CardGenerator = this.CardGenerator;
+        window.EmpenhosCard = this.EmpenhosCard;
+      }
+
+      // Wait for DOM to be ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => this.encontroDeContas_onDOMReady());
+      } else {
+        this.encontroDeContas_onDOMReady();
+      }
+    } catch (error) {
+      console.error("❌ Error in full initialization:", error);
+    }
+  },
+
+  /**
+   * Called when DOM is fully loaded
+   */
+  encontroDeContas_onDOMReady() {
+    console.log("✅ DOM Ready - Starting encontro initialization...");
+
+    try {
+      // Only proceed if we're on the encontro page
+      if (this.encontroDeContas_isEncontroPage()) {
+        // Setup window API first
+        this.encontroDeContas_setupWindowAPI();
+
+        // Initialize data fetching
+        this.encontroDeContas_initializeDataFetching();
+      }
+
+      console.log("✅ Encontro initialization complete");
+    } catch (error) {
+      console.error("❌ Error in DOM ready handler:", error);
+    }
+  },
+
+  /**
+   * Check if we're on the encontro de contas page
+   */
+  encontroDeContas_isEncontroPage() {
+    return (
+      window.location.pathname.includes("encontro-de-contas") ||
+      document.querySelector("#empenhos-originais-tbody") !== null ||
+      document.querySelector("#ultimos-lancamentos-container") !== null
+    );
+  },
+
+  /**
+   * Initialize data fetching and orchestrate the page setup
+   */
+  async encontroDeContas_initializeDataFetching() {
+    console.log("📡 Initializing data fetching...");
+
+    // Check if there's a contract ID in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const contratoId = urlParams.get("contrato");
+
+    if (contratoId) {
+      console.log(`🔍 Found contract ID: ${contratoId}`);
+
+      try {
+        // Use the regular init method to load data
+        console.log("🏗️ Initializing EncontroContas with data...");
+        await this.encontroDeContas_init();
+        
+        console.log("✅ EncontroContas initialized with real data");
+      } catch (error) {
+        console.error("❌ Error loading EncontroContas with data:", error);
+      }
+    } else {
+      console.log("ℹ️ No contract ID found, showing empty state");
+      // Initialize containers and setup but don't load data
+      this.encontroDeContas_initContainers();
+      this.encontroDeContas_setupEventListeners();
+    }
+  },
+
+  /**
+   * Utility method to show loading state on a card
+   */
+  encontroDeContas_showCardLoading(tbodyId) {
+    const tbody = document.getElementById(tbodyId);
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="100%" class="text-center" style="padding: 40px;">
+            <div class="br-loading" role="progressbar">
+              <div class="br-loading-text">Carregando...</div>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+  },
+
+  /**
+   * Utility method to show error state on a card
+   */
+  encontroDeContas_showCardError(tbodyId, errorMessage = "Erro ao carregar dados") {
+    const tbody = document.getElementById(tbodyId);
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="100%" class="text-center" style="padding: 40px;">
+            <div class="text-danger">
+              <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+              <br />
+              ${errorMessage}
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+  },
+
+  /**
+   * Manual method for loading contract data (external access)
+   */
+  encontroDeContas_loadContractData(contratoId) {
+    console.log(`📋 Loading contract data for ID: ${contratoId}`);
+    this.state.currentContractId = contratoId;
+    return this.encontroDeContas_loadInitialData();
+  },
+
+  /**
+   * Refresh all cards and data
+   */
+  encontroDeContas_refreshCards() {
+    console.log("🔄 Refreshing all cards...");
+    if (this.encontroDeContas_isEncontroPage()) {
+      this.encontroDeContas_renderAllTables();
+    }
+  },
+
+  // ===== COMPATIBILITY FOR LEGACY EncontroInit API =====
+
+  /**
+   * Setup EncontroInit compatibility in window object
+   */
+  encontroDeContas_setupLegacyAPI() {
+    if (typeof window !== 'undefined') {
+      // Create compatibility object that delegates to App methods
+      window.EncontroInit = {
+        init: () => this.encontroDeContas_fullInit(),
+        onDOMReady: () => this.encontroDeContas_onDOMReady(),
+        isEncontroPage: () => this.encontroDeContas_isEncontroPage(),
+        createPageCards: () => console.log("🎨 createPageCards - now handled automatically"),
+        initializeDataFetching: () => this.encontroDeContas_initializeDataFetching(),
+        updateCardsWithRealData: () => this.encontroDeContas_renderAllTables(),
+        showCardLoading: (tbodyId) => this.encontroDeContas_showCardLoading(tbodyId),
+        showCardError: (tbodyId, errorMessage) => this.encontroDeContas_showCardError(tbodyId, errorMessage),
+        loadContractData: (contratoId) => this.encontroDeContas_loadContractData(contratoId),
+        refreshCards: () => this.encontroDeContas_refreshCards()
+      };
+    }
+  },
+
+  // ===== CARD GENERATOR COMPONENT =====
+
+  /**
+   * Card Generator Component
+   * Creates reusable card layouts with table structure following the project's design system
+   */
+  CardGenerator: {
+    /**
+     * Creates a complete card element with header, title, subtitle and table structure
+     * @param {Object} options - Configuration options
+     * @param {string} options.title - The card's main heading
+     * @param {string} options.subtitle - The card's subheading
+     * @param {string} options.tbodyId - The ID to assign to the tbody element
+     * @param {string} [options.icon] - Icon URL (optional, defaults to doc2.png)
+     * @param {Array} [options.headers] - Table headers (optional, defaults to generic headers)
+     * @param {string} [options.containerClass] - Additional CSS classes for the card container
+     * @returns {HTMLElement} The complete card DOM element
+     */
+    createCard({
+      title,
+      subtitle,
+      tbodyId,
+      icon = "/static/images/doc2.png",
+      headers = [],
+      containerClass = "",
+    }) {
+      // Validate required parameters
+      if (!title || !subtitle || !tbodyId) {
+        throw new Error("title, subtitle, and tbodyId are required parameters");
+      }
+
+      // Create the main card container
+      const cardContainer = this._createCardContainer(containerClass);
+
+      // Create and append the header section
+      const cardHeader = this._createCardHeader(title, subtitle, icon);
+      cardContainer.appendChild(cardHeader);
+
+      // Create and append the content section with table
+      const cardContent = this._createCardContent(tbodyId, headers);
+      cardContainer.appendChild(cardContent);
+
+      return cardContainer;
+    },
+
+    /**
+     * Creates the main card container element
+     * @param {string} containerClass - Additional CSS classes
+     * @returns {HTMLElement} Card container div
+     * @private
+     */
+    _createCardContainer(containerClass) {
+      const container = document.createElement("div");
+      container.className = `br-card ${containerClass}`.trim();
+      return container;
+    },
+
+    /**
+     * Creates the card header section with title, subtitle and icon
+     * @param {string} title - Card title
+     * @param {string} subtitle - Card subtitle
+     * @param {string} icon - Icon URL
+     * @returns {HTMLElement} Card header element
+     * @private
+     */
+    _createCardHeader(title, subtitle, icon) {
+      const header = document.createElement("div");
+      header.className = "card-header";
+
+      header.innerHTML = `
+        <div class="d-flex" style="width: 100%">
+          <div class="ml-3" style="flex-grow: 1">
+            <div class="titulo">
+              <img
+                src="${this._escapeHtml(icon)}"
+                alt="Ícone"
+                style="height: 36px; margin: 10px 0px -10px 0px"
+              />
+              ${this._escapeHtml(title)}
+            </div>
+            <div
+              style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+            ></div>
+            <div class="subtitulo">
+              ${this._escapeHtml(subtitle)}
+            </div>
+          </div>
+        </div>
+      `;
+
+      return header;
+    },
+
+    /**
+     * Creates the card content section with table structure
+     * @param {string} tbodyId - ID for the tbody element
+     * @param {Array} headers - Array of header strings
+     * @returns {HTMLElement} Card content element
+     * @private
+     */
+    _createCardContent(tbodyId, headers) {
+      const content = document.createElement("div");
+      content.className = "card-content";
+      content.style.padding = "0";
+
+      const tableContainer = this._createTableContainer();
+      const table = this._createTable(tbodyId, headers);
+
+      tableContainer.appendChild(table);
+      content.appendChild(tableContainer);
+
+      return content;
+    },
+
+    /**
+     * Creates the table container with responsive wrapper
+     * @returns {HTMLElement} Table container div
+     * @private
+     */
+    _createTableContainer() {
+      const container = document.createElement("div");
+      container.className = "table-responsive";
+      return container;
+    },
+
+    /**
+     * Creates the table element with thead and tbody
+     * @param {string} tbodyId - ID for the tbody element
+     * @param {Array} headers - Array of header strings
+     * @returns {HTMLElement} Table element
+     * @private
+     */
+    _createTable(tbodyId, headers) {
+      const table = document.createElement("table");
+      table.className = "br-table table-hover";
+
+      // Determine column count
+      const columnCount = headers.length > 0 ? headers.length : 1;
+
+      // Create thead if headers are provided
+      if (headers.length > 0) {
+        const thead = this._createTableHeader(headers);
+        table.appendChild(thead);
+      }
+
+      // Create tbody with the specified ID and column count
+      const tbody = this._createTableBody(tbodyId, columnCount);
+      table.appendChild(tbody);
+
+      return table;
+    },
+
+    /**
+     * Creates the table header element
+     * @param {Array} headers - Array of header strings
+     * @returns {HTMLElement} Thead element
+     * @private
+     */
+    _createTableHeader(headers) {
+      const thead = document.createElement("thead");
+      thead.style.backgroundColor = "#f8f8f8";
+
+      const headerRow = document.createElement("tr");
+
+      headers.forEach((headerText) => {
+        const th = document.createElement("th");
+        th.style.border = "none";
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+      });
+
+      thead.appendChild(headerRow);
+      return thead;
+    },
+
+    /**
+     * Creates the table body element with specified ID
+     * @param {string} tbodyId - ID for the tbody element
+     * @param {number} columnCount - Number of columns for proper colspan
+     * @returns {HTMLElement} Tbody element
+     * @private
+     */
+    _createTableBody(tbodyId, columnCount = 1) {
+      const tbody = document.createElement("tbody");
+      tbody.id = tbodyId;
+
+      // Add a default empty state row with proper colspan
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="${columnCount}" class="text-center" style="padding: 40px;">
+            <div class="text-muted">
+              <i class="fas fa-inbox fa-2x mb-3"></i>
+              <br />
+              Aguardando dados...
+            </div>
+          </td>
+        </tr>
+      `;
+
+      return tbody;
+    },
+
+    /**
+     * Escapes HTML to prevent XSS attacks
+     * @param {string} text - Text to escape
+     * @returns {string} Escaped HTML string
+     * @private
+     */
+    _escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    },
+
+    /**
+     * Creates a card with predefined layouts for common use cases
+     * @param {string} layout - Layout type ('simple', 'financial', 'data')
+     * @param {Object} options - Configuration options
+     * @returns {HTMLElement} The complete card DOM element
+     */
+    createPresetCard(layout, options) {
+      const presets = {
+        simple: {
+          headers: ["#", "Data", "Descrição"],
+          containerClass: "h-100",
+        },
+        financial: {
+          headers: ["#", "Data", "Tipo", "Valor"],
+          containerClass: "h-100",
+        },
+        data: {
+          headers: ["#", "Item", "Status", "Detalhes"],
+          containerClass: "h-100",
+        },
+      };
+
+      const preset = presets[layout];
+      if (!preset) {
+        throw new Error(`Unknown layout preset: ${layout}`);
+      }
+
+      return this.createCard({
+        ...options,
+        headers: options.headers || preset.headers,
+        containerClass: `${preset.containerClass} ${
+          options.containerClass || ""
+        }`.trim(),
+      });
+    },
+
+    /**
+     * Utility method to populate a table body with data
+     * @param {string} tbodyId - ID of the tbody element to populate
+     * @param {Array} data - Array of row data objects
+     * @param {Function} [rowRenderer] - Optional custom row renderer function
+     * @param {number} [columnCount] - Number of columns for proper empty state (auto-detected if not provided)
+     */
+    populateTable(tbodyId, data, rowRenderer = null, columnCount = null) {
+      const tbody = document.getElementById(tbodyId);
+      if (!tbody) {
+        console.warn(`Table body with ID '${tbodyId}' not found`);
+        return;
+      }
+
+      // Auto-detect column count if not provided
+      if (columnCount === null) {
+        // Try to get column count from the table header
+        const table = tbody.closest("table");
+        const headerRow = table?.querySelector("thead tr");
+        if (headerRow) {
+          columnCount = headerRow.children.length;
+        } else if (data && data.length > 0) {
+          // Fallback: use the number of properties in the first data object
+          columnCount = Object.keys(data[0]).length;
+        } else {
+          columnCount = 1; // Default fallback
+        }
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="${columnCount}" class="text-center" style="padding: 40px;">
+              <div class="text-muted">
+                <i class="fas fa-inbox fa-2x mb-3"></i>
+                <br />
+                Nenhum dado encontrado
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const rows = data
+        .map((rowData, index) => {
+          if (rowRenderer && typeof rowRenderer === "function") {
+            return rowRenderer(rowData, index);
+          }
+
+          // Default row renderer
+          return this._renderDefaultRow(rowData, index);
+        })
+        .join("");
+
+      tbody.innerHTML = rows;
+    },
+
+    /**
+     * Default row renderer for table data
+     * @param {Object} rowData - Data for the row
+     * @param {number} index - Row index
+     * @returns {string} HTML string for the row
+     * @private
+     */
+    _renderDefaultRow(rowData, index) {
+      const cells = Object.values(rowData)
+        .map((value) => `<td>${this._escapeHtml(String(value))}</td>`)
+        .join("");
+
+      return `<tr>${cells}</tr>`;
+    },
+  },
+
+  // ===== EMPENHOS CARD COMPONENT =====
+
+  /**
+   * Empenhos Card Component
+   * Creates a reusable card for displaying empenhos data with dynamic calculations
+   */
+  EmpenhosCard: class {
+    constructor(options = {}, encontroContasContext) {
+      this.encontroContasContext = encontroContasContext;
+      this.options = {
+        containerId: "empenhos-card",
+        title: "Empenhos",
+        subtitle: "Total de empenhos desde 2019",
+        icon: "/static/images/doc2.png",
+        ...options,
+      };
+
+      this.data = options.data || [];
+      this.container = null;
+      this.cardElement = null;
+      this.metrics = {
+        total: 0,
+        emExecucao: 0,
+        finalizados: 0,
+        rap: 0,
+        criticos: 0,
+      };
+
+      this.init();
+    }
+
+    /**
+     * Initialize the component
+     */
+    init() {
+      this.container = document.getElementById(this.options.containerId);
+      if (!this.container) {
+        console.error(
+          `Container with ID '${this.options.containerId}' not found`
+        );
+        return;
+      }
+
+      this.render();
+      this.setupEventListeners();
+    }
+
+    /**
+     * Calculate metrics based on empenhos data
+     * @param {Array} data - Array of empenhos objects
+     */
+    calculateMetrics(data = []) {
+      this.metrics = {
+        total: data.length,
+        emExecucao: 0,
+        finalizados: 0,
+        rap: 0,
+        criticos: 0,
+      };
+
+      console.log("📊 Calculating metrics for empenhos:", data.length);
+      if (data.length > 0) {
+        console.log("📊 First empenho structure:", data[0]);
+      }
+
+      data.forEach((empenho, index) => {
+        // Calculate status the same way as in the main table: Finanças / Orçamentário * 100
+        const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
+        const financasTotal = this.calculateFinancasTotal(empenho);
+        const status =
+          orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
+        const isFinalized = status >= 100;
+
+        console.log(`📊 Empenho ${index + 1}:`, {
+          numero: empenho.empenho?.numero,
+          orcamentarioTotal: orcamentarioTotal,
+          financasTotal: financasTotal,
+          status: status.toFixed(1) + "%",
+          isFinalized: isFinalized,
+          operacao: empenho.operacao,
+          hasMovimentacoes: !!empenho.movimentacoes,
+          movimentacoesLength: empenho.movimentacoes?.length || 0,
+        });
+
+        if (!isFinalized) {
+          this.metrics.emExecucao++;
+        } else {
+          this.metrics.finalizados++;
+        }
+
+        // Check for RAP (Restos a Pagar) - ONLY for non-finalized empenhos
+        // Finalized empenhos (100% status) should NOT be counted as RAP
+        if (!isFinalized) {
+          let isRAP = false;
+
+          // Method 1: Check operacao field
+          if (empenho.operacao === "RP") {
+            isRAP = true;
+            console.log(
+              `📊 RAP detected via operacao: ${empenho.empenho?.numero}`
+            );
+          }
+
+          // Method 2: Check movimentacoes for RP operation
+          if (
+            empenho.movimentacoes &&
+            empenho.movimentacoes.some((mov) => mov.operacao === "RP")
+          ) {
+            isRAP = true;
+            console.log(
+              `📊 RAP detected via movimentacoes: ${empenho.empenho?.numero}`
+            );
+          }
+
+          // Method 3: Check orçamentário operations for "RP" in no_operacao (proven working method)
+          const orcamentario =
+            empenho.Orçamentário?.operacoes ||
+            empenho.Ne_item?.operacoes ||
+            empenho.Orçamentário ||
+            [];
+          if (Array.isArray(orcamentario)) {
+            const hasRpOperation = orcamentario.some((op) => {
+              const operationType =
+                op.no_operacao?.toString().toUpperCase() || "";
+              return (
+                operationType.includes("RP") ||
+                operationType.includes("INSCRICAO") ||
+                operationType.includes("RESTOS A PAGAR")
+              );
+            });
+            if (hasRpOperation) {
+              isRAP = true;
+              console.log(
+                `📊 RAP detected via orcamentario no_operacao: ${empenho.empenho?.numero}`
+              );
+            }
+          }
+
+          // Method 4: Check if empenho number contains "RP" (case insensitive, any position)
+          if (empenho.empenho?.numero && /rp/i.test(empenho.empenho.numero)) {
+            isRAP = true;
+            console.log(
+              `📊 RAP detected via numero pattern: ${empenho.empenho?.numero}`
+            );
+          }
+
+          if (isRAP) {
+            this.metrics.rap++;
+            console.log(
+              `📊 RAP counted for non-finalized empenho: ${
+                empenho.empenho?.numero
+              } (status: ${status.toFixed(1)}%)`
+            );
+          }
+        } else {
+          console.log(
+            `📊 Skipping RAP check for finalized empenho: ${
+              empenho.empenho?.numero
+            } (status: ${status.toFixed(1)}%)`
+          );
+        }
+
+        // Check for críticos (status > 100%)
+        if (status > 100) {
+          this.metrics.criticos++;
+        }
+      });
+
+      console.log("📊 Final calculated metrics:", this.metrics);
+    }
+
+    /**
+     * Render the card component
+     */
+    render() {
+      this.calculateMetrics(this.data);
+
+      this.cardElement = this.createCardHTML();
+
+      // Clear container and append new card
+      this.container.innerHTML = "";
+      this.container.appendChild(this.cardElement);
+    }
+
+    /**
+     * Create the complete card HTML structure
+     * @returns {HTMLElement} The card element
+     */
+    createCardHTML() {
+      const cardDiv = document.createElement("div");
+      cardDiv.className = "br-card h-100 card-contratos";
+      cardDiv.id = this.options.containerId;
+
+      cardDiv.innerHTML = `
+        <div class="card-header">
+          <div class="d-flex" style="width: 100%">
+            <div class="ml-3" style="flex-grow: 1">
+              <div class="titulo">
+                <img
+                  src="${this.options.icon}"
+                  alt="Ícone"
+                  style="height: 36px; margin: 10px 0px -10px 0px"
+                />
+                ${this.options.title}
+              </div>
+              <div
+                style="border-bottom: 1px solid #ccc; margin: -6px 0px 0px 26px"
+              ></div>
+              <div class="subtitulo">${this.options.subtitle}</div>
+            </div>
+
+            <div
+              class="ml-auto"
+              style="margin: -10px -10px 0px 0px; position: relative"
+            >
+              <button
+                class="br-button circle kpi-dropdown-btn"
+                type="button"
+                aria-label="Opções de visualização"
+                data-card-id="${this.options.containerId}"
+              >
+                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+              </button>
+              <div class="empenhos-dropdown-menu" style="display: none;">
+                <a href="#" class="dropdown-item" data-action="refresh">
+                  <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>Atualizar
+                </a>
+                <a href="#" class="dropdown-item" data-action="export">
+                  <i class="fas fa-download" style="margin-right: 8px;"></i>Exportar
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" data-action="details">
+                  <i class="fas fa-info-circle" style="margin-right: 8px;"></i>Detalhes
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-content" style="padding-top: 8px">
+          <div class="valor-principal" data-metric="total">${this.metrics.total}</div>
+          <div class="linha">
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="em-execucao"
+              data-metric="emExecucao"
+              tabindex="0"
+            >
+              <div>Em execução</div>
+              <div class="valor-azul">${this.metrics.emExecucao}</div>
+            </div>
+            <div class="divider"></div>
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="finalizados"
+              data-metric="finalizados"
+              tabindex="0"
+            >
+              <div>Finalizados</div>
+              <div class="valor-azul">${this.metrics.finalizados}</div>
+            </div>
+            <div class="divider"></div>
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="rap"
+              data-metric="rap"
+              tabindex="0"
+            >
+              <div>RAP</div>
+              <div class="valor-vermelho">${this.metrics.rap}</div>
+            </div>
+            <div class="divider"></div>
+            <div
+              class="dashboard-card-filter clickable"
+              data-filter="criticos"
+              data-metric="criticos"
+              tabindex="0"
+            >
+              <div>Críticos</div>
+              <div class="valor-vermelho">${this.metrics.criticos}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      return cardDiv;
+    }
+
+    /**
+     * Setup event listeners for card interactions
+     */
+    setupEventListeners() {
+      if (!this.cardElement) return;
+
+      // Filter click handlers
+      const filterElements = this.cardElement.querySelectorAll(
+        ".dashboard-card-filter"
+      );
+      filterElements.forEach((element) => {
+        element.addEventListener("click", (e) => {
+          this.handleFilterClick(e);
+        });
+
+        element.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            this.handleFilterClick(e);
+          }
+        });
+      });
+
+      // Dropdown button handler
+      const dropdownBtn = this.cardElement.querySelector(".kpi-dropdown-btn");
+      if (dropdownBtn) {
+        dropdownBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.toggleDropdown();
+        });
+      }
+
+      // Dropdown menu handlers
+      const dropdownItems = this.cardElement.querySelectorAll(
+        ".empenhos-dropdown-menu .dropdown-item"
+      );
+      dropdownItems.forEach((item) => {
+        item.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const action = e.currentTarget.dataset.action;
+          this.handleDropdownAction(action);
+          this.hideDropdown();
+        });
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!this.cardElement.contains(e.target)) {
+          this.hideDropdown();
+        }
+      });
+    }
+
+    /**
+     * Handle filter button clicks
+     * @param {Event} event - Click event
+     */
+    handleFilterClick(event) {
+      const filterType = event.currentTarget.dataset.filter;
+      const metric = event.currentTarget.dataset.metric;
+
+      // Add visual feedback
+      this.addClickFeedback(event.currentTarget);
+
+      // Emit custom event for parent components to handle
+      const customEvent = new CustomEvent("empenhosFilterChanged", {
+        detail: {
+          filterType,
+          metric,
+          value: this.metrics[metric],
+          data: this.getFilteredData(filterType),
+        },
+      });
+
+      this.container.dispatchEvent(customEvent);
+    }
+
+    /**
+     * Get filtered data based on filter type
+     * @param {string} filterType - Type of filter to apply
+     * @returns {Array} Filtered empenhos data
+     */
+    getFilteredData(filterType) {
+      switch (filterType) {
+        case "em-execucao":
+          return this.data.filter((empenho) => {
+            const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
+            const financasTotal = this.calculateFinancasTotal(empenho);
+            const status =
+              orcamentarioTotal > 0
+                ? (financasTotal / orcamentarioTotal) * 100
+                : 0;
+            return status < 100;
+          });
+
+        case "finalizados":
+          return this.data.filter((empenho) => {
+            const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
+            const financasTotal = this.calculateFinancasTotal(empenho);
+            const status =
+              orcamentarioTotal > 0
+                ? (financasTotal / orcamentarioTotal) * 100
+                : 0;
+            return status >= 100;
+          });
+
+        case "rap":
+          return this.data.filter((empenho) => {
+            // First check if empenho is finalized (100% status)
+            const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
+            const financasTotal = this.calculateFinancasTotal(empenho);
+            const status =
+              orcamentarioTotal > 0
+                ? (financasTotal / orcamentarioTotal) * 100
+                : 0;
+            const isFinalized = status >= 100;
+
+            // Only check for RAP if empenho is NOT finalized
+            if (isFinalized) {
+              return false; // Finalized empenhos are excluded from RAP
+            }
+
+            // Multiple ways to detect RAP - using the proven method from encontro-contas.js
+
+            // Method 1: Check operacao field
+            if (empenho.operacao === "RP") {
+              return true;
+            }
+
+            // Method 2: Check movimentacoes for RP operation
+            if (
+              empenho.movimentacoes &&
+              empenho.movimentacoes.some((mov) => mov.operacao === "RP")
+            ) {
+              return true;
+            }
+
+            // Method 3: Check orçamentário operations for "RP", "INSCRICAO", or "RESTOS A PAGAR" in no_operacao (proven working method)
+            const orcamentario =
+              empenho.Orçamentário?.operacoes ||
+              empenho.Ne_item?.operacoes ||
+              empenho.Orçamentário ||
+              [];
+            if (Array.isArray(orcamentario)) {
+              const hasRpOperation = orcamentario.some((op) => {
+                const operationType =
+                  op.no_operacao?.toString().toUpperCase() || "";
+                return (
+                  operationType.includes("RP") ||
+                  operationType.includes("INSCRICAO") ||
+                  operationType.includes("RESTOS A PAGAR")
+                );
+              });
+              if (hasRpOperation) {
+                return true;
+              }
+            }
+
+            // Method 4: Check if empenho number contains "RP" (case insensitive, any position)
+            if (empenho.empenho?.numero && /rp/i.test(empenho.empenho.numero)) {
+              return true;
+            }
+
+            return false;
+          });
+
+        case "criticos":
+          return this.data.filter((empenho) => {
+            const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
+            const financasTotal = this.calculateFinancasTotal(empenho);
+            const status =
+              orcamentarioTotal > 0
+                ? (financasTotal / orcamentarioTotal) * 100
+                : 0;
+            return status > 100;
+          });
+
+        default:
+          return this.data;
+      }
+    }
+
+    /**
+     * Add visual click feedback to element
+     * @param {HTMLElement} element - Element to animate
+     */
+    addClickFeedback(element) {
+      element.style.transform = "scale(0.95)";
+      element.style.transition = "transform 0.1s";
+
+      setTimeout(() => {
+        element.style.transform = "scale(1)";
+        setTimeout(() => {
+          element.style.transition = "";
+        }, 100);
+      }, 100);
+    }
+
+    /**
+     * Toggle dropdown menu visibility
+     */
+    toggleDropdown() {
+      const dropdown = this.cardElement.querySelector(".empenhos-dropdown-menu");
+      if (dropdown) {
+        const isVisible = dropdown.style.display !== "none";
+        dropdown.style.display = isVisible ? "none" : "block";
+      }
+    }
+
+    /**
+     * Hide dropdown menu
+     */
+    hideDropdown() {
+      const dropdown = this.cardElement.querySelector(".empenhos-dropdown-menu");
+      if (dropdown) {
+        dropdown.style.display = "none";
+      }
+    }
+
+    /**
+     * Handle dropdown action clicks
+     * @param {string} action - Action type
+     */
+    handleDropdownAction(action) {
+      const customEvent = new CustomEvent("empenhosDropdownAction", {
+        detail: {
+          action,
+          data: this.data,
+          metrics: this.metrics,
+        },
+      });
+
+      this.container.dispatchEvent(customEvent);
+    }
+
+    /**
+     * Update card data and re-render
+     * @param {Array} newData - New empenhos data
+     */
+    updateData(newData) {
+      this.data = newData || [];
+      this.render();
+    }
+
+    /**
+     * Get current metrics
+     * @returns {Object} Current calculated metrics
+     */
+    getMetrics() {
+      return { ...this.metrics };
+    }
+
+    /**
+     * Get current data
+     * @returns {Array} Current empenhos data
+     */
+    getData() {
+      return [...this.data];
+    }
+
+    /**
+     * Safe parseFloat that never returns negative zero
+     * @param {any} value - The value to parse
+     * @returns {number} The parsed number, with negative zero converted to positive zero
+     */
+    safeParseFloat(value) {
+      const result = parseFloat(value) || 0;
+      return Object.is(result, -0) ? 0 : result;
+    }
+
+    /**
+     * Calculate orçamentário total for an empenho (same logic as encontro-contas.js)
+     * @param {Object} empenho - Empenho object
+     * @returns {number} Total orçamentário value
+     */
+    calculateOrcamentarioTotal(empenho) {
+      // Handle the new data structure with nested Orçamentário.operacoes
+      const orcamentario =
+        empenho.Orçamentário?.operacoes ||
+        empenho.Ne_item?.operacoes ||
+        empenho.Orçamentário ||
+        [];
+
+      // Ensure it's an array before calling reduce
+      if (!Array.isArray(orcamentario)) {
+        console.warn("Orçamentário data is not an array:", orcamentario);
+        return 0;
+      }
+
+      // Backend now provides pre-processed va_operacao values (0 for RP operations)
+      // So we can simply sum the va_operacao values without additional RP filtering
+      const result = orcamentario.reduce((total, op) => {
+        if (!op || op.va_operacao === null || op.va_operacao === undefined) {
+          return total;
+        }
+
+        let value = this.safeParseFloat(op.va_operacao);
+
+        // Log RP operations for debugging (backend already set them to 0)
+        if (op.is_rp_excluded) {
+          console.log(
+            `🔄 Frontend: RP operation excluded by backend: ${op.no_operacao} - Display: ${op.va_operacao_display}, Calculation: ${value}`
+          );
+        }
+
+        return total + value;
+      }, 0);
+
+      // Handle negative zero
+      return result === 0 ? 0 : result;
+    }
+
+    /**
+     * Calculate finanças total for an empenho (same logic as encontro-contas.js)
+     * @param {Object} empenho - Empenho object
+     * @returns {number} Total finanças value
+     */
+    calculateFinancasTotal(empenho) {
+      let total = 0;
+
+      // Handle new nested structure under Finanças
+      const financas = empenho.Finanças || {};
+
+      // DARF documents
+      (financas.documentos_darf || empenho.documentos_darf || []).forEach(
+        (doc) => {
+          total += this.safeParseFloat(doc.va_documento);
+        }
+      );
+
+      // DAR documents
+      (financas.documentos_dar || empenho.documentos_dar || []).forEach((doc) => {
+        total += this.safeParseFloat(doc.va_documento);
+      });
+
+      // GPS documents
+      (financas.documentos_gps || empenho.documentos_gps || []).forEach((doc) => {
+        total += this.safeParseFloat(doc.va_documento);
+      });
+
+      // OB documents
+      (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
+        (doc) => {
+          total += this.safeParseFloat(doc.va_ob_parcial);
+        }
+      );
+
+      // Handle negative zero in total
+      return total === 0 ? 0 : total;
+    }
+
+    /**
+     * Show loading state
+     */
+    showLoading() {
+      if (this.cardElement) {
+        const content = this.cardElement.querySelector(".card-content");
+        if (content) {
+          content.innerHTML = `
+            <div class="d-flex justify-content-center align-items-center" style="min-height: 120px;">
+              <div class="br-loading medium" role="progressbar" aria-label="Carregando empenhos"></div>
+            </div>
+          `;
+        }
+      }
+    }
+
+    /**
+     * Show error state
+     * @param {string} message - Error message to display
+     */
+    showError(message = "Erro ao carregar dados") {
+      if (this.cardElement) {
+        const content = this.cardElement.querySelector(".card-content");
+        if (content) {
+          content.innerHTML = `
+            <div class="text-center text-muted" style="padding: 40px;">
+              <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+              <br />
+              ${message}
+            </div>
+          `;
+        }
+      }
+    }
+  }
+};
+
+

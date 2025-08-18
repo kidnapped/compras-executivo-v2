@@ -902,10 +902,7 @@ class SPARouter {
           }
 
           // Verificar se é encontro-contas e se os módulos estão disponíveis
-          if (
-            script.src.includes("encontro-contas.js") ||
-            script.src.includes("encontro-init.js")
-          ) {
+          if (script.src.includes("encontro-contas.js")) {
             console.log("🎯 Script do Encontro detectado:", script.src);
 
             // Verificar se já está sendo inicializado

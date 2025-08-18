@@ -91,8 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
   filter.filter_init();
   card_header.card_header_init();
   topico.topico_init();
-  // Fix: Call the init method on the EncontroInit object
-  // encontroInit.init(); // Remove this line - EncontroInit already auto-initializes
 
   // Auto-inicialização do admin DW Tesouro se estivermos na página correta
   if (admin_dw_tesouro.autoInit) {
