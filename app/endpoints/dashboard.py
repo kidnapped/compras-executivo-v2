@@ -263,24 +263,19 @@ async def get_contratos_por_exercicio(
     # 2. Query por ano de assinatura
     query = """
         SELECT
-  EXTRACT(YEAR FROM c.data_assinatura)::int AS anos,
-  COUNT(DISTINCT c.id)              AS valores
-FROM 
-  contratos AS c
-JOIN 
-  unidades   AS u
-  ON c.unidadeorigem_id = u.id
-WHERE 
-  c.data_assinatura IS NOT NULL
-  AND u.codigo = ANY(:uasg)
-GROUP BY 
-  u.codigo,
-  c.unidadeorigem_id,
-  anos
-ORDER BY 
-  u.codigo,
-  anos;
-
+            EXTRACT(YEAR FROM c.data_assinatura)::int AS anos,
+            COUNT(DISTINCT c.id) AS valores
+        FROM 
+            contratos AS c
+        JOIN 
+            unidades AS u ON c.unidadeorigem_id = u.id
+        WHERE 
+            c.data_assinatura IS NOT NULL
+            AND u.codigo = ANY(:uasg)
+        GROUP BY 
+            anos
+        ORDER BY 
+            anos;
     """
     result = await db.execute(text(query), {"uasg": uasgs})
     rows = result.fetchall()
@@ -320,7 +315,6 @@ async def get_valores_sazonais(
     query = text("""
       WITH newest_6_years AS (
         SELECT
-          c.unidadeorigem_id                       AS unidade_id,
           EXTRACT(YEAR FROM c.data_assinatura)::int AS ano,
           SUM(CAST(c.valor_inicial AS numeric))     AS contrato_valor,
           SUM(CAST(c.valor_global AS numeric))      AS valor_global
@@ -331,13 +325,12 @@ async def get_valores_sazonais(
           AND c.unidadeorigem_id = ANY(:ids)
           AND c.valor_inicial IS NOT NULL
         GROUP BY 
-          c.unidadeorigem_id, ano
+          ano
         ORDER BY 
           ano DESC 
         LIMIT 6
       )
       SELECT 
-        unidade_id,
         ano,
         contrato_valor,
         valor_global
