@@ -410,7 +410,7 @@ const EncontroInit = {
   /**
    * Initialize data fetching (placeholder for future API integration)
    */
-  initializeDataFetching() {
+  async initializeDataFetching() {
     console.log("📡 Initializing data fetching...");
 
     // Check if there's a contract ID in the URL
@@ -419,10 +419,24 @@ const EncontroInit = {
 
     if (contratoId) {
       console.log(`🔍 Found contract ID: ${contratoId}`);
-      // Here you would call your API modules
-      // Example: EncontroAPI.fetchEncontroData(contratoId)
-      //   .then(data => DataStore.setData(data))
-      //   .then(() => this.updateCardsWithRealData());
+
+      try {
+        // Load and instantiate the EncontroContas class
+        console.log("📦 Loading EncontroContas module...");
+        const EncontroContasModule = await import(
+          "/static/js/encontro/encontro-contas.js"
+        );
+        const EncontroContas = EncontroContasModule.default;
+
+        console.log("🏗️ Creating EncontroContas instance...");
+        window.EncontroContas = new EncontroContas();
+
+        console.log(
+          "✅ EncontroContas instance created and assigned to window.EncontroContas"
+        );
+      } catch (error) {
+        console.error("❌ Error loading EncontroContas:", error);
+      }
     } else {
       console.log("ℹ️ No contract ID found, using sample data");
     }

@@ -187,7 +187,8 @@ def get_page_scripts(page_type: str) -> List[Dict[str, str]]:
             {"src": "/static/js/dev-ops/dev-ops.js", "type": "module"},
         ],
         "encontro-contas": [
-            # Verificar se esse arquivo existe
+            {"src": "/static/js/encontro/encontro-contas.js", "type": "module"},
+            {"src": "/static/js/encontro/encontro-init.js", "type": "module"},
         ],
         "vdb": [
             {"src": "/static/js/admin/vdb_compras.js", "type": "module"},

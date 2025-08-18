@@ -12,16 +12,16 @@
  * });
  */
 
-import CardGenerator from './card-generator.js';
+import CardGenerator from "./card-generator.js";
 
 class EmpenhosCard {
   constructor(options = {}) {
     this.options = {
-      containerId: 'empenhos-card',
-      title: 'Empenhos',
-      subtitle: 'Total de empenhos desde 2019',
-      icon: '/static/images/doc2.png',
-      ...options
+      containerId: "empenhos-card",
+      title: "Empenhos",
+      subtitle: "Total de empenhos desde 2019",
+      icon: "/static/images/doc2.png",
+      ...options,
     };
 
     this.data = options.data || [];
@@ -32,7 +32,7 @@ class EmpenhosCard {
       emExecucao: 0,
       finalizados: 0,
       rap: 0,
-      criticos: 0
+      criticos: 0,
     };
 
     this.init();
@@ -44,7 +44,9 @@ class EmpenhosCard {
   init() {
     this.container = document.getElementById(this.options.containerId);
     if (!this.container) {
-      console.error(`Container with ID '${this.options.containerId}' not found`);
+      console.error(
+        `Container with ID '${this.options.containerId}' not found`
+      );
       return;
     }
 
@@ -62,32 +64,33 @@ class EmpenhosCard {
       emExecucao: 0,
       finalizados: 0,
       rap: 0,
-      criticos: 0
+      criticos: 0,
     };
 
-    console.log('📊 Calculating metrics for empenhos:', data.length);
+    console.log("📊 Calculating metrics for empenhos:", data.length);
     if (data.length > 0) {
-      console.log('📊 First empenho structure:', data[0]);
+      console.log("📊 First empenho structure:", data[0]);
     }
 
     data.forEach((empenho, index) => {
       // Calculate status the same way as in the main table: Finanças / Orçamentário * 100
       const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
       const financasTotal = this.calculateFinancasTotal(empenho);
-      const status = orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
+      const status =
+        orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
       const isFinalized = status >= 100;
-      
+
       console.log(`📊 Empenho ${index + 1}:`, {
         numero: empenho.empenho?.numero,
         orcamentarioTotal: orcamentarioTotal,
         financasTotal: financasTotal,
-        status: status.toFixed(1) + '%',
+        status: status.toFixed(1) + "%",
         isFinalized: isFinalized,
         operacao: empenho.operacao,
         hasMovimentacoes: !!empenho.movimentacoes,
-        movimentacoesLength: empenho.movimentacoes?.length || 0
+        movimentacoesLength: empenho.movimentacoes?.length || 0,
       });
-      
+
       if (!isFinalized) {
         this.metrics.emExecucao++;
       } else {
@@ -98,43 +101,72 @@ class EmpenhosCard {
       // Finalized empenhos (100% status) should NOT be counted as RAP
       if (!isFinalized) {
         let isRAP = false;
-        
+
         // Method 1: Check operacao field
-        if (empenho.operacao === 'RP') {
+        if (empenho.operacao === "RP") {
           isRAP = true;
-          console.log(`📊 RAP detected via operacao: ${empenho.empenho?.numero}`);
-        }
-        
-        // Method 2: Check movimentacoes for RP operation
-        if (empenho.movimentacoes && empenho.movimentacoes.some(mov => mov.operacao === 'RP')) {
-          isRAP = true;
-          console.log(`📊 RAP detected via movimentacoes: ${empenho.empenho?.numero}`);
-        }
-        
-        // Method 3: Check orçamentário operations for "RP" in no_operacao (proven working method)
-        const orcamentario = empenho.Orçamentário?.operacoes || empenho.Ne_item?.operacoes || empenho.Orçamentário || [];
-        if (Array.isArray(orcamentario)) {
-          const hasRpOperation = orcamentario.some(op => 
-            op.no_operacao && op.no_operacao.toString().toUpperCase().includes("RP")
+          console.log(
+            `📊 RAP detected via operacao: ${empenho.empenho?.numero}`
           );
+        }
+
+        // Method 2: Check movimentacoes for RP operation
+        if (
+          empenho.movimentacoes &&
+          empenho.movimentacoes.some((mov) => mov.operacao === "RP")
+        ) {
+          isRAP = true;
+          console.log(
+            `📊 RAP detected via movimentacoes: ${empenho.empenho?.numero}`
+          );
+        }
+
+        // Method 3: Check orçamentário operations for "RP" in no_operacao (proven working method)
+        const orcamentario =
+          empenho.Orçamentário?.operacoes ||
+          empenho.Ne_item?.operacoes ||
+          empenho.Orçamentário ||
+          [];
+        if (Array.isArray(orcamentario)) {
+          const hasRpOperation = orcamentario.some((op) => {
+            const operationType =
+              op.no_operacao?.toString().toUpperCase() || "";
+            return (
+              operationType.includes("RP") ||
+              operationType.includes("INSCRICAO") ||
+              operationType.includes("RESTOS A PAGAR")
+            );
+          });
           if (hasRpOperation) {
             isRAP = true;
-            console.log(`📊 RAP detected via orcamentario no_operacao: ${empenho.empenho?.numero}`);
+            console.log(
+              `📊 RAP detected via orcamentario no_operacao: ${empenho.empenho?.numero}`
+            );
           }
         }
-        
+
         // Method 4: Check if empenho number contains "RP" (case insensitive, any position)
         if (empenho.empenho?.numero && /rp/i.test(empenho.empenho.numero)) {
           isRAP = true;
-          console.log(`📊 RAP detected via numero pattern: ${empenho.empenho?.numero}`);
+          console.log(
+            `📊 RAP detected via numero pattern: ${empenho.empenho?.numero}`
+          );
         }
-        
+
         if (isRAP) {
           this.metrics.rap++;
-          console.log(`📊 RAP counted for non-finalized empenho: ${empenho.empenho?.numero} (status: ${status.toFixed(1)}%)`);
+          console.log(
+            `📊 RAP counted for non-finalized empenho: ${
+              empenho.empenho?.numero
+            } (status: ${status.toFixed(1)}%)`
+          );
         }
       } else {
-        console.log(`📊 Skipping RAP check for finalized empenho: ${empenho.empenho?.numero} (status: ${status.toFixed(1)}%)`);
+        console.log(
+          `📊 Skipping RAP check for finalized empenho: ${
+            empenho.empenho?.numero
+          } (status: ${status.toFixed(1)}%)`
+        );
       }
 
       // Check for críticos (status > 100%)
@@ -142,8 +174,8 @@ class EmpenhosCard {
         this.metrics.criticos++;
       }
     });
-    
-    console.log('📊 Final calculated metrics:', this.metrics);
+
+    console.log("📊 Final calculated metrics:", this.metrics);
   }
 
   /**
@@ -151,11 +183,11 @@ class EmpenhosCard {
    */
   render() {
     this.calculateMetrics(this.data);
-    
+
     this.cardElement = this.createCardHTML();
-    
+
     // Clear container and append new card
-    this.container.innerHTML = '';
+    this.container.innerHTML = "";
     this.container.appendChild(this.cardElement);
   }
 
@@ -164,8 +196,8 @@ class EmpenhosCard {
    * @returns {HTMLElement} The card element
    */
   createCardHTML() {
-    const cardDiv = document.createElement('div');
-    cardDiv.className = 'br-card h-100 card-contratos';
+    const cardDiv = document.createElement("div");
+    cardDiv.className = "br-card h-100 card-contratos";
     cardDiv.id = this.options.containerId;
 
     cardDiv.innerHTML = `
@@ -270,14 +302,16 @@ class EmpenhosCard {
     if (!this.cardElement) return;
 
     // Filter click handlers
-    const filterElements = this.cardElement.querySelectorAll('.dashboard-card-filter');
-    filterElements.forEach(element => {
-      element.addEventListener('click', (e) => {
+    const filterElements = this.cardElement.querySelectorAll(
+      ".dashboard-card-filter"
+    );
+    filterElements.forEach((element) => {
+      element.addEventListener("click", (e) => {
         this.handleFilterClick(e);
       });
 
-      element.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+      element.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           this.handleFilterClick(e);
         }
@@ -285,18 +319,20 @@ class EmpenhosCard {
     });
 
     // Dropdown button handler
-    const dropdownBtn = this.cardElement.querySelector('.kpi-dropdown-btn');
+    const dropdownBtn = this.cardElement.querySelector(".kpi-dropdown-btn");
     if (dropdownBtn) {
-      dropdownBtn.addEventListener('click', (e) => {
+      dropdownBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         this.toggleDropdown();
       });
     }
 
     // Dropdown menu handlers
-    const dropdownItems = this.cardElement.querySelectorAll('.empenhos-dropdown-menu .dropdown-item');
-    dropdownItems.forEach(item => {
-      item.addEventListener('click', (e) => {
+    const dropdownItems = this.cardElement.querySelectorAll(
+      ".empenhos-dropdown-menu .dropdown-item"
+    );
+    dropdownItems.forEach((item) => {
+      item.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         const action = e.currentTarget.dataset.action;
@@ -306,7 +342,7 @@ class EmpenhosCard {
     });
 
     // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
+    document.addEventListener("click", (e) => {
       if (!this.cardElement.contains(e.target)) {
         this.hideDropdown();
       }
@@ -320,18 +356,18 @@ class EmpenhosCard {
   handleFilterClick(event) {
     const filterType = event.currentTarget.dataset.filter;
     const metric = event.currentTarget.dataset.metric;
-    
+
     // Add visual feedback
     this.addClickFeedback(event.currentTarget);
 
     // Emit custom event for parent components to handle
-    const customEvent = new CustomEvent('empenhosFilterChanged', {
+    const customEvent = new CustomEvent("empenhosFilterChanged", {
       detail: {
         filterType,
         metric,
         value: this.metrics[metric],
-        data: this.getFilteredData(filterType)
-      }
+        data: this.getFilteredData(filterType),
+      },
     });
 
     this.container.dispatchEvent(customEvent);
@@ -344,74 +380,99 @@ class EmpenhosCard {
    */
   getFilteredData(filterType) {
     switch (filterType) {
-      case 'em-execucao':
-        return this.data.filter(empenho => {
+      case "em-execucao":
+        return this.data.filter((empenho) => {
           const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
           const financasTotal = this.calculateFinancasTotal(empenho);
-          const status = orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
+          const status =
+            orcamentarioTotal > 0
+              ? (financasTotal / orcamentarioTotal) * 100
+              : 0;
           return status < 100;
         });
-      
-      case 'finalizados':
-        return this.data.filter(empenho => {
+
+      case "finalizados":
+        return this.data.filter((empenho) => {
           const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
           const financasTotal = this.calculateFinancasTotal(empenho);
-          const status = orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
+          const status =
+            orcamentarioTotal > 0
+              ? (financasTotal / orcamentarioTotal) * 100
+              : 0;
           return status >= 100;
         });
-      
-      case 'rap':
-        return this.data.filter(empenho => {
+
+      case "rap":
+        return this.data.filter((empenho) => {
           // First check if empenho is finalized (100% status)
           const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
           const financasTotal = this.calculateFinancasTotal(empenho);
-          const status = orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
+          const status =
+            orcamentarioTotal > 0
+              ? (financasTotal / orcamentarioTotal) * 100
+              : 0;
           const isFinalized = status >= 100;
-          
+
           // Only check for RAP if empenho is NOT finalized
           if (isFinalized) {
             return false; // Finalized empenhos are excluded from RAP
           }
-          
+
           // Multiple ways to detect RAP - using the proven method from encontro-contas.js
-          
+
           // Method 1: Check operacao field
-          if (empenho.operacao === 'RP') {
+          if (empenho.operacao === "RP") {
             return true;
           }
-          
+
           // Method 2: Check movimentacoes for RP operation
-          if (empenho.movimentacoes && empenho.movimentacoes.some(mov => mov.operacao === 'RP')) {
+          if (
+            empenho.movimentacoes &&
+            empenho.movimentacoes.some((mov) => mov.operacao === "RP")
+          ) {
             return true;
           }
-          
-          // Method 3: Check orçamentário operations for "RP" in no_operacao (proven working method)
-          const orcamentario = empenho.Orçamentário?.operacoes || empenho.Ne_item?.operacoes || empenho.Orçamentário || [];
+
+          // Method 3: Check orçamentário operations for "RP", "INSCRICAO", or "RESTOS A PAGAR" in no_operacao (proven working method)
+          const orcamentario =
+            empenho.Orçamentário?.operacoes ||
+            empenho.Ne_item?.operacoes ||
+            empenho.Orçamentário ||
+            [];
           if (Array.isArray(orcamentario)) {
-            const hasRpOperation = orcamentario.some(op => 
-              op.no_operacao && op.no_operacao.toString().toUpperCase().includes("RP")
-            );
+            const hasRpOperation = orcamentario.some((op) => {
+              const operationType =
+                op.no_operacao?.toString().toUpperCase() || "";
+              return (
+                operationType.includes("RP") ||
+                operationType.includes("INSCRICAO") ||
+                operationType.includes("RESTOS A PAGAR")
+              );
+            });
             if (hasRpOperation) {
               return true;
             }
           }
-          
+
           // Method 4: Check if empenho number contains "RP" (case insensitive, any position)
           if (empenho.empenho?.numero && /rp/i.test(empenho.empenho.numero)) {
             return true;
           }
-          
+
           return false;
         });
-      
-      case 'criticos':
-        return this.data.filter(empenho => {
+
+      case "criticos":
+        return this.data.filter((empenho) => {
           const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
           const financasTotal = this.calculateFinancasTotal(empenho);
-          const status = orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
+          const status =
+            orcamentarioTotal > 0
+              ? (financasTotal / orcamentarioTotal) * 100
+              : 0;
           return status > 100;
         });
-      
+
       default:
         return this.data;
     }
@@ -422,13 +483,13 @@ class EmpenhosCard {
    * @param {HTMLElement} element - Element to animate
    */
   addClickFeedback(element) {
-    element.style.transform = 'scale(0.95)';
-    element.style.transition = 'transform 0.1s';
-    
+    element.style.transform = "scale(0.95)";
+    element.style.transition = "transform 0.1s";
+
     setTimeout(() => {
-      element.style.transform = 'scale(1)';
+      element.style.transform = "scale(1)";
       setTimeout(() => {
-        element.style.transition = '';
+        element.style.transition = "";
       }, 100);
     }, 100);
   }
@@ -437,10 +498,10 @@ class EmpenhosCard {
    * Toggle dropdown menu visibility
    */
   toggleDropdown() {
-    const dropdown = this.cardElement.querySelector('.empenhos-dropdown-menu');
+    const dropdown = this.cardElement.querySelector(".empenhos-dropdown-menu");
     if (dropdown) {
-      const isVisible = dropdown.style.display !== 'none';
-      dropdown.style.display = isVisible ? 'none' : 'block';
+      const isVisible = dropdown.style.display !== "none";
+      dropdown.style.display = isVisible ? "none" : "block";
     }
   }
 
@@ -448,9 +509,9 @@ class EmpenhosCard {
    * Hide dropdown menu
    */
   hideDropdown() {
-    const dropdown = this.cardElement.querySelector('.empenhos-dropdown-menu');
+    const dropdown = this.cardElement.querySelector(".empenhos-dropdown-menu");
     if (dropdown) {
-      dropdown.style.display = 'none';
+      dropdown.style.display = "none";
     }
   }
 
@@ -459,12 +520,12 @@ class EmpenhosCard {
    * @param {string} action - Action type
    */
   handleDropdownAction(action) {
-    const customEvent = new CustomEvent('empenhosDropdownAction', {
+    const customEvent = new CustomEvent("empenhosDropdownAction", {
       detail: {
         action,
         data: this.data,
-        metrics: this.metrics
-      }
+        metrics: this.metrics,
+      },
     });
 
     this.container.dispatchEvent(customEvent);
@@ -496,6 +557,16 @@ class EmpenhosCard {
   }
 
   /**
+   * Safe parseFloat that never returns negative zero
+   * @param {any} value - The value to parse
+   * @returns {number} The parsed number, with negative zero converted to positive zero
+   */
+  safeParseFloat(value) {
+    const result = parseFloat(value) || 0;
+    return Object.is(result, -0) ? 0 : result;
+  }
+
+  /**
    * Calculate orçamentário total for an empenho (same logic as encontro-contas.js)
    * @param {Object} empenho - Empenho object
    * @returns {number} Total orçamentário value
@@ -514,32 +585,27 @@ class EmpenhosCard {
       return 0;
     }
 
-    // Apply the same RP filtering logic as used in chart calculations
-    return orcamentario.reduce((total, op) => {
+    // Backend now provides pre-processed va_operacao values (0 for RP operations)
+    // So we can simply sum the va_operacao values without additional RP filtering
+    const result = orcamentario.reduce((total, op) => {
       if (!op || op.va_operacao === null || op.va_operacao === undefined) {
         return total;
       }
 
-      let value = parseFloat(op.va_operacao) || 0;
+      let value = this.safeParseFloat(op.va_operacao);
 
-      // Exclude RP operations from calculations (budget rollover to next year)
-      // Operations with "RP" in no_operacao are budget transfers, not new spending
-      // EXCEPTION: If this is marked as the oldest operation and contains "RP", count it at full value
-      const isRpOperation =
-        op.no_operacao &&
-        op.no_operacao.toString().toUpperCase().includes("RP");
-
-      // Use backend-calculated is_oldest_operation field for exception handling
-      // Exception applies to ANY RP operation when it's the oldest operation
-      const isOldestRpException =
-        op.is_oldest_operation === true && isRpOperation;
-
-      if (isRpOperation && !isOldestRpException) {
-        value = 0; // Count as zero to avoid double-counting budget
+      // Log RP operations for debugging (backend already set them to 0)
+      if (op.is_rp_excluded) {
+        console.log(
+          `🔄 Frontend: RP operation excluded by backend: ${op.no_operacao} - Display: ${op.va_operacao_display}, Calculation: ${value}`
+        );
       }
 
       return total + value;
     }, 0);
+
+    // Handle negative zero
+    return result === 0 ? 0 : result;
   }
 
   /**
@@ -556,28 +622,29 @@ class EmpenhosCard {
     // DARF documents
     (financas.documentos_darf || empenho.documentos_darf || []).forEach(
       (doc) => {
-        total += parseFloat(doc.va_documento) || 0;
+        total += this.safeParseFloat(doc.va_documento);
       }
     );
 
     // DAR documents
     (financas.documentos_dar || empenho.documentos_dar || []).forEach((doc) => {
-      total += parseFloat(doc.va_documento) || 0;
+      total += this.safeParseFloat(doc.va_documento);
     });
 
     // GPS documents
     (financas.documentos_gps || empenho.documentos_gps || []).forEach((doc) => {
-      total += parseFloat(doc.va_documento) || 0;
+      total += this.safeParseFloat(doc.va_documento);
     });
 
     // OB documents
     (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
       (doc) => {
-        total += parseFloat(doc.va_ob_parcial) || 0;
+        total += this.safeParseFloat(doc.va_ob_parcial);
       }
     );
 
-    return total;
+    // Handle negative zero in total
+    return total === 0 ? 0 : total;
   }
 
   /**
@@ -585,7 +652,7 @@ class EmpenhosCard {
    */
   showLoading() {
     if (this.cardElement) {
-      const content = this.cardElement.querySelector('.card-content');
+      const content = this.cardElement.querySelector(".card-content");
       if (content) {
         content.innerHTML = `
           <div class="d-flex justify-content-center align-items-center" style="min-height: 120px;">
@@ -600,9 +667,9 @@ class EmpenhosCard {
    * Show error state
    * @param {string} message - Error message to display
    */
-  showError(message = 'Erro ao carregar dados') {
+  showError(message = "Erro ao carregar dados") {
     if (this.cardElement) {
-      const content = this.cardElement.querySelector('.card-content');
+      const content = this.cardElement.querySelector(".card-content");
       if (content) {
         content.innerHTML = `
           <div class="text-center text-muted" style="padding: 40px;">

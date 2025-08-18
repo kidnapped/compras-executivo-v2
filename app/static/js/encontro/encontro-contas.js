@@ -31,15 +31,12 @@ class EncontroContas {
   }
 
   async init() {
-    console.log("Initializing Encontro de Contas...");
-
     // Get contract ID from URL
     this.state.currentContractId = this.getContractIdFromURL();
 
     if (this.state.currentContractId) {
       await this.loadInitialData();
     } else {
-      console.warn("No contract ID provided in URL parameters");
       this.showError(
         "Nenhum ID de contrato fornecido. Adicione ?contrato=ID na URL."
       );
@@ -56,27 +53,17 @@ class EncontroContas {
 
   async loadInitialData() {
     try {
-      console.log(
-        `Loading initial data for contract ${this.state.currentContractId}`
-      );
-
       const response = await fetch(
-        `/tudo?contrato_id=${this.state.currentContractId}`
+        `/tudo?contrato_id=${this.state.currentContractId}`,
+        {
+          credentials: "same-origin",
+        }
       );
       if (!response.ok)
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
       this.state.rawData = await response.json();
       this.state.filteredData = this.state.rawData;
-
-      console.log("📊 Raw API Response:", this.state.rawData);
-      console.log("📊 Empenhos data:", this.state.rawData?.empenhos_data);
-      if (this.state.rawData?.empenhos_data?.[0]) {
-        console.log(
-          "📊 First empenho structure:",
-          this.state.rawData.empenhos_data[0]
-        );
-      }
 
       this.renderAllTables();
       await this.renderChart();
@@ -86,8 +73,6 @@ class EncontroContas {
       if (exportBtn) {
         exportBtn.style.display = "inline-flex";
       }
-
-      console.log("Initial data loaded successfully");
     } catch (error) {
       console.error("Error loading initial data:", error);
       this.showError("Failed to load contract data");
@@ -96,10 +81,11 @@ class EncontroContas {
 
   async loadFilteredData(empenhoNumero) {
     try {
-      console.log(`Loading filtered data for empenho ${empenhoNumero}`);
-
       const response = await fetch(
-        `/tudo?contrato_id=${this.state.currentContractId}&empenho_numero=${empenhoNumero}`
+        `/tudo?contrato_id=${this.state.currentContractId}&empenho_numero=${empenhoNumero}`,
+        {
+          credentials: "same-origin",
+        }
       );
       if (!response.ok)
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -185,11 +171,18 @@ class EncontroContas {
 
     this.containers.empenhosTable.innerHTML = empenhos
       .map((empenho, index) => {
-        const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
-        const financasTotal = this.calculateFinancasTotal(empenho, true); // Use partial values for saldo calculation
+        const orcamentarioTotal = this.ensurePositiveZero(
+          this.calculateOrcamentarioTotal(empenho)
+        );
+        const financasTotal = this.ensurePositiveZero(
+          this.calculateFinancasTotal(empenho, true)
+        ); // Use partial values for saldo calculation
         const empenhado = empenho.empenho?.empenhado || 0;
         const pago = empenho.empenho?.pago || 0;
-        const saldo = orcamentarioTotal - financasTotal; // Saldo de empenho = Orçamentário - Finanças Parciais
+
+        const saldo = this.ensurePositiveZero(
+          this.safeMathSubtract(orcamentarioTotal, financasTotal)
+        ); // Saldo de empenho = Orçamentário - Finanças Parciais
 
         // Calculate percentage: Finanças Parciais / Orçamentário * 100
         const percentageStatus = this.calculateStatusPercentage(
@@ -206,9 +199,9 @@ class EncontroContas {
           <td>${empenho.empenho?.numero || "N/A"}</td>
           <td>${this.formatDate(empenho.empenho?.data_emissao)}</td>
           <td>${this.formatCurrency(empenhado)}</td>
-          <td>${this.formatCurrency(orcamentarioTotal)}</td>
+          <td>${this.formatCurrencyAggressive(orcamentarioTotal)}</td>
           <td>${this.formatCurrency(financasTotal)}</td>
-          <td>${this.formatCurrency(saldo)}</td>
+          <td>${this.formatCurrencyAggressive(saldo)}</td>
           <td><span class="badge ${this.getPercentageStatusBadge(
             percentageStatus.percentage
           )}">${percentageStatus.display}</span></td>
@@ -246,6 +239,14 @@ class EncontroContas {
       // Handle new nested structure under Finanças
       const financas = empenho.Finanças || {};
 
+      // Decide OB source: prefer grouped totals if available
+      const hasGroupedOB =
+        Array.isArray(financas.ob_grouped) && financas.ob_grouped.length > 0;
+      const obDocType = hasGroupedOB ? "ob_grouped" : "linha_evento_ob";
+      const obData = hasGroupedOB
+        ? financas.ob_grouped
+        : financas.linha_evento_ob || empenho.linha_evento_ob || [];
+
       // Process different document types from nested structure or fallback to old structure
       const docTypes = [
         {
@@ -261,23 +262,13 @@ class EncontroContas {
           data: financas.documentos_gps || empenho.documentos_gps || [],
         },
         {
-          key: "linha_evento_ob",
-          data: financas.linha_evento_ob || empenho.linha_evento_ob || [],
+          key: obDocType,
+          data: obData,
         },
       ];
 
       docTypes.forEach((docType) => {
         docType.data.forEach((doc) => {
-          // Debug: Log when va_celula is found
-          if (doc.va_celula !== null && doc.va_celula !== undefined) {
-            console.log(
-              `📊 Found va_celula in ${docType.key}: ${
-                doc.va_celula
-              } for document ID ${
-                doc.id_doc_dar || doc.id_doc_darf || doc.id_doc_gps || "unknown"
-              }`
-            );
-          }
           financialRows.push(this.createFinancialRow(doc, docType.key));
         });
       });
@@ -331,7 +322,10 @@ class EncontroContas {
             empenho: empenho.empenho?.numero,
             item: op.ds_item || this.getItemDescription(op.id_item, empenho),
             especie: op.no_operacao,
-            valor: op.va_operacao,
+            valor:
+              op.va_operacao_display !== undefined
+                ? op.va_operacao_display
+                : op.va_operacao, // Show original RP amounts
           });
         });
       }
@@ -359,8 +353,6 @@ class EncontroContas {
       !this.state.rawData?.empenhos_data
     )
       return;
-
-    console.log("Rendering Últimos Lançamentos...");
 
     // Collect ALL documents from all empenhos (always use rawData, not filteredData)
     const allDocuments = [];
@@ -441,19 +433,12 @@ class EncontroContas {
       return dateB.getTime() - dateA.getTime(); // Newest first
     });
 
-    console.log(
-      `Found ${allDocuments.length} documents for Últimos Lançamentos`
-    );
-
     // Find the table-responsive div inside the container
     const tableContainer =
       this.containers.ultimosLancamentosContainer.querySelector(
         ".table-responsive"
       );
     if (!tableContainer) {
-      console.warn(
-        "Table container not found in ultimos-lancamentos-container"
-      );
       return;
     }
 
@@ -556,7 +541,6 @@ class EncontroContas {
 
   async renderValoresTotaisChart() {
     if (!this.containers.valoresTotaisChart || !this.state.rawData) {
-      console.warn("Valores totais chart container or data not available");
       return;
     }
 
@@ -685,8 +669,6 @@ class EncontroContas {
           this.valoresTotaisChart.resize();
         }
       });
-
-      console.log("📊 Valores totais chart rendered successfully");
     } catch (error) {
       console.error("Error rendering valores totais chart:", error);
     }
@@ -694,7 +676,6 @@ class EncontroContas {
 
   renderEmpenhosCard() {
     if (!this.state.rawData?.empenhos_data) {
-      console.warn("Empenhos data not available for card update");
       return;
     }
 
@@ -709,8 +690,12 @@ class EncontroContas {
         totalEmpenhos++;
 
         // Calculate payment percentage using partial values
-        const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
-        const financasTotal = this.calculateFinancasTotal(empenho, true); // Use partial values
+        const orcamentarioTotal = this.ensurePositiveZero(
+          this.calculateOrcamentarioTotal(empenho)
+        );
+        const financasTotal = this.ensurePositiveZero(
+          this.calculateFinancasTotal(empenho, true)
+        ); // Use partial values
 
         const percentagePaid =
           orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
@@ -737,13 +722,6 @@ class EncontroContas {
       if (emExecucaoDisplay) emExecucaoDisplay.textContent = emExecucao;
       if (finalizadosDisplay) finalizadosDisplay.textContent = finalizados;
       if (rapDisplay) rapDisplay.textContent = rapCount;
-
-      console.log("📊 Empenhos card updated successfully:", {
-        total: totalEmpenhos,
-        emExecucao,
-        finalizados,
-        rap: rapCount,
-      });
     } catch (error) {
       console.error("Error updating empenhos card:", error);
     }
@@ -755,11 +733,15 @@ class EncontroContas {
     for (const [key, operations] of Object.entries(orcamentario)) {
       if (Array.isArray(operations)) {
         for (const op of operations) {
-          if (
-            op.especie_operacao &&
-            op.especie_operacao.toLowerCase().includes("rp")
-          ) {
-            return true;
+          if (op.especie_operacao) {
+            const especieType = op.especie_operacao.toLowerCase();
+            if (
+              especieType.includes("rp") ||
+              especieType.includes("inscricao") ||
+              especieType.includes("restos a pagar")
+            ) {
+              return true;
+            }
           }
         }
       }
@@ -770,11 +752,15 @@ class EncontroContas {
     for (const [key, operations] of Object.entries(financas)) {
       if (Array.isArray(operations)) {
         for (const op of operations) {
-          if (
-            op.especie_operacao &&
-            op.especie_operacao.toLowerCase().includes("rp")
-          ) {
-            return true;
+          if (op.especie_operacao) {
+            const especieType = op.especie_operacao.toLowerCase();
+            if (
+              especieType.includes("rp") ||
+              especieType.includes("inscricao") ||
+              especieType.includes("restos a pagar")
+            ) {
+              return true;
+            }
           }
         }
       }
@@ -785,13 +771,10 @@ class EncontroContas {
 
   renderContractAnalysis() {
     if (!this.state.rawData?.empenhos_data) {
-      console.warn("Contract analysis data not available");
       return;
     }
 
     try {
-      console.log("📊 Starting contract analysis...");
-
       // Show loading state
       const loadingElement = document.getElementById("analysis-loading");
       const contentElement = document.getElementById("analysis-content");
@@ -809,7 +792,6 @@ class EncontroContas {
       setTimeout(() => {
         if (loadingElement) loadingElement.style.display = "none";
         if (contentElement) contentElement.style.display = "block";
-        console.log("✅ Contract analysis completed");
       }, 1000);
     } catch (error) {
       console.error("Error in contract analysis:", error);
@@ -840,8 +822,12 @@ class EncontroContas {
 
     // Analyze each empenho
     empenhosData.forEach((empenho, index) => {
-      const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
-      const financasTotal = this.calculateFinancasTotal(empenho, true); // Use partial values for analysis
+      const orcamentarioTotal = this.ensurePositiveZero(
+        this.calculateOrcamentarioTotal(empenho)
+      );
+      const financasTotal = this.ensurePositiveZero(
+        this.calculateFinancasTotal(empenho, true)
+      ); // Use partial values for analysis
       const empenhado = parseFloat(empenho.empenho?.valor_empenhado || 0);
 
       totalEmpenhado += empenhado;
@@ -1323,12 +1309,10 @@ class EncontroContas {
       !this.containers.chartContainer ||
       !this.state.filteredData?.empenhos_data
     ) {
-      console.warn("Chart container or data not available");
       return;
     }
 
     try {
-      console.log("🎯 Starting chart render...");
       const echarts = await getEcharts();
 
       // Destroy existing chart
@@ -1340,7 +1324,6 @@ class EncontroContas {
       this.state.chart = echarts.init(this.containers.chartContainer);
 
       const chartData = this.prepareChartData();
-      console.log("📊 Chart data prepared:", chartData);
 
       const option = {
         title: {
@@ -1414,7 +1397,6 @@ class EncontroContas {
       };
 
       this.state.chart.setOption(option);
-      console.log("✅ Chart rendered successfully");
 
       // Handle window resize
       window.addEventListener("resize", () => {
@@ -1431,13 +1413,8 @@ class EncontroContas {
     const monthlyData = new Map();
 
     if (!this.state.filteredData?.empenhos_data) {
-      console.warn("No empenhos_data found for chart");
       return { months: [], orcamentario: [], financeiro: [] };
     }
-
-    console.log(
-      `📊 Preparing chart data for ${this.state.filteredData.empenhos_data.length} empenhos (using partial values for financeiro)`
-    );
 
     // CHART CALCULATION LOGIC:
     // Financial values now use va_celula (partial payments) instead of nominal values
@@ -1452,16 +1429,9 @@ class EncontroContas {
     // it counts at full value as it represents the actual starting budget for the period.
 
     this.state.filteredData.empenhos_data.forEach((empenho, index) => {
-      console.log(
-        `Processing empenho ${index + 1}:`,
-        empenho.empenho?.numero || empenho.id
-      );
-
       // Process orçamentário data - check the new data structure
       const orcamentarioData =
         empenho.Orçamentário?.operacoes || empenho.Ne_item?.operacoes || [];
-
-      console.log(`  Found ${orcamentarioData.length} orçamentário operations`);
 
       if (Array.isArray(orcamentarioData)) {
         orcamentarioData.forEach((op, opIndex) => {
@@ -1477,9 +1447,12 @@ class EncontroContas {
             // Exclude RP operations from chart calculations (budget rollover to next year)
             // Operations with "RP" in no_operacao are budget transfers, not new spending
             // EXCEPTION: If this is marked as the oldest operation and contains "RP", count it at full value
+            const operationType =
+              op.no_operacao?.toString().toUpperCase() || "";
             const isRpOperation =
-              op.no_operacao &&
-              op.no_operacao.toString().toUpperCase().includes("RP");
+              operationType.includes("RP") ||
+              operationType.includes("INSCRICAO") ||
+              operationType.includes("RESTOS A PAGAR");
 
             // Use backend-calculated is_oldest_operation field for exception handling
             // Exception applies to ANY RP operation when it's the oldest operation
@@ -1488,15 +1461,6 @@ class EncontroContas {
 
             if (isRpOperation && !isOldestRpException) {
               value = 0; // Count as zero for chart to avoid double-counting budget
-              console.log(
-                `    ⚠️ RP Operation excluded from chart: ${op.no_operacao} (${
-                  op.dt_operacao
-                }) - R$ ${parseFloat(op.va_operacao)} -> R$ 0`
-              );
-            } else if (isOldestRpException) {
-              console.log(
-                `    ✅ OLDEST RP OPERATION - counting at full value: ${op.no_operacao} (${op.dt_operacao}) - R$ ${value} (is_oldest_operation: ${op.is_oldest_operation})`
-              );
             }
 
             if (month) {
@@ -1504,14 +1468,6 @@ class EncontroContas {
                 monthlyData.set(month, { orcamentario: 0, financeiro: 0 });
               }
               monthlyData.get(month).orcamentario += value;
-
-              if (!isRpOperation) {
-                console.log(
-                  `    ✅ Orçamentário op ${opIndex + 1}: ${
-                    op.dt_operacao
-                  } -> ${month} += R$ ${value}`
-                );
-              }
             }
           }
         });
@@ -1543,10 +1499,6 @@ class EncontroContas {
       docTypes.forEach((docType) => {
         const documents = Array.isArray(docType.data) ? docType.data : [];
 
-        if (documents.length > 0) {
-          console.log(`  Found ${documents.length} ${docType.key} documents`);
-        }
-
         documents.forEach((doc) => {
           if (!doc) return;
 
@@ -1558,9 +1510,6 @@ class EncontroContas {
               monthlyData.set(month, { orcamentario: 0, financeiro: 0 });
             }
             monthlyData.get(month).financeiro += value;
-            console.log(
-              `    ✅ Financeiro Parcial (${docType.key}): ${month} += R$ ${value}`
-            );
           }
         });
       });
@@ -1571,23 +1520,35 @@ class EncontroContas {
   }
 
   createCumulativeTimeline(monthlyData) {
-    console.log("📈 Creating cumulative timeline...");
-
     // Get all months and sort them
     const allMonths = Array.from(monthlyData.keys()).sort();
+
+    // Get current month for ensuring timeline extends to present
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${(now.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}`;
+
     if (allMonths.length === 0) {
-      return { months: [], orcamentario: [], financeiro: [] };
+      // If no data, create a minimal timeline with current month
+      return {
+        months: [currentMonth],
+        orcamentario: [0],
+        financeiro: [0],
+      };
     }
 
-    // Find the range from first to last month
+    // Find the range from first month to current month (or last data month if later)
     const firstMonth = allMonths[0];
-    const lastMonth = allMonths[allMonths.length - 1];
+    const lastDataMonth = allMonths[allMonths.length - 1];
+
+    // Use the later of lastDataMonth or currentMonth as the end
+    const lastMonth = this.isMonthLater(currentMonth, lastDataMonth)
+      ? currentMonth
+      : lastDataMonth;
 
     // Generate all months in the range
     const completeMonthRange = this.generateMonthRange(firstMonth, lastMonth);
-    console.log(
-      `📅 Complete month range: ${firstMonth} to ${lastMonth} (${completeMonthRange.length} months)`
-    );
 
     // Create cumulative totals
     let cumulativeOrcamentario = 0;
@@ -1610,23 +1571,48 @@ class EncontroContas {
       months.push(month);
       orcamentarioTotals.push(cumulativeOrcamentario);
       financeiroTotals.push(cumulativeFinanceiro);
-
-      console.log(
-        `📊 ${month}: Orç +${monthData.orcamentario.toFixed(
-          2
-        )} = ${cumulativeOrcamentario.toFixed(
-          2
-        )}, Fin +${monthData.financeiro.toFixed(
-          2
-        )} = ${cumulativeFinanceiro.toFixed(2)}`
-      );
     });
+
+    // Ensure we always have at least 2 points for a proper line
+    if (months.length === 1) {
+      const singleMonth = months[0];
+      const nextMonth = this.getNextMonth(singleMonth);
+
+      months.push(nextMonth);
+      orcamentarioTotals.push(orcamentarioTotals[0]); // Keep same value
+      financeiroTotals.push(financeiroTotals[0]); // Keep same value
+    }
 
     return {
       months: months,
       orcamentario: orcamentarioTotals,
       financeiro: financeiroTotals,
     };
+  }
+
+  // Helper method to compare month strings (YYYY-MM format)
+  isMonthLater(month1, month2) {
+    const [year1, mon1] = month1.split("-").map(Number);
+    const [year2, mon2] = month2.split("-").map(Number);
+
+    if (year1 !== year2) {
+      return year1 > year2;
+    }
+    return mon1 > mon2;
+  }
+
+  // Helper method to get next month
+  getNextMonth(monthStr) {
+    const [year, month] = monthStr.split("-").map(Number);
+    let nextMonth = month + 1;
+    let nextYear = year;
+
+    if (nextMonth > 12) {
+      nextMonth = 1;
+      nextYear++;
+    }
+
+    return `${nextYear}-${nextMonth.toString().padStart(2, "0")}`;
   }
 
   generateMonthRange(startMonth, endMonth) {
@@ -1658,6 +1644,8 @@ class EncontroContas {
 
   // Helper methods
   calculateOrcamentarioTotal(empenho) {
+    const empenhoNumero = empenho.empenho?.numero || "Unknown";
+
     // Handle the new data structure with nested Orçamentário.operacoes
     const orcamentario =
       empenho.Orçamentário?.operacoes ||
@@ -1667,39 +1655,39 @@ class EncontroContas {
 
     // Ensure it's an array before calling reduce
     if (!Array.isArray(orcamentario)) {
-      console.warn("Orçamentário data is not an array:", orcamentario);
       return 0;
     }
 
-    // Apply the same RP filtering logic as used in chart calculations
-    return orcamentario.reduce((total, op) => {
+    // Backend now provides pre-processed va_operacao values (0 for RP operations)
+    // So we can simply sum the va_operacao values without additional RP filtering
+    const result = orcamentario.reduce((total, op, index) => {
       if (!op || op.va_operacao === null || op.va_operacao === undefined) {
         return total;
       }
 
-      let value = parseFloat(op.va_operacao) || 0;
-
-      // Exclude RP operations from calculations (budget rollover to next year)
-      // Operations with "RP" in no_operacao are budget transfers, not new spending
-      // EXCEPTION: If this is marked as the oldest operation and contains "RP", count it at full value
-      const isRpOperation =
-        op.no_operacao &&
-        op.no_operacao.toString().toUpperCase().includes("RP");
-
-      // Use backend-calculated is_oldest_operation field for exception handling
-      // Exception applies to ANY RP operation when it's the oldest operation
-      const isOldestRpException =
-        op.is_oldest_operation === true && isRpOperation;
-
-      if (isRpOperation && !isOldestRpException) {
-        value = 0; // Count as zero to avoid double-counting budget
-      }
+      let value = this.safeParseFloat(op.va_operacao);
 
       return total + value;
     }, 0);
+
+    // Handle negative zero
+    const finalResult = result === 0 ? 0 : result;
+
+    // Only log when negative zero is detected
+    if (Object.is(result, -0)) {
+      console.warn("🎯 NEGATIVE ZERO DETECTED in calculateOrcamentarioTotal:", {
+        empenho: empenhoNumero,
+        result: result,
+        location: "calculateOrcamentarioTotal result",
+      });
+    }
+
+    return finalResult;
   }
 
   calculateFinancasTotal(empenho, usePartialValues = false) {
+    const empenhoNumero = empenho.empenho?.numero || "Unknown";
+
     let total = 0;
 
     // Handle new nested structure under Finanças
@@ -1707,59 +1695,103 @@ class EncontroContas {
 
     // DARF documents
     (financas.documentos_darf || empenho.documentos_darf || []).forEach(
-      (doc) => {
+      (doc, index) => {
+        let documentValue = 0;
+
         if (
           usePartialValues &&
           doc.va_celula !== null &&
           doc.va_celula !== undefined
         ) {
-          total += parseFloat(doc.va_celula) || 0;
+          documentValue = this.safeParseFloat(doc.va_celula);
         } else {
-          total +=
-            (parseFloat(doc.va_juros) || 0) +
-            (parseFloat(doc.va_receita) || 0) +
-            (parseFloat(doc.va_multa) || 0);
+          const juros = this.safeParseFloat(doc.va_juros);
+          const receita = this.safeParseFloat(doc.va_receita);
+          const multa = this.safeParseFloat(doc.va_multa);
+          documentValue = juros + receita + multa;
         }
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+        }
+
+        total += documentValue;
       }
     );
 
     // DAR documents
-    (financas.documentos_dar || empenho.documentos_dar || []).forEach((doc) => {
-      if (
-        usePartialValues &&
-        doc.va_celula !== null &&
-        doc.va_celula !== undefined
-      ) {
-        total += parseFloat(doc.va_celula) || 0;
-      } else {
-        total +=
-          (parseFloat(doc.va_multa) || 0) +
-          (parseFloat(doc.va_juros) || 0) +
-          (parseFloat(doc.va_principal) || 0);
-      }
-    });
+    (financas.documentos_dar || empenho.documentos_dar || []).forEach(
+      (doc, index) => {
+        let documentValue = 0;
 
-    // GPS documents
-    (financas.documentos_gps || empenho.documentos_gps || []).forEach((doc) => {
-      if (
-        usePartialValues &&
-        doc.va_celula !== null &&
-        doc.va_celula !== undefined
-      ) {
-        total += parseFloat(doc.va_celula) || 0;
-      } else {
-        total += parseFloat(doc.va_inss) || 0;
-      }
-    });
+        if (
+          usePartialValues &&
+          doc.va_celula !== null &&
+          doc.va_celula !== undefined
+        ) {
+          documentValue = this.safeParseFloat(doc.va_celula);
+        } else {
+          const multa = this.safeParseFloat(doc.va_multa);
+          const juros = this.safeParseFloat(doc.va_juros);
+          const principal = this.safeParseFloat(doc.va_principal);
+          documentValue = multa + juros + principal;
+        }
 
-    // OB documents (OB doesn't have va_celula, so always use va_linha_evento)
-    (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
-      (doc) => {
-        total += parseFloat(doc.va_linha_evento) || 0;
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+        }
+
+        total += documentValue;
       }
     );
 
-    return total;
+    // GPS documents
+    (financas.documentos_gps || empenho.documentos_gps || []).forEach(
+      (doc, index) => {
+        let documentValue = 0;
+
+        if (
+          usePartialValues &&
+          doc.va_celula !== null &&
+          doc.va_celula !== undefined
+        ) {
+          documentValue = this.safeParseFloat(doc.va_celula);
+        } else {
+          documentValue = this.safeParseFloat(doc.va_inss);
+        }
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+        }
+
+        total += documentValue;
+      }
+    );
+
+    // OB documents (OB doesn't have va_celula, so always use va_linha_evento)
+    (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
+      (doc, index) => {
+        const documentValue = this.safeParseFloat(doc.va_linha_evento);
+        total += documentValue;
+      }
+    );
+
+    // Handle negative zero in total
+    const finalTotal = total === 0 ? 0 : total;
+
+    // Only log when negative zero is detected
+    if (Object.is(total, -0)) {
+      console.warn("🎯 NEGATIVE ZERO DETECTED in calculateFinancasTotal:", {
+        empenho: empenhoNumero,
+        total: total,
+        location: "calculateFinancasTotal result",
+      });
+    }
+
+    return finalTotal;
   }
 
   // New function specifically for partial payment totals
@@ -1800,6 +1832,9 @@ class EncontroContas {
       case "linha_evento_ob":
         documentId = doc.id_doc_ob;
         break;
+      case "ob_grouped":
+        documentId = doc.id_doc_ob;
+        break;
       default:
         return "N/A";
     }
@@ -1826,6 +1861,8 @@ class EncontroContas {
       case "documentos_gps":
         return doc.id_doc_gps || "N/A";
       case "linha_evento_ob":
+        return doc.id_doc_ob || "N/A";
+      case "ob_grouped":
         return doc.id_doc_ob || "N/A";
       default:
         return "N/A";
@@ -1854,6 +1891,8 @@ class EncontroContas {
         return "GPS";
       case "linha_evento_ob":
         return "OB";
+      case "ob_grouped":
+        return "OB";
       default:
         return "Outros";
     }
@@ -1868,6 +1907,8 @@ class EncontroContas {
       case "documentos_gps":
         return "fa-shield-alt";
       case "linha_evento_ob":
+        return "fa-money-bill-wave";
+      case "ob_grouped":
         return "fa-money-bill-wave";
       default:
         return "fa-file";
@@ -1884,42 +1925,64 @@ class EncontroContas {
         return "#2196f3";
       case "linha_evento_ob":
         return "#4caf50";
+      case "ob_grouped":
+        return "#4caf50";
       default:
         return "#666";
     }
   }
 
   getFinancialDocValue(doc, docType, valueType = "nominal") {
+    let value = 0;
+
     // For partial payments, use va_celula if available
     if (
       valueType === "parcial" &&
       doc.va_celula !== null &&
       doc.va_celula !== undefined
     ) {
-      return parseFloat(doc.va_celula) || 0;
+      value = parseFloat(doc.va_celula) || 0;
+    } else {
+      // For nominal values or when va_celula is not available, use the original calculation
+      switch (docType) {
+        case "documentos_dar":
+          value =
+            (parseFloat(doc.va_multa) || 0) +
+            (parseFloat(doc.va_juros) || 0) +
+            (parseFloat(doc.va_principal) || 0);
+          break;
+        case "documentos_darf":
+          value =
+            (parseFloat(doc.va_juros) || 0) +
+            (parseFloat(doc.va_receita) || 0) +
+            (parseFloat(doc.va_multa) || 0);
+          break;
+        case "documentos_gps":
+          value = parseFloat(doc.va_inss) || 0;
+          break;
+        case "linha_evento_ob":
+          value = parseFloat(doc.va_linha_evento) || 0;
+          break;
+        case "ob_grouped":
+          // Backend provides per-OB total in va_linha_evento for grouped entries
+          value = parseFloat(doc.va_linha_evento) || 0;
+          break;
+        default:
+          value = 0;
+      }
     }
 
-    // For nominal values or when va_celula is not available, use the original calculation
-    switch (docType) {
-      case "documentos_dar":
-        return (
-          (parseFloat(doc.va_multa) || 0) +
-          (parseFloat(doc.va_juros) || 0) +
-          (parseFloat(doc.va_principal) || 0)
-        );
-      case "documentos_darf":
-        return (
-          (parseFloat(doc.va_juros) || 0) +
-          (parseFloat(doc.va_receita) || 0) +
-          (parseFloat(doc.va_multa) || 0)
-        );
-      case "documentos_gps":
-        return parseFloat(doc.va_inss) || 0;
-      case "linha_evento_ob":
-        return parseFloat(doc.va_linha_evento) || 0;
-      default:
-        return 0;
+    // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+    if (
+      (docType === "documentos_darf" ||
+        docType === "documentos_dar" ||
+        docType === "documentos_gps") &&
+      doc.is_negative_value === true
+    ) {
+      value = value === 0 ? 0 : -Math.abs(value);
     }
+
+    return value;
   }
 
   extractDateFromFinancialDoc(doc) {
@@ -2125,10 +2188,141 @@ class EncontroContas {
 
   formatCurrency(value) {
     if (value === null || value === undefined || isNaN(value)) return "R$ 0,00";
-    return new Intl.NumberFormat("pt-BR", {
+
+    // Convert to number and handle negative zero
+    let numValue = parseFloat(value);
+
+    // Only log when negative zero is detected
+    if (Object.is(numValue, -0)) {
+      console.warn("🎯 NEGATIVE ZERO DETECTED in formatCurrency:", {
+        originalValue: value,
+        typeOf: typeof value,
+        parsedValue: numValue,
+        location: "formatCurrency input",
+      });
+      numValue = 0;
+    }
+
+    if (numValue === 0) {
+      return "R$ 0,00";
+    }
+
+    // Additional safeguard: if the result would be "-R$ 0,00", force it to positive
+    const formatted = new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
-    }).format(parseFloat(value));
+    }).format(numValue);
+
+    // Check for ANY negative currency display with zero value
+    if (formatted.startsWith("-R$") && Math.abs(numValue) < 0.001) {
+      console.warn("🎯 NEGATIVE CURRENCY DISPLAY DETECTED:", {
+        input: value,
+        numValue: numValue,
+        formatted: formatted,
+        location:
+          "formatCurrency result - negative currency with near-zero value",
+      });
+      return "R$ 0,00";
+    }
+
+    if (formatted === "-R$ 0,00") {
+      console.warn("🎯 NEGATIVE ZERO DETECTED in formatCurrency output:", {
+        input: value,
+        numValue: numValue,
+        formatted: formatted,
+        location: "formatCurrency result",
+      });
+      return "R$ 0,00";
+    }
+
+    return formatted;
+  }
+
+  /**
+   * Extra aggressive currency formatter specifically for values that might be negative zero
+   * @param {number} value - The value to format
+   * @returns {string} Formatted currency string, never negative zero
+   */
+  formatCurrencyAggressive(value) {
+    // Check for negative zero before forcing conversion
+    if (Object.is(value, -0)) {
+      console.warn("🎯 NEGATIVE ZERO DETECTED in formatCurrencyAggressive:", {
+        value: value,
+        location: "formatCurrencyAggressive input",
+      });
+    }
+
+    // Check for small negative numbers that might cause issues
+    if (typeof value === "number" && value < 0 && value > -0.001) {
+      console.warn(
+        "🎯 SMALL NEGATIVE NUMBER DETECTED in formatCurrencyAggressive:",
+        {
+          value: value,
+          location: "formatCurrencyAggressive input - small negative",
+        }
+      );
+    }
+
+    // Force conversion to positive zero if any kind of zero
+    if (
+      value === 0 ||
+      value === -0 ||
+      Object.is(value, -0) ||
+      Object.is(value, 0)
+    ) {
+      return "R$ 0,00";
+    }
+    return this.formatCurrency(value);
+  }
+
+  /**
+   * Safe subtraction that handles floating-point precision issues and negative zero
+   * @param {number} a - The minuend
+   * @param {number} b - The subtrahend
+   * @returns {number} The result, with negative zero converted to positive zero
+   */
+  safeMathSubtract(a, b) {
+    const numA = a || 0;
+    const numB = b || 0;
+    const result = numA - numB;
+
+    // Only log when negative zero is detected
+    if (Object.is(result, -0)) {
+      console.warn("🎯 NEGATIVE ZERO DETECTED in safeMathSubtract:", {
+        operandA: numA,
+        operandB: numB,
+        result: result,
+        location: "safeMathSubtract calculation",
+      });
+    }
+
+    // Handle negative zero and very small floating-point errors
+    return result === 0 ? 0 : result;
+  }
+
+  /**
+   * Ensures that any zero value (including negative zero) is converted to positive zero
+   * @param {number} value - The value to check
+   * @returns {number} The value, with negative zero converted to positive zero
+   */
+  ensurePositiveZero(value) {
+    if (Object.is(value, -0)) {
+      console.warn(
+        "🔍 ensurePositiveZero detected negative zero, converting to positive zero"
+      );
+      return 0;
+    }
+    return value;
+  }
+
+  /**
+   * Safe parseFloat that never returns negative zero
+   * @param {any} value - The value to parse
+   * @returns {number} The parsed number, with negative zero converted to positive zero
+   */
+  safeParseFloat(value) {
+    const result = parseFloat(value) || 0;
+    return Object.is(result, -0) ? 0 : result;
   }
 
   formatCurrencyShort(value) {
@@ -2208,8 +2402,6 @@ class EncontroContas {
   // Excel Export Functionality
   exportToExcel() {
     try {
-      console.log("Starting Excel export with enhanced formatting...");
-
       if (!this.state.rawData || !this.state.rawData.empenhos_data) {
         alert("Não há dados para exportar. Carregue os dados primeiro.");
         return;
@@ -2244,8 +2436,6 @@ class EncontroContas {
       // Write and download the file
       const filename = `Encontro_de_Contas_Contrato_${contractId}_${dateStr}.xlsx`;
       XLSX.writeFile(wb, filename);
-
-      console.log("Excel export with formatting completed successfully");
     } catch (error) {
       console.error("Error exporting to Excel:", error);
       alert(
@@ -2415,11 +2605,17 @@ class EncontroContas {
     const data = [];
 
     this.state.rawData.empenhos_data.forEach((empenho, index) => {
-      const orcamentarioTotal = this.calculateOrcamentarioTotal(empenho);
-      const financasTotal = this.calculateFinancasTotal(empenho, true); // Use partial values for export
+      const orcamentarioTotal = this.ensurePositiveZero(
+        this.calculateOrcamentarioTotal(empenho)
+      );
+      const financasTotal = this.ensurePositiveZero(
+        this.calculateFinancasTotal(empenho, true)
+      ); // Use partial values for export
       const empenhado = empenho.empenho?.empenhado || 0;
       const pago = empenho.empenho?.pago || 0;
-      const saldo = orcamentarioTotal - financasTotal; // Saldo de empenho = Orçamentário - Finanças Parciais
+      const saldo = this.ensurePositiveZero(
+        this.safeMathSubtract(orcamentarioTotal, financasTotal)
+      ); // Saldo de empenho = Orçamentário - Finanças Parciais
 
       // Calculate percentage status for export: Finanças Parciais / Orçamentário * 100
       const percentageStatus = this.calculateStatusPercentage(
@@ -2451,55 +2647,97 @@ class EncontroContas {
 
       // Process DARF documents
       (financas.documentos_darf || []).forEach((doc) => {
+        let parcialValue = doc.va_celula || 0;
+        let nominalValue = doc.va_receita || 0;
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          parcialValue = parcialValue === 0 ? 0 : -Math.abs(parcialValue);
+          nominalValue = nominalValue === 0 ? 0 : -Math.abs(nominalValue);
+        }
+
         data.push({
           Nº: index++,
           Data: this.formatDateForExcel(this.buildDateFromDARF(doc)),
           Pagamento: this.formatDocumentId(doc.id_doc_darf),
           Tipo: "DARF",
-          Parcial: doc.va_celula || 0,
-          Nominal: doc.va_receita || 0,
+          Parcial: parcialValue,
+          Nominal: nominalValue,
         });
       });
 
       // Process DAR documents
       (financas.documentos_dar || []).forEach((doc) => {
+        let parcialValue = doc.va_celula || 0;
+        let nominalValue = doc.va_principal || 0;
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          parcialValue = parcialValue === 0 ? 0 : -Math.abs(parcialValue);
+          nominalValue = nominalValue === 0 ? 0 : -Math.abs(nominalValue);
+        }
+
         data.push({
           Nº: index++,
           Data: this.formatDateForExcel(this.buildDateFromDAR(doc)),
           Pagamento: this.formatDocumentId(doc.id_doc_dar),
           Tipo: "DAR",
-          Parcial: doc.va_celula || 0,
-          Nominal: doc.va_principal || 0,
+          Parcial: parcialValue,
+          Nominal: nominalValue,
         });
       });
 
       // Process GPS documents
       (financas.documentos_gps || []).forEach((doc) => {
+        let parcialValue = doc.va_celula || 0;
+        let nominalValue = doc.va_receita || 0;
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          parcialValue = parcialValue === 0 ? 0 : -Math.abs(parcialValue);
+          nominalValue = nominalValue === 0 ? 0 : -Math.abs(nominalValue);
+        }
+
         data.push({
           Nº: index++,
           Data: this.formatDateForExcel(this.buildDateFromGPS(doc)),
           Pagamento: this.formatDocumentId(doc.id_doc_gps),
           Tipo: "GPS",
-          Parcial: doc.va_celula || 0,
-          Nominal: doc.va_receita || 0,
+          Parcial: parcialValue,
+          Nominal: nominalValue,
         });
       });
 
       // Process OB documents
-      (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
-        (doc) => {
+      // Prefer grouped OB totals if available; fallback to raw lines
+      const obGrouped = financas.ob_grouped || [];
+      if (obGrouped.length > 0) {
+        obGrouped.forEach((doc) => {
           data.push({
             Nº: index++,
             Data: this.formatDateForExcel(this.buildDateFromOB(doc)),
-            Pagamento: this.formatDocumentId(
-              doc.id_doc_ob || doc.id_linha_evento_ob
-            ),
+            Pagamento: this.formatDocumentId(doc.id_doc_ob),
             Tipo: "OB",
-            Parcial: doc.va_linha_evento || 0, // OB doesn't have va_celula, use va_linha_evento
+            Parcial: doc.va_linha_evento || 0,
             Nominal: doc.va_linha_evento || 0,
           });
-        }
-      );
+        });
+      } else {
+        (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
+          (doc) => {
+            data.push({
+              Nº: index++,
+              Data: this.formatDateForExcel(this.buildDateFromOB(doc)),
+              Pagamento: this.formatDocumentId(
+                doc.id_doc_ob || doc.id_linha_evento_ob
+              ),
+              Tipo: "OB",
+              Parcial: doc.va_linha_evento || 0, // OB doesn't have va_celula, use va_linha_evento
+              Nominal: doc.va_linha_evento || 0,
+            });
+          }
+        );
+      }
     });
 
     return data;
@@ -2523,7 +2761,10 @@ class EncontroContas {
             Data: this.formatDateForExcel(op.dt_operacao),
             Empenho: empenho.empenho?.numero || "N/A",
             Espécie: op.no_operacao || "N/A",
-            Valor: op.va_operacao || 0,
+            Valor:
+              op.va_operacao_display !== undefined
+                ? op.va_operacao_display
+                : op.va_operacao || 0, // Show original RP amounts in Excel
           });
         });
       }
@@ -2608,11 +2849,6 @@ class EncontroContas {
     throw new Error("showMovimentacaoDetails method must be implemented");
   }
 }
-
-// Initialize when DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-  window.EncontroContas = new EncontroContas();
-});
 
 // Static method for HTML button access
 window.exportToExcel = function () {

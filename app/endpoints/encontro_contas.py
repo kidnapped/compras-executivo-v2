@@ -8,6 +8,7 @@ from typing import Any, Dict, List
 from app.core.templates import templates
 from app.core import config as app_config
 from app.utils.session_utils import get_uasgs_str, get_usuario_id
+from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 from app.db.session import get_session_contratos, get_session_financeiro
 from app.services.encontro import EncontroService
 
@@ -21,12 +22,23 @@ async def render_encontro_contas(request: Request):
     """
     Renderiza a página de Encontro de Contas
     """
-    return templates.TemplateResponse(
-        "encontro-de-contas.html", 
-        {
-            "request": request,
-            "template_name": "encontro-de-contas"
-        }
+    # Contexto base para a página
+    context = {
+        "request": request,
+        "template_name": "encontro-de-contas"
+    }
+    
+    # Adicionar contexto SPA
+    context = add_spa_context(context, request)
+    
+    # Usar o handler SPA
+    return spa_route_handler(
+        template_name="encontro-de-contas.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="Encontro de Contas - Compras Executivo",
+        scripts=get_page_scripts("encontro-contas")
     )
 
 

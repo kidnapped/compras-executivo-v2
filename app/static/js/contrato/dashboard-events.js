@@ -25,17 +25,43 @@ const handleTableClick = (event) => {
   // Check if the click was on the encontro de contas action
   const encontroAction = event.target.closest(".encontro-action");
   if (encontroAction) {
+    // Prevent default link behavior
+    event.preventDefault();
+    event.stopPropagation();
+
     // Get contract ID from the data attribute
     const contractId = encontroAction.getAttribute("data-contract-id");
 
-    // Navigate to encontro de contas page with contract ID parameter
+    console.log(`Encontro de Contas clicked for contract ID: ${contractId}`);
+    console.log("SPA Router available:", !!window.spaRouter);
+    console.log(
+      "SPA Router navigateTo function:",
+      typeof window.spaRouter?.navigateTo
+    );
+
+    // Navigate to encontro de contas page with contract ID parameter using SPA
     if (contractId && contractId !== "N/A") {
-      window.location.href = `/encontro-de-contas?contrato=${contractId}`;
+      // Use SPA router if available, otherwise fallback to traditional navigation
+      if (
+        window.spaRouter &&
+        typeof window.spaRouter.navigateTo === "function"
+      ) {
+        console.log(
+          "Using SPA navigation to:",
+          `/encontro-de-contas?contrato=${contractId}`
+        );
+        window.spaRouter.navigateTo(
+          `/encontro-de-contas?contrato=${contractId}`
+        );
+      } else {
+        console.warn(
+          "SPA router not available, falling back to traditional navigation"
+        );
+        window.location.href = `/encontro-de-contas?contrato=${contractId}`;
+      }
     } else {
       console.error("Contract ID not found for navigation");
     }
-
-    console.log(`Encontro de Contas clicked for contract ID: ${contractId}`);
     return;
   }
 

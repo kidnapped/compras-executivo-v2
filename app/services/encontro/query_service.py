@@ -30,7 +30,7 @@ class QueryService:
             if empenho_numero:
                 # Filter by specific empenho number
                 query = text("""
-                    SELECT e.*
+                    SELECT DISTINCT ce.empenho_id, e.*
                     FROM contratoempenhos ce
                     JOIN empenhos e ON ce.empenho_id = e.id
                     WHERE ce.unidadeempenho_id = :unidadeempenho_id 
@@ -41,7 +41,7 @@ class QueryService:
                 
                 # Debug: Let's also check what empenhos exist for this contract
                 debug_query = text("""
-                    SELECT e.id, e.numero
+                    SELECT DISTINCT ce.empenho_id, e.id, e.numero
                     FROM contratoempenhos ce
                     JOIN empenhos e ON ce.empenho_id = e.id
                     WHERE ce.unidadeempenho_id = :unidadeempenho_id 
@@ -63,7 +63,7 @@ class QueryService:
             else:
                 # Get all empenhos for the contract
                 query = text("""
-                    SELECT e.*
+                    SELECT DISTINCT ce.empenho_id, e.*
                     FROM contratoempenhos ce
                     JOIN empenhos e ON ce.empenho_id = e.id
                     WHERE ce.unidadeempenho_id = :unidadeempenho_id 
@@ -173,28 +173,86 @@ class QueryService:
         return [{"id": row[0], "va_celula": row[1]} for row in result.fetchall()]
 
     async def _get_full_dar_documents(self, dar_ids: List[int]) -> List[Dict]:
-        query = text("SELECT * FROM wd_doc_dar WHERE id_doc_dar = ANY(:dar_ids)")
+        query = text("""
+            SELECT 
+                dar.*,
+                wsd.no_situacao_doc,
+                CASE 
+                    WHEN wsd.no_situacao_doc = 'DE CANCELAMENTO' THEN true 
+                    ELSE false 
+                END as is_negative_value
+            FROM wd_doc_dar dar
+            LEFT JOIN wd_documento_slim wds ON dar.id_doc_dar = wds.id_doc_dar
+            LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
+                AND wsd.id_tp_documento = 'DR'
+            WHERE dar.id_doc_dar = ANY(:dar_ids)
+        """)
         result = await self.db_financeiro.execute(query, {"dar_ids": dar_ids})
         return [dict(row) for row in result.mappings().all()]
 
     async def _get_full_darf_documents(self, darf_ids: List[int]) -> List[Dict]:
-        query = text("SELECT * FROM wd_doc_darf WHERE id_doc_darf = ANY(:darf_ids)")
+        query = text("""
+            SELECT 
+                darf.*,
+                wsd.no_situacao_doc,
+                CASE 
+                    WHEN wsd.no_situacao_doc = 'DE CANCELAMENTO' THEN true 
+                    ELSE false 
+                END as is_negative_value
+            FROM wd_doc_darf darf
+            LEFT JOIN wd_documento_slim wds ON darf.id_doc_darf = wds.id_doc_darf
+            LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
+                AND wsd.id_tp_documento = 'DF'
+            WHERE darf.id_doc_darf = ANY(:darf_ids)
+        """)
         result = await self.db_financeiro.execute(query, {"darf_ids": darf_ids})
         return [dict(row) for row in result.mappings().all()]
 
     async def _get_full_gps_documents(self, gps_ids: List[int]) -> List[Dict]:
-        query = text("SELECT * FROM wd_doc_gps WHERE id_doc_gps = ANY(:gps_ids)")
+        query = text("""
+            SELECT 
+                gps.*,
+                wsd.no_situacao_doc,
+                CASE 
+                    WHEN wsd.no_situacao_doc = 'DE CANCELAMENTO' THEN true 
+                    ELSE false 
+                END as is_negative_value
+            FROM wd_doc_gps gps
+            LEFT JOIN wd_documento_slim wds ON gps.id_doc_gps = wds.id_doc_gps
+            LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
+                AND wsd.id_tp_documento = 'GP'
+            WHERE gps.id_doc_gps = ANY(:gps_ids)
+        """)
         result = await self.db_financeiro.execute(query, {"gps_ids": gps_ids})
         return [dict(row) for row in result.mappings().all()]
 
     async def _get_ne_item_operacao(self, full_numero: str) -> List[Dict]:
+        # Use DISTINCT to avoid duplicates that might exist in the database
         query = text("""
-            SELECT dt_operacao, va_operacao, no_operacao, qt_item, va_unitario, id_item
+            SELECT DISTINCT id_doc_ro, dt_operacao, va_operacao, no_operacao, qt_item, va_unitario, id_item
             FROM wd_doc_ne_item_operacao
             WHERE id_doc_ne = :numero_empenho
+            ORDER BY dt_operacao, no_operacao
         """)
         result = await self.db_financeiro.execute(query, {"numero_empenho": full_numero})
-        return [dict(row) for row in result.mappings().all()]
+        operations = [dict(row) for row in result.mappings().all()]
+        
+        # Debug: Log the query results to check for duplicates
+        logger.info(f"🔍 NE Item Operacao Query for {full_numero}: Found {len(operations)} operations")
+        if operations:
+            # Check for potential duplicates even after DISTINCT
+            signatures = []
+            for op in operations:
+                sig = f"{op.get('no_operacao', '')}-{op.get('va_operacao', '')}-{op.get('dt_operacao', '')}"
+                signatures.append(sig)
+            
+            unique_sigs = set(signatures)
+            if len(signatures) != len(unique_sigs):
+                logger.warning(f"⚠️  DISTINCT didn't remove all duplicates! Total: {len(signatures)}, Unique: {len(unique_sigs)}")
+            else:
+                logger.info(f"✅ No duplicates found after DISTINCT")
+        
+        return operations
 
     async def _get_ne_item(self, full_numero: str) -> List[Dict]:
         query = text("""

@@ -37,6 +37,9 @@ class DataProcessor:
         enhanced_financas = {
             'linha_evento_ob': self._serialize_list(financial_data.get('linha_evento_ob', []))
         }
+
+        # Note: OB grouping now happens at the contract level in create_summary_response
+        # to properly group OBs across all empenhos with the same id_doc_ob
         
         # Process each document type and merge va_celula values
         for doc_type in ['dar', 'darf', 'gps']:
@@ -132,17 +135,39 @@ class DataProcessor:
             
             if item.get('va_operacao'):
                 original_value = float(item.get('va_operacao', 0))
-                value = original_value
+                calculation_value = original_value
                 operation_type = item.get('no_operacao', '').upper()
                 
-                # Apply negative value for cancellation/annulment operations
-                # Use substring matching to catch all variations (CANCELAMENTO, CANCELAMENTO DE RP, etc.)
-                if 'ANULACAO' in operation_type or 'CANCELAMENTO' in operation_type:
-                    value = -value
-                    # Update the processed item's va_operacao to reflect the negative value
-                    processed_item['va_operacao'] = value
+                # Check if this is an RP operation
+                is_rp_operation = ('RP' in operation_type or 
+                                 'INSCRICAO' in operation_type or 
+                                 'RESTOS A PAGAR' in operation_type)
+                is_oldest_operation = processed_item.get('is_oldest_operation', False)
+                
+                # Always preserve the original value for display
+                processed_item['va_operacao_display'] = original_value
+                
+                # Apply RP logic: If it's an RP operation and NOT the oldest, count as 0
+                if is_rp_operation and not is_oldest_operation:
+                    calculation_value = 0  # Count as zero to avoid double-counting budget
+                    processed_item['va_operacao'] = 0  # Set calculation value to 0
+                    processed_item['is_rp_excluded'] = True  # Mark for frontend recognition
+                    logger.info(f"🔄 RP operation excluded from budget: {operation_type} - Display: {original_value}, Calculation: 0")
+                else:
+                    # Apply negative value for cancellation/annulment operations
+                    # Use substring matching to catch all variations (CANCELAMENTO, CANCELAMENTO DE RP, etc.)
+                    if 'ANULACAO' in operation_type or 'CANCELAMENTO' in operation_type:
+                        calculation_value = -calculation_value
+                        # Update the processed item's va_operacao to reflect the negative value
+                        processed_item['va_operacao'] = calculation_value
+                        processed_item['is_rp_excluded'] = False
+                        logger.info(f"❌ Negative operation applied: {operation_type} - Value: {calculation_value}")
+                    else:
+                        processed_item['va_operacao'] = calculation_value
+                        processed_item['is_rp_excluded'] = False
+                        logger.info(f"✅ Normal operation included: {operation_type} - Value: {calculation_value}")
                     
-                total_operacao += value
+                total_operacao += calculation_value
             
             processed_orcamentario.append(processed_item)
         
@@ -240,16 +265,29 @@ class DataProcessor:
 
     def create_summary_response(self, contract_data: List[Dict]) -> Dict[str, Any]:
         """Create a summary response with aggregated data"""
+        # First, create cross-empenho OB groupings and apply them to each empenho
+        self._apply_cross_empenho_ob_grouping(contract_data)
+        
         total_empenhos = len(contract_data)
-        
+
         # Count documents from the correct nested structure
-        total_dar_docs = sum(len(item.get('Finanças', {}).get('documentos_dar', [])) for item in contract_data)
-        total_darf_docs = sum(len(item.get('Finanças', {}).get('documentos_darf', [])) for item in contract_data)
-        total_gps_docs = sum(len(item.get('Finanças', {}).get('documentos_gps', [])) for item in contract_data)
-        total_ob_docs = sum(len(item.get('Finanças', {}).get('linha_evento_ob', [])) for item in contract_data)
-        
-        logger.info(f"Document counts - DAR: {total_dar_docs}, DARF: {total_darf_docs}, GPS: {total_gps_docs}, OB: {total_ob_docs}")
-        
+        total_dar_docs = sum(
+            len(item.get('Finanças', {}).get('documentos_dar', [])) for item in contract_data
+        )
+        total_darf_docs = sum(
+            len(item.get('Finanças', {}).get('documentos_darf', [])) for item in contract_data
+        )
+        total_gps_docs = sum(
+            len(item.get('Finanças', {}).get('documentos_gps', [])) for item in contract_data
+        )
+        total_ob_docs = sum(
+            len(item.get('Finanças', {}).get('linha_evento_ob', [])) for item in contract_data
+        )
+
+        logger.info(
+            f"Document counts - DAR: {total_dar_docs}, DARF: {total_darf_docs}, GPS: {total_gps_docs}, OB: {total_ob_docs}"
+        )
+
         # Calculate total empenhado value from all empenhos
         total_empenhado = 0.0
         for item in contract_data:
@@ -257,88 +295,94 @@ class DataProcessor:
             empenhado_value = empenho_data.get('empenhado', 0)
             if empenhado_value:
                 total_empenhado += float(empenhado_value)
-        
+
         logger.info(f"Total empenhado calculated: {total_empenhado}")
-        
+
         # Calculate total Orçamentário value from all operations with RP logic
         total_orcamentario = 0.0
         for item in contract_data:
             orcamentario_data = item.get('Orçamentário', {})
             operacoes = orcamentario_data.get('operacoes', [])
-            
+
             if operacoes:
-                # Apply the same RP logic as in _process_financial_data
-                # First pass: Find the oldest operation date
-                oldest_operation = None
-                oldest_date = None
-                
-                for op in operacoes:
-                    if op.get('dt_operacao'):
-                        operation_date = self._parse_date_for_comparison(op.get('dt_operacao'))
-                        if operation_date and (oldest_date is None or operation_date < oldest_date):
-                            oldest_date = operation_date
-                            oldest_operation = op
-                
-                # Second pass: Calculate total with RP logic
+                # The operations have already been processed with RP logic in _process_financial_data
+                # Just sum the processed va_operacao values directly
                 for op in operacoes:
                     if op.get('va_operacao') is not None:
                         value = float(op.get('va_operacao', 0))
-                        operation_type = op.get('no_operacao', '').upper()
-                        
-                        # Check if this is an RP operation
-                        is_rp_operation = 'RP' in operation_type
-                        
-                        # Use the flag that was already set in _process_financial_data
-                        is_oldest_operation = op.get('is_oldest_operation', False)
-                        
-                        # Apply RP logic: If it's an RP operation and NOT the oldest, count as 0
-                        if is_rp_operation and not is_oldest_operation:
-                            value = 0  # Count as zero to avoid double-counting budget
-                        
                         total_orcamentario += value
-        
+                        logger.info(
+                            f"📊 Summary: Adding processed operation value: {op.get('no_operacao', 'N/A')} - Value: {value}"
+                        )
+
         logger.info(f"Total Orçamentário calculated: {total_orcamentario}")
-        
+
+        # Debug: Print a sample of processed operations to verify RP handling
+        if contract_data:
+            sample_empenho = contract_data[0]
+            orcamentario_ops = sample_empenho.get('Orçamentário', {}).get('operacoes', [])
+            if orcamentario_ops:
+                logger.info(
+                    f"🔍 Sample operations from first empenho ({len(orcamentario_ops)} total operations):"
+                )
+                for i, op in enumerate(orcamentario_ops[:3]):  # Show first 3 operations
+                    logger.info(
+                        f"  Op {i+1}: {op.get('no_operacao', 'N/A')} - va_operacao: {op.get('va_operacao', 'N/A')} - is_oldest: {op.get('is_oldest_operation', False)}"
+                    )
+
         # Calculate total financial value from documents
         total_value = 0.0
         total_dar_value = 0.0
         total_darf_value = 0.0
         total_gps_value = 0.0
         total_ob_value = 0.0
-        
+
         for item in contract_data:
             financas = item.get('Finanças', {})
-            
+
             # Sum DAR documents
             for dar_doc in financas.get('documentos_dar', []):
-                dar_value = (float(dar_doc.get('va_principal', 0) or 0) + 
-                           float(dar_doc.get('va_juros', 0) or 0) + 
-                           float(dar_doc.get('va_multa', 0) or 0))
+                dar_value = (
+                    float(dar_doc.get('va_principal', 0) or 0)
+                    + float(dar_doc.get('va_juros', 0) or 0)
+                    + float(dar_doc.get('va_multa', 0) or 0)
+                )
                 total_dar_value += dar_value
                 total_value += dar_value
-            
+
             # Sum DARF documents
             for darf_doc in financas.get('documentos_darf', []):
-                darf_value = (float(darf_doc.get('va_receita', 0) or 0) + 
-                            float(darf_doc.get('va_juros', 0) or 0) + 
-                            float(darf_doc.get('va_multa', 0) or 0))
+                darf_value = (
+                    float(darf_doc.get('va_receita', 0) or 0)
+                    + float(darf_doc.get('va_juros', 0) or 0)
+                    + float(darf_doc.get('va_multa', 0) or 0)
+                )
                 total_darf_value += darf_value
                 total_value += darf_value
-            
+
             # Sum GPS documents
             for gps_doc in financas.get('documentos_gps', []):
                 gps_value = float(gps_doc.get('va_inss', 0) or 0)
                 total_gps_value += gps_value
                 total_value += gps_value
-            
-            # Sum OB documents
-            for ob_doc in financas.get('linha_evento_ob', []):
-                ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
-                total_ob_value += ob_value
-                total_value += ob_value
-        
-        logger.info(f"Total financial values - DAR: {total_dar_value}, DARF: {total_darf_value}, GPS: {total_gps_value}, OB: {total_ob_value}, Total: {total_value}")
-        
+
+            # Sum OB documents: prefer grouped totals if available to avoid double-counting
+            ob_grouped = financas.get('ob_grouped')
+            if ob_grouped:
+                for ob_doc in ob_grouped:
+                    ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
+                    total_ob_value += ob_value
+                    total_value += ob_value
+            else:
+                for ob_doc in financas.get('linha_evento_ob', []):
+                    ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
+                    total_ob_value += ob_value
+                    total_value += ob_value
+
+        logger.info(
+            f"Total financial values - DAR: {total_dar_value}, DARF: {total_darf_value}, GPS: {total_gps_value}, OB: {total_ob_value}, Total: {total_value}"
+        )
+
         return {
             'data': contract_data,
             'summary': {
@@ -361,6 +405,95 @@ class DataProcessor:
                 }
             }
         }
+
+    def _apply_cross_empenho_ob_grouping(self, contract_data: List[Dict]) -> None:
+        """Group OB lines across all empenhos by id_doc_ob and apply grouped totals to each empenho"""
+        try:
+            # Step 1: Collect all OB lines across all empenhos
+            all_ob_lines = []
+            for empenho_data in contract_data:
+                financas = empenho_data.get('Finanças', {})
+                ob_lines = financas.get('linha_evento_ob', []) or []
+                for ob_line in ob_lines:
+                    all_ob_lines.append(ob_line)
+
+            # Step 2: Group all OB lines by id_doc_ob
+            groups: Dict[str, Dict[str, Any]] = {}
+
+            def _parse_ob_date(ln: Dict[str, Any]) -> Optional[datetime]:
+                y = ln.get('id_ano_saque_bacen')
+                m = ln.get('id_mes_saque_bacen')
+                d = ln.get('id_dia_saque_bacen')
+                try:
+                    if y and m and d:
+                        return datetime(int(y), int(m), int(d))
+                except Exception:
+                    return None
+                return None
+
+            for ln in all_ob_lines:
+                # Identify the OB document id
+                id_doc_ob = (
+                    ln.get('id_doc_ob')
+                    or ln.get('id_documento_pagamento')
+                    or ln.get('documento')
+                )
+                if not id_doc_ob:
+                    # Skip grouping for lines without an identifiable OB id
+                    continue
+
+                grp = groups.setdefault(
+                    id_doc_ob,
+                    {
+                        'id_doc_ob': id_doc_ob,
+                        'va_linha_evento': 0.0,  # store total under same key for frontend compatibility
+                        'count': 0,
+                        'first_date': None,
+                        'last_date': None,
+                    },
+                )
+
+                try:
+                    value = float(ln.get('va_linha_evento', 0) or 0)
+                except Exception:
+                    value = 0.0
+                grp['va_linha_evento'] += value
+                grp['count'] += 1
+
+                dt = _parse_ob_date(ln)
+                if dt is not None:
+                    grp['first_date'] = dt if grp['first_date'] is None or dt < grp['first_date'] else grp['first_date']
+                    grp['last_date'] = dt if grp['last_date'] is None or dt > grp['last_date'] else grp['last_date']
+
+            # Step 3: Build serializable grouped list with representative saque_bacen date (use last_date)
+            ob_grouped: List[Dict[str, Any]] = []
+            for g in groups.values():
+                grouped_entry: Dict[str, Any] = {
+                    'id_doc_ob': g['id_doc_ob'],
+                    # Keep using va_linha_evento so frontend value extraction remains unchanged
+                    'va_linha_evento': g['va_linha_evento'],
+                    'count': g['count'],
+                }
+                last_dt: Optional[datetime] = g.get('last_date')
+                if last_dt:
+                    grouped_entry['id_ano_saque_bacen'] = last_dt.year
+                    grouped_entry['id_mes_saque_bacen'] = last_dt.month
+                    grouped_entry['id_dia_saque_bacen'] = last_dt.day
+                ob_grouped.append(grouped_entry)
+
+            # Step 4: Apply the grouped OB data to all empenhos that have OB lines
+            # This ensures that every empenho shows the same cross-empenho grouped totals
+            if ob_grouped:
+                for empenho_data in contract_data:
+                    financas = empenho_data.get('Finanças', {})
+                    ob_lines = financas.get('linha_evento_ob', []) or []
+                    if ob_lines:  # Only add ob_grouped to empenhos that have OB lines
+                        financas['ob_grouped'] = self._serialize_list(ob_grouped)
+                        
+            logger.info(f"Cross-empenho OB grouping: found {len(groups)} unique OB documents across {len(contract_data)} empenhos")
+
+        except Exception as e:
+            logger.warning(f"Failed to apply cross-empenho OB grouping: {e}")
 
     def handle_processing_error(self, error: Exception, context: str) -> Dict[str, Any]:
         """Handle errors during data processing"""
