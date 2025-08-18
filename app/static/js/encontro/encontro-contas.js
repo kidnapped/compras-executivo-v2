@@ -474,12 +474,28 @@ export default {
   // Reset state for fresh initialization (SPA navigation compatible)
   encontroDeContas_resetState() {
     console.log("🔄 Resetting Encontro de Contas state...");
+    
+    // Dispose of existing charts if they exist
+    if (this.state?.chart) {
+      this.state.chart.dispose();
+    }
+    if (this.state?.valoresTotaisChart) {
+      this.state.valoresTotaisChart.dispose();
+    }
+    
+    // Remove resize handler
+    if (this.resizeHandler) {
+      window.removeEventListener("resize", this.resizeHandler);
+      this.resizeHandler = null;
+    }
+    
     this.state = {
       currentContractId: null,
       selectedEmpenhoNumero: null,
       rawData: null,
       filteredData: null,
       chart: null,
+      valoresTotaisChart: null,
       containers: {},
       isInitializing: false,
       isLoadingData: false,
@@ -966,12 +982,12 @@ export default {
     try {
       const echarts = await getEcharts();
 
-      // Destroy existing chart if it exists
-      if (this.state.chart) {
-        this.state.chart.dispose();
+      // Destroy existing valores totais chart if it exists
+      if (this.state.valoresTotaisChart) {
+        this.state.valoresTotaisChart.dispose();
       }
 
-      this.state.chart = echarts.init(containers.valoresTotaisChart);
+      this.state.valoresTotaisChart = echarts.init(containers.valoresTotaisChart);
 
       // Extract values from the API response
       const totalEmpenhado = this.state.rawData.total_empenhado || 0;
@@ -1076,19 +1092,37 @@ export default {
         ],
       };
 
-      this.state.chart.setOption(option);
+      this.state.valoresTotaisChart.setOption(option);
 
-      // Handle window resize
-      window.addEventListener("resize", () => {
-        if (this.state.chart) {
-          this.state.chart.resize();
-        }
-      });
+      // Handle window resize (using a shared resize handler)
+      this.encontroDeContas_setupResizeHandler();
       
       console.log("✅ Valores totais chart rendered successfully");
     } catch (error) {
       console.error("❌ Error rendering valores totais chart:", error);
     }
+  },
+
+  // ===== RESIZE HANDLER =====
+
+  encontroDeContas_setupResizeHandler() {
+    // Remove existing listener to prevent duplicates
+    if (this.resizeHandler) {
+      window.removeEventListener("resize", this.resizeHandler);
+    }
+    
+    // Create a new resize handler
+    this.resizeHandler = () => {
+      if (this.state.chart) {
+        this.state.chart.resize();
+      }
+      if (this.state.valoresTotaisChart) {
+        this.state.valoresTotaisChart.resize();
+      }
+    };
+    
+    // Add the new listener
+    window.addEventListener("resize", this.resizeHandler);
   },
 
   // ===== HELPER METHODS FOR RENDERING =====
@@ -1695,12 +1729,8 @@ export default {
 
       this.state.chart.setOption(option);
 
-      // Handle window resize
-      window.addEventListener("resize", () => {
-        if (this.state.chart) {
-          this.state.chart.resize();
-        }
-      });
+      // Handle window resize (using a shared resize handler)
+      this.encontroDeContas_setupResizeHandler();
       
       console.log("✅ Financial chart rendered successfully");
     } catch (error) {
