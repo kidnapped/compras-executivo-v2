@@ -19,6 +19,7 @@ import breadcrumb from "./app/breadcrumb.js";
 import filter from "./app/filter.js";
 import card_header from "./app/card_header.js";
 import topico from "./app/topico.js";
+import tooltip from "./app/tooltip.js";
 import SPARouter from "./spa_router.js";
 
 const App = {
@@ -39,6 +40,7 @@ const App = {
   filter,
   card_header,
   topico,
+  tooltip,
   SPARouter,
   
   // Dynamic KPI initialization method
@@ -82,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (cookie.cookieAutoInit) cookie.cookieAutoInit();
   
   modalManager.initialize();
-  // tooltip.initialize(); // Disabled - using GovBR DS tooltips instead
+  tooltip.initialize(); // Initialize tooltip system
   breadcrumb.breadcrumb_init();
   filter.filter_init();
   card_header.card_header_init();

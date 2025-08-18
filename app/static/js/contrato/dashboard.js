@@ -90,7 +90,7 @@ export default {
   // State management for the table
   tableState: {
     currentPage: 1,
-    limit: 50,
+    limit: 10,
     totalPages: 1,
     totalItems: 0,
     filters: {
@@ -423,7 +423,7 @@ export default {
       }
       return "";
     };
-    
+
     // Content HTML with clickable/filterable fields
     const contentHTML = `
       <div class="card-content">
@@ -460,7 +460,7 @@ export default {
         </div>
       </div>
     `;
-    
+
     return contentHTML;
   },
 
@@ -901,22 +901,28 @@ export default {
 
   // Initialize dashboard card headers
   initDashboardCardHeaders() {
-    console.log('🔧 Inicializando card headers do dashboard...');
-    
+    console.log("🔧 Inicializando card headers do dashboard...");
+
     // Verifica se o módulo card header está disponível
-    if (typeof App !== "undefined" && App.card_header && App.card_header.card_header_createDynamic) {
-      console.log('✅ Módulo card_header disponível, criando headers...');
-      
+    if (
+      typeof App !== "undefined" &&
+      App.card_header &&
+      App.card_header.card_header_createDynamic
+    ) {
+      console.log("✅ Módulo card_header disponível, criando headers...");
+
       // Card 1 - Contratos e Renovações
-      App.card_header.card_header_createDynamic({
-        title: 'Contratos e Renovações',
-        subtitle: 'Visão geral dos contratos e seu status atual',
-        icon: 'fas fa-file-contract',
-        actions: [] // No buttons for cleaner layout
-      }, 'dashboard-contratos-header');
-      
+      App.card_header.card_header_createDynamic(
+        {
+          title: "Contratos e Renovações",
+          subtitle: "Visão geral dos contratos e seu status atual",
+          icon: "fas fa-file-contract",
+          actions: [], // No buttons for cleaner layout
+        },
+        "dashboard-contratos-header"
+      );
     } else {
-      console.warn('⚠️ Módulo card_header não disponível');
+      console.warn("⚠️ Módulo card_header não disponível");
     }
   },
 
@@ -1900,9 +1906,11 @@ export default {
     console.log("🔧 Inicializando breadcrumb do dashboard...");
 
     // First check if the container exists
-    const container = document.getElementById('dashboard-breadcrumb-dynamic-container');
+    const container = document.getElementById(
+      "dashboard-breadcrumb-dynamic-container"
+    );
     if (!container) {
-      console.warn('❌ Breadcrumb container not found, retrying in 500ms...');
+      console.warn("❌ Breadcrumb container not found, retrying in 500ms...");
       setTimeout(() => {
         this.dashboard_initBreadcrumb();
       }, 500);
@@ -1945,9 +1953,11 @@ export default {
     console.log("🔧 Inicializando filter do dashboard...");
 
     // First check if the container exists
-    const container = document.getElementById('dashboard-filter-dynamic-container');
+    const container = document.getElementById(
+      "dashboard-filter-dynamic-container"
+    );
     if (!container) {
-      console.warn('❌ Filter container not found, retrying in 500ms...');
+      console.warn("❌ Filter container not found, retrying in 500ms...");
       setTimeout(() => {
         this.dashboard_initFilter();
       }, 500);
@@ -2008,7 +2018,9 @@ export default {
       setTimeout(() => {
         // Only initialize dashboard if we're specifically on the dashboard page (check again after delay)
         if (!window.location.pathname.includes("/dashboard")) {
-          console.log("⚠️ Skipping dashboard delayed init - not on dashboard page");
+          console.log(
+            "⚠️ Skipping dashboard delayed init - not on dashboard page"
+          );
           return;
         }
 
@@ -2031,15 +2043,15 @@ export default {
 
   // Public method for manual dashboard initialization (useful for SPA routing)
   dashboard_forceInit() {
-    console.log('🔧 Force initializing dashboard components...');
-    
+    console.log("🔧 Force initializing dashboard components...");
+
     // Always initialize breadcrumb and filters first
     this.dashboard_initBreadcrumb();
     this.dashboard_initFilter();
-    
+
     // Then initialize the main dashboard
     this.initDashboard();
-    
-    console.log('✅ Dashboard force initialization complete');
+
+    console.log("✅ Dashboard force initialization complete");
   },
 };
