@@ -14,22 +14,33 @@ export default {
     filteredData: null,
     chart: null,
     containers: {},
+    isInitializing: false,
+    isLoadingData: false,
   },
 
   // Initialize containers when needed
   encontroDeContas_initContainers() {
-    if (!this.state.containers.empenhosTable) {
-      this.state.containers = {
-        empenhosTable: document.querySelector("#empenhos-originais-tbody"),
-        financeiroTable: document.querySelector("#financeiro-grid-tbody"),
-        movimentacoesTable: document.querySelector("#movimentacoes-tbody"),
-        chartContainer: document.querySelector("#grafico-financeiro-container"),
-        ultimosLancamentosContainer: document.querySelector(
-          "#ultimos-lancamentos-container"
-        ),
-        valoresTotaisChart: document.querySelector("#valores-totais-chart"),
-      };
-    }
+    // Always re-query containers for SPA navigation compatibility
+    this.state.containers = {
+      empenhosTable: document.querySelector("#empenhos-originais-tbody"),
+      financeiroTable: document.querySelector("#financeiro-grid-tbody"),
+      movimentacoesTable: document.querySelector("#movimentacoes-tbody"),
+      chartContainer: document.querySelector("#grafico-financeiro-container"),
+      ultimosLancamentosContainer: document.querySelector(
+        "#ultimos-lancamentos-container"
+      ),
+      valoresTotaisChart: document.querySelector("#valores-totais-chart"),
+    };
+    
+    console.log("📦 Containers initialized:", {
+      empenhosTable: !!this.state.containers.empenhosTable,
+      financeiroTable: !!this.state.containers.financeiroTable,
+      movimentacoesTable: !!this.state.containers.movimentacoesTable,
+      chartContainer: !!this.state.containers.chartContainer,
+      ultimosLancamentosContainer: !!this.state.containers.ultimosLancamentosContainer,
+      valoresTotaisChart: !!this.state.containers.valoresTotaisChart
+    });
+    
     return this.state.containers;
   },
 
@@ -37,35 +48,51 @@ export default {
   async encontroDeContas_init() {
     console.log("🚀 Initializing Encontro de Contas...");
     
-    // Initialize containers
-    console.log("📦 Initializing containers...");
-    const containers = this.encontroDeContas_initContainers();
-    console.log("Containers found:", {
-      empenhosTable: !!containers.empenhosTable,
-      financeiroTable: !!containers.financeiroTable,
-      movimentacoesTable: !!containers.movimentacoesTable,
-      chartContainer: !!containers.chartContainer,
-      ultimosLancamentosContainer: !!containers.ultimosLancamentosContainer,
-      valoresTotaisChart: !!containers.valoresTotaisChart
-    });
-    
-    // Get contract ID from URL
-    this.state.currentContractId = this.encontroDeContas_getContractIdFromURL();
-    console.log("📋 Contract ID from URL:", this.state.currentContractId);
-
-    if (this.state.currentContractId) {
-      console.log("🔄 Loading initial data...");
-      await this.encontroDeContas_loadInitialData();
-    } else {
-      console.log("❌ No contract ID found");
-      this.encontroDeContas_showError(
-        "Nenhum ID de contrato fornecido. Adicione ?contrato=ID na URL."
-      );
+    // Verificar se já está inicializando (proteção contra dupla inicialização)
+    if (this.state.isInitializing) {
+      console.log("⚠️ Encontro de Contas já está sendo inicializado, ignorando");
+      return;
     }
+    
+    // Marcar como inicializando
+    this.state.isInitializing = true;
+    
+    try {
+      // Initialize containers
+      console.log("📦 Initializing containers...");
+      const containers = this.encontroDeContas_initContainers();
+      console.log("Containers found:", {
+        empenhosTable: !!containers.empenhosTable,
+        financeiroTable: !!containers.financeiroTable,
+        movimentacoesTable: !!containers.movimentacoesTable,
+        chartContainer: !!containers.chartContainer,
+        ultimosLancamentosContainer: !!containers.ultimosLancamentosContainer,
+        valoresTotaisChart: !!containers.valoresTotaisChart
+      });
+      
+      // Get contract ID from URL
+      this.state.currentContractId = this.encontroDeContas_getContractIdFromURL();
+      console.log("📋 Contract ID from URL:", this.state.currentContractId);
 
-    console.log("🎛️ Setting up event listeners...");
-    this.encontroDeContas_setupEventListeners();
-    console.log("✅ Encontro de Contas initialized successfully");
+      if (this.state.currentContractId) {
+        console.log("🔄 Loading initial data...");
+        await this.encontroDeContas_loadInitialData();
+      } else {
+        console.log("❌ No contract ID found");
+        this.encontroDeContas_showError(
+          "Nenhum ID de contrato fornecido. Adicione ?contrato=ID na URL."
+        );
+      }
+
+      console.log("🎛️ Setting up event listeners...");
+      this.encontroDeContas_setupEventListeners();
+      console.log("✅ Encontro de Contas initialized successfully");
+    } finally {
+      // Reset flag de inicialização
+      setTimeout(() => {
+        this.state.isInitializing = false;
+      }, 1000);
+    }
   },
 
   encontroDeContas_getContractIdFromURL() {
@@ -76,6 +103,22 @@ export default {
 
   async encontroDeContas_loadInitialData() {
     try {
+      // Verificar se já está carregando dados (proteção contra múltiplas chamadas da API)
+      if (this.state.isLoadingData) {
+        console.log("⚠️ Dados já estão sendo carregados, ignorando nova solicitação");
+        return;
+      }
+      
+      // Verificar se já temos dados para este contrato
+      if (this.state.rawData && this.state.rawData.contrato_id === this.state.currentContractId) {
+        console.log("📋 Dados já carregados para este contrato, reutilizando");
+        await this.encontroDeContas_renderAllTables();
+        return;
+      }
+      
+      // Marcar como carregando
+      this.state.isLoadingData = true;
+      
       console.log("📡 Fetching data from API...");
       const url = `/tudo?contrato_id=${this.state.currentContractId}`;
       console.log("🌐 Request URL:", url);
@@ -116,6 +159,9 @@ export default {
     } catch (error) {
       console.error("❌ Error loading initial data:", error);
       this.encontroDeContas_showError("Erro ao carregar dados do contrato. Tente novamente.");
+    } finally {
+      // Reset flag de carregamento
+      this.state.isLoadingData = false;
     }
   },
 
@@ -203,32 +249,72 @@ export default {
     
     try {
       console.log("📋 Rendering Empenhos table...");
-      this.encontroDeContas_renderEmpenhosTable();
+      try {
+        this.encontroDeContas_renderEmpenhosTable();
+        console.log("✅ Empenhos table rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Empenhos table:", error);
+      }
       
       console.log("💰 Rendering Financeiro table...");
-      this.encontroDeContas_renderFinanceiroTable();
+      try {
+        this.encontroDeContas_renderFinanceiroTable();
+        console.log("✅ Financeiro table rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Financeiro table:", error);
+      }
       
       console.log("📊 Rendering Movimentações table...");
-      this.encontroDeContas_renderMovimentacoesTable();
+      try {
+        this.encontroDeContas_renderMovimentacoesTable();
+        console.log("✅ Movimentações table rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Movimentações table:", error);
+      }
       
       console.log("🕐 Rendering Últimos Lançamentos...");
-      this.encontroDeContas_renderUltimosLancamentos();
+      try {
+        this.encontroDeContas_renderUltimosLancamentos();
+        console.log("✅ Últimos Lançamentos rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Últimos Lançamentos:", error);
+      }
       
       console.log("📈 Rendering Valores Totais chart...");
-      this.encontroDeContas_renderValoresTotaisChart();
+      try {
+        this.encontroDeContas_renderValoresTotaisChart();
+        console.log("✅ Valores Totais chart rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Valores Totais chart:", error);
+      }
       
       console.log("💳 Rendering Empenhos card...");
-      this.encontroDeContas_renderEmpenhosCard();
+      try {
+        this.encontroDeContas_renderEmpenhosCard();
+        console.log("✅ Empenhos card rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Empenhos card:", error);
+      }
       
       console.log("📈 Rendering Contract Analysis...");
-      this.encontroDeContas_renderContractAnalysis();
+      try {
+        this.encontroDeContas_renderContractAnalysis();
+        console.log("✅ Contract Analysis rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Contract Analysis:", error);
+      }
       
       console.log("📊 Rendering Financial Chart...");
-      this.encontroDeContas_renderChart();
+      try {
+        this.encontroDeContas_renderChart();
+        console.log("✅ Financial Chart rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Financial Chart:", error);
+      }
       
-      console.log("✅ All tables rendered successfully");
+      console.log("✅ All tables rendering completed (check individual logs for errors)");
     } catch (error) {
-      console.error("❌ Error rendering tables:", error);
+      console.error("❌ Critical error in renderAllTables:", error);
     }
   },
 
@@ -385,8 +471,25 @@ export default {
   },
 
   // Public method for manual initialization (useful for SPA routing)
+  // Reset state for fresh initialization (SPA navigation compatible)
+  encontroDeContas_resetState() {
+    console.log("🔄 Resetting Encontro de Contas state...");
+    this.state = {
+      currentContractId: null,
+      selectedEmpenhoNumero: null,
+      rawData: null,
+      filteredData: null,
+      chart: null,
+      containers: {},
+      isInitializing: false,
+      isLoadingData: false,
+    };
+  },
+
   encontroDeContas_forceInit() {
     console.log("🔧 Force initializing Encontro de Contas...");
+    // Reset state first to ensure fresh initialization
+    this.encontroDeContas_resetState();
     this.encontroDeContas_init();
   },
 

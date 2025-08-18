@@ -886,6 +886,8 @@ export default {
     console.log("Initializing dashboard...");
     this.loadContractsTable();
     this.setupTableEventListeners();
+    // Reset and initialize dashboard events for SPA compatibility
+    DashboardEvents.reset();
     DashboardEvents.initialize();
     this.initCards();
   },
@@ -2089,8 +2091,8 @@ export default {
     this.dashboard_initBreadcrumb();
     this.dashboard_initFilter();
 
-    // Then initialize the main dashboard
-    this.initDashboard();
+    // Then initialize the main dashboard - call the same method used elsewhere
+    App.initDashboard();
 
     console.log("✅ Dashboard force initialization complete");
   },

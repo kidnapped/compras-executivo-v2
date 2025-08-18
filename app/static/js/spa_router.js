@@ -504,9 +504,21 @@ class SPARouter {
       else if (route.includes("/encontro-de-contas")) {
         console.log("🔧 Inicializando Encontro de Contas para rota:", route);
 
+        // Evitar múltiplas inicializações com flag global
+        if (window._encontroInitializing) {
+          console.log("⚠️ Encontro já está sendo inicializado, ignorando");
+          return;
+        }
+
         // Aguardar um pouco mais para garantir que os módulos estejam carregados
         setTimeout(() => {
           try {
+            // Verificar novamente se não está sendo inicializado
+            if (window._encontroInitializing) {
+              console.log("⚠️ Encontro já está sendo inicializado (verificação dupla), ignorando");
+              return;
+            }
+
             // Primeiro, verificar se precisamos preservar parâmetros da URL
             const currentParams = new URLSearchParams(window.location.search);
             const contractId = currentParams.get("contrato");
@@ -517,17 +529,28 @@ class SPARouter {
               console.warn("⚠️ Nenhum contract ID encontrado na URL");
             }
 
-            // Inicializar os módulos do Encontro
-            this.initializeEncontroModules();
+            // Marcar como inicializando
+            window._encontroInitializing = true;
+
+            // Inicializar os módulos do Encontro apenas uma vez
+            this.initializeEncontroModules().finally(() => {
+              // Reset flag após inicialização
+              setTimeout(() => {
+                window._encontroInitializing = false;
+              }, 2000);
+            });
           } catch (error) {
             console.error(
               "Erro ao inicializar Encontro de Contas via initializePageModules:",
               error
             );
+            window._encontroInitializing = false;
 
             // Fallback: tentar novamente após delay
             setTimeout(() => {
-              this.initializeEncontroModules();
+              if (!window._encontroInitializing) {
+                this.initializeEncontroModules();
+              }
             }, 1000);
           }
         }, 300); // Increased delay to ensure modules are loaded
@@ -593,6 +616,12 @@ class SPARouter {
     try {
       console.log("🔧 Inicializando módulos do Encontro de Contas...");
 
+      // Verificar se já está sendo inicializado
+      if (window._encontroInitializing) {
+        console.log("⚠️ Encontro já está sendo inicializado (initializeEncontroModules), ignorando");
+        return;
+      }
+
       // Agora o encontroContas é parte do App global
       if (window.App && window.App.encontroDeContas_forceInit) {
         console.log("✅ EncontroContas encontrado no App, inicializando...");
@@ -605,7 +634,7 @@ class SPARouter {
       let attempts = 0;
       const maxAttempts = 15;
 
-      while (attempts < maxAttempts) {
+      while (attempts < maxAttempts && !window._encontroInitializing) {
         // Aguardar App estar disponível
         if (window.App && window.App.encontroDeContas_forceInit) {
           console.log("✅ App carregado, inicializando Encontro de Contas...");
@@ -619,6 +648,11 @@ class SPARouter {
           `⏳ Tentativa ${attempts}/${maxAttempts} - Aguardando App...`
         );
         await new Promise((resolve) => setTimeout(resolve, 300));
+      }
+
+      if (window._encontroInitializing) {
+        console.log("⚠️ Inicialização cancelada - já em progresso");
+        return;
       }
 
       console.warn(
@@ -874,6 +908,12 @@ class SPARouter {
           ) {
             console.log("🎯 Script do Encontro detectado:", script.src);
 
+            // Verificar se já está sendo inicializado
+            if (window._encontroInitializing) {
+              console.log("⚠️ Script Encontro ignorado - já sendo inicializado");
+              return;
+            }
+
             // Evitar execução dupla
             const now = Date.now();
             if (
@@ -892,12 +932,19 @@ class SPARouter {
               typeof window.EncontroInit.init === "function"
             ) {
               console.log("✅ EncontroInit já carregado, re-inicializando...");
+              // Marcar como inicializando
+              window._encontroInitializing = true;
               setTimeout(() => {
                 try {
                   window.EncontroInit.init();
                   console.log("✅ Módulo EncontroInit re-inicializado!");
                 } catch (error) {
                   console.error("Erro ao re-inicializar EncontroInit:", error);
+                } finally {
+                  // Reset flag
+                  setTimeout(() => {
+                    window._encontroInitializing = false;
+                  }, 1000);
                 }
               }, 300);
               return;
@@ -905,6 +952,8 @@ class SPARouter {
               console.log(
                 "✅ App com EncontroContas já carregado, re-inicializando..."
               );
+              // Marcar como inicializando
+              window._encontroInitializing = true;
               setTimeout(() => {
                 try {
                   window.App.encontroDeContas_forceInit();
@@ -914,6 +963,11 @@ class SPARouter {
                     "Erro ao re-inicializar Encontro de Contas:",
                     error
                   );
+                } finally {
+                  // Reset flag
+                  setTimeout(() => {
+                    window._encontroInitializing = false;
+                  }, 1000);
                 }
               }, 300);
               return;

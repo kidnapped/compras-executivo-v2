@@ -29,15 +29,29 @@ const handleTableClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
+    // Limpar tooltips Bootstrap (sem erro se bootstrap não estiver definido)
+    try {
+      if (typeof bootstrap !== 'undefined') {
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+          const tooltip = bootstrap.Tooltip.getInstance(el);
+          if (tooltip) {
+            tooltip.hide();
+            tooltip.dispose();
+          }
+        });
+      }
+      // Remove elementos tooltip visíveis
+      document.querySelectorAll('.tooltip, .popover, [class*="tooltip"]').forEach(el => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      });
+    } catch (error) {
+      console.warn("Erro ao remover tooltips:", error);
+    }
+
     // Get contract ID from the data attribute
     const contractId = encontroAction.getAttribute("data-contract-id");
 
     console.log(`Encontro de Contas clicked for contract ID: ${contractId}`);
-    console.log("SPA Router available:", !!window.spaRouter);
-    console.log(
-      "SPA Router navigateTo function:",
-      typeof window.spaRouter?.navigateTo
-    );
 
     // Navigate to encontro de contas page with contract ID parameter using SPA
     if (contractId && contractId !== "N/A") {
@@ -87,6 +101,9 @@ const handleTableClick = (event) => {
 };
 
 export default {
+  // Flag para evitar múltiplos listeners
+  _initialized: false,
+  
   /**
    * Initializes the single event listener for the entire table.
    * This should be called once when the dashboard is set up.
@@ -94,7 +111,20 @@ export default {
   initialize() {
     const table = document.querySelector("table.br-table");
     if (table) {
+      // Remove listener existente se houver
+      table.removeEventListener("click", handleTableClick);
+      // Adiciona novo listener
       table.addEventListener("click", handleTableClick);
+      this._initialized = true;
+      console.log("✅ DashboardEvents inicializado com sucesso");
     }
+  },
+  
+  /**
+   * Reset the initialization flag - useful for SPA navigation
+   */
+  reset() {
+    this._initialized = false;
+    console.log("🔄 DashboardEvents reset");
   },
 };
