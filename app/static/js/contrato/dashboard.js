@@ -224,7 +224,7 @@ export default {
         yAxis: {
           type: "value",
           axisLabel: { show: false },
-          splitLine: { show: true },
+          splitLine: { show: false },
           axisLine: { show: false },
           axisTick: { show: false },
         },
@@ -312,7 +312,7 @@ export default {
         yAxis: {
           type: "value",
           axisLabel: { show: false },
-          splitLine: { show: true },
+          splitLine: { show: false },
           axisLine: { show: false },
           axisTick: { show: false },
         },
@@ -1131,6 +1131,16 @@ export default {
       const data = await response.json();
       console.log("Received contracts data:", data);
 
+      // Debug responsaveis data for the first contract
+      if (data.data && data.data.length > 0) {
+        console.log(
+          "First contract responsaveis:",
+          data.data[0].responsaveis,
+          "Type:",
+          typeof data.data[0].responsaveis
+        );
+      }
+
       // Update table state
       this.tableState.totalItems = data.total;
       this.tableState.totalPages = data.pages;
@@ -1298,7 +1308,13 @@ export default {
 
     return `
       <tr>
-        <td style="padding: 8px 8px !important;" valign="top">
+        <td style="text-align:center;">
+        <img src="img/ico/home.png" alt="Home icon">
+      </td>
+      <td style="font-size:16px; color:#FF9933; width:70px; padding:2px 0 0 4px; cursor:pointer;" title="{uasg_nome}">
+        393003
+        </td>
+      <td style="padding: 8px 8px !important;" valign="top">
           <div style="display: flex; gap: 8px; font-family: Arial, sans-serif;">
           <div class="icon-circle" 
             data-tooltip-text="${contract.naturezadespesa_id} - ${
@@ -1486,20 +1502,18 @@ export default {
           ${financialBars.createPaidBar(contract)}
         </td>
         <td class="hide-mobile" valign="top" style="padding: 5px 8px; min-width: ${
-          Array.isArray(contract.responsaveis) &&
-          contract.responsaveis.length > 0
+          this.getResponsaveisArray(contract.responsaveis).length > 0
             ? "180px"
             : "120px"
         };">
           ${
-            Array.isArray(contract.responsaveis) &&
-            contract.responsaveis.length > 0
-              ? contract.responsaveis
+            this.getResponsaveisArray(contract.responsaveis).length > 0
+              ? this.getResponsaveisArray(contract.responsaveis)
                   .map(
                     (resp) => `
                       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
                         <i class=\"fas fa-user\" style=\"color: #003366; font-size: 16px; opacity: 0.85;\"></i>
-                        <span style=\"font-size: 14px; color: #222; word-break: break-word;\">${resp}</span>
+                        <span style=\"font-size: 14px; color: #222; word-break: break-word;\">${resp.trim()}</span>
                       </div>
                     `
                   )
@@ -1512,6 +1526,26 @@ export default {
         </td>
       </tr>
     `;
+  },
+
+  // Helper function to convert responsaveis to array format
+  getResponsaveisArray(responsaveis) {
+    // Handle null, undefined, or empty values
+    if (!responsaveis) return [];
+
+    // If it's already an array, return it
+    if (Array.isArray(responsaveis)) return responsaveis;
+
+    // If it's a string, split by comma and clean up each name
+    if (typeof responsaveis === "string") {
+      return responsaveis
+        .split(",")
+        .map((name) => name.trim())
+        .filter((name) => name.length > 0);
+    }
+
+    // If it's some other type, return empty array
+    return [];
   },
 
   // Calculate years elapsed since contract start

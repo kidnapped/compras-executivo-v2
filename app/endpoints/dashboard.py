@@ -1,10 +1,8 @@
 from datetime import date, timedelta, datetime
 from typing import Any, Dict, List, Optional
 import json
-import random
 import logging
 
-from babel.dates import format_date
 from fastapi import APIRouter, Depends, Request, HTTPException, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy import text
@@ -573,9 +571,11 @@ async def get_contratos_lista(
             c.valor_inicial,
             c.valor_global,
             c.justificativa_contrato_inativo_id,
+            ci.descricao AS tipo_descricao,
             EXTRACT(YEAR FROM c.vigencia_inicio)::int AS ano
-        FROM contratos c
-        LEFT JOIN fornecedores f ON c.fornecedor_id = f.id
+            FROM contratos c
+            LEFT JOIN fornecedores f ON c.fornecedor_id = f.id
+            LEFT JOIN codigoitens ci ON ci.id = c.tipo_id
         {where_clause}
         {order_by}
         LIMIT :limit OFFSET :offset
