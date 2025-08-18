@@ -1964,8 +1964,13 @@ class EncontroContas {
           value = parseFloat(doc.va_linha_evento) || 0;
           break;
         case "ob_grouped":
-          // Backend provides per-OB total in va_linha_evento for grouped entries
-          value = parseFloat(doc.va_linha_evento) || 0;
+          // For OB grouped entries: use individual value for parcial, total for nominal
+          if (valueType === "parcial") {
+            value = parseFloat(doc.va_linha_evento_individual) || 0;
+          } else {
+            // Backend provides per-OB total in va_linha_evento for grouped entries
+            value = parseFloat(doc.va_linha_evento) || 0;
+          }
           break;
         default:
           value = 0;

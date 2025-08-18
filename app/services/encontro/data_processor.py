@@ -366,18 +366,25 @@ class DataProcessor:
                 total_gps_value += gps_value
                 total_value += gps_value
 
-            # Sum OB documents: prefer grouped totals if available to avoid double-counting
-            ob_grouped = financas.get('ob_grouped')
+        # Calculate OB total separately at contract level to avoid double-counting
+        # Since ob_grouped contains cross-empenho totals, we should calculate once from the grouped data
+        if contract_data:
+            first_empenho_financas = contract_data[0].get('Finanças', {})
+            ob_grouped = first_empenho_financas.get('ob_grouped')
             if ob_grouped:
+                # Use grouped totals (these are already cross-empenho totals)
                 for ob_doc in ob_grouped:
                     ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
                     total_ob_value += ob_value
                     total_value += ob_value
             else:
-                for ob_doc in financas.get('linha_evento_ob', []):
-                    ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
-                    total_ob_value += ob_value
-                    total_value += ob_value
+                # Fallback: if no grouped data, sum individual OB lines from all empenhos
+                for item in contract_data:
+                    financas = item.get('Finanças', {})
+                    for ob_doc in financas.get('linha_evento_ob', []):
+                        ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
+                        total_ob_value += ob_value
+                        total_value += ob_value
 
         logger.info(
             f"Total financial values - DAR: {total_dar_value}, DARF: {total_darf_value}, GPS: {total_gps_value}, OB: {total_ob_value}, Total: {total_value}"
@@ -447,9 +454,11 @@ class DataProcessor:
                     {
                         'id_doc_ob': id_doc_ob,
                         'va_linha_evento': 0.0,  # store total under same key for frontend compatibility
+                        'va_linha_evento_individual': None,  # store first individual value for parcial display
                         'count': 0,
                         'first_date': None,
                         'last_date': None,
+                        'representative_line': None,  # store first line for other fields
                     },
                 )
 
@@ -459,6 +468,11 @@ class DataProcessor:
                     value = 0.0
                 grp['va_linha_evento'] += value
                 grp['count'] += 1
+                
+                # Store the first individual value for parcial display
+                if grp['va_linha_evento_individual'] is None:
+                    grp['va_linha_evento_individual'] = value
+                    grp['representative_line'] = ln  # store first line for other fields
 
                 dt = _parse_ob_date(ln)
                 if dt is not None:
@@ -468,12 +482,20 @@ class DataProcessor:
             # Step 3: Build serializable grouped list with representative saque_bacen date (use last_date)
             ob_grouped: List[Dict[str, Any]] = []
             for g in groups.values():
+                representative_line = g.get('representative_line', {})
                 grouped_entry: Dict[str, Any] = {
                     'id_doc_ob': g['id_doc_ob'],
-                    # Keep using va_linha_evento so frontend value extraction remains unchanged
-                    'va_linha_evento': g['va_linha_evento'],
+                    # Keep using va_linha_evento so frontend value extraction remains unchanged for nominal
+                    'va_linha_evento': g['va_linha_evento'],  # total for nominal display
+                    'va_linha_evento_individual': g['va_linha_evento_individual'],  # individual for parcial display
                     'count': g['count'],
                 }
+                
+                # Copy other fields from representative line for frontend compatibility
+                for field in ['nr_ordem_pagamento', 'cd_banco', 'nu_agencia', 'nu_conta']:
+                    if field in representative_line:
+                        grouped_entry[field] = representative_line[field]
+                
                 last_dt: Optional[datetime] = g.get('last_date')
                 if last_dt:
                     grouped_entry['id_ano_saque_bacen'] = last_dt.year
