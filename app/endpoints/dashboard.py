@@ -555,6 +555,9 @@ async def get_contratos_lista(
         }
 
     # ==== STEP 2: Get basic contract info with pagination ====
+    # Calculate offset from page number
+    offset = (page - 1) * limit
+    
     main_query = f"""
         SELECT
             c.id,
@@ -581,7 +584,7 @@ async def get_contratos_lista(
     main_params = {
         "unit_ids": unit_ids,
         "limit": limit,
-        "offset": start
+        "offset": offset
     }
     if favoritos and favorite_contract_ids:
         main_params["favorite_ids"] = favorite_contract_ids

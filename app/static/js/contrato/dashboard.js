@@ -1625,28 +1625,34 @@ export default {
 
   // Pagination functions
   irParaPrimeiraPagina() {
-    if (this.tableState.currentPage > 1) {
+    if (this.tableState && this.tableState.currentPage > 1) {
       this.tableState.currentPage = 1;
       this.loadContractsTable();
     }
   },
 
   irParaAnterior() {
-    if (this.tableState.currentPage > 1) {
+    if (this.tableState && this.tableState.currentPage > 1) {
       this.tableState.currentPage--;
       this.loadContractsTable();
     }
   },
 
   irParaProxima() {
-    if (this.tableState.currentPage < this.tableState.totalPages) {
+    if (
+      this.tableState &&
+      this.tableState.currentPage < this.tableState.totalPages
+    ) {
       this.tableState.currentPage++;
       this.loadContractsTable();
     }
   },
 
   irParaUltima() {
-    if (this.tableState.currentPage < this.tableState.totalPages) {
+    if (
+      this.tableState &&
+      this.tableState.currentPage < this.tableState.totalPages
+    ) {
       this.tableState.currentPage = this.tableState.totalPages;
       this.loadContractsTable();
     }
