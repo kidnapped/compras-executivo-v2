@@ -42,33 +42,33 @@ const App = {
   topico,
   tooltip,
   SPARouter,
-  
+
   // Dynamic KPI initialization method
   async kpisInit() {
-    console.log('🔧 Loading KPIs dynamically...');
+    console.log("🔧 Loading KPIs dynamically...");
     try {
-      const { initializeAllKpis } = await import('./kpi/kpis.js');
+      const { initializeAllKpis } = await import("./kpi/kpis.js");
       await initializeAllKpis();
-      console.log('✅ KPIs loaded and initialized successfully!');
+      console.log("✅ KPIs loaded and initialized successfully!");
     } catch (error) {
-      console.error('❌ Error loading KPIs:', error);
+      console.error("❌ Error loading KPIs:", error);
     }
   },
-  
+
   // Dynamic Indicadores initialization method
   indicadoresInit() {
-    console.log('🔧 Loading Indicadores dynamically...');
+    console.log("🔧 Loading Indicadores dynamically...");
     try {
       if (indicadores.indicadores_initComplete) {
         indicadores.indicadores_initComplete();
-        console.log('✅ Indicadores loaded and initialized successfully!');
+        console.log("✅ Indicadores loaded and initialized successfully!");
       } else {
-        console.warn('⚠️ indicadores.indicadores_initComplete not available');
+        console.warn("⚠️ indicadores.indicadores_initComplete not available");
       }
     } catch (error) {
-      console.error('❌ Error loading Indicadores:', error);
+      console.error("❌ Error loading Indicadores:", error);
     }
-  }
+  },
 };
 
 window.App = App;
@@ -76,13 +76,13 @@ window.App = App;
 document.addEventListener("DOMContentLoaded", () => {
   // Configurar window.menuApp corretamente
   window.menuApp = menu;
-  
+
   // Inicializar componentes dinâmicos
   if (header.autoInit) header.autoInit();
   if (menu.autoInit) menu.autoInit();
   if (footer.autoInit) footer.autoInit();
   if (cookie.cookieAutoInit) cookie.cookieAutoInit();
-  
+
   modalManager.initialize();
   tooltip.initialize(); // Initialize tooltip system
   breadcrumb.breadcrumb_init();
@@ -91,60 +91,62 @@ document.addEventListener("DOMContentLoaded", () => {
   topico.topico_init();
   // Fix: Call the init method on the EncontroInit object
   // encontroInit.init(); // Remove this line - EncontroInit already auto-initializes
-  
+
   // Auto-inicialização do admin DW Tesouro se estivermos na página correta
   if (admin_dw_tesouro.autoInit) {
     admin_dw_tesouro.autoInit();
   }
-  
+
   // Auto-inicialização dos indicadores apenas se estivermos na página correta
   if (indicadores.autoInit) {
     indicadores.autoInit();
   }
-  
+
   // Auto-inicialização da página minha conta se estivermos na página correta
   if (minha_conta.autoInit) {
     minha_conta.autoInit();
   }
-  
+
   // Auto-inicialização do dashboard se estivermos na página correta
   if (contratos_dashboard.dashboard_autoInit) {
     contratos_dashboard.dashboard_autoInit();
   }
-  
+
   // Inicializar SPA Router
   if (SPARouter) {
     window.SPARouter = SPARouter;
     let attempts = 0;
     const maxAttempts = 50;
-    
+
     function tryInitSPA() {
       attempts++;
-      
+
       if (window.SPARouter) {
         window.spaRouter = new window.SPARouter();
-        console.log('🚀 SPA Router inicializado');
-        
+        console.log("🚀 SPA Router inicializado");
+
         // Integrar com sistema de menu se disponível
-        if (window.menuApp && typeof window.menuApp.updateActiveMenuItem === 'function') {
+        if (
+          window.menuApp &&
+          typeof window.menuApp.updateActiveMenuItem === "function"
+        ) {
           // Escutar mudanças de rota
-          window.addEventListener('popstate', function() {
+          window.addEventListener("popstate", function () {
             setTimeout(() => window.menuApp.updateActiveMenuItem(), 100);
           });
-          
+
           // Atualizar menu inicial
           setTimeout(() => window.menuApp.updateActiveMenuItem(), 200);
         }
-        
       } else if (attempts < maxAttempts) {
         setTimeout(tryInitSPA, 100);
       } else {
-        console.warn('⚠️ SPA Router não pôde ser inicializado');
+        console.warn("⚠️ SPA Router não pôde ser inicializado");
       }
     }
-    
+
     tryInitSPA();
   }
-  
+
   App.init();
 });
