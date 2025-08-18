@@ -513,8 +513,13 @@ class SPARouter {
               console.warn("⚠️ Nenhum contract ID encontrado na URL");
             }
 
-            // Inicializar os módulos do Encontro
-            this.initializeEncontroModules();
+            // Inicializar os módulos do Encontro via App
+            if (window.App && window.App.encontroContasInit) {
+              window.App.encontroContasInit();
+            } else {
+              // Fallback para o método do SPA router
+              this.initializeEncontroModules();
+            }
           } catch (error) {
             console.error(
               "Erro ao inicializar Encontro de Contas via initializePageModules:",
@@ -523,7 +528,11 @@ class SPARouter {
 
             // Fallback: tentar novamente após delay
             setTimeout(() => {
-              this.initializeEncontroModules();
+              if (window.App && window.App.encontroContasInit) {
+                window.App.encontroContasInit();
+              } else {
+                this.initializeEncontroModules();
+              }
             }, 1000);
           }
         }, 300); // Increased delay to ensure modules are loaded
@@ -589,101 +598,26 @@ class SPARouter {
     try {
       console.log("🔧 Inicializando módulos do Encontro de Contas...");
 
-      // Verificar se já existe uma instância e limpar se necessário
-      if (window.EncontroContas && typeof window.EncontroContas === "object") {
+      // Import and initialize EncontroContas
+      const { default: EncontroContas } = await import(
+        "/static/js/encontro/encontro-contas.js"
+      );
+
+      // Clean up previous instance if exists
+      if (window.encontroContasInstance) {
         console.log("🗑️ Limpando instância anterior do EncontroContas...");
-        window.EncontroContas = null;
+        window.encontroContasInstance = null;
       }
 
-      // Aguardar módulos estarem disponíveis
-      let attempts = 0;
-      const maxAttempts = 15;
-
-      while (attempts < maxAttempts) {
-        // Primeiro, tentar usar EncontroInit se disponível
-        if (
-          window.EncontroInit &&
-          typeof window.EncontroInit.init === "function"
-        ) {
-          console.log("✅ EncontroInit encontrado, inicializando...");
-          await window.EncontroInit.init();
-          console.log(
-            "🚀 Encontro de Contas inicializado com sucesso via EncontroInit!"
-          );
-          return;
-        }
-
-        // Se EncontroContas estiver disponível como classe
-        if (
-          window.EncontroContas &&
-          typeof window.EncontroContas === "function"
-        ) {
-          console.log(
-            "✅ Classe EncontroContas encontrada, criando instância..."
-          );
-          window.EncontroContas = new window.EncontroContas();
-          console.log("🚀 Nova instância de EncontroContas criada!");
-          return;
-        }
-
-        // Se nenhum dos módulos estiver disponível, tentar importá-los dinamicamente
-        if (attempts === 5) {
-          console.log("🔄 Tentando importar módulos dinamicamente...");
-          try {
-            // Tentar importar o módulo diretamente
-            const EncontroContasModule = await import(
-              "/static/js/encontro/encontro-contas.js"
-            );
-            const EncontroInitModule = await import(
-              "/static/js/encontro/encontro-init.js"
-            );
-
-            if (EncontroInitModule.default) {
-              console.log("📦 Módulo EncontroInit importado, inicializando...");
-              window.EncontroInit = EncontroInitModule.default;
-              await window.EncontroInit.init();
-              console.log("🚀 Encontro inicializado via import dinâmico!");
-              return;
-            }
-
-            if (EncontroContasModule.default) {
-              console.log(
-                "📦 Módulo EncontroContas importado, criando instância..."
-              );
-              window.EncontroContas = new EncontroContasModule.default();
-              console.log(
-                "🚀 EncontroContas inicializado via import dinâmico!"
-              );
-              return;
-            }
-          } catch (importError) {
-            console.warn(
-              "⚠️ Erro ao importar módulos dinamicamente:",
-              importError
-            );
-          }
-        }
-
-        attempts++;
-        console.log(
-          `⏳ Tentativa ${attempts}/${maxAttempts} - Aguardando módulos...`
-        );
-        await new Promise((resolve) => setTimeout(resolve, 300));
+      // Initialize the EncontroContas instance
+      if (EncontroContas) {
+        window.encontroContasInstance = new EncontroContas();
+        console.log("✅ EncontroContas initialized successfully!");
+      } else {
+        console.warn("⚠️ EncontroContas class not found in module");
       }
-
-      console.warn(
-        "⚠️ Não foi possível inicializar os módulos do Encontro de Contas após",
-        maxAttempts,
-        "tentativas"
-      );
-
-      // Último recurso: tentar executar o script inline da página
-      this.executeEncontroInlineScript();
     } catch (error) {
-      console.error(
-        "❌ Erro ao inicializar módulos do Encontro de Contas:",
-        error
-      );
+      console.error("❌ Error loading Encontro de Contas modules:", error);
     }
   }
 
