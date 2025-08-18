@@ -345,7 +345,7 @@ async def get_valores_sazonais(
     return {
         "anos":   [ str(r.ano)               for r in rows ],
         "coluna": [ float(r.valor_global)    for r in rows ],
-        "linha":  [ float(r.contrato_valor)/2 for r in rows]
+        "linha":  [ float(r.contrato_valor) for r in rows]
     }
 
 # Endpoint para obter próximas atividades de contratos

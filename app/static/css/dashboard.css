@@ -89,6 +89,75 @@
   overflow-y: auto;
 }
 
+/* Custom scrollbar for Próximas Atividades */
+.widget-atividades-lista::-webkit-scrollbar {
+  width: 8px;
+}
+
+.widget-atividades-lista::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.widget-atividades-lista::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.widget-atividades-lista::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Firefox scrollbar support */
+.widget-atividades-lista {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Custom scrollbar for pagination input fields and general br-input elements */
+.br-input::-webkit-scrollbar,
+input[type="number"]::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.br-input::-webkit-scrollbar-track,
+input[type="number"]::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.br-input::-webkit-scrollbar-thumb,
+input[type="number"]::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.br-input::-webkit-scrollbar-thumb:hover,
+input[type="number"]::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Firefox scrollbar support for input fields */
+.br-input,
+input[type="number"] {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Fix for pagina-atual input background */
+#pagina-atual {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+  border: 1px solid #ddd !important;
+}
+
+#pagina-atual:focus {
+  background-color: #ffffff !important;
+  border-color: #007bff !important;
+  outline: none !important;
+}
+
 .widget-atividades-item a,
 .widget-atividades-item span {
   position: relative;
@@ -237,7 +306,7 @@
   max-height: 180px !important;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
@@ -339,7 +408,7 @@
     min-height: 160px !important;
     max-height: none !important;
   }
-  
+
   #card-contratos-container .card-body-govbr {
     height: auto !important;
     min-height: calc(160px - 50px) !important;
