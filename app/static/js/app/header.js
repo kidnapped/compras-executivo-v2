@@ -3,6 +3,9 @@ export default {
   lastAutoInitTime: 0,
   isInitializing: false,
   isInitialized: false, // Flag para evitar reinicializações desnecessárias
+  
+  // Nome do cookie para salvar estado do menu
+  menuStateCookieName: 'menu_state',
 
   // Método único para inicialização completa via SPA
   header_initComplete() {
@@ -126,6 +129,77 @@ export default {
     };
   },
 
+  // Função para salvar o estado do menu no cookie
+  header_saveMenuState(isOpen) {
+    try {
+      // Usar o módulo cookie do App global
+      if (window.App && window.App.cookieSet) {
+        const success = window.App.cookieSet(this.menuStateCookieName, isOpen ? 'open' : 'closed', {
+          expires: 30, // 30 dias
+          path: '/'
+        });
+        
+        if (success) {
+          console.log(`✅ Estado do menu salvo: ${isOpen ? 'aberto' : 'fechado'}`);
+        } else {
+          console.error('❌ Erro ao salvar estado do menu no cookie');
+        }
+        
+        return success;
+      } else {
+        console.error('❌ Módulo cookie não disponível');
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Erro ao salvar estado do menu:', error);
+      return false;
+    }
+  },
+
+  // Função para recuperar o estado do menu do cookie
+  header_getMenuState() {
+    try {
+      // Usar o módulo cookie do App global
+      if (window.App && window.App.cookieGet) {
+        const savedState = window.App.cookieGet(this.menuStateCookieName);
+        console.log(`📖 Estado do menu recuperado do cookie: ${savedState || 'não definido'}`);
+        return savedState === 'open';
+      } else {
+        console.error('❌ Módulo cookie não disponível');
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Erro ao recuperar estado do menu:', error);
+      return false;
+    }
+  },
+
+  // Função para aplicar o estado do menu
+  header_applyMenuState(isOpen) {
+    const menu = document.getElementById("main-navigation");
+    const menuToggleButton = document.getElementById('menu-toggle-button');
+    
+    if (menu && menuToggleButton) {
+      if (isOpen) {
+        menu.classList.add("active");
+        document.body.classList.add("menu-open");
+        menuToggleButton.innerHTML = "<span>&times;</span>";
+        menuToggleButton.setAttribute('aria-label', 'Fechar Menu');
+      } else {
+        menu.classList.remove("active");
+        document.body.classList.remove("menu-open");
+        menuToggleButton.innerHTML = "<span>&#9776;</span>";
+        menuToggleButton.setAttribute('aria-label', 'Abrir Menu');
+      }
+      
+      console.log(`✅ Estado do menu aplicado: ${isOpen ? 'aberto' : 'fechado'}`);
+      return true;
+    } else {
+      console.error('❌ Elementos do menu não encontrados');
+      return false;
+    }
+  },
+
   // Função para renderizar o header dinamicamente
   header_render() {
     console.log('🔧 Renderizando dados dinâmicos do header...');
@@ -229,6 +303,12 @@ export default {
       campoPesquisaMobile.addEventListener('keypress', this.header_handleSearch.bind(this));
     }
 
+    // Restaurar estado do menu salvo no cookie
+    setTimeout(() => {
+      const savedMenuState = this.header_getMenuState();
+      this.header_applyMenuState(savedMenuState);
+    }, 100); // Pequeno delay para garantir que todos os elementos estejam prontos
+
     console.log('✅ Header events bound successfully');
   },
 
@@ -239,15 +319,26 @@ export default {
     
     // Busca o menu direto e alterna
     const menu = document.getElementById("main-navigation");
+    
     if (menu) {
-      const isOpen = menu.classList.contains("active");
+      // Aplica o toggle primeiro
       menu.classList.toggle("active");
       document.body.classList.toggle("menu-open");
       
-      // Atualiza o botão
+      // Agora verifica o estado atual APÓS o toggle
+      const isNowOpen = menu.classList.contains("active");
+      
+      // Atualiza o botão baseado no estado atual
       const btn = event.currentTarget;
-      btn.innerHTML = isOpen ? "<span>&#9776;</span>" : "<span>&times;</span>";
-      btn.setAttribute('aria-label', isOpen ? 'Abrir Menu' : 'Fechar Menu');
+      btn.innerHTML = isNowOpen ? "<span>&times;</span>" : "<span>&#9776;</span>";
+      btn.setAttribute('aria-label', isNowOpen ? 'Fechar Menu' : 'Abrir Menu');
+      
+      // Salva o estado atual no cookie
+      this.header_saveMenuState(isNowOpen);
+      
+      console.log(`🔄 Menu agora está: ${isNowOpen ? 'aberto' : 'fechado'}`);
+    } else {
+      console.error('❌ Elemento main-navigation não encontrado!');
     }
   },
 

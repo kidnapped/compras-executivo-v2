@@ -260,40 +260,40 @@ export default {
       }
     }
 
-    // Funcionalidade: abrir/fechar menu
-    const menu = document.getElementById("main-navigation");
-    const body = document.body;
-    const menuButtons = document.querySelectorAll(
-      'button[aria-label="Abrir Menu"], button[aria-label="Fechar Menu"]'
-    );
+    // Funcionalidade: abrir/fechar menu - REMOVIDO PARA EVITAR CONFLITO COM HEADER.JS
+    // const menu = document.getElementById("main-navigation");
+    // const body = document.body;
+    // const menuButtons = document.querySelectorAll(
+    //   'button[aria-label="Abrir Menu"], button[aria-label="Fechar Menu"]'
+    // );
 
-    if (menuButtons.length && menu) {
-      menuButtons.forEach((menuButton) => {
-        // Remover listeners antigos antes de adicionar novos para evitar duplicação
-        const existingHandler = menuButton._menuToggleHandler;
-        if (existingHandler) {
-          menuButton.removeEventListener("click", existingHandler);
-        }
+    // if (menuButtons.length && menu) {
+    //   menuButtons.forEach((menuButton) => {
+    //     // Remover listeners antigos antes de adicionar novos para evitar duplicação
+    //     const existingHandler = menuButton._menuToggleHandler;
+    //     if (existingHandler) {
+    //       menuButton.removeEventListener("click", existingHandler);
+    //     }
         
-        // Criar novo handler e armazenar referência
-        const newHandler = () => {
-          const isOpen = menu.classList.contains("active");
-          menu.classList.toggle("active", !isOpen);
-          body.classList.toggle("menu-open", !isOpen);
+    //     // Criar novo handler e armazenar referência
+    //     const newHandler = () => {
+    //       const isOpen = menu.classList.contains("active");
+    //       menu.classList.toggle("active", !isOpen);
+    //       body.classList.toggle("menu-open", !isOpen);
           
-          // Atualiza todos os botões
-          menuButtons.forEach((btn) => {
-            btn.innerHTML = isOpen
-              ? "<span>&#9776;</span>"
-              : "<span>&times;</span>";
-            btn.setAttribute('aria-label', isOpen ? 'Abrir Menu' : 'Fechar Menu');
-          });
-        };
+    //       // Atualiza todos os botões
+    //       menuButtons.forEach((btn) => {
+    //         btn.innerHTML = isOpen
+    //           ? "<span>&#9776;</span>"
+    //           : "<span>&times;</span>";
+    //         btn.setAttribute('aria-label', isOpen ? 'Abrir Menu' : 'Fechar Menu');
+    //       });
+    //     };
         
-        menuButton._menuToggleHandler = newHandler;
-        menuButton.addEventListener("click", newHandler);
-      });
-    }
+    //     menuButton._menuToggleHandler = newHandler;
+    //     menuButton.addEventListener("click", newHandler);
+    //   });
+    // }
   },
 
   // Ativa/desativa campo de busca no mobile
