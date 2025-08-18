@@ -377,13 +377,31 @@ class SPARouter {
       
       // Página de Dashboard 
       else if (route.includes('/dashboard') && window.App) {
-        if (typeof window.App.initDashboard === 'function') {
-          console.log('🔧 Inicializando Dashboard para rota:', route);
+        // Use dashboard_forceInit for more reliable initialization during SPA navigation
+        if (typeof window.App.dashboard_forceInit === 'function') {
+          console.log('🔧 Force inicializando Dashboard (com breadcrumb e filters) para rota:', route);
+          try {
+            window.App.dashboard_forceInit();
+            console.log('✅ Dashboard force inicializado via initializePageModules!');
+          } catch (error) {
+            console.error('Erro ao force inicializar Dashboard via initializePageModules:', error);
+          }
+        } else if (typeof window.App.dashboard_autoInit === 'function') {
+          console.log('🔧 Auto inicializando Dashboard (com breadcrumb e filters) para rota:', route);
+          try {
+            window.App.dashboard_autoInit();
+            console.log('✅ Dashboard auto inicializado via initializePageModules!');
+          } catch (error) {
+            console.error('Erro ao auto inicializar Dashboard via initializePageModules:', error);
+          }
+        } else if (typeof window.App.initDashboard === 'function') {
+          // Fallback to basic dashboard init if neither method is available
+          console.log('🔧 Inicializando Dashboard (básico) para rota:', route);
           try {
             window.App.initDashboard();
-            console.log('✅ Dashboard inicializado via initializePageModules!');
+            console.log('✅ Dashboard básico inicializado via initializePageModules!');
           } catch (error) {
-            console.error('Erro ao inicializar Dashboard via initializePageModules:', error);
+            console.error('Erro ao inicializar Dashboard básico via initializePageModules:', error);
           }
         }
       }

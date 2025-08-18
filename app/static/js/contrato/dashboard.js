@@ -1879,6 +1879,16 @@ export default {
   dashboard_initBreadcrumb() {
     console.log("🔧 Inicializando breadcrumb do dashboard...");
 
+    // First check if the container exists
+    const container = document.getElementById('dashboard-breadcrumb-dynamic-container');
+    if (!container) {
+      console.warn('❌ Breadcrumb container not found, retrying in 500ms...');
+      setTimeout(() => {
+        this.dashboard_initBreadcrumb();
+      }, 500);
+      return;
+    }
+
     // Verifica se o módulo breadcrumb está disponível
     if (
       typeof App !== "undefined" &&
@@ -1913,6 +1923,16 @@ export default {
   // Nova função para inicializar o filtro dinamicamente
   dashboard_initFilter() {
     console.log("🔧 Inicializando filter do dashboard...");
+
+    // First check if the container exists
+    const container = document.getElementById('dashboard-filter-dynamic-container');
+    if (!container) {
+      console.warn('❌ Filter container not found, retrying in 500ms...');
+      setTimeout(() => {
+        this.dashboard_initFilter();
+      }, 500);
+      return;
+    }
 
     // Verifica se o módulo filter está disponível
     if (
@@ -1975,5 +1995,19 @@ export default {
         }
       }, 1000);
     }
+  },
+
+  // Public method for manual dashboard initialization (useful for SPA routing)
+  dashboard_forceInit() {
+    console.log('🔧 Force initializing dashboard components...');
+    
+    // Always initialize breadcrumb and filters first
+    this.dashboard_initBreadcrumb();
+    this.dashboard_initFilter();
+    
+    // Then initialize the main dashboard
+    this.initDashboard();
+    
+    console.log('✅ Dashboard force initialization complete');
   },
 };
