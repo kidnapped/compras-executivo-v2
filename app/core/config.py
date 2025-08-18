@@ -45,6 +45,9 @@ class Settings(BaseSettings):
     USE_GOVBR_LOGIN: bool = False
     USE_ALIAS_LOGIN: bool = True
 
+    # Encontro de Contas - For development
+    ENCONTRO_DE_CONTAS_EMULATION_MODE: bool = True
+
     # VDB EMULATION - For development
     VDB_TEIID_EMULATION_MODE: bool = True
     VDB_TEIID_JSON_MOCK_DIR: str = str(Path(__file__).resolve().parents[2] / "app" / "java" / "json_mock")

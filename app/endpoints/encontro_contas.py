@@ -1,4 +1,6 @@
 import logging
+import json
+from pathlib import Path
 from fastapi import APIRouter, Request, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from sqlalchemy import text
@@ -64,6 +66,24 @@ async def get_tudo_data(
     Utiliza o serviço EncontroService para processamento otimizado e concorrente.
     """
     try:
+        # Check if emulation mode is enabled
+        if app_config.settings.ENCONTRO_DE_CONTAS_EMULATION_MODE:
+            logger.info(f"Emulation mode enabled - returning mock data for contract {contrato_id}")
+            
+            # Load mock data from JSON file
+            mock_file_path = Path(__file__).parent / "mock_json" / "encontro_de_contas.json"
+            
+            with open(mock_file_path, 'r', encoding='utf-8') as f:
+                mock_data = json.load(f)
+                
+            # Customize with the requested contract_id
+            mock_data["contrato_id"] = contrato_id
+            if empenho_numero:
+                # Filter mock data for specific empenho if requested
+                mock_data["filtered_for_empenho"] = empenho_numero
+            return mock_data
+        
+        # Original logic when emulation mode is disabled
         # Get user ID from session
         user_id = get_usuario_id(request)
         if not user_id:

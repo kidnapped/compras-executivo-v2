@@ -13,7 +13,7 @@
   box-shadow: 0 0 0 2px #8f9dd2;
 }
 
-/* Card Contratos specific styles */
+/* Card Contratos specific styles - LEGACY (kept for other components that might still use it) */
 .card-contratos {
   font-family: "Rawline", sans-serif;
   font-feature-settings: "tnum";
@@ -32,45 +32,6 @@
   font-size: 10px;
   color: #000;
   margin-left: 26px;
-}
-
-.card-contratos .valor-principal {
-  margin-left: 40px;
-  font-size: 30px;
-  color: #ff8000;
-}
-
-.card-contratos .valor-principal span {
-  font-size: 16px;
-  font-weight: normal;
-}
-
-.card-contratos .linha {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin: 4px 0px 0px 42px;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.card-contratos .linha div {
-  text-align: left;
-}
-
-.card-contratos .linha .valor-azul {
-  color: #00366f;
-  font-weight: bold;
-}
-
-.card-contratos .linha .valor-vermelho {
-  color: #ff4d4d;
-  font-weight: bold;
-}
-
-.card-contratos .linha .divider {
-  border-left: 1px solid #ccc;
-  height: 32px;
 }
 
 .card-contratos .br-button {
@@ -265,4 +226,123 @@
 /* Estilo para ícones com círculo no grid */
 .icon-circle i {
   opacity: 0.7 !important;
+}
+
+/* ===================== NEW DASHBOARD CARD LAYOUT ===================== */
+
+/* Dashboard card container with new layout */
+#card-contratos-container .sidebar-card {
+  height: 180px !important;
+  min-height: 180px !important;
+  max-height: 180px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: "Rawline", sans-serif;
+  font-feature-settings: "tnum";
+}
+
+/* Card body for new layout */
+#card-contratos-container .card-body-govbr {
+  height: calc(180px - 48px) !important;
+  min-height: calc(180px - 48px) !important;
+  max-height: calc(180px - 48px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dashboard card content */
+#card-contratos-container .dashboard-card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 !important;
+}
+
+/* Ensure the existing card styles work with new layout */
+#card-contratos-container .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0px !important;
+  gap: 0px;
+}
+
+/* Apply card-contratos styles to new structure */
+#card-contratos-container .valor-principal {
+  margin: 0px 0px 4px 20px !important;
+  font-size: 30px;
+  color: #ff8000;
+  text-align: left;
+}
+
+#card-contratos-container .valor-principal span {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+#card-contratos-container .linha {
+  display: flex;
+  align-items: flex-start;
+  margin: 0px 0px 0px 16px !important;
+  font-size: 10px;
+  white-space: nowrap;
+  justify-content: flex-start;
+  gap: 16px;
+}
+
+#card-contratos-container .linha div {
+  text-align: left;
+}
+
+#card-contratos-container .linha .valor-azul {
+  color: #00366f;
+  font-weight: bold;
+}
+
+#card-contratos-container .linha .valor-vermelho {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+#card-contratos-container .linha .divider {
+  border-left: 1px solid #ccc;
+  height: 32px;
+}
+
+/* Apply dashboard filter styles to new structure */
+#card-contratos-container .dashboard-card-filter.clickable {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s, box-shadow 0.15s;
+  padding: 4px 6px;
+}
+
+#card-contratos-container .dashboard-card-filter.clickable:hover,
+#card-contratos-container .dashboard-card-filter.active {
+  background: #e6f0fa;
+  box-shadow: 0 0 0 2px #8f9dd2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  #card-contratos-container .sidebar-card {
+    height: auto !important;
+    min-height: 160px !important;
+    max-height: none !important;
+  }
+  
+  #card-contratos-container .card-body-govbr {
+    height: auto !important;
+    min-height: calc(160px - 50px) !important;
+    max-height: none !important;
+  }
 }

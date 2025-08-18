@@ -151,7 +151,7 @@ export default {
   },
 
   dashboardContratosCard() {
-    const container = document.getElementById("card-contratos-container");
+    const container = document.getElementById("dashboardContratosContent");
     if (!container) return;
 
     fetch("/dashboard/contratos")
@@ -160,7 +160,11 @@ export default {
         return res.json();
       })
       .then((data) => {
-        container.outerHTML = this.renderDashboardCardContratos(data);
+        container.innerHTML = this.renderDashboardCardContratosContent(data);
+        // Setup event listeners after rendering
+        setTimeout(() => {
+          this.setupDashboardCardFilterClicks();
+        }, 0);
       })
       .catch((err) => {
         container.innerHTML =
@@ -396,7 +400,8 @@ export default {
       });
   },
 
-  renderDashboardCardContratos({
+  // New function to render only the card content without the outer structure
+  renderDashboardCardContratosContent({
     titulo = "",
     subtitulo = "",
     quantidade_total = "",
@@ -418,52 +423,45 @@ export default {
       }
       return "";
     };
-    // Card HTML with clickable/filterable fields
-    const html = `
-      <div class="col-12 col-lg-3">
-        <div class="br-card h-100 card-contratos">
-          ${Card.cardHeader({ titulo, subtitulo, icone })}
-          <div class="card-content" style="padding-top: 8px;">
-            <div class="valor-principal">${quantidade_total}</div>
-            <div class="linha">
-              <div class="dashboard-card-filter clickable ${isActive(
-                "vigentes"
-              )}" data-filter="vigentes" tabindex="0"><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
-              <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive(
-                "finalizados"
-              )}" data-filter="finalizados" tabindex="0"><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
-              <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive(
-                "criticos"
-              )}" data-filter="criticos" tabindex="0"><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
-            </div>
-            <div class="linha" style="gap: 8px;">
-              <div class="dashboard-card-filter clickable ${isActive(
-                "120dias"
-              )}" data-filter="120dias" tabindex="0"><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
-              <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive(
-                "90dias"
-              )}" data-filter="90dias" tabindex="0"><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
-              <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive(
-                "45dias"
-              )}" data-filter="45dias" tabindex="0"><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
-              <div class="divider"></div>
-              <div class="dashboard-card-filter clickable ${isActive(
-                "outros"
-              )}" data-filter="outros" tabindex="0"><div>Outros</div><div class="valor-azul">${outros}</div></div>
-            </div>
-          </div>
+    
+    // Content HTML with clickable/filterable fields
+    const contentHTML = `
+      <div class="card-content">
+        <div class="valor-principal">${quantidade_total} <font style="font-size:14px;">Contratos</font></div>
+        <div class="linha">
+          <div class="dashboard-card-filter clickable ${isActive(
+            "vigentes"
+          )}" data-filter="vigentes" tabindex="0"><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
+          <div class="divider"></div>
+          <div class="dashboard-card-filter clickable ${isActive(
+            "finalizados"
+          )}" data-filter="finalizados" tabindex="0"><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
+          <div class="divider"></div>
+          <div class="dashboard-card-filter clickable ${isActive(
+            "criticos"
+          )}" data-filter="criticos" tabindex="0"><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
         </div>
-      </div>`;
-    // After rendering, setup event listeners
-    setTimeout(() => {
-      this.setupDashboardCardFilterClicks &&
-        this.setupDashboardCardFilterClicks();
-    }, 0);
-    return html;
+        <div class="linha" style="gap: 8px;">
+          <div class="dashboard-card-filter clickable ${isActive(
+            "120dias"
+          )}" data-filter="120dias" tabindex="0"><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
+          <div class="divider"></div>
+          <div class="dashboard-card-filter clickable ${isActive(
+            "90dias"
+          )}" data-filter="90dias" tabindex="0"><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
+          <div class="divider"></div>
+          <div class="dashboard-card-filter clickable ${isActive(
+            "45dias"
+          )}" data-filter="45dias" tabindex="0"><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
+          <div class="divider"></div>
+          <div class="dashboard-card-filter clickable ${isActive(
+            "outros"
+          )}" data-filter="outros" tabindex="0"><div>Outros</div><div class="valor-azul">${outros}</div></div>
+        </div>
+      </div>
+    `;
+    
+    return contentHTML;
   },
 
   // Add event listeners to dashboard card filter fields
@@ -894,10 +892,32 @@ export default {
 
   // Initialize all dashboard cards
   initCards() {
+    this.initDashboardCardHeaders();
     this.dashboardContratosCard();
     this.dashboardContratosPorExercicioCard();
     this.dashboardRepresentacaoAnualValores();
     this.dashboardProximasAtividades();
+  },
+
+  // Initialize dashboard card headers
+  initDashboardCardHeaders() {
+    console.log('🔧 Inicializando card headers do dashboard...');
+    
+    // Verifica se o módulo card header está disponível
+    if (typeof App !== "undefined" && App.card_header && App.card_header.card_header_createDynamic) {
+      console.log('✅ Módulo card_header disponível, criando headers...');
+      
+      // Card 1 - Contratos e Renovações
+      App.card_header.card_header_createDynamic({
+        title: 'Contratos e Renovações',
+        subtitle: 'Visão geral dos contratos e seu status atual',
+        icon: 'fas fa-file-contract',
+        actions: [] // No buttons for cleaner layout
+      }, 'dashboard-contratos-header');
+      
+    } else {
+      console.warn('⚠️ Módulo card_header não disponível');
+    }
   },
 
   // Setup event listeners for table interactions

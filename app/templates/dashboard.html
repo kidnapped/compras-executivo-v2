@@ -16,15 +16,25 @@ endblock %} {% block content %}
     <div class="row row-tight">
       <!-- CONTRATOS E RENOVAÇÕES -->
       <div class="col-12 col-lg-3" id="card-contratos-container">
-        <div
-          class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-          style="min-height: 180px"
-        >
-          <div
-            class="br-loading medium"
-            role="progressbar"
-            aria-label="carregando contratos"
-          ></div>
+        <div class="sidebar-card">
+          <!-- Card Header Component - Dynamic -->
+          <div id="dashboard-contratos-header">
+            <!-- Card header será carregado dinamicamente via JavaScript -->
+          </div>
+          <div class="card-body-govbr">
+            <!-- Content for Card -->
+            <div class="dashboard-card-content" id="dashboardContratosContent">
+              <div
+                class="d-flex justify-content-center align-items-center"
+              >
+                <div
+                  class="br-loading medium"
+                  role="progressbar"
+                  aria-label="carregando contratos"
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
