@@ -383,7 +383,7 @@ export default {
           financasTotal,
           orcamentarioTotal
         );
-        const statusBadge = this.encontroDeContas_getPercentageStatusBadge(percentage);
+        const statusBadge = this.encontroDeContas_getPercentageStatusBadge(percentage.percentage);
 
         return `
           <tr data-empenho-numero="${empenhoNumber}" style="cursor: pointer;" 
@@ -419,7 +419,9 @@ export default {
                 ${this.encontroDeContas_formatCurrencyAggressive(saldo)}
               </span>
             </td>
-            <td>${statusBadge}</td>
+            <td>
+              <span class="badge ${statusBadge}">${percentage.display}</span>
+            </td>
             <td>
               <button class="btn btn-sm btn-outline-secondary" 
                       onclick="alert('Funcionalidade em desenvolvimento')"
@@ -609,96 +611,190 @@ export default {
   },
 
   encontroDeContas_calculateOrcamentarioTotal(empenho) {
-    if (!empenho?.Orçamentário) return 0;
-    
-    let total = 0;
-    
-    // Check if it has 'operacoes' array (based on the JSON structure)
-    if (empenho.Orçamentário.operacoes && Array.isArray(empenho.Orçamentário.operacoes)) {
-      empenho.Orçamentário.operacoes.forEach(op => {
-        total += parseFloat(op.va_operacao || 0);
-      });
-    } else {
-      // Fallback to old structure if needed
-      Object.values(empenho.Orçamentário).forEach(operations => {
-        if (Array.isArray(operations)) {
-          operations.forEach(op => {
-            total += parseFloat(op.va_operacao || 0);
-          });
-        }
+    const empenhoNumero = empenho.empenho?.numero || "Unknown";
+
+    // Handle the new data structure with nested Orçamentário.operacoes
+    const orcamentario =
+      empenho.Orçamentário?.operacoes ||
+      empenho.Ne_item?.operacoes ||
+      empenho.Orçamentário ||
+      [];
+
+    // Ensure it's an array before calling reduce
+    if (!Array.isArray(orcamentario)) {
+      return 0;
+    }
+
+    // Backend now provides pre-processed va_operacao values (0 for RP operations)
+    // So we can simply sum the va_operacao values without additional RP filtering
+    const result = orcamentario.reduce((total, op, index) => {
+      if (!op || op.va_operacao === null || op.va_operacao === undefined) {
+        return total;
+      }
+
+      let value = this.encontroDeContas_safeParseFloat(op.va_operacao);
+
+      return total + value;
+    }, 0);
+
+    // Handle negative zero
+    const finalResult = result === 0 ? 0 : result;
+
+    // Only log when negative zero is detected
+    if (Object.is(result, -0)) {
+      console.warn("🎯 NEGATIVE ZERO DETECTED in calculateOrcamentarioTotal:", {
+        empenho: empenhoNumero,
+        result: result,
+        location: "calculateOrcamentarioTotal result",
       });
     }
-    
-    return total;
+
+    return finalResult;
   },
 
   encontroDeContas_calculateFinancasTotal(empenho, usePartialValues = false) {
-    if (!empenho?.Finanças) return 0;
-    
+    const empenhoNumero = empenho.empenho?.numero || "Unknown";
+
     let total = 0;
-    
-    // Based on the JSON structure, sum up all financial operations
-    const financas = empenho.Finanças;
-    
-    // Sum linha_evento_ob (OB operations)
-    if (financas.linha_evento_ob && Array.isArray(financas.linha_evento_ob)) {
-      financas.linha_evento_ob.forEach(op => {
-        total += parseFloat(op.va_linha_evento || 0);
-      });
-    }
-    
-    // Sum ob_grouped if available
-    if (financas.ob_grouped && Array.isArray(financas.ob_grouped)) {
-      financas.ob_grouped.forEach(op => {
-        total += parseFloat(op.va_linha_evento || 0);
-      });
-    }
-    
-    // Sum other document types (DAR, DARF, GPS) if they exist
-    ['documentos_dar', 'documentos_darf', 'documentos_gps'].forEach(docType => {
-      if (financas[docType] && Array.isArray(financas[docType])) {
-        financas[docType].forEach(doc => {
-          const value = usePartialValues ? 
-            (parseFloat(doc.va_parcial || 0)) : 
-            (parseFloat(doc.va_nominal || doc.va_linha_evento || 0));
-          total += value;
-        });
-      }
-    });
-    
-    // Fallback to old structure if needed
-    if (total === 0) {
-      Object.values(financas).forEach(operations => {
-        if (Array.isArray(operations)) {
-          operations.forEach(op => {
-            const value = usePartialValues ? 
-              (parseFloat(op.va_parcial || 0)) : 
-              (parseFloat(op.va_nominal || op.va_linha_evento || 0));
-            total += value;
-          });
+
+    // Handle new nested structure under Finanças
+    const financas = empenho.Finanças || {};
+
+    // DARF documents
+    (financas.documentos_darf || empenho.documentos_darf || []).forEach(
+      (doc, index) => {
+        let documentValue = 0;
+
+        if (
+          usePartialValues &&
+          doc.va_celula !== null &&
+          doc.va_celula !== undefined
+        ) {
+          documentValue = this.encontroDeContas_safeParseFloat(doc.va_celula);
+        } else {
+          const juros = this.encontroDeContas_safeParseFloat(doc.va_juros);
+          const receita = this.encontroDeContas_safeParseFloat(doc.va_receita);
+          const multa = this.encontroDeContas_safeParseFloat(doc.va_multa);
+          documentValue = juros + receita + multa;
         }
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+        }
+
+        total += documentValue;
+      }
+    );
+
+    // DAR documents
+    (financas.documentos_dar || empenho.documentos_dar || []).forEach(
+      (doc, index) => {
+        let documentValue = 0;
+
+        if (
+          usePartialValues &&
+          doc.va_celula !== null &&
+          doc.va_celula !== undefined
+        ) {
+          documentValue = this.encontroDeContas_safeParseFloat(doc.va_celula);
+        } else {
+          const multa = this.encontroDeContas_safeParseFloat(doc.va_multa);
+          const juros = this.encontroDeContas_safeParseFloat(doc.va_juros);
+          const principal = this.encontroDeContas_safeParseFloat(doc.va_principal);
+          documentValue = multa + juros + principal;
+        }
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+        }
+
+        total += documentValue;
+      }
+    );
+
+    // GPS documents
+    (financas.documentos_gps || empenho.documentos_gps || []).forEach(
+      (doc, index) => {
+        let documentValue = 0;
+
+        if (
+          usePartialValues &&
+          doc.va_celula !== null &&
+          doc.va_celula !== undefined
+        ) {
+          documentValue = this.encontroDeContas_safeParseFloat(doc.va_celula);
+        } else {
+          documentValue = this.encontroDeContas_safeParseFloat(doc.va_inss);
+        }
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+        }
+
+        total += documentValue;
+      }
+    );
+
+    // OB documents (OB doesn't have va_celula, so always use va_linha_evento)
+    (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
+      (doc, index) => {
+        const documentValue = this.encontroDeContas_safeParseFloat(doc.va_linha_evento);
+        total += documentValue;
+      }
+    );
+
+    // Handle negative zero in total
+    const finalTotal = total === 0 ? 0 : total;
+
+    // Only log when negative zero is detected
+    if (Object.is(total, -0)) {
+      console.warn("🎯 NEGATIVE ZERO DETECTED in calculateFinancasTotal:", {
+        empenho: empenhoNumero,
+        total: total,
+        location: "calculateFinancasTotal result",
       });
     }
-    
-    return total;
+
+    return finalTotal;
   },
 
   encontroDeContas_calculateStatusPercentage(financas, orcamentario) {
-    if (orcamentario === 0) return 0;
-    return (financas / orcamentario) * 100;
+    // Calculate percentage: Finanças Parciais / Orçamentário * 100
+    if (!orcamentario || orcamentario === 0) {
+      return {
+        percentage: 0,
+        display: "0%",
+      };
+    }
+
+    // Handle case where financas might be null, undefined, or zero
+    const financasValue = financas || 0;
+    const percentage = (financasValue / orcamentario) * 100;
+
+    return {
+      percentage: percentage,
+      display: `${percentage.toFixed(1)}%`,
+    };
   },
 
   encontroDeContas_getPercentageStatusBadge(percentage) {
-    if (percentage >= 100) {
-      return '<span class="badge bg-success">✅ Completo</span>';
-    } else if (percentage >= 80) {
-      return '<span class="badge bg-info">🔄 Quase</span>';
+    // Color coding based on financial execution percentage: Finanças Parciais / Orçamentário * 100
+    // Higher percentage = more of the budget has been financially processed (using partial payment values)
+    if (percentage >= 80) {
+      return "badge-success"; // Green: 80-100% financially processed (excellent execution)
     } else if (percentage >= 50) {
-      return '<span class="badge bg-warning">⏳ Parcial</span>';
+      return "badge-warning"; // Yellow: 50-79% financially processed (good execution)
+    } else if (percentage >= 20) {
+      return "badge-info"; // Blue: 20-49% financially processed (moderate execution)
     } else if (percentage > 0) {
-      return '<span class="badge bg-secondary">📝 Iniciado</span>';
+      return "badge-secondary"; // Gray: 1-19% financially processed (low execution)
+    } else if (percentage === 0) {
+      return "badge-light"; // Light gray: 0% financially processed (no execution yet)
     } else {
-      return '<span class="badge bg-light text-dark">⭕ Pendente</span>';
+      return "badge-danger"; // Red: negative percentage (unusual case)
     }
   },
 
@@ -708,9 +804,12 @@ export default {
     
     // Check operacoes array first (new structure)
     if (orcamentario.operacoes && Array.isArray(orcamentario.operacoes)) {
-      for (const operation of orcamentario.operacoes) {
-        if (operation.no_operacao && operation.no_operacao.includes("RAP")) {
-          return true;
+      for (const op of orcamentario.operacoes) {
+        if (op.especie_operacao) {
+          const especieType = op.especie_operacao.toLowerCase();
+          if (especieType.includes("rp") || especieType.includes("inscricao") || especieType.includes("restos a pagar")) {
+            return true;
+          }
         }
       }
     }
@@ -718,9 +817,12 @@ export default {
     // Fallback to old structure
     for (const [key, operations] of Object.entries(orcamentario)) {
       if (Array.isArray(operations)) {
-        for (const operation of operations) {
-          if (operation.no_operacao && operation.no_operacao.includes("RAP")) {
-            return true;
+        for (const op of operations) {
+          if (op.especie_operacao) {
+            const especieType = op.especie_operacao.toLowerCase();
+            if (especieType.includes("rp") || especieType.includes("inscricao") || especieType.includes("restos a pagar")) {
+              return true;
+            }
           }
         }
       }
@@ -730,9 +832,12 @@ export default {
     const financas = empenho.Finanças || {};
     for (const [key, operations] of Object.entries(financas)) {
       if (Array.isArray(operations)) {
-        for (const operation of operations) {
-          if (operation.no_operacao && operation.no_operacao.includes("RAP")) {
-            return true;
+        for (const op of operations) {
+          if (op.especie_operacao) {
+            const especieType = op.especie_operacao.toLowerCase();
+            if (especieType.includes("rp") || especieType.includes("inscricao") || especieType.includes("restos a pagar")) {
+              return true;
+            }
           }
         }
       }
@@ -1346,25 +1451,31 @@ export default {
     // Handle different document types with different date fields
 
     // For OB documents - use saque_bacen fields
-    if (doc.ano_saque_bacen && doc.mes_saque_bacen && doc.dia_saque_bacen) {
-      const day = String(doc.dia_saque_bacen).padStart(2, "0");
-      const month = String(doc.mes_saque_bacen).padStart(2, "0");
-      const year = String(doc.ano_saque_bacen);
+    if (
+      doc.id_ano_saque_bacen &&
+      doc.id_mes_saque_bacen &&
+      doc.id_dia_saque_bacen
+    ) {
+      const day = doc.id_dia_saque_bacen.toString().padStart(2, "0");
+      const month = doc.id_mes_saque_bacen.toString().padStart(2, "0");
+      const year = doc.id_ano_saque_bacen;
       return `${day}/${month}/${year}`;
     }
 
-    // For other documents - use date fields
-    if (doc.dt_doc_dar) {
-      return this.encontroDeContas_formatDate(doc.dt_doc_dar);
-    }
-    if (doc.dt_doc_darf) {
-      return this.encontroDeContas_formatDate(doc.dt_doc_darf);
-    }
-    if (doc.dt_doc_gps) {
-      return this.encontroDeContas_formatDate(doc.dt_doc_gps);
+    // For DARF/DAR/GPS documents - use vencimento fields
+    if (
+      doc.id_ano_vencimento_doc &&
+      doc.id_mes_vencimento_doc &&
+      doc.id_dia_vencimento_doc
+    ) {
+      const day = doc.id_dia_vencimento_doc.toString().padStart(2, "0");
+      const month = doc.id_mes_vencimento_doc.toString().padStart(2, "0");
+      const year = doc.id_ano_vencimento_doc;
+      return `${day}/${month}/${year}`;
     }
 
-    return "N/A";
+    // Fallback to other date fields
+    return doc.dt_documento || doc.dt_operacao || "N/A";
   },
 
   encontroDeContas_formatDateFromOperacao(dtOperacao) {
@@ -1416,30 +1527,43 @@ export default {
 
   encontroDeContas_getItemDescription(itemId, empenho) {
     // Try to find the item description from the empenho data
-    if (empenho && empenho.items) {
-      const item = empenho.items.find(item => item.id === itemId);
-      if (item && item.descricao) {
-        return item.descricao;
-      }
-    }
-    return "N/A";
+    const neItems = empenho.ne_item || [];
+    const item = neItems.find((item) => item.id_item === itemId);
+    return item ? item.ds_item : `Item ${itemId}`;
   },
 
   encontroDeContas_parseDateForComparison(dateString) {
-    if (!dateString || dateString === "N/A") return null;
+    if (!dateString) return null;
 
-    // Handle DD/MM/YYYY format
-    const ddmmyyyyRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
-    const ddmmyyyyMatch = dateString.match(ddmmyyyyRegex);
-    if (ddmmyyyyMatch) {
-      const [, day, month, year] = ddmmyyyyMatch;
-      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-    }
+    const str = String(dateString);
 
-    // Handle other formats
     try {
-      return new Date(dateString);
+      // Handle YYYYMMDD format (8 digits)
+      if (/^\d{8}$/.test(str)) {
+        const year = str.substring(0, 4);
+        const month = str.substring(4, 6);
+        const day = str.substring(6, 8);
+        return new Date(year, parseInt(month) - 1, parseInt(day));
+      }
+
+      // Handle DD/MM/YYYY format (Brazilian format)
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+        const parts = str.split("/");
+        const day = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1; // Month is 0-indexed
+        const year = parseInt(parts[2]);
+        return new Date(year, month, day);
+      }
+
+      // Handle YYYY-MM-DD format (ISO format)
+      if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+        return new Date(str);
+      }
+
+      // Try default parsing
+      return new Date(str);
     } catch (error) {
+      console.warn(`Failed to parse date for comparison: ${dateString}`, error);
       return null;
     }
   },
@@ -3188,29 +3312,62 @@ export default {
       // DARF documents
       (financas.documentos_darf || empenho.documentos_darf || []).forEach(
         (doc) => {
-          total += this.safeParseFloat(doc.va_documento);
+          let documentValue = 0;
+          const juros = this.safeParseFloat(doc.va_juros);
+          const receita = this.safeParseFloat(doc.va_receita);
+          const multa = this.safeParseFloat(doc.va_multa);
+          documentValue = juros + receita + multa;
+
+          // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+          if (doc.is_negative_value === true) {
+            documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+          }
+
+          total += documentValue;
         }
       );
 
       // DAR documents
       (financas.documentos_dar || empenho.documentos_dar || []).forEach((doc) => {
-        total += this.safeParseFloat(doc.va_documento);
+        let documentValue = 0;
+        const multa = this.safeParseFloat(doc.va_multa);
+        const juros = this.safeParseFloat(doc.va_juros);
+        const principal = this.safeParseFloat(doc.va_principal);
+        documentValue = multa + juros + principal;
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+        }
+
+        total += documentValue;
       });
 
       // GPS documents
       (financas.documentos_gps || empenho.documentos_gps || []).forEach((doc) => {
-        total += this.safeParseFloat(doc.va_documento);
+        let documentValue = 0;
+        documentValue = this.safeParseFloat(doc.va_inss);
+
+        // Apply negative value if document is cancelled (DE CANCELAMENTO status)
+        if (doc.is_negative_value === true) {
+          documentValue = documentValue === 0 ? 0 : -Math.abs(documentValue);
+        }
+
+        total += documentValue;
       });
 
-      // OB documents
+      // OB documents (OB doesn't have va_celula, so always use va_linha_evento)
       (financas.linha_evento_ob || empenho.linha_evento_ob || []).forEach(
         (doc) => {
-          total += this.safeParseFloat(doc.va_ob_parcial);
+          const documentValue = this.safeParseFloat(doc.va_linha_evento);
+          total += documentValue;
         }
       );
 
       // Handle negative zero in total
-      return total === 0 ? 0 : total;
+      const finalTotal = total === 0 ? 0 : total;
+
+      return finalTotal;
     }
 
     /**
