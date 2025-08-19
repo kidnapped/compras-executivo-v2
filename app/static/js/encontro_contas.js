@@ -496,10 +496,33 @@ export default {
       }, 100);
     }
 
-    // Card 3 - Últimos Lançamentos - Limpar conteúdo
+    // Card 3 - Últimos Lançamentos - Preencher com grid
     const lancamentosElement = document.getElementById('encontroContasLancamentosContent');
     if (lancamentosElement) {
-      lancamentosElement.innerHTML = '';
+      console.log('📋 Preenchendo card de últimos lançamentos com grid...');
+      
+      // Preencher o HTML do card com o grid de lançamentos
+      lancamentosElement.innerHTML = `
+        <div class="card-content" style="padding: 0; height: calc(100% - 60px); overflow-y: auto">
+          <div class="table-responsive" id="encontro-lancamentos-container">
+            <div class="text-muted text-center" style="padding: 20px">
+              <span class="br-spinner small" role="status" aria-label="Carregando"></span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      console.log('✅ Card de últimos lançamentos preenchido com grid!');
+      
+      // Renderizar os lançamentos no novo container após um pequeno delay
+      setTimeout(() => {
+        console.log('🔄 Renderizando lançamentos no novo container...');
+        if (this.state.rawData) {
+          this.encontroDeContas_renderUltimosLancamentosInCard();
+        } else {
+          console.log('⏳ Dados ainda não disponíveis para os lançamentos, será renderizado quando os dados chegarem');
+        }
+      }, 100);
     }
 
     console.log('✅ Card content cleared successfully');
@@ -688,6 +711,14 @@ export default {
         console.error("❌ Error rendering Últimos Lançamentos:", error);
       }
       
+      console.log("📋 Rendering Últimos Lançamentos in card...");
+      try {
+        this.encontroDeContas_renderUltimosLancamentosInCard();
+        console.log("✅ Últimos Lançamentos in card rendered successfully");
+      } catch (error) {
+        console.error("❌ Error rendering Últimos Lançamentos in card:", error);
+      }
+      
       console.log("📈 Rendering Valores Totais chart...");
       try {
         this.encontroDeContas_renderValoresTotaisChart();
@@ -696,15 +727,7 @@ export default {
         console.error("❌ Error rendering Valores Totais chart:", error);
       }
       
-      console.log("💳 Rendering Empenhos card...");
-      try {
-        this.encontroDeContas_renderEmpenhosCard();
-        console.log("✅ Empenhos card rendered successfully");
-      } catch (error) {
-        console.error("❌ Error rendering Empenhos card:", error);
-      }
-      
-      console.log("📈 Rendering Contract Analysis...");
+      console.log(" Rendering Contract Analysis...");
       try {
         this.encontroDeContas_renderContractAnalysis();
         console.log("✅ Contract Analysis rendered successfully");
@@ -1480,6 +1503,94 @@ export default {
 
     tableContainer.innerHTML = content;
     console.log("✅ Últimos lançamentos rendered successfully");
+  },
+
+  // Nova função para renderizar últimos lançamentos no card superior
+  encontroDeContas_renderUltimosLancamentosInCard() {
+    console.log("📋 Rendering Últimos Lançamentos in card...");
+    
+    const encontroLancamentosContainer = document.querySelector("#encontro-lancamentos-container");
+    if (!encontroLancamentosContainer || !this.state.rawData?.empenhos_data) {
+      console.warn("❌ Card lançamentos container or data not available!");
+      return;
+    }
+
+    // Collect ALL documents from all empenhos (same logic as original function)
+    const allDocuments = [];
+
+    this.state.rawData.empenhos_data.forEach((empenho) => {
+      // 1. Add the empenho itself
+      if (empenho.empenho) {
+        const empenhoData = this.encontroDeContas_createEmpenhoLancamentoRow(empenho.empenho);
+        if (empenhoData) {
+          allDocuments.push(empenhoData);
+        }
+      }
+
+      // 2. Add orçamentário operations
+      const orcamentario = empenho.Orçamentário?.operacoes || empenho.Ne_item?.operacoes || empenho.Orçamentário || [];
+
+      if (Array.isArray(orcamentario)) {
+        orcamentario.forEach((op) => {
+          const orcamentoData = this.encontroDeContas_createOrcamentarioLancamentoRow(op, empenho.empenho?.numero);
+          if (orcamentoData) {
+            allDocuments.push(orcamentoData);
+          }
+        });
+      }
+
+      // 3. Add financial documents
+      const financas = empenho.Finanças || {};
+
+      // Process different document types
+      const docTypes = [
+        { key: "documentos_dar", data: financas.documentos_dar || empenho.documentos_dar || [] },
+        { key: "documentos_darf", data: financas.documentos_darf || empenho.documentos_darf || [] },
+        { key: "documentos_gps", data: financas.documentos_gps || empenho.documentos_gps || [] },
+        { key: "linha_evento_ob", data: financas.linha_evento_ob || empenho.linha_evento_ob || [] },
+      ];
+
+      docTypes.forEach((docType) => {
+        docType.data.forEach((doc) => {
+          const documentData = this.encontroDeContas_createUltimosLancamentosRow(doc, docType.key);
+          if (documentData) {
+            allDocuments.push(documentData);
+          }
+        });
+      });
+    });
+
+    // Sort documents by date (newest first)
+    allDocuments.sort((a, b) => {
+      const dateA = this.encontroDeContas_parseDateForComparison(a.rawDate);
+      const dateB = this.encontroDeContas_parseDateForComparison(b.rawDate);
+
+      if (!dateA && !dateB) return 0;
+      if (!dateA) return 1;
+      if (!dateB) return -1;
+
+      return dateB.getTime() - dateA.getTime(); // Newest first
+    });
+
+    // Create the content - show simplified list format
+    const content = allDocuments.length > 0
+      ? allDocuments.map((doc) => `
+          <div class="lancamento-item" style="padding: 8px 16px; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+            <i class="fas ${doc.icon}" style="color: ${doc.iconColor}; font-size: 14px; margin-right: 12px; width: 16px;"></i>
+            <div style="flex: 1;">
+              <div style="font-size: 12px; color: #666; line-height: 1.2;">
+                ${doc.date}
+              </div>
+              <div style="font-size: 13px; font-weight: 500; color: #333; line-height: 1.3;">
+                ${doc.documentId} (${doc.formattedValue})
+              </div>
+            </div>
+          </div>
+        `).join("")
+      : '<div class="text-center text-muted p-3">Nenhum lançamento encontrado</div>';
+
+    encontroLancamentosContainer.innerHTML = content;
+    console.log("✅ Últimos lançamentos in card rendered successfully");
   },
 
   async encontroDeContas_renderValoresTotaisChart() {
