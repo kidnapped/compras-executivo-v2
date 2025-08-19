@@ -1,5 +1,208 @@
 /* ===================== ENCONTRO DE CONTAS SPECIFIC STYLES ===================== */
 
+/* ===================== ESTILOS GLOBAIS PARA CARDS ===================== */
+
+/* Padding zero para todos os card bodies */
+.encontro-contas-page .card-body-govbr {
+  padding: 0 !important;
+}
+
+/* Padding zero para todos os card contents */
+.encontro-contas-page .encontro-contas-card-content {
+  padding: 0 !important;
+}
+
+/* ===================== ESTILOS PARA 3 CARDS LADO A LADO ===================== */
+
+/* Container dos 3 cards */
+.encontro-contas-three-cards {
+  margin-top: 1rem;
+}
+
+.encontro-contas-three-cards .row {
+  margin: 0;
+  padding: 0 !important;
+}
+
+/* Layout das colunas */
+.encontro-contas-three-cards .col-xl-4 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.encontro-contas-three-cards .col-xl-4:first-child {
+  padding-left: 0;
+}
+
+.encontro-contas-three-cards .col-xl-4:last-child {
+  padding-right: 0;
+}
+
+/* Containers dos cards */
+.encontro-contas-three-cards .encontro-contas-content {
+  height: 200px;
+  min-height: 200px;
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards compactos */
+.encontro-contas-three-cards .sidebar-card {
+  height: 200px !important;
+  min-height: 200px !important;
+  max-height: 200px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Body dos cards */
+.encontro-contas-three-cards .card-body-govbr {
+  height: calc(200px - 50px) !important;
+  min-height: calc(200px - 50px) !important;
+  max-height: calc(200px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo dos cards */
+.encontro-contas-three-cards .encontro-contas-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* ===================== CONTENT STYLING ===================== */
+
+/* Card Content */
+.encontro-contas-card-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  height: 100%;
+}
+
+/* Scrollbar customizada */
+.encontro-contas-card-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.encontro-contas-card-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.encontro-contas-card-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.encontro-contas-card-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Para Firefox */
+.encontro-contas-card-content {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* ===================== RESPONSIVE DESIGN ===================== */
+
+/* Desktop (xl) */
+@media (min-width: 1200px) {
+  .encontro-contas-three-cards .col-xl-4 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .encontro-contas-three-cards .col-xl-4:first-child {
+    padding-left: 0;
+  }
+
+  .encontro-contas-three-cards .col-xl-4:last-child {
+    padding-right: 0;
+  }
+}
+
+/* Tablet (lg) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .encontro-contas-three-cards .col-lg-4 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .encontro-contas-three-cards .col-lg-4:first-child {
+    padding-left: 0;
+  }
+
+  .encontro-contas-three-cards .col-lg-4:last-child {
+    padding-right: 0;
+  }
+}
+
+/* Tablet pequeno e mobile */
+@media (max-width: 991px) {
+  .encontro-contas-three-cards .col-md-6 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .encontro-contas-three-cards .col-xl-4 {
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .encontro-contas-three-cards .sidebar-card {
+    height: 200px !important;
+    min-height: 200px !important;
+    max-height: 200px !important;
+  }
+
+  .encontro-contas-three-cards .encontro-contas-content {
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 767px) {
+  .encontro-contas-three-cards .col-12 {
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .encontro-contas-three-cards .sidebar-card {
+    height: 150px !important;
+    min-height: 150px !important;
+    max-height: 150px !important;
+  }
+
+  .encontro-contas-three-cards .encontro-contas-content {
+    height: 150px;
+    min-height: 150px;
+    max-height: 150px;
+  }
+
+  .encontro-contas-three-cards .card-body-govbr {
+    height: calc(150px - 50px) !important;
+    min-height: calc(150px - 50px) !important;
+    max-height: calc(150px - 50px) !important;
+  }
+}
+
 /* Apply ultimos-lancamentos-container styles to new structure */
 #ultimos-lancamentos-container .valor-principal {
   margin: 0px 0px 4px 20px !important;

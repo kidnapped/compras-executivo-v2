@@ -77,6 +77,12 @@ export default {
         // Inicializa o tópico
         this.encontroDeContas_initTopico();
         
+        // Inicializa os card headers
+        this.encontroDeContas_initCardHeadersMetodosEficiencia();
+        
+        // Preenche o conteúdo dos cards
+        this.encontroDeContas_fillCardContent();
+        
         // Inicializa o módulo completo
         this.encontroDeContas_fullInit();
         
@@ -109,6 +115,14 @@ export default {
       // Initialize topico
       console.log("📋 Initializing topico...");
       this.encontroDeContas_initTopico();
+      
+      // Initialize card headers
+      console.log("🎯 Initializing card headers...");
+      this.encontroDeContas_initCardHeadersMetodosEficiencia();
+      
+      // Fill card content
+      console.log("🎨 Filling card content...");
+      this.encontroDeContas_fillCardContent();
       
       // Initialize containers
       console.log("📦 Initializing containers...");
@@ -228,6 +242,73 @@ export default {
         this.encontroDeContas_initTopico();
       }, 500);
     }
+  },
+
+  // Nova função para inicializar os headers dos cards dos métodos e eficiência
+  encontroDeContas_initCardHeadersMetodosEficiencia() {
+    console.log('🔧 Inicializando card headers de métodos e eficiência...');
+    
+    // Verifica se o módulo card header está disponível
+    if (typeof App !== "undefined" && App.card_header && App.card_header.card_header_createDynamic) {
+      
+      // Card 1 - Empenhos
+      const empenhosHeaderConfig = {
+        title: 'Empenhos',
+        subtitle: 'Total de empenhos desde 2019',
+        icon: 'fas fa-file-invoice-dollar'
+      };
+      App.card_header.card_header_createDynamic(empenhosHeaderConfig, 'encontro-contas-empenhos-header');
+
+      // Card 2 - Valores Totais
+      const valoresHeaderConfig = {
+        title: 'Valores Totais',
+        subtitle: 'Comparativo de valores financeiros',
+        icon: 'fas fa-coins'
+      };
+      App.card_header.card_header_createDynamic(valoresHeaderConfig, 'encontro-contas-valores-header');
+
+      // Card 3 - Últimos Lançamentos
+      const lancamentosHeaderConfig = {
+        title: 'Últimos Lançamentos',
+        subtitle: 'Valores financeiro e orçamentário deste contrato',
+        icon: 'fas fa-clipboard-list'
+      };
+      App.card_header.card_header_createDynamic(lancamentosHeaderConfig, 'encontro-contas-lancamentos-header');
+
+      console.log('✅ Card headers Métodos e Eficiência initialized dynamically');
+    } else {
+      console.warn('❌ Card header module not available - App:', typeof App, 'card_header:', App?.card_header ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
+      // Retry after a short delay if card_header is not available yet
+      setTimeout(() => {
+        this.encontroDeContas_initCardHeadersMetodosEficiencia();
+      }, 500);
+    }
+  },
+
+  // Nova função para preencher o conteúdo dos cards de métodos e eficiência
+  encontroDeContas_fillCardContent() {
+    console.log('🎨 Limpando conteúdo dos cards...');
+    
+    // Card 1 - Empenhos - Limpar conteúdo
+    const empenhosElement = document.getElementById('encontroContasEmpenhosContent');
+    if (empenhosElement) {
+      empenhosElement.innerHTML = '';
+    }
+
+    // Card 2 - Valores Totais - Limpar conteúdo
+    const valoresElement = document.getElementById('encontroContasValoresContent');
+    if (valoresElement) {
+      valoresElement.innerHTML = '';
+    }
+
+    // Card 3 - Últimos Lançamentos - Limpar conteúdo
+    const lancamentosElement = document.getElementById('encontroContasLancamentosContent');
+    if (lancamentosElement) {
+      lancamentosElement.innerHTML = '';
+    }
+
+    console.log('✅ Card content cleared successfully');
   },
 
   async encontroDeContas_loadInitialData() {
