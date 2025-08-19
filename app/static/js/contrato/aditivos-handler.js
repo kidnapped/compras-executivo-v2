@@ -61,16 +61,6 @@ const renderAditivos = (aditivos) => {
     }
   };
 
-  // Helper function to truncate long text
-  const truncateText = (text, maxLength = 80) => {
-    if (!text) return "N/A";
-    if (text.length <= maxLength) return text;
-    return `<span title="${text.replace(/"/g, "&quot;")}">${text.substring(
-      0,
-      maxLength
-    )}...</span>`;
-  };
-
   const aditivosHtml = aditivos
     .map(
       (aditivo) => `
@@ -130,11 +120,11 @@ const renderAditivos = (aditivos) => {
 
 const showAditivos = async (contractId, contractNumero, contractAno) => {
   // 1. Open the modal and set its initial state
+  modalManager.open();
   modalManager.setTitle(
     `Aditivos do Contrato ${contractNumero}/${contractAno}`
   );
   modalManager.showLoading();
-  modalManager.open();
 
   // 2. Fetch the specific data
   try {
