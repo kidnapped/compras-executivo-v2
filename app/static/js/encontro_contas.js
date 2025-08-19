@@ -364,6 +364,12 @@ export default {
   encontroDeContas_fillCardContent() {
     console.log('🎨 Preenchendo conteúdo dos cards...');
     
+    // Verificar se os dados estão disponíveis
+    if (!this.state.rawData) {
+      console.log('⏳ Dados ainda não carregados, aguardando...');
+      return;
+    }
+    
     // Card 1 - Empenhos - Preencher com dados
     const empenhosElement = document.getElementById('encontroContasEmpenhosContent');
     if (empenhosElement) {
@@ -462,10 +468,32 @@ export default {
       console.warn('❌ Elemento encontroContasEmpenhosContent não encontrado!');
     }
 
-    // Card 2 - Valores Totais - Limpar conteúdo
+    // Card 2 - Valores Totais - Preencher com gráfico
     const valoresElement = document.getElementById('encontroContasValoresContent');
     if (valoresElement) {
-      valoresElement.innerHTML = '';
+      console.log('📊 Preenchendo card de valores totais com gráfico...');
+      
+      // Preencher o HTML do card com o gráfico ECharts
+      valoresElement.innerHTML = `
+        <div class="card-content" style="padding: 16px">
+          <div
+            id="encontro-valores-totais-chart"
+            style="height: 180px; width: 100%"
+          ></div>
+        </div>
+      `;
+      
+      console.log('✅ Card de valores totais preenchido com gráfico!');
+      
+      // Renderizar o gráfico no novo container após um pequeno delay para garantir que o DOM foi atualizado
+      setTimeout(() => {
+        console.log('🔄 Renderizando gráfico no novo container...');
+        if (this.state.rawData) {
+          this.encontroDeContas_renderValoresTotaisChart();
+        } else {
+          console.log('⏳ Dados ainda não disponíveis para o gráfico, será renderizado quando os dados chegarem');
+        }
+      }, 100);
     }
 
     // Card 3 - Últimos Lançamentos - Limpar conteúdo
@@ -1458,20 +1486,38 @@ export default {
     console.log("📊 Rendering Valores Totais chart...");
     
     const containers = this.encontroDeContas_initContainers();
-    if (!containers.valoresTotaisChart || !this.state.rawData) {
-      console.warn("❌ Valores totais chart container or data not available!");
+    const encontroValoresChart = document.querySelector("#encontro-valores-totais-chart");
+    
+    if (!containers.valoresTotaisChart && !encontroValoresChart) {
+      console.warn("❌ Nenhum container de valores totais disponível!");
+      return;
+    }
+    
+    if (!this.state.rawData) {
+      console.warn("❌ Dados não disponíveis para o gráfico de valores totais!");
       return;
     }
 
     try {
       const echarts = await window.App.getEcharts();
 
-      // Destroy existing valores totais chart if it exists
-      if (this.state.valoresTotaisChart) {
-        this.state.valoresTotaisChart.dispose();
+      // Renderizar no container original se existir
+      if (containers.valoresTotaisChart) {
+        // Destroy existing valores totais chart if it exists
+        if (this.state.valoresTotaisChart) {
+          this.state.valoresTotaisChart.dispose();
+        }
+        this.state.valoresTotaisChart = echarts.init(containers.valoresTotaisChart);
       }
-
-      this.state.valoresTotaisChart = echarts.init(containers.valoresTotaisChart);
+      
+      // Renderizar no novo container do card superior se existir
+      if (encontroValoresChart) {
+        // Destroy existing chart if it exists
+        if (this.state.encontroValoresTotaisChart) {
+          this.state.encontroValoresTotaisChart.dispose();
+        }
+        this.state.encontroValoresTotaisChart = echarts.init(encontroValoresChart);
+      }
 
       // Extract values from the API response
       const totalEmpenhado = this.state.rawData.total_empenhado || 0;
@@ -1576,7 +1622,15 @@ export default {
         ],
       };
 
-      this.state.valoresTotaisChart.setOption(option);
+      // Apply chart to original container if exists
+      if (this.state.valoresTotaisChart) {
+        this.state.valoresTotaisChart.setOption(option);
+      }
+      
+      // Apply chart to new card container if exists
+      if (this.state.encontroValoresTotaisChart) {
+        this.state.encontroValoresTotaisChart.setOption(option);
+      }
 
       // Handle window resize (using a shared resize handler)
       this.encontroDeContas_setupResizeHandler();
@@ -1602,6 +1656,9 @@ export default {
       }
       if (this.state.valoresTotaisChart) {
         this.state.valoresTotaisChart.resize();
+      }
+      if (this.state.encontroValoresTotaisChart) {
+        this.state.encontroValoresTotaisChart.resize();
       }
     };
     

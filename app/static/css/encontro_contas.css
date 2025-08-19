@@ -591,3 +591,14 @@
     font-size: 0.75rem;
   }
 }
+
+/* ===================== ESTILOS PARA GRÁFICOS NOS CARDS ===================== */
+
+#encontro-valores-totais-chart {
+  background: transparent;
+  border-radius: 4px;
+}
+
+#encontro-valores-totais-chart canvas {
+  border-radius: 4px;
+}
