@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # Renderiza a página do encontro de contas
-@router.get("/encontro-de-contas", response_class=HTMLResponse)
+@router.get("/encontro_contas", response_class=HTMLResponse)
 async def render_encontro_contas(request: Request):
     """
     Renderiza a página de Encontro de Contas
@@ -27,7 +27,7 @@ async def render_encontro_contas(request: Request):
     # Contexto base para a página
     context = {
         "request": request,
-        "template_name": "encontro-de-contas"
+        "template_name": "encontro_contas"
     }
     
     # Adicionar contexto SPA
@@ -35,12 +35,12 @@ async def render_encontro_contas(request: Request):
     
     # Usar o handler SPA
     return spa_route_handler(
-        template_name="encontro-de-contas.html",
+        template_name="encontro_contas.html",
         context=context,
         templates=templates,
         request=request,
         title="Encontro de Contas - Compras Executivo",
-        scripts=get_page_scripts("encontro-contas")
+        scripts=get_page_scripts("encontro_contas")
     )
 
 
@@ -67,11 +67,11 @@ async def get_tudo_data(
     """
     try:
         # Check if emulation mode is enabled
-        if app_config.settings.ENCONTRO_DE_CONTAS_EMULATION_MODE:
+        if app_config.settings.ENCONTRO_CONTAS_EMULATION_MODE:
             logger.info(f"Emulation mode enabled - returning mock data for contract {contrato_id}")
             
             # Load mock data from JSON file
-            mock_file_path = Path(__file__).parent / "mock_json" / "encontro_de_contas.json"
+            mock_file_path = Path(__file__).parent / "mock_json" / "encontro_contas.json"
             
             with open(mock_file_path, 'r', encoding='utf-8') as f:
                 mock_data = json.load(f)

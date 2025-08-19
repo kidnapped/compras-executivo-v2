@@ -453,7 +453,7 @@ export default {
       // Use the full initialization that includes card management
       this.encontroDeContas_fullInit();
     } else {
-      console.log("❌ Not on encontro-de-contas page, skipping initialization");
+      console.log("❌ Not on encontro_contas page, skipping initialization");
       // Setup window API even if not on the page for potential manual calls
       this.encontroDeContas_setupWindowAPI();
     }
@@ -536,7 +536,7 @@ export default {
         // Generate filename with contract ID and date
         const contractId = this.state.currentContractId || 'SemID';
         const dateStr = new Date().toISOString().split('T')[0];
-        const filename = `Encontro_de_Contas_Contrato_${contractId}_${dateStr}.xlsx`;
+        const filename = `Encontro_Contas_Contrato_${contractId}_${dateStr}.xlsx`;
 
         // Write file
         XLSX.writeFile(wb, filename);
@@ -2257,7 +2257,7 @@ export default {
    */
   encontroDeContas_isEncontroPage() {
     return (
-      window.location.pathname.includes("encontro-de-contas") ||
+      window.location.pathname.includes("encontro_contas") ||
       document.querySelector("#empenhos-originais-tbody") !== null ||
       document.querySelector("#ultimos-lancamentos-container") !== null
     );

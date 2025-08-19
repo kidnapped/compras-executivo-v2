@@ -186,7 +186,7 @@ def get_page_scripts(page_type: str) -> List[Dict[str, str]]:
         "dev-ops": [
             {"src": "/static/js/dev-ops/dev-ops.js", "type": "module"},
         ],
-        "encontro-contas": [
+        "encontro_contas": [
             {"src": "/static/js/encontro_contas.js", "type": "module"},
         ],
         "vdb": [

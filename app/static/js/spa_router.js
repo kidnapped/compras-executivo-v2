@@ -501,7 +501,7 @@ class SPARouter {
       }
 
       // Página de Encontro de Contas
-      else if (route.includes("/encontro-de-contas")) {
+      else if (route.includes("/encontro_contas")) {
         console.log("🔧 Inicializando Encontro de Contas para rota:", route);
 
         // Evitar múltiplas inicializações com flag global

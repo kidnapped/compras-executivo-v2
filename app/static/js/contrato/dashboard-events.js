@@ -62,16 +62,16 @@ const handleTableClick = (event) => {
       ) {
         console.log(
           "Using SPA navigation to:",
-          `/encontro-de-contas?contrato=${contractId}`
+          `/encontro_contas?contrato=${contractId}`
         );
         window.spaRouter.navigateTo(
-          `/encontro-de-contas?contrato=${contractId}`
+          `/encontro_contas?contrato=${contractId}`
         );
       } else {
         console.warn(
           "SPA router not available, falling back to traditional navigation"
         );
-        window.location.href = `/encontro-de-contas?contrato=${contractId}`;
+        window.location.href = `/encontro_contas?contrato=${contractId}`;
       }
     } else {
       console.error("Contract ID not found for navigation");

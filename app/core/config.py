@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     USE_ALIAS_LOGIN: bool = True
 
     # Encontro de Contas - For development
-    ENCONTRO_DE_CONTAS_EMULATION_MODE: bool = True
+    ENCONTRO_CONTAS_EMULATION_MODE: bool = True
 
     # VDB EMULATION - For development
     VDB_TEIID_EMULATION_MODE: bool = True
