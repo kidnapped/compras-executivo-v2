@@ -42,6 +42,49 @@ export default {
     return this.state.containers;
   },
 
+  // Método único para inicialização completa via SPA
+  encontroDeContas_initComplete() {
+    console.log('🔧 encontroDeContas_initComplete() chamado via SPA');
+    
+    // Evitar execução dupla
+    const now = Date.now();
+    if (now - (this.lastInitCompleteTime || 0) < 800) {
+      console.log('⚠️ encontroDeContas_initComplete() ignorado - muito recente (debounce)');
+      return;
+    }
+    
+    // Evitar sobreposição de execuções
+    if (this.isInitializingComplete) {
+      console.log('⚠️ encontroDeContas_initComplete() ignorado - já está inicializando');
+      return;
+    }
+    
+    this.lastInitCompleteTime = now;
+    this.isInitializingComplete = true;
+    
+    // Verifica se estamos na página correta
+    const encontroPage = document.querySelector('#empenhos-originais-tbody') || 
+                        document.querySelector('#ultimos-lancamentos-container');
+    console.log('🔍 Elementos de encontro de contas encontrados:', !!encontroPage);
+    
+    if (encontroPage) {
+      console.log('✅ Página de encontro de contas detectada - iniciando componentes...');
+      
+      setTimeout(() => {
+        // Inicializa o breadcrumb
+        this.encontroDeContas_initBreadcrumb();
+        
+        // Inicializa o módulo completo
+        this.encontroDeContas_fullInit();
+        
+        this.isInitializingComplete = false;
+      }, 100);
+    } else {
+      console.log('⚠️ Página de encontro de contas não detectada');
+      this.isInitializingComplete = false;
+    }
+  },
+
   // Initialize the encontro contas functionality
   async encontroDeContas_init() {
     console.log("🚀 Initializing Encontro de Contas...");
@@ -56,6 +99,10 @@ export default {
     this.state.isInitializing = true;
     
     try {
+      // Initialize breadcrumb first
+      console.log("🍞 Initializing breadcrumb...");
+      this.encontroDeContas_initBreadcrumb();
+      
       // Initialize containers
       console.log("📦 Initializing containers...");
       const containers = this.encontroDeContas_initContainers();
@@ -97,6 +144,29 @@ export default {
     // Extract contract ID from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("contrato");
+  },
+
+  // Nova função para inicializar o breadcrumb dinamicamente
+  encontroDeContas_initBreadcrumb() {
+    console.log('🔧 Inicializando breadcrumb do encontro de contas...');
+    
+    // Verifica se o módulo breadcrumb está disponível
+    if (typeof App !== "undefined" && App.breadcrumb && App.breadcrumb.breadcrumb_createDynamic) {
+      const breadcrumbItems = [
+        {title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio'},
+        {title: 'Encontro de Contas', icon: 'fas fa-calculator', url: ''}
+      ];
+      
+      App.breadcrumb.breadcrumb_createDynamic(breadcrumbItems, 'encontro-contas-breadcrumb-dynamic-container');
+      console.log('✅ Breadcrumb Encontro de Contas initialized dynamically');
+    } else {
+      console.warn('❌ Breadcrumb module not available - App:', typeof App, 'breadcrumb:', App?.breadcrumb ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
+      // Retry after a short delay if breadcrumb is not available yet
+      setTimeout(() => {
+        this.encontroDeContas_initBreadcrumb();
+      }, 500);
+    }
   },
 
   async encontroDeContas_loadInitialData() {
