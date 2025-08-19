@@ -3,8 +3,6 @@
  * Handles data loading, table rendering, row interactions, and ECharts integration
  */
 
-import getEcharts from "../util/echarts.js";
-
 export default {
   // Internal state management
   state: {
@@ -969,7 +967,7 @@ export default {
     }
 
     try {
-      const echarts = await getEcharts();
+      const echarts = await window.App.getEcharts();
 
       // Destroy existing valores totais chart if it exists
       if (this.state.valoresTotaisChart) {
@@ -1646,7 +1644,7 @@ export default {
     }
 
     try {
-      const echarts = await getEcharts();
+      const echarts = await window.App.getEcharts();
 
       // Destroy existing chart
       if (this.state.chart) {
@@ -2986,7 +2984,7 @@ export default {
               return false; // Finalized empenhos are excluded from RAP
             }
 
-            // Multiple ways to detect RAP - using the proven method from encontro-contas.js
+            // Multiple ways to detect RAP - using the proven method from encontro_contas.js
 
             // Method 1: Check operacao field
             if (empenho.operacao === "RP") {
@@ -3135,7 +3133,7 @@ export default {
     }
 
     /**
-     * Calculate orçamentário total for an empenho (same logic as encontro-contas.js)
+     * Calculate orçamentário total for an empenho (same logic as encontro_contas.js)
      * @param {Object} empenho - Empenho object
      * @returns {number} Total orçamentário value
      */
@@ -3177,7 +3175,7 @@ export default {
     }
 
     /**
-     * Calculate finanças total for an empenho (same logic as encontro-contas.js)
+     * Calculate finanças total for an empenho (same logic as encontro_contas.js)
      * @param {Object} empenho - Empenho object
      * @returns {number} Total finanças value
      */

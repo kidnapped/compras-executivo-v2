@@ -21,7 +21,8 @@ import card_header from "./app/card_header.js";
 import topico from "./app/topico.js";
 import tooltip from "./app/tooltip.js";
 import SPARouter from "./spa_router.js";
-import encontroContas from "./encontro/encontro-contas.js";
+import getEcharts from "./util/echarts.js";
+import encontroContas from "./encontro_contas.js";
 
 const App = {
   ...environment,
@@ -44,6 +45,7 @@ const App = {
   topico,
   tooltip,
   SPARouter,
+  getEcharts,
 
   // Dynamic KPI initialization method
   async kpisInit() {

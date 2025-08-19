@@ -569,7 +569,7 @@ class SPARouter {
           // Skip scripts que são para módulos específicos já carregados pelo SPA
           if (
             script.textContent.includes("EncontroContas") ||
-            script.textContent.includes("encontro-contas.js")
+            script.textContent.includes("encontro_contas.js")
           ) {
             console.log(
               "� Script inline do Encontro detectado, mas módulos já carregados via SPA - ignorando"
@@ -683,7 +683,7 @@ class SPARouter {
       scripts.forEach((script) => {
         if (
           script.textContent.includes("EncontroContas") ||
-          script.textContent.includes("encontro-contas.js")
+          script.textContent.includes("encontro_contas.js")
         ) {
           console.log("📝 Executando script inline do Encontro...");
 
@@ -902,7 +902,7 @@ class SPARouter {
           }
 
           // Verificar se é encontro-contas e se os módulos estão disponíveis
-          if (script.src.includes("encontro-contas.js")) {
+          if (script.src.includes("encontro_contas.js")) {
             console.log("🎯 Script do Encontro detectado:", script.src);
 
             // Verificar se já está sendo inicializado
