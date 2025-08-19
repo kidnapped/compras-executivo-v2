@@ -74,6 +74,9 @@ export default {
         // Inicializa o breadcrumb
         this.encontroDeContas_initBreadcrumb();
         
+        // Inicializa o tópico
+        this.encontroDeContas_initTopico();
+        
         // Inicializa o módulo completo
         this.encontroDeContas_fullInit();
         
@@ -102,6 +105,10 @@ export default {
       // Initialize breadcrumb first
       console.log("🍞 Initializing breadcrumb...");
       this.encontroDeContas_initBreadcrumb();
+      
+      // Initialize topico
+      console.log("📋 Initializing topico...");
+      this.encontroDeContas_initTopico();
       
       // Initialize containers
       console.log("📦 Initializing containers...");
@@ -165,6 +172,60 @@ export default {
       // Retry after a short delay if breadcrumb is not available yet
       setTimeout(() => {
         this.encontroDeContas_initBreadcrumb();
+      }, 500);
+    }
+  },
+
+  // Nova função para inicializar o tópico dinamicamente
+  encontroDeContas_initTopico() {
+    console.log('🔧 Inicializando tópico do encontro de contas...');
+    
+    // Verifica se o módulo topico está disponível
+    if (typeof App !== "undefined" && App.topico && App.topico.topico_createDynamic) {
+      const topicoConfig = {
+        title: 'Encontro de Contas',
+        description: 'Sistema de análise e reconciliação de contratos e empenhos',
+        icon: 'fas fa-calculator',
+        tags: [
+          {
+            text: 'Financeiro',
+            type: 'primary',
+            icon: 'fas fa-dollar-sign',
+            title: 'Análise financeira detalhada'
+          },
+          {
+            text: 'Reconciliação',
+            type: 'info',
+            icon: 'fas fa-balance-scale',
+            title: 'Reconciliação de dados'
+          }
+        ],
+        actions: [
+          {
+            icon: 'fas fa-file-excel',
+            text: 'Exportar',
+            title: 'Exportar dados para Excel',
+            onclick: 'App.encontroContas.encontroDeContas_exportToExcel()',
+            type: 'secondary'
+          },
+          {
+            icon: 'fas fa-sync-alt',
+            text: 'Atualizar',
+            title: 'Atualizar dados',
+            onclick: 'App.encontroContas.encontroDeContas_refreshCards()',
+            type: 'secondary'
+          }
+        ]
+      };
+      
+      App.topico.topico_createDynamic(topicoConfig, 'encontro-contas-topico-container');
+      console.log('✅ Topico Encontro de Contas initialized dynamically');
+    } else {
+      console.warn('❌ Topico module not available - App:', typeof App, 'topico:', App?.topico ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
+      // Retry after a short delay if topico is not available yet
+      setTimeout(() => {
+        this.encontroDeContas_initTopico();
       }, 500);
     }
   },
