@@ -103,7 +103,8 @@ async def render_dashboard(
                         "codigo": rows[0][0],
                         "nome": rows[0][1],
                         "display": f"{rows[0][0]} - {rows[0][1]}",
-                        "multiple": False
+                        "multiple": False,
+                        "count": len(rows)
                     }
                 else:
                     # Multiple UASGs - show count
@@ -113,6 +114,7 @@ async def render_dashboard(
                         "nome": rows[0][1],
                         "display": f"{len(rows)} UASGs ({', '.join(codes[:2])}{'...' if len(codes) > 2 else ''})",
                         "multiple": True,
+                        "count": len(rows),
                         "all_uasgs": [{"codigo": row[0], "nome": row[1]} for row in rows]
                     }
         except Exception as e:
@@ -563,6 +565,9 @@ async def get_contratos_lista(
             c.processo,
             c.tipo_id,
             c.fornecedor_id,
+            c.unidade_id,
+            u.codigo AS uasg_codigo,
+            u.nomeresumido AS uasg_nome,
             f.cpf_cnpj_idgener,
             f.nome AS fornecedor_nome,
             c.objeto,
@@ -576,6 +581,7 @@ async def get_contratos_lista(
             FROM contratos c
             LEFT JOIN fornecedores f ON c.fornecedor_id = f.id
             LEFT JOIN codigoitens ci ON ci.id = c.tipo_id
+            LEFT JOIN unidades u ON c.unidade_id = u.id
         {where_clause}
         {order_by}
         LIMIT :limit OFFSET :offset
@@ -751,6 +757,9 @@ async def get_contratos_lista(
             "dias_restantes": dias_restantes,
             "status": status,
             "fontawesome_icon": fontawesome_icon,
+            # UASG information for this contract
+            "uasg_codigo": contract.uasg_codigo,
+            "uasg_nome": contract.uasg_nome,
             # Favorite status information
             "is_favorite": favorite_info["is_favorite"],
             "favorite_icon": favorite_info["favorite_icon"],

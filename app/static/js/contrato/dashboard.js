@@ -1308,14 +1308,25 @@ export default {
       }
     };
 
+    // Check if multiple UASGs are available using the data attribute
+    const tituloGrid = document.querySelector(".titulo-grid-uasg");
+    const uasgCount = tituloGrid
+      ? parseInt(tituloGrid.getAttribute("data-uasg-count"), 10)
+      : 1;
+    const showUasgInfo = uasgCount > 1;
+
+    // Generate UASG display HTML conditionally
+    const uasgDisplayHtml = showUasgInfo
+      ? `
+      <i class="fa fa-home" aria-hidden="true" style="height: 20px; color: #ccc; "></i>
+      <span style="font-size: 16px;color: #FF9933; white-space: nowrap;" 
+        data-tooltip-text="UASG do ${contract.uasg_nome}"
+        data-tooltip-place="bottom"
+        data-tooltip-type="info">${contract.uasg_codigo}</span>
+    `
+      : "";
+
     return `
-      <tr>
-        <td style="text-align:center;">
-        <img src="img/ico/home.png" alt="Home icon">
-      </td>
-      <td style="font-size:16px; color:#FF9933; width:70px; padding:2px 0 0 4px; cursor:pointer;" title="{uasg_nome}">
-        393003
-        </td>
       <td style="padding: 8px 8px !important;" valign="top">
           <div style="display: flex; gap: 8px; font-family: Arial, sans-serif;">
           <div class="icon-circle" 
@@ -1343,16 +1354,18 @@ export default {
     }</span>
                 </div>
               </div>
-
+              
               <div style="display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; white-space: nowrap; margin-top: -10px !important;">
-                <img src="${this.getContratoInfo(contract.tipo_id).icon}" 
+              ${uasgDisplayHtml}
+              <img src="${this.getContratoInfo(contract.tipo_id).icon}" 
                 data-tooltip-text="${
                   this.getContratoInfo(contract.tipo_id).name
                 }"
                 data-tooltip-place="bottom"
                 data-tooltip-type="info"
-                style="height: 20px;" />
-
+                style="height: 20px; ${
+                  showUasgInfo ? "margin-left: 10;" : "margin-left: 0;"
+                }" />
                 <span style="font-size: 16px; color: #FF9933; white-space: nowrap;" 
                 data-tooltip-text="Número do contrato"
                 data-tooltip-place="bottom"
@@ -1408,7 +1421,7 @@ export default {
     ${contract.aditivos_count || 0}
   </div>
 </div>            
-    <div style="position: relative; display: inline-block; padding-top: 5px; margin-left: -10px;">
+    <div style="position: relative; display: none; padding-top: 5px; margin-left: -10px;">
   <svg
     width="30"
     height="30"

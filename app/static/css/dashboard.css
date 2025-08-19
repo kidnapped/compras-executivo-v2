@@ -158,6 +158,19 @@ input[type="number"] {
   outline: none !important;
 }
 
+/* Remove spinner arrows from number input */
+#pagina-atual::-webkit-outer-spin-button,
+#pagina-atual::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+#pagina-atual[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 .widget-atividades-item a,
 .widget-atividades-item span {
   position: relative;

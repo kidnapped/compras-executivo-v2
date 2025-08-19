@@ -24,9 +24,7 @@ endblock %} {% block content %}
           <div class="card-body-govbr">
             <!-- Content for Card -->
             <div class="dashboard-card-content" id="dashboardContratosContent">
-              <div
-                class="d-flex justify-content-center align-items-center"
-              >
+              <div class="d-flex justify-content-center align-items-center">
                 <div
                   class="br-loading medium"
                   role="progressbar"
@@ -94,7 +92,14 @@ endblock %} {% block content %}
                 style="color: #00366f; font-size: 14px"
               ></i>
               {% if uasg_info %}
-              <span class="titulo-grid-uasg">{{ uasg_info.display }}</span>
+              <span
+                class="titulo-grid-uasg"
+                data-tooltip-text="{{ uasg_info.display }}"
+                data-tooltip-place="bottom"
+                data-tooltip-type="info"
+                data-uasg-count="{{ uasg_info.count }}"
+                >{{ uasg_info.display }}</span
+              >
               {% else %}
               <span class="titulo-grid-uasg">Contratos</span>
               {% endif %}
