@@ -166,7 +166,7 @@ input[type="number"] {
   margin: 0;
 }
 
-#pagina-atual[type=number] {
+#pagina-atual[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
