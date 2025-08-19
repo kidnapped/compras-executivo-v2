@@ -2104,12 +2104,13 @@ export default {
         },
         legend: {
           data: ["Valores Orçamentários", "Valores Financeiros Parciais"],
-          bottom: 10,
+          bottom: 0,
         },
         grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "15%",
+          left: "1%",
+          right: "1%",
+          bottom: "8%",
+          top: "12%",
           containLabel: true,
         },
         xAxis: {
