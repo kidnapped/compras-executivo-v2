@@ -362,12 +362,104 @@ export default {
 
   // Nova função para preencher o conteúdo dos cards de métodos e eficiência
   encontroDeContas_fillCardContent() {
-    console.log('🎨 Limpando conteúdo dos cards...');
+    console.log('🎨 Preenchendo conteúdo dos cards...');
     
-    // Card 1 - Empenhos - Limpar conteúdo
+    // Card 1 - Empenhos - Preencher com dados
     const empenhosElement = document.getElementById('encontroContasEmpenhosContent');
     if (empenhosElement) {
-      empenhosElement.innerHTML = '';
+      if (this.state.rawData?.empenhos_data) {
+        console.log('📊 Dados disponíveis, preenchendo card de empenhos...');
+        
+        // Calcular métricas dos empenhos
+        const empenhosData = this.state.rawData.empenhos_data;
+        let totalEmpenhos = 0;
+        let emExecucao = 0;
+        let finalizados = 0;
+        let rapCount = 0;
+        let criticos = 0;
+
+        empenhosData.forEach((empenho) => {
+          totalEmpenhos++;
+
+          // Calculate payment percentage using the same method as the table
+          const orcamentarioTotal = this.encontroDeContas_calculateOrcamentarioTotal(empenho);
+          const financasTotal = this.encontroDeContas_calculateFinancasTotal(empenho);
+          const percentagePaid = orcamentarioTotal > 0 ? (financasTotal / orcamentarioTotal) * 100 : 0;
+
+          // Check for RAP operations
+          const hasRapOperation = this.encontroDeContas_checkForRapOperations(empenho);
+
+          if (hasRapOperation) {
+            rapCount++;
+          } else if (percentagePaid >= 100) {
+            finalizados++;
+          } else {
+            emExecucao++;
+          }
+
+          // Considerar críticos como empenhos com problemas ou saldo muito baixo
+          if (percentagePaid > 0 && percentagePaid < 20) {
+            criticos++;
+          }
+        });
+
+        console.log('📈 Métricas calculadas:', { totalEmpenhos, emExecucao, finalizados, rapCount, criticos });
+
+        // Preencher o HTML do card
+        empenhosElement.innerHTML = `
+          <div class="card-content" style="padding-top: 8px">
+            <div class="valor-principal" data-metric="total">${totalEmpenhos}</div>
+            <div class="linha">
+              <div
+                class="dashboard-card-filter clickable"
+                data-filter="em-execucao"
+                data-metric="emExecucao"
+                tabindex="0"
+              >
+                <div>Em execução</div>
+                <div class="valor-azul">${emExecucao}</div>
+              </div>
+              <div class="divider"></div>
+              <div
+                class="dashboard-card-filter clickable"
+                data-filter="finalizados"
+                data-metric="finalizados"
+                tabindex="0"
+              >
+                <div>Finalizados</div>
+                <div class="valor-azul">${finalizados}</div>
+              </div>
+              <div class="divider"></div>
+              <div
+                class="dashboard-card-filter clickable"
+                data-filter="rap"
+                data-metric="rap"
+                tabindex="0"
+              >
+                <div>RAP</div>
+                <div class="valor-vermelho">${rapCount}</div>
+              </div>
+              <div class="divider"></div>
+              <div
+                class="dashboard-card-filter clickable"
+                data-filter="criticos"
+                data-metric="criticos"
+                tabindex="0"
+              >
+                <div>Críticos</div>
+                <div class="valor-vermelho">${criticos}</div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        console.log('✅ Card de empenhos preenchido com sucesso!');
+      } else {
+        console.log('⚠️ Dados não disponíveis ainda, limpando card de empenhos...');
+        empenhosElement.innerHTML = '';
+      }
+    } else {
+      console.warn('❌ Elemento encontroContasEmpenhosContent não encontrado!');
     }
 
     // Card 2 - Valores Totais - Limpar conteúdo
@@ -440,6 +532,10 @@ export default {
       console.log("🎨 Rendering all tables...");
       this.encontroDeContas_renderAllTables();
       console.log("✅ Tables rendered successfully");
+      
+      // Fill card content with data now that it's available
+      console.log("🎨 Filling card content with loaded data...");
+      this.encontroDeContas_fillCardContent();
     } catch (error) {
       console.error("❌ Error loading initial data:", error);
       this.encontroDeContas_showError("Erro ao carregar dados do contrato. Tente novamente.");
@@ -597,6 +693,10 @@ export default {
       }
       
       console.log("✅ All tables rendering completed (check individual logs for errors)");
+      
+      // Update card content after rendering tables
+      console.log("🎨 Updating card content after rendering...");
+      this.encontroDeContas_fillCardContent();
     } catch (error) {
       console.error("❌ Critical error in renderAllTables:", error);
     }

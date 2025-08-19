@@ -287,6 +287,68 @@
   height: 32px;
 }
 
+/* Apply similar styles to encontroContasEmpenhosContent */
+#encontroContasEmpenhosContent .card-content {
+  padding-top: 8px !important;
+}
+
+#encontroContasEmpenhosContent .valor-principal {
+  margin: 0px 0px 4px 20px !important;
+  font-size: 30px;
+  color: #ff8000;
+  text-align: left;
+  font-weight: bold;
+}
+
+#encontroContasEmpenhosContent .valor-principal span {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+#encontroContasEmpenhosContent .linha {
+  display: flex;
+  align-items: flex-start;
+  margin: 0px 0px 0px 16px !important;
+  font-size: 10px;
+  white-space: nowrap;
+  justify-content: flex-start;
+  gap: 16px;
+}
+
+#encontroContasEmpenhosContent .linha div {
+  text-align: left;
+}
+
+#encontroContasEmpenhosContent .linha .valor-azul {
+  color: #00366f;
+  font-weight: bold;
+}
+
+#encontroContasEmpenhosContent .linha .valor-vermelho {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+#encontroContasEmpenhosContent .linha .divider {
+  border-left: 1px solid #ccc;
+  height: 32px;
+}
+
+#encontroContasEmpenhosContent .linha .dashboard-card-filter {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+#encontroContasEmpenhosContent .linha .dashboard-card-filter:hover {
+  background-color: #f8f9fa;
+}
+
+#encontroContasEmpenhosContent .linha .dashboard-card-filter.clickable {
+  cursor: pointer;
+}
+
 /* Encontro de contas specific card styling */
 .encontro-card {
   border-radius: 8px;
