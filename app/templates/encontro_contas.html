@@ -75,6 +75,19 @@ Executivo{% endblock %} {% block content %}
     </div>
   </div>
 
+  <!-- Topico Component - Movimentações Financeiras - Dynamic -->
+  <div id="encontro-contas-movimentacoes-topico-container">
+    <!-- Topico será carregado dinamicamente via JavaScript -->
+  </div>
+
+  <!-- Full-width 12-col chart container above the empenhos list -->
+  <div class="col-12 mb-4">
+    <div
+      id="grafico-financeiro-container"
+      style="width: 100%; height: 400px"
+    ></div>
+  </div>
+
   <div class="row mb-4" style="min-height: 250px">
     <!-- Empenhos Card -->
     <div class="col-12 col-md-6 col-lg-4 p-1">
@@ -242,13 +255,7 @@ Executivo{% endblock %} {% block content %}
     </div>
   </div>
 
-  <!-- Full-width 12-col chart container above the empenhos list -->
-  <div class="col-12 mb-4">
-    <div
-      id="grafico-financeiro-container"
-      style="width: 100%; height: 400px"
-    ></div>
-  </div>
+  
 
   <!-- Empenhos Originais Section with Grid Financeiro and Movimentações -->
   <div class="row mb-4 encontro-cards-row">

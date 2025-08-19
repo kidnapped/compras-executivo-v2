@@ -83,6 +83,9 @@ export default {
         // Preenche o conteúdo dos cards
         this.encontroDeContas_fillCardContent();
         
+        // Inicializa o segundo tópico - Movimentações
+        this.encontroDeContas_initTopicoMovimentacoes();
+        
         // Inicializa o módulo completo
         this.encontroDeContas_fullInit();
         
@@ -123,6 +126,10 @@ export default {
       // Fill card content
       console.log("🎨 Filling card content...");
       this.encontroDeContas_fillCardContent();
+      
+      // Initialize second topico - Movimentações
+      console.log("📋 Initializing movimentações topico...");
+      this.encontroDeContas_initTopicoMovimentacoes();
       
       // Initialize containers
       console.log("📦 Initializing containers...");
@@ -240,6 +247,73 @@ export default {
       // Retry after a short delay if topico is not available yet
       setTimeout(() => {
         this.encontroDeContas_initTopico();
+      }, 500);
+    }
+  },
+
+  encontroDeContas_initTopicoMovimentacoes() {
+    console.log('🔧 Inicializando tópico de movimentações financeiras...');
+    
+    // Verificar se o container existe
+    const container = document.getElementById('encontro-contas-movimentacoes-topico-container');
+    console.log('📦 Container encontro-contas-movimentacoes-topico-container encontrado:', !!container);
+    
+    if (!container) {
+      console.error('❌ Container encontro-contas-movimentacoes-topico-container não encontrado!');
+      return;
+    }
+    
+    // Verifica se o módulo topico está disponível
+    if (typeof App !== "undefined" && App.topico && App.topico.topico_createDynamic) {
+      console.log('✅ Módulo App.topico disponível, criando tópico...');
+      
+      const topicoConfig = {
+        description: 'Análise detalhada das movimentações parciais e orçamentárias dos contratos',
+        icon: 'fas fa-exchange-alt',
+        tags: [
+          {
+            text: 'Parciais',
+            type: 'warning',
+            icon: 'fas fa-chart-line',
+            title: 'Movimentações parciais'
+          },
+          {
+            text: 'Orçamentárias',
+            type: 'success',
+            icon: 'fas fa-wallet',
+            title: 'Movimentações orçamentárias'
+          }
+        ],
+        actions: [
+          {
+            icon: 'fas fa-filter',
+            text: 'Filtros',
+            title: 'Aplicar filtros avançados',
+            onclick: 'App.encontroContas.encontroDeContas_showFilters()',
+            type: 'secondary'
+          },
+          {
+            icon: 'fas fa-download',
+            text: 'Baixar',
+            title: 'Baixar relatório',
+            onclick: 'App.encontroContas.encontroDeContas_downloadReport()',
+            type: 'secondary'
+          }
+        ]
+      };
+      
+      try {
+        App.topico.topico_createDynamic(topicoConfig, 'encontro-contas-movimentacoes-topico-container');
+        console.log('✅ Topico Movimentações Financeiras initialized dynamically');
+      } catch (error) {
+        console.error('❌ Erro ao criar tópico:', error);
+      }
+    } else {
+      console.warn('❌ Topico module not available - App:', typeof App, 'topico:', App?.topico ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
+      // Retry after a short delay if topico is not available yet
+      setTimeout(() => {
+        this.encontroDeContas_initTopicoMovimentacoes();
       }, 500);
     }
   },
@@ -688,6 +762,12 @@ export default {
     if (this.resizeHandler) {
       window.removeEventListener("resize", this.resizeHandler);
       this.resizeHandler = null;
+    }
+    
+    // Disconnect ResizeObserver
+    if (this.chartResizeObserver) {
+      this.chartResizeObserver.disconnect();
+      this.chartResizeObserver = null;
     }
     
     this.state = {
@@ -1427,6 +1507,21 @@ export default {
     
     // Add the new listener
     window.addEventListener("resize", this.resizeHandler);
+    
+    // Setup ResizeObserver for the chart container
+    if (this.state.containers?.chartContainer && window.ResizeObserver) {
+      if (this.chartResizeObserver) {
+        this.chartResizeObserver.disconnect();
+      }
+      
+      this.chartResizeObserver = new ResizeObserver((entries) => {
+        if (this.state.chart) {
+          this.state.chart.resize();
+        }
+      });
+      
+      this.chartResizeObserver.observe(this.state.containers.chartContainer);
+    }
   },
 
   // ===== HELPER METHODS FOR RENDERING =====
@@ -1989,15 +2084,13 @@ export default {
 
       // Initialize new chart
       this.state.chart = echarts.init(containers.chartContainer);
+      
+      // Ensure container has proper width immediately
+      containers.chartContainer.style.width = '100%';
 
       const chartData = this.encontroDeContas_prepareChartData();
 
       const option = {
-        title: {
-          text: "Movimentações Financeiras Parciais e Orçamentárias",
-          left: "center",
-          textStyle: { color: "#333", fontSize: 16 },
-        },
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "cross" },
@@ -2062,6 +2155,25 @@ export default {
       };
 
       this.state.chart.setOption(option);
+
+      // Force resize multiple times to ensure proper width
+      setTimeout(() => {
+        if (this.state.chart) {
+          this.state.chart.resize();
+        }
+      }, 100);
+      
+      setTimeout(() => {
+        if (this.state.chart) {
+          this.state.chart.resize();
+        }
+      }, 300);
+      
+      setTimeout(() => {
+        if (this.state.chart) {
+          this.state.chart.resize();
+        }
+      }, 500);
 
       // Handle window resize (using a shared resize handler)
       this.encontroDeContas_setupResizeHandler();
