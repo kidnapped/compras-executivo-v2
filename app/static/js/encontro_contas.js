@@ -80,8 +80,14 @@ export default {
         // Inicializa os card headers
         this.encontroDeContas_initCardHeadersMetodosEficiencia();
         
+        // Inicializa os card headers dos empenhos (nova seção)
+        this.encontroDeContas_initCardHeadersEmpenhos();
+        
         // Preenche o conteúdo dos cards
         this.encontroDeContas_fillCardContent();
+        
+        // Preenche o conteúdo dos cards de empenhos
+        this.encontroDeContas_fillCardContentEmpenhos();
         
         // Inicializa o segundo tópico - Movimentações
         this.encontroDeContas_initTopicoMovimentacoes();
@@ -123,9 +129,17 @@ export default {
       console.log("🎯 Initializing card headers...");
       this.encontroDeContas_initCardHeadersMetodosEficiencia();
       
+      // Initialize card headers for empenhos section
+      console.log("🎯 Initializing empenhos card headers...");
+      this.encontroDeContas_initCardHeadersEmpenhos();
+      
       // Fill card content
       console.log("🎨 Filling card content...");
       this.encontroDeContas_fillCardContent();
+      
+      // Fill empenhos card content
+      console.log("🎨 Filling empenhos card content...");
+      this.encontroDeContas_fillCardContentEmpenhos();
       
       // Initialize second topico - Movimentações
       console.log("📋 Initializing movimentações topico...");
@@ -360,6 +374,48 @@ export default {
     }
   },
 
+  // Nova função para inicializar os headers dos cards dos empenhos
+  encontroDeContas_initCardHeadersEmpenhos() {
+    console.log('🔧 Inicializando card headers de empenhos...');
+    
+    // Verifica se o módulo card header está disponível
+    if (typeof App !== "undefined" && App.card_header && App.card_header.card_header_createDynamic) {
+      
+      // Card 1 - Empenhos Originais
+      const empenhosOriginaisHeaderConfig = {
+        title: 'Empenhos Originais',
+        subtitle: 'Lista detalhada de empenhos originais',
+        icon: 'fas fa-file-contract'
+      };
+      App.card_header.card_header_createDynamic(empenhosOriginaisHeaderConfig, 'encontro-contas-empenho-originais-header');
+
+      // Card 2 - Orçamentário
+      const orcamentarioHeaderConfig = {
+        title: 'Orçamentário',
+        subtitle: 'Movimentações orçamentárias do contrato',
+        icon: 'fas fa-chart-pie'
+      };
+      App.card_header.card_header_createDynamic(orcamentarioHeaderConfig, 'encontro-contas-empenho-orcamentario-header');
+
+      // Card 3 - Financeiro
+      const financeiroHeaderConfig = {
+        title: 'Financeiro',
+        subtitle: 'Movimentações financeiras e pagamentos',
+        icon: 'fas fa-money-bill-wave'
+      };
+      App.card_header.card_header_createDynamic(financeiroHeaderConfig, 'encontro-contas-empenho-financeiro-header');
+
+      console.log('✅ Card headers Empenhos initialized dynamically');
+    } else {
+      console.warn('❌ Card header module not available - App:', typeof App, 'card_header:', App?.card_header ? 'exists' : 'missing');
+      console.warn('⏳ Retrying in 500ms...');
+      // Retry after a short delay if card_header is not available yet
+      setTimeout(() => {
+        this.encontroDeContas_initCardHeadersEmpenhos();
+      }, 500);
+    }
+  },
+
   // Nova função para preencher o conteúdo dos cards de métodos e eficiência
   encontroDeContas_fillCardContent() {
     console.log('🎨 Preenchendo conteúdo dos cards...');
@@ -528,6 +584,135 @@ export default {
     console.log('✅ Card content cleared successfully');
   },
 
+  // Nova função para preencher o conteúdo dos cards da seção de empenhos
+  encontroDeContas_fillCardContentEmpenhos() {
+    console.log('🎨 Preenchendo conteúdo dos cards de empenhos...');
+    
+    // Verificar se os dados estão disponíveis
+    if (!this.state.rawData) {
+      console.log('⏳ Dados ainda não carregados para cards de empenhos, preenchendo com placeholders...');
+      
+      // Empenhos Originais
+      const empenhosOriginaisElement = document.getElementById('encontroContasEmpenhoOriginaisContent');
+      if (empenhosOriginaisElement) {
+        empenhosOriginaisElement.innerHTML = `
+          <div class="card-summary">
+            <div class="summary-number">--</div>
+            <div class="summary-label">Empenhos</div>
+            <div class="summary-description">Dados sendo carregados...</div>
+          </div>
+        `;
+      }
+      
+      // Orçamentário
+      const orcamentarioElement = document.getElementById('encontroContasEmpenhoOrcamentarioContent');
+      if (orcamentarioElement) {
+        orcamentarioElement.innerHTML = `
+          <div class="card-summary">
+            <div class="summary-number">--</div>
+            <div class="summary-label">Movimentações</div>
+            <div class="summary-description">Dados sendo carregados...</div>
+          </div>
+        `;
+      }
+      
+      // Financeiro
+      const financeiroElement = document.getElementById('encontroContasEmpenhoFinanceiroContent');
+      if (financeiroElement) {
+        financeiroElement.innerHTML = `
+          <div class="card-summary">
+            <div class="summary-number">--</div>
+            <div class="summary-label">Pagamentos</div>
+            <div class="summary-description">Dados sendo carregados...</div>
+          </div>
+        `;
+      }
+      
+      console.log('⏳ Cards de empenhos preenchidos com placeholders');
+      return;
+    }
+    
+    // Card 1 - Empenhos Originais - NÃO SOBRESCREVER se já tem tabela renderizada
+    const empenhosOriginaisElement = document.getElementById('encontroContasEmpenhoOriginaisContent');
+    if (empenhosOriginaisElement) {
+      // Verificar se já tem uma tabela renderizada
+      const hasTable = empenhosOriginaisElement.querySelector('table');
+      
+      if (hasTable) {
+        console.log('📋 Card de empenhos originais já tem tabela renderizada, não sobrescrevendo...');
+      } else if (this.state.rawData?.empenhos_data) {
+        console.log('📊 Preenchendo card de empenhos originais com dados (sem tabela)...');
+        
+        const empenhosData = this.state.rawData.empenhos_data;
+        const totalEmpenhos = empenhosData.length;
+        
+        empenhosOriginaisElement.innerHTML = `
+          <div class="card-summary">
+            <div class="summary-number">${totalEmpenhos}</div>
+            <div class="summary-label">Empenhos</div>
+            <div class="summary-description">Clique em "Carregar Dados" para ver a tabela</div>
+          </div>
+        `;
+        
+        console.log('✅ Card de empenhos originais preenchido com dados de resumo!');
+      }
+    }
+
+    // Card 2 - Orçamentário - Preencher com dados de movimentações orçamentárias
+    const orcamentarioElement = document.getElementById('encontroContasEmpenhoOrcamentarioContent');
+    if (orcamentarioElement) {
+      if (this.state.rawData?.empenhos_data) {
+        console.log('📊 Preenchendo card orçamentário com dados...');
+        
+        // Calcular total de movimentações orçamentárias
+        let totalMovimentacoes = 0;
+        this.state.rawData.empenhos_data.forEach(empenho => {
+          if (empenho.orcamentario && Array.isArray(empenho.orcamentario)) {
+            totalMovimentacoes += empenho.orcamentario.length;
+          }
+        });
+        
+        orcamentarioElement.innerHTML = `
+          <div class="card-summary">
+            <div class="summary-number">${totalMovimentacoes}</div>
+            <div class="summary-label">Movimentações</div>
+            <div class="summary-description">Total de operações orçamentárias</div>
+          </div>
+        `;
+        
+        console.log('✅ Card orçamentário preenchido com sucesso!');
+      }
+    }
+
+    // Card 3 - Financeiro - Preencher com dados de movimentações financeiras
+    const financeiroElement = document.getElementById('encontroContasEmpenhoFinanceiroContent');
+    if (financeiroElement) {
+      if (this.state.rawData?.empenhos_data) {
+        console.log('📊 Preenchendo card financeiro com dados...');
+        
+        // Calcular total de movimentações financeiras
+        let totalPagamentos = 0;
+        this.state.rawData.empenhos_data.forEach(empenho => {
+          if (empenho.financas && Array.isArray(empenho.financas)) {
+            totalPagamentos += empenho.financas.length;
+          }
+        });
+        
+        financeiroElement.innerHTML = `
+          <div class="card-summary">
+            <div class="summary-number">${totalPagamentos}</div>
+            <div class="summary-label">Pagamentos</div>
+            <div class="summary-description">Total de operações financeiras</div>
+          </div>
+        `;
+        
+        console.log('✅ Card financeiro preenchido com sucesso!');
+      }
+    }
+
+    console.log('✅ Cards de empenhos preenchidos successfully');
+  },
+
   async encontroDeContas_loadInitialData() {
     try {
       // Verificar se já está carregando dados (proteção contra múltiplas chamadas da API)
@@ -587,6 +772,10 @@ export default {
       // Fill card content with data now that it's available
       console.log("🎨 Filling card content with loaded data...");
       this.encontroDeContas_fillCardContent();
+      
+      // Fill empenhos card content with data now that it's available
+      console.log("🎨 Filling empenhos card content with loaded data...");
+      this.encontroDeContas_fillCardContentEmpenhos();
     } catch (error) {
       console.error("❌ Error loading initial data:", error);
       this.encontroDeContas_showError("Erro ao carregar dados do contrato. Tente novamente.");
@@ -627,15 +816,60 @@ export default {
   },
 
   encontroDeContas_setupEventListeners() {
-    // Handle clicks on empenho rows
+    console.log("🎧 Setting up event listeners...");
+    
+    // Primeiro, tenta configurar no container novo (dentro do card)
+    const empenhosOriginaisContainer = document.getElementById('encontroContasEmpenhoOriginaisContent');
+    if (empenhosOriginaisContainer) {
+      const tableInCard = empenhosOriginaisContainer.querySelector('#empenhos-originais-tbody');
+      if (tableInCard) {
+        console.log("📋 Setting up event listeners on table inside card...");
+        
+        // Remove event listeners existentes para evitar duplicação
+        const existingTable = empenhosOriginaisContainer.querySelector('table');
+        if (existingTable) {
+          // Clone o elemento para remover todos os event listeners
+          const newTable = existingTable.cloneNode(true);
+          existingTable.parentNode.replaceChild(newTable, existingTable);
+          
+          // Agora adiciona o event listener no novo elemento
+          const newTbody = newTable.querySelector('#empenhos-originais-tbody');
+          if (newTbody) {
+            newTbody.addEventListener("click", (e) => {
+              const row = e.target.closest("tr[data-empenho-numero]");
+              if (row) {
+                console.log("🖱️ Row clicked in card table:", row.dataset.empenhoNumero);
+                this.encontroDeContas_handleEmpenhoRowClick(row);
+              }
+            });
+            console.log("✅ Event listeners set up on card table");
+            return; // Sucesso, não precisa do fallback
+          }
+        }
+      }
+    }
+    
+    // Fallback: Handle clicks on empenho rows (método original)
+    console.log("📋 Setting up event listeners on fallback table...");
     const containers = this.encontroDeContas_initContainers();
     if (containers.empenhosTable) {
-      containers.empenhosTable.addEventListener("click", (e) => {
+      // Remove event listeners existentes para evitar duplicação
+      const newTbody = containers.empenhosTable.cloneNode(true);
+      containers.empenhosTable.parentNode.replaceChild(newTbody, containers.empenhosTable);
+      
+      // Update container reference
+      this.state.containers.empenhosTable = newTbody;
+      
+      newTbody.addEventListener("click", (e) => {
         const row = e.target.closest("tr[data-empenho-numero]");
         if (row) {
+          console.log("🖱️ Row clicked in fallback table:", row.dataset.empenhoNumero);
           this.encontroDeContas_handleEmpenhoRowClick(row);
         }
       });
+      console.log("✅ Event listeners set up on fallback table");
+    } else {
+      console.warn("❌ No table found for event listeners setup");
     }
   },
 
@@ -666,9 +900,21 @@ export default {
   },
 
   encontroDeContas_clearRowHighlight() {
+    console.log("🎨 Clearing row highlights...");
+    
+    // Primeiro, limpar highlights no container do card
+    const empenhosOriginaisContainer = document.getElementById('encontroContasEmpenhoOriginaisContent');
+    if (empenhosOriginaisContainer) {
+      const selectedRowsInCard = empenhosOriginaisContainer.querySelectorAll(".selected-empenho");
+      selectedRowsInCard?.forEach((row) => {
+        row.classList.remove("selected-empenho");
+        row.style.backgroundColor = "";
+      });
+    }
+    
+    // Fallback: limpar highlights no container original
     const containers = this.encontroDeContas_initContainers();
-    const selectedRows =
-      containers.empenhosTable?.querySelectorAll(".selected-empenho");
+    const selectedRows = containers.empenhosTable?.querySelectorAll(".selected-empenho");
     selectedRows?.forEach((row) => {
       row.classList.remove("selected-empenho");
       row.style.backgroundColor = "";
@@ -748,6 +994,10 @@ export default {
       // Update card content after rendering tables
       console.log("🎨 Updating card content after rendering...");
       this.encontroDeContas_fillCardContent();
+      
+      // Update empenhos card content after rendering tables
+      console.log("🎨 Updating empenhos card content after rendering...");
+      this.encontroDeContas_fillCardContentEmpenhos();
     } catch (error) {
       console.error("❌ Critical error in renderAllTables:", error);
     }
@@ -756,6 +1006,158 @@ export default {
   encontroDeContas_renderEmpenhosTable() {
     console.log("🎯 Rendering Empenhos table...");
     
+    // Primeiro, tente encontrar o container do card de empenhos originais
+    const empenhosOriginaisContainer = document.getElementById('encontroContasEmpenhoOriginaisContent');
+    
+    if (empenhosOriginaisContainer) {
+      console.log("📦 Renderizando tabela dentro do encontroContasEmpenhoOriginaisContent");
+      
+      if (!this.state.rawData?.empenhos_data) {
+        console.warn("❌ No empenhos data available!");
+        empenhosOriginaisContainer.innerHTML = `
+          <div class="text-center text-muted" style="padding: 40px;">
+            <i class="fas fa-search fa-2x mb-3"></i>
+            <br />
+            Realize uma busca para visualizar os empenhos originais
+          </div>
+        `;
+        return;
+      }
+
+      const empenhos = this.state.rawData.empenhos_data;
+      console.log(`📋 Processing ${empenhos.length} empenhos...`);
+
+      const htmlRows = empenhos
+        .map((empenho, index) => {
+          // Extract data using the correct structure
+          const empenhoNumber = empenho.prefixed_numero || empenho.empenho?.numero || 'N/A';
+          const empenhoData = empenho.empenho || {};
+          
+          // Only log first empenho for debugging
+          if (index === 0) {
+            console.log(`Processing first empenho:`, empenhoNumber);
+            console.log(`Empenho data structure:`, {
+              prefixed_numero: empenho.prefixed_numero,
+              empenho_numero: empenhoData.numero,
+              empenhado: empenhoData.empenhado,
+              data_emissao: empenhoData.data_emissao
+            });
+          }
+          
+          const isRap = this.encontroDeContas_checkForRapOperations(empenho);
+          const rapBadge = isRap
+            ? '<span class="badge bg-warning text-dark ms-1">RAP</span>'
+            : "";
+
+          const orcamentarioTotal = this.encontroDeContas_calculateOrcamentarioTotal(empenho);
+          const financasTotal = this.encontroDeContas_calculateFinancasTotal(empenho);
+          const saldo = this.encontroDeContas_safeMathSubtract(orcamentarioTotal, financasTotal);
+
+          // Log totals for first empenho
+          if (index === 0) {
+            console.log(`Totals for first empenho:`, {
+              orcamentario: orcamentarioTotal,
+              financas: financasTotal,
+              saldo: saldo
+            });
+          }
+
+          // Format dates - use the correct field from empenho data
+          const dataEmissao = this.encontroDeContas_formatDate(empenhoData.data_emissao);
+
+          // Calculate percentage for status
+          const percentage = this.encontroDeContas_calculateStatusPercentage(
+            financasTotal,
+            orcamentarioTotal
+          );
+          const statusBadge = this.encontroDeContas_getPercentageStatusBadge(percentage.percentage);
+
+          return `
+            <tr data-empenho-numero="${empenhoNumber}" style="cursor: pointer;" 
+                class="empenho-row" 
+                title="Clique para filtrar por este empenho">
+              <td>${index + 1}</td>
+              <td>
+                <span class="badge bg-primary">${empenhoData.sistema_origem || "N/A"}</span>
+              </td>
+              <td>
+                <strong>${empenhoData.numero || empenhoNumber}</strong>
+                ${rapBadge}
+              </td>
+              <td>${dataEmissao}</td>
+              <td class="text-end">
+                <strong>${this.encontroDeContas_formatCurrency(empenhoData.empenhado || 0)}</strong>
+              </td>
+              <td>
+                <span class="badge bg-info">${empenhoData.modalidade_licitacao_siafi || "N/A"}</span>
+              </td>
+              <td class="text-end">
+                <span class="text-primary fw-bold">
+                  ${this.encontroDeContas_formatCurrency(orcamentarioTotal)}
+                </span>
+              </td>
+              <td class="text-end">
+                <span class="text-success fw-bold">
+                  ${this.encontroDeContas_formatCurrency(financasTotal)}
+                </span>
+              </td>
+              <td class="text-end">
+                <span class="fw-bold ${saldo >= 0 ? "text-info" : "text-danger"}">
+                  ${this.encontroDeContas_formatCurrencyAggressive(saldo)}
+                </span>
+              </td>
+              <td>
+                <span class="badge ${statusBadge}">${percentage.display}</span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-secondary" 
+                        onclick="alert('Funcionalidade em desenvolvimento')"
+                        title="Ver detalhes">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      // Renderizar a tabela completa dentro do container
+      empenhosOriginaisContainer.innerHTML = `
+        <div class="table-responsive" style="height: 100%; overflow-y: auto;">
+          <table class="br-table table-hover table-striped">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="width: 10px; border: none">#</th>
+                <th style="width: 10px; border: none"></th>
+                <th style="border: none">Empenho</th>
+                <th style="border: none">Data</th>
+                <th style="border: none">Valor</th>
+                <th style="border: none">Orçamentário</th>
+                <th style="border: none">Financeiro</th>
+                <th style="border: none">Saldo</th>
+                <th style="border: none">Status</th>
+                <th style="width: 10px; border: none"></th>
+                <th style="width: 10px; border: none"></th>
+              </tr>
+            </thead>
+            <tbody id="empenhos-originais-tbody">
+              ${htmlRows}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      console.log(`📝 Generated complete table with ${empenhos.length} rows inside encontroContasEmpenhoOriginaisContent`);
+      console.log("✅ Empenhos table rendered successfully");
+      
+      // Re-setup event listeners após renderizar a tabela
+      console.log("🎧 Re-setting up event listeners after table render...");
+      this.encontroDeContas_setupEventListeners();
+      
+      return;
+    }
+    
+    // Fallback para o método original caso o container não seja encontrado
     const containers = this.encontroDeContas_initContainers();
     console.log("📦 Containers check:", {
       empenhosTable: !!containers.empenhosTable,
@@ -874,6 +1276,10 @@ export default {
     console.log(`📝 Generated HTML for ${empenhos.length} rows`);
     containers.empenhosTable.innerHTML = htmlRows;
     console.log("✅ Empenhos table rendered successfully");
+    
+    // Re-setup event listeners após renderizar a tabela (fallback)
+    console.log("🎧 Re-setting up event listeners after fallback table render...");
+    this.encontroDeContas_setupEventListeners();
   },
 
   // Auto-initialization function with proper naming convention
