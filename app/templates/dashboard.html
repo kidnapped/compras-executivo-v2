@@ -1,28 +1,6 @@
 {% extends "app/base.html" %} {% block title %}Dashboard - Compras Executivo{%
 endblock %} {% block content %}
 
-<style>
-  .sortable-header {
-    transition: background-color 0.2s ease;
-  }
-
-  .sortable-header:hover {
-    background-color: #f0f0f0 !important;
-  }
-
-  .sortable-header:active {
-    background-color: #e6e6e6 !important;
-  }
-
-  .sort-icon {
-    transition: color 0.2s ease;
-  }
-
-  .sortable-header:hover .sort-icon {
-    color: #1351b4 !important;
-  }
-</style>
-
 <div class="dashboard-page">
   <div class="container-fluid">
     <!-- Breadcrumb Component - Dynamic -->
@@ -288,7 +266,7 @@ endblock %} {% block content %}
                         user-select: none;
                       "
                       data-sort="numero"
-                      title="Clique para ordenar por número do contrato"
+                      title="Clique para ordenar por número do contrato e ano"
                     >
                       <div
                         style="

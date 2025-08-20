@@ -414,6 +414,29 @@ input[type="number"] {
   box-shadow: 0 0 0 2px #8f9dd2;
 }
 
+/* ===================== SORTABLE TABLE HEADERS ===================== */
+
+/* Sortable header styles */
+.sortable-header {
+  transition: background-color 0.2s ease;
+}
+
+.sortable-header:hover {
+  background-color: #f0f0f0 !important;
+}
+
+.sortable-header:active {
+  background-color: #e6e6e6 !important;
+}
+
+.sort-icon {
+  transition: color 0.2s ease;
+}
+
+.sortable-header:hover .sort-icon {
+  color: #1351b4 !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 991px) {
   #card-contratos-container .sidebar-card {

@@ -479,7 +479,7 @@ async def get_contratos_lista(
                         "numero": "c.numero",
                         "ano": "EXTRACT(YEAR FROM c.vigencia_inicio)",
                         "fornecedor": "f.nome",
-                        "valor": "c.valor_inicial",
+                        "valor": "c.valor_inicial::numeric",
                         "vigencia_fim": "c.vigencia_fim",
                         "objeto": "c.objeto",
                         "valor_empenhado": "(SELECT COALESCE(SUM(e.empenhado::numeric), 0) FROM contratoempenhos ce LEFT JOIN empenhos e ON ce.empenho_id = e.id WHERE ce.contrato_id = c.id)",
@@ -487,9 +487,15 @@ async def get_contratos_lista(
                     }
                     
                     if column in column_mapping:
-                        db_column = column_mapping[column]
-                        direction = direction.upper() if direction.upper() in ["ASC", "DESC"] else "ASC"
-                        order_clauses.append(f"{db_column} {direction}")
+                        if column == "numero":
+                            # For numero sorting, sort by number first, then by year
+                            direction_str = direction.upper() if direction.upper() in ["ASC", "DESC"] else "ASC"
+                            order_clauses.append(f"c.numero {direction_str}")
+                            order_clauses.append(f"EXTRACT(YEAR FROM c.vigencia_inicio) {direction_str}")
+                        else:
+                            db_column = column_mapping[column]
+                            direction_str = direction.upper() if direction.upper() in ["ASC", "DESC"] else "ASC"
+                            order_clauses.append(f"{db_column} {direction_str}")
         except (json.JSONDecodeError, ValueError, KeyError):
             order_clauses = ["c.vigencia_inicio DESC"]
     
