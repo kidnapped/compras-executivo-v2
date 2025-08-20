@@ -21,8 +21,6 @@ export default {
     // Always re-query containers for SPA navigation compatibility
     this.state.containers = {
       empenhosTable: document.querySelector("#empenhos-originais-tbody"),
-      financeiroTable: document.querySelector("#financeiro-grid-tbody"),
-      movimentacoesTable: document.querySelector("#movimentacoes-tbody"),
       chartContainer: document.querySelector("#grafico-financeiro-container"),
       ultimosLancamentosContainer: document.querySelector(
         "#ultimos-lancamentos-container"
@@ -658,11 +656,16 @@ export default {
       }
     }
 
-    // Card 2 - Orçamentário - Preencher com dados de movimentações orçamentárias
+    // Card 2 - Orçamentário - NÃO SOBRESCREVER se já tem tabela renderizada
     const orcamentarioElement = document.getElementById('encontroContasEmpenhoOrcamentarioContent');
     if (orcamentarioElement) {
-      if (this.state.rawData?.empenhos_data) {
-        console.log('📊 Preenchendo card orçamentário com dados...');
+      // Verificar se já tem uma tabela renderizada
+      const hasTable = orcamentarioElement.querySelector('table');
+      
+      if (hasTable) {
+        console.log('📋 Card orçamentário já tem tabela renderizada, não sobrescrevendo...');
+      } else if (this.state.rawData?.empenhos_data) {
+        console.log('📊 Preenchendo card orçamentário com dados (sem tabela)...');
         
         // Calcular total de movimentações orçamentárias
         let totalMovimentacoes = 0;
@@ -676,19 +679,24 @@ export default {
           <div class="card-summary">
             <div class="summary-number">${totalMovimentacoes}</div>
             <div class="summary-label">Movimentações</div>
-            <div class="summary-description">Total de operações orçamentárias</div>
+            <div class="summary-description">Clique em um empenho para ver as movimentações</div>
           </div>
         `;
         
-        console.log('✅ Card orçamentário preenchido com sucesso!');
+        console.log('✅ Card orçamentário preenchido com dados de resumo!');
       }
     }
 
-    // Card 3 - Financeiro - Preencher com dados de movimentações financeiras
+    // Card 3 - Financeiro - NÃO SOBRESCREVER se já tem tabela renderizada
     const financeiroElement = document.getElementById('encontroContasEmpenhoFinanceiroContent');
     if (financeiroElement) {
-      if (this.state.rawData?.empenhos_data) {
-        console.log('📊 Preenchendo card financeiro com dados...');
+      // Verificar se já tem uma tabela renderizada
+      const hasTable = financeiroElement.querySelector('table');
+      
+      if (hasTable) {
+        console.log('📋 Card financeiro já tem tabela renderizada, não sobrescrevendo...');
+      } else if (this.state.rawData?.empenhos_data) {
+        console.log('📊 Preenchendo card financeiro com dados (sem tabela)...');
         
         // Calcular total de movimentações financeiras
         let totalPagamentos = 0;
@@ -702,11 +710,11 @@ export default {
           <div class="card-summary">
             <div class="summary-number">${totalPagamentos}</div>
             <div class="summary-label">Pagamentos</div>
-            <div class="summary-description">Total de operações financeiras</div>
+            <div class="summary-description">Clique em um empenho para ver os pagamentos</div>
           </div>
         `;
         
-        console.log('✅ Card financeiro preenchido com sucesso!');
+        console.log('✅ Card financeiro preenchido com dados de resumo!');
       }
     }
 
@@ -1721,100 +1729,191 @@ export default {
   encontroDeContas_renderFinanceiroTable() {
     console.log("📊 Rendering Financeiro table...");
     
-    const containers = this.encontroDeContas_initContainers();
-    if (!containers.financeiroTable || !this.state.filteredData?.empenhos_data) {
-      console.warn("❌ Financeiro table container or data not available!");
-      return;
-    }
+    // Primeiro, tente encontrar o container do card de financeiro
+    const financeiroContainer = document.getElementById('encontroContasEmpenhoFinanceiroContent');
+    
+    if (financeiroContainer) {
+      console.log("📦 Renderizando tabela de financeiro dentro do encontroContasEmpenhoFinanceiroContent");
+      
+      if (!this.state.filteredData?.empenhos_data) {
+        console.warn("❌ No financeiro data available!");
+        financeiroContainer.innerHTML = `
+          <div class="text-center text-muted" style="padding: 40px;">
+            <i class="fas fa-coins fa-2x mb-3"></i>
+            <br />
+            Dados financeiros carregados automaticamente
+          </div>
+        `;
+        return;
+      }
 
-    const financialRows = [];
+      const financialRows = [];
 
-    this.state.filteredData.empenhos_data.forEach((empenho) => {
-      // Handle new nested structure under Finanças
-      const financas = empenho.Finanças || {};
+      this.state.filteredData.empenhos_data.forEach((empenho) => {
+        // Handle new nested structure under Finanças
+        const financas = empenho.Finanças || {};
 
-      // Decide OB source: prefer grouped totals if available
-      const hasGroupedOB = Array.isArray(financas.ob_grouped) && financas.ob_grouped.length > 0;
-      const obDocType = hasGroupedOB ? "ob_grouped" : "linha_evento_ob";
-      const obData = hasGroupedOB ? financas.ob_grouped : financas.linha_evento_ob || empenho.linha_evento_ob || [];
+        // Decide OB source: prefer grouped totals if available
+        const hasGroupedOB = Array.isArray(financas.ob_grouped) && financas.ob_grouped.length > 0;
+        const obDocType = hasGroupedOB ? "ob_grouped" : "linha_evento_ob";
+        const obData = hasGroupedOB ? financas.ob_grouped : financas.linha_evento_ob || empenho.linha_evento_ob || [];
 
-      // Process different document types from nested structure or fallback to old structure
-      const docTypes = [
-        { key: "documentos_dar", data: financas.documentos_dar || empenho.documentos_dar || [] },
-        { key: "documentos_darf", data: financas.documentos_darf || empenho.documentos_darf || [] },
-        { key: "documentos_gps", data: financas.documentos_gps || empenho.documentos_gps || [] },
-        { key: obDocType, data: obData },
-      ];
+        // Process different document types from nested structure or fallback to old structure
+        const docTypes = [
+          { key: "documentos_dar", data: financas.documentos_dar || empenho.documentos_dar || [] },
+          { key: "documentos_darf", data: financas.documentos_darf || empenho.documentos_darf || [] },
+          { key: "documentos_gps", data: financas.documentos_gps || empenho.documentos_gps || [] },
+          { key: obDocType, data: obData },
+        ];
 
-      docTypes.forEach((docType) => {
-        docType.data.forEach((doc) => {
-          financialRows.push(this.encontroDeContas_createFinancialRow(doc, docType.key));
+        docTypes.forEach((docType) => {
+          docType.data.forEach((doc) => {
+            financialRows.push(this.encontroDeContas_createFinancialRow(doc, docType.key));
+          });
         });
       });
-    });
 
-    containers.financeiroTable.innerHTML = financialRows
-      .map((row, index) => `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${row.date}</td>
-          <td>${row.documentId}</td>
-          <td><a href="https://portaldatransparencia.gov.br/despesas/pagamento/${row.fullDocumentId}?ordenarPor=fase&direcao=asc" 
-                 target="_blank" class="btn btn-sm btn-outline-primary">
-                 <i class="fas ${row.icon}" style="color: ${row.iconColor}; font-size: 10px;"></i>
-              </a></td>
-          <td>${row.type}</td>
-          <td>${this.encontroDeContas_formatCurrency(row.parcial)}</td>
-          <td>${this.encontroDeContas_formatCurrency(row.nominal)}</td>
-        </tr>
-      `)
-      .join("");
+      // Renderizar a tabela completa no container do card
+      financeiroContainer.innerHTML = `
+        <div class="table-responsive" style="height: 100%; overflow-y: auto;">
+          <table class="br-table table-hover table-striped">
+            <thead style="background-color: #f8f8f8; position: sticky; top: 0; z-index: 10;">
+              <tr>
+                <th style="width: 40px; border: none">#</th>
+                <th style="border: none">Data</th>
+                <th style="border: none">Pagamento</th>
+                <th style="width: 50px; border: none"></th>
+                <th style="border: none">Tipo</th>
+                <th style="border: none">Parcial</th>
+                <th style="border: none">Nominal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${financialRows.length > 0 ? 
+                financialRows.map((row, index) => `
+                  <tr data-document-id="${row.documentId}" style="cursor: pointer;" 
+                      class="financeiro-row" 
+                      title="Clique para filtrar por este documento">
+                    <td>${index + 1}</td>
+                    <td>${row.date}</td>
+                    <td>${row.documentId}</td>
+                    <td><a href="https://portaldatransparencia.gov.br/despesas/pagamento/${row.fullDocumentId}?ordenarPor=fase&direcao=asc" 
+                           target="_blank" class="btn btn-sm btn-outline-primary">
+                           <i class="fas ${row.icon}" style="color: ${row.iconColor}; font-size: 10px;"></i>
+                        </a></td>
+                    <td>${row.type}</td>
+                    <td>${this.encontroDeContas_formatCurrency(row.parcial)}</td>
+                    <td>${this.encontroDeContas_formatCurrency(row.nominal)}</td>
+                  </tr>
+                `).join("") : 
+                `<tr>
+                  <td colspan="7" class="text-center" style="padding: 40px">
+                    <div class="text-muted">
+                      <i class="fas fa-coins fa-2x mb-3"></i>
+                      <br />
+                      Nenhum dado financeiro encontrado
+                    </div>
+                  </td>
+                </tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+      `;
 
-    console.log("✅ Financeiro table rendered successfully");
+      console.log("✅ Financeiro table rendered successfully in card");
+      
+      // Re-configurar event listeners
+      this.encontroDeContas_setupEventListeners();
+      return;
+    }
+    
+    // Se o card não existir, não há nada mais a fazer
+    console.warn("❌ Card de financeiro não encontrado!");
   },
 
   encontroDeContas_renderMovimentacoesTable() {
     console.log("📊 Rendering Movimentações table...");
     
-    const containers = this.encontroDeContas_initContainers();
-    if (!containers.movimentacoesTable || !this.state.filteredData?.empenhos_data) {
-      console.warn("❌ Movimentações table container or data not available!");
+    // Primeiro, tente encontrar o container do card de orçamentário
+    const orcamentarioContainer = document.getElementById('encontroContasEmpenhoOrcamentarioContent');
+    
+    if (orcamentarioContainer) {
+      console.log("📦 Renderizando tabela de movimentações dentro do encontroContasEmpenhoOrcamentarioContent");
+      
+      if (!this.state.filteredData?.empenhos_data) {
+        console.warn("❌ No movimentações data available!");
+        orcamentarioContainer.innerHTML = `
+          <div class="text-center text-muted" style="padding: 40px;">
+            <i class="fas fa-exchange-alt fa-2x mb-3"></i>
+            <br />
+            Dados de movimentações carregados automaticamente
+          </div>
+        `;
+        return;
+      }
+
+      const movimentacoes = [];
+
+      this.state.filteredData.empenhos_data.forEach((empenho) => {
+        // Handle new nested structure: Orçamentário.operacoes or fallback to old structure
+        const orcamentario = empenho.Orçamentário?.operacoes || empenho.Ne_item?.operacoes || empenho.Orçamentário || [];
+
+        if (Array.isArray(orcamentario)) {
+          orcamentario.forEach((op) => {
+            movimentacoes.push({
+              data: this.encontroDeContas_formatDateFromOperacao(op.dt_operacao), // Use specialized formatting
+              empenho: empenho.empenho?.numero,
+              item: op.ds_item || this.encontroDeContas_getItemDescription(op.id_item, empenho),
+              especie: op.no_operacao,
+              valor: op.va_operacao_display !== undefined ? op.va_operacao_display : op.va_operacao, // Show original RP amounts
+            });
+          });
+        }
+      });
+
+      const htmlRows = movimentacoes
+        .map((mov, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${mov.data}</td>
+            <td>${mov.empenho || "N/A"}</td>
+            <td><i class="fas fa-tag" style="color: #ff9800;"></i></td>
+            <td>${mov.especie || "N/A"}</td>
+            <td>${this.encontroDeContas_formatCurrency(mov.valor || 0)}</td>
+          </tr>
+        `)
+        .join("");
+
+      // Renderizar a tabela completa dentro do container
+      orcamentarioContainer.innerHTML = `
+        <div class="table-responsive" style="height: 100%; overflow-y: auto;">
+          <table class="br-table table-hover table-striped">
+            <thead style="background-color: #f8f8f8">
+              <tr>
+                <th style="width: 40px; border: none">#</th>
+                <th style="border: none">Data</th>
+                <th style="border: none">Empenho</th>
+                <th style="width: 50px; border: none"></th>
+                <th style="border: none">Espécie</th>
+                <th style="border: none">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${htmlRows}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      console.log(`📝 Generated complete movimentações table with ${movimentacoes.length} rows inside encontroContasEmpenhoOrcamentarioContent`);
+      console.log("✅ Movimentações table rendered successfully");
+      
       return;
     }
-
-    const movimentacoes = [];
-
-    this.state.filteredData.empenhos_data.forEach((empenho) => {
-      // Handle new nested structure: Orçamentário.operacoes or fallback to old structure
-      const orcamentario = empenho.Orçamentário?.operacoes || empenho.Ne_item?.operacoes || empenho.Orçamentário || [];
-
-      if (Array.isArray(orcamentario)) {
-        orcamentario.forEach((op) => {
-          movimentacoes.push({
-            data: this.encontroDeContas_formatDateFromOperacao(op.dt_operacao), // Use specialized formatting
-            empenho: empenho.empenho?.numero,
-            item: op.ds_item || this.encontroDeContas_getItemDescription(op.id_item, empenho),
-            especie: op.no_operacao,
-            valor: op.va_operacao_display !== undefined ? op.va_operacao_display : op.va_operacao, // Show original RP amounts
-          });
-        });
-      }
-    });
-
-    containers.movimentacoesTable.innerHTML = movimentacoes
-      .map((mov, index) => `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${mov.data}</td>
-          <td>${mov.empenho || "N/A"}</td>
-          <td><i class="fas fa-tag" style="color: #ff9800;"></i></td>
-          <td>${mov.especie || "N/A"}</td>
-          <td>${this.encontroDeContas_formatCurrency(mov.valor || 0)}</td>
-        </tr>
-      `)
-      .join("");
-
-    console.log("✅ Movimentações table rendered successfully");
+    
+    // Se o card não existir, não há nada mais a fazer
+    console.warn("❌ Card de orçamentário não encontrado!");
   },
 
   encontroDeContas_renderUltimosLancamentos() {
