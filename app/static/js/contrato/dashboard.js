@@ -1686,36 +1686,66 @@ export default {
             ? "180px"
             : "120px"
         };">
-          ${
-            this.getResponsaveisArray(contract.responsaveis).length > 0
-              ? this.getResponsaveisArray(contract.responsaveis)
-                  .map(
-                    (resp) => `
-                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
-                        <i class=\"fas fa-user\" style=\"color: #003366; font-size: 16px; opacity: 0.85;\"></i>
-                        ${
-                          resp.user_id
-                            ? `<a href="#" 
-                             class="responsavel-filter-link" 
-                             data-user-id="${resp.user_id}"
-                             style="color: #1351b4; text-decoration: none; font-size: 14px; word-break: break-word;"
-                             title="Clique para filtrar contratos deste responsável">
-                             ${resp.name.trim()}
-                           </a>`
-                            : `<span style=\"font-size: 14px; color: #222; word-break: break-word;\">${resp.name.trim()}</span>`
-                        }
-                      </div>
-                    `
-                  )
-                  .join("")
-              : `<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px;\">
-                    <i class=\"fas fa-exclamation-triangle\" style=\"color: #e52207; font-size: 22px; margin-bottom: 4px;\"></i>
-                    <span style=\"color: #888; font-size: 13px; text-align: center;\">Nenhuma designação atribuída para este contrato</span>
-                 </div>`
-          }
+          ${this.renderResponsaveisColumn(contract)}
         </td>
       </tr>
     `;
+  },
+
+  // Render responsaveis column with "show more" functionality
+  renderResponsaveisColumn(contract) {
+    const responsaveis = this.getResponsaveisArray(contract.responsaveis);
+
+    if (responsaveis.length === 0) {
+      return `<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px;\">
+                <i class=\"fas fa-exclamation-triangle\" style=\"color: #e52207; font-size: 22px; margin-bottom: 4px;\"></i>
+                <span style=\"color: #888; font-size: 13px; text-align: center;\">Nenhuma designação atribuída para este contrato</span>
+             </div>`;
+    }
+
+    // Show only first 3 responsaveis
+    const visibleResponsaveis = responsaveis.slice(0, 3);
+    const hiddenCount = responsaveis.length - 3;
+
+    let html = visibleResponsaveis
+      .map(
+        (resp) => `
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+            <a href="#" 
+               class="responsaveis-action" 
+               data-contract-id="${contract.id}"
+               data-contract-numero="${contract.numero}"
+               data-contract-ano="${contract.ano}"
+               data-responsaveis-count="${responsaveis.length}"
+               style="color: #1351b4; text-decoration: none; font-size: 10px; word-break: break-word;"
+               title="Ver todos os responsáveis deste contrato">
+               ${resp.name.trim()}
+            </a>
+          </div>
+        `
+      )
+      .join("");
+
+    // Add "show more" button if there are more than 3 responsaveis
+    if (hiddenCount > 0) {
+      html += `
+        <div style="margin-top: 8px;">
+          <a href="#" 
+             class="responsaveis-action" 
+             data-contract-id="${contract.id}"
+             data-contract-numero="${contract.numero}"
+             data-contract-ano="${contract.ano}"
+             data-responsaveis-count="${responsaveis.length}"
+             style="color: #1351b4; text-decoration: none; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px;"
+             title="Ver todos os responsáveis">
+            <i class="fas fa-plus-circle" style="font-size: 12px;"></i>
+            Ver mais ${hiddenCount} responsável${hiddenCount > 1 ? "eis" : ""}
+          </a>
+        </div>
+      `;
+    }
+
+    return html;
   },
 
   // Helper function to convert responsaveis to array format

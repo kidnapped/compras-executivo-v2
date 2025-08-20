@@ -1,4 +1,5 @@
 import aditivosHandler from "./aditivos-handler.js";
+import responsaveisHandler from "./responsaveis-handler.js";
 
 export default {
   // Flag para evitar múltiplos listeners
@@ -34,6 +35,40 @@ export default {
       } else {
         // Call the specific handler to show the aditivos
         aditivosHandler.showAditivos(
+          contractId,
+          contractNumero,
+          contractAno,
+          count
+        );
+      }
+      return;
+    }
+
+    // Check if the click was on or inside an element meant to open the responsaveis modal
+    const responsaveisAction = event.target.closest(".responsaveis-action");
+    if (responsaveisAction) {
+      const {
+        contractId,
+        contractNumero,
+        contractAno,
+        responsaveisCount,
+        contractResponsaveisCount,
+      } = responsaveisAction.dataset;
+
+      // Prefer dataset.responsaveisCount, fallback to data-contract-responsaveis-count attribute
+      const count = Number(
+        responsaveisCount ??
+          contractResponsaveisCount ??
+          responsaveisAction.getAttribute("data-contract-responsaveis-count") ??
+          0
+      );
+
+      // If no responsaveis, show a warning message; otherwise open the modal
+      if (!Number.isNaN(count) && count <= 0) {
+        this.showDisabledFeatureWarning("responsaveis");
+      } else {
+        // Call the specific handler to show the responsaveis
+        responsaveisHandler.showResponsaveis(
           contractId,
           contractNumero,
           contractAno,
@@ -106,7 +141,20 @@ export default {
   },
 
   // Show Gov.BR styled warning for disabled/unavailable features
-  showDisabledFeatureWarning() {
+  showDisabledFeatureWarning(featureType = "aditivos") {
+    const messages = {
+      aditivos: {
+        title: "Nenhum aditivo cadastrado",
+        body: "Este contrato não possui aditivos cadastrados no momento.",
+      },
+      responsaveis: {
+        title: "Nenhum responsável designado",
+        body: "Este contrato não possui responsáveis designados no momento.",
+      },
+    };
+
+    const message = messages[featureType] || messages.aditivos;
+
     // Remove previous message if exists
     const existingMessage = document.querySelector(
       ".br-message.warning.feature-disabled"
@@ -122,8 +170,8 @@ export default {
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                 </div>
                 <div class="content">
-                    <span class="message-title">Nenhum aditivo cadastrado</span><br/>
-                    <span class="message-body">Este contrato não possui aditivos cadastrados no momento.</span>
+                    <span class="message-title">${message.title}</span><br/>
+                    <span class="message-body">${message.body}</span>
                 </div>
                 <div class="close">
                     <button class="br-button circle small" type="button" aria-label="Fechar mensagem">

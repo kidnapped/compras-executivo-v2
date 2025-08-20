@@ -438,6 +438,8 @@ async def get_contratos_by_responsavel(
         FROM contratoresponsaveis cr
         JOIN contratos c ON cr.contrato_id = c.id
         WHERE cr.user_id = :user_id
+          AND cr.situacao = true
+          AND cr.deleted_at IS NULL
           AND c.unidade_id = ANY(:unit_ids)
           AND c.deleted_at IS NULL
           AND ((CURRENT_DATE BETWEEN c.vigencia_inicio AND c.vigencia_fim) 
@@ -774,13 +776,15 @@ async def get_contratos_lista(
 
     # ==== STEP 5: Get responsaveis for these contracts ====
     responsaveis_query = """
-        SELECT 
+        SELECT DISTINCT
             cr.contrato_id,
             cr.user_id AS responsavel_user_id,
             u.name AS responsavel_name
         FROM contratoresponsaveis cr
         LEFT JOIN users u ON cr.user_id = u.id
         WHERE cr.contrato_id = ANY(:contract_ids)
+          AND cr.situacao = true
+          AND cr.deleted_at IS NULL
         ORDER BY cr.contrato_id, u.name
     """
     
@@ -1011,6 +1015,88 @@ async def get_contract_aditivos(
         })
 
     return aditivos_list
+
+@router.get("/dashboard/contrato/{contract_id}/responsaveis")
+async def get_contract_responsaveis(
+    contract_id: int,
+    request: Request,
+    db_contratos: AsyncSession = Depends(get_session_contratos)
+) -> List[Dict[str, Any]]:
+    """
+    Get responsaveis data for a specific contract.
+    
+    Args:
+        contract_id: The contract ID
+        request: HTTP request object for session access
+        db_contratos: Database session for contracts
+        
+    Returns:
+        List of responsaveis with their details
+        
+    Example:
+        - URL: /contrato/{contract_id}/responsaveis
+        - Response: [{"user_id": 123, "name": "João Silva"}, ...]
+    """
+    # 1. Permission check: Get UASGs from user session
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida para o usuário")
+
+    # 2. Get unit IDs for the user's UASGs
+    user_unit_ids = await get_unidades_by_codigo(db_contratos, uasgs, return_type="ids")
+    if not user_unit_ids:
+        raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário")
+
+    # 3. Verify access: Check if contract exists and user has access to it
+    contract_access_query = """
+        SELECT 1 
+        FROM contratos 
+        WHERE id = :contract_id AND unidade_id = ANY(:unit_ids)
+    """
+    contract_access_result = await db_contratos.execute(
+        text(contract_access_query),
+        {"contract_id": contract_id, "unit_ids": user_unit_ids}
+    )
+    
+    if not contract_access_result.scalar_one_or_none():
+        raise HTTPException(status_code=403, detail="Acesso negado aos responsáveis deste contrato.")
+
+    # 4. Query responsaveis for this contract
+    responsaveis_query = """
+        SELECT DISTINCT ON (cr.user_id)
+            cr.user_id AS responsavel_user_id,
+            u.name AS responsavel_name,
+            cr.telefone_fixo AS responsavel_telefone_fixo,
+            cr.telefone_celular AS responsavel_telefone_celular
+        FROM contratoresponsaveis cr
+        LEFT JOIN users u ON cr.user_id = u.id
+        WHERE cr.contrato_id = :contract_id 
+        AND cr.situacao = true
+        AND cr.deleted_at IS NULL
+        AND u.name IS NOT NULL
+        ORDER BY cr.user_id, u.name ASC
+    """
+    
+    responsaveis_result = await db_contratos.execute(
+        text(responsaveis_query),
+        {"contract_id": contract_id}
+    )
+    
+    # 5. Formatting: Prepare the response data
+    responsaveis_list = []
+    seen_user_ids = set()  # Track user_ids to avoid duplicates
+    
+    for record in responsaveis_result:
+        if record.responsavel_name and record.responsavel_user_id not in seen_user_ids:
+            responsaveis_list.append({
+                "user_id": record.responsavel_user_id,
+                "name": record.responsavel_name.strip(),
+                "telefone_fixo": record.responsavel_telefone_fixo.strip() if record.responsavel_telefone_fixo else None,
+                "telefone_celular": record.responsavel_telefone_celular.strip() if record.responsavel_telefone_celular else None
+            })
+            seen_user_ids.add(record.responsavel_user_id)
+
+    return responsaveis_list
 
 @router.post("/dashboard/contrato/{contract_id}/favorito")
 async def toggle_contrato_favorito(
