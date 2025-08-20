@@ -99,6 +99,7 @@ export default {
       tipo: [],
     },
     sort: "numero",
+    sortDirection: "ASC",
   },
 
   // Modal popup functionality
@@ -962,11 +963,87 @@ export default {
     // Filter checkboxes
     this.setupFilterListeners();
 
-    // Sort radio buttons
-    this.setupSortListeners();
+    // Sortable table headers
+    this.setupSortableHeaders();
 
     // Page size selection
     this.setupPageSizeListeners();
+  },
+
+  // Setup sortable table headers
+  setupSortableHeaders() {
+    // Remove existing listeners to avoid duplicates
+    document.querySelectorAll(".sortable-header").forEach((header) => {
+      const newHeader = header.cloneNode(true);
+      header.parentNode.replaceChild(newHeader, header);
+    });
+
+    // Add click listeners to sortable headers
+    document.querySelectorAll(".sortable-header").forEach((header) => {
+      header.addEventListener("click", (e) => {
+        const sortField = header.getAttribute("data-sort");
+        this.handleHeaderSort(sortField, header);
+      });
+    });
+
+    // Update visual indicators based on current sort
+    this.updateSortIndicators();
+  },
+
+  // Handle header click for sorting
+  handleHeaderSort(sortField, headerElement) {
+    const currentSort = this.tableState.sort;
+    const currentDirection = this.tableState.sortDirection || "ASC";
+
+    // Toggle direction if same field, otherwise default to ASC
+    let newDirection;
+    if (currentSort === sortField) {
+      newDirection = currentDirection === "ASC" ? "DESC" : "ASC";
+    } else {
+      newDirection = "ASC";
+    }
+
+    // Update table state
+    this.tableState.sort = sortField;
+    this.tableState.sortDirection = newDirection;
+    this.tableState.currentPage = 1; // Reset to first page
+
+    // Update visual indicators
+    this.updateSortIndicators();
+
+    // Reload table with new sort
+    this.loadContractsTable();
+  },
+
+  // Update sort indicators in table headers
+  updateSortIndicators() {
+    // Reset all icons
+    document.querySelectorAll(".sortable-header .sort-icon").forEach((icon) => {
+      icon.className = "fas fa-sort sort-icon";
+      icon.style.color = "#999";
+    });
+
+    // Update active sort indicator
+    const currentSort = this.tableState.sort;
+    const currentDirection = this.tableState.sortDirection || "ASC";
+
+    if (currentSort) {
+      const activeHeader = document.querySelector(
+        `[data-sort="${currentSort}"]`
+      );
+      if (activeHeader) {
+        const icon = activeHeader.querySelector(".sort-icon");
+        if (icon) {
+          if (currentDirection === "ASC") {
+            icon.className = "fas fa-sort-up sort-icon";
+            icon.style.color = "#1351B4";
+          } else {
+            icon.className = "fas fa-sort-down sort-icon";
+            icon.style.color = "#1351B4";
+          }
+        }
+      }
+    }
   },
 
   // Setup filter event listeners
@@ -1015,8 +1092,11 @@ export default {
     });
   },
 
-  // Setup sort event listeners
+  // Setup sort event listeners (DEPRECATED - now using sortable headers)
   setupSortListeners() {
+    // This method is deprecated since we moved to sortable headers
+    // Keeping for compatibility but functionality moved to setupSortableHeaders()
+    /*
     const sortOptions = {
       "radio-numero": "numero",
       "radio-vigencia": "vigencia",
@@ -1035,6 +1115,7 @@ export default {
         });
       }
     });
+    */
   },
 
   // Setup page size listeners
@@ -1059,16 +1140,23 @@ export default {
 
       // Add sort parameter
       if (this.tableState.sort) {
+        const direction = this.tableState.sortDirection || "ASC";
         let sortCriteria = [];
         switch (this.tableState.sort) {
           case "numero":
-            sortCriteria = [["numero", "ASC"]];
+            sortCriteria = [["numero", direction]];
             break;
           case "vigencia":
-            sortCriteria = [["vigencia_fim", "DESC"]];
+            sortCriteria = [["vigencia_fim", direction]];
             break;
           case "valor":
-            sortCriteria = [["valor", "DESC"]];
+            sortCriteria = [["valor", direction]];
+            break;
+          case "empenhado":
+            sortCriteria = [["valor_empenhado", direction]];
+            break;
+          case "pagamentos":
+            sortCriteria = [["valor_pago", direction]];
             break;
           default:
             sortCriteria = [["numero", "ASC"]];
@@ -1089,40 +1177,11 @@ export default {
         params.append("search", this.tableState.search);
       }
 
-      // Add filters from new filter system
-      if (window.App && window.App.filter) {
-        const currentFilters = window.App.filter.filter_getCurrentFilters();
-
-        // Add status filters
-        if (currentFilters.status && currentFilters.status.length > 0) {
-          const statusValues = currentFilters.status.map((f) => f.value);
-          params.append("status_filters", statusValues.join(","));
-        }
-
-        // Add search filters
-        if (currentFilters.search && currentFilters.search.length > 0) {
-          const searchValues = currentFilters.search.map((f) => f.value);
-          params.append("search_filters", searchValues.join(","));
-        }
-
-        // Add year filters
-        if (currentFilters.ano && currentFilters.ano.length > 0) {
-          const yearValues = currentFilters.ano.map((f) => f.value);
-          params.append("year_filters", yearValues.join(","));
-        }
-
-        // Add processo filters
-        if (currentFilters.processo && currentFilters.processo.length > 0) {
-          const processoValues = currentFilters.processo.map((f) => f.value);
-          params.append("processo_filters", processoValues.join(","));
-        }
-
-        // Add UASG filters
-        if (currentFilters.uasg && currentFilters.uasg.length > 0) {
-          const uasgValues = currentFilters.uasg.map((f) => f.value);
-          params.append("uasg_filters", uasgValues.join(","));
-        }
-      }
+      // Add filters from new filter system (use the helper)
+      const apiFilters = this.getApiFiltersFromFilterSystem();
+      Object.entries(apiFilters).forEach(([key, value]) => {
+        params.append(key, value);
+      });
 
       // Fetch data
       const response = await fetch(`/dashboard/contratos-lista?${params}`);
@@ -1268,6 +1327,11 @@ export default {
         });
       });
     }, 0);
+
+    // Setup sortable headers after table content is rendered
+    setTimeout(() => {
+      this.setupSortableHeaders();
+    }, 50);
   },
 
   // Render a single contract row
@@ -2003,6 +2067,67 @@ export default {
     }
   },
 
+  // Parse ?status_filters=...&search_filters=...&year_filters=...&processo_filters=...&uasg_filters=...
+  initFiltersFromUrl() {
+    if (!(window.App && window.App.filter)) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const map = [
+      { key: "status_filters", filterKey: "status", type: "status" },
+      { key: "search_filters", filterKey: "search", type: "default" },
+      { key: "year_filters", filterKey: "ano", type: "date" },
+      { key: "processo_filters", filterKey: "processo", type: "category" },
+      { key: "uasg_filters", filterKey: "uasg", type: "uasg" },
+    ];
+
+    // Localized display names for status (already used elsewhere)
+    const statusDisplay = {
+      vigentes: "Vigentes",
+      finalizados: "Finalizados",
+      criticos: "Críticos",
+      "120dias": "120 dias",
+      "90dias": "90 dias",
+      "45dias": "45 dias",
+      outros: "Outros",
+      todos: "Todos",
+      mais120: "Mais de 120 dias",
+      pf: "Pessoa Física",
+      pj: "Pessoa Jurídica",
+    };
+
+    const collected = {};
+
+    map.forEach(({ key, filterKey, type }) => {
+      const value = params.get(key);
+      if (!value) return;
+      const values = value
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean);
+      if (values.length === 0) return;
+
+      collected[filterKey] = values.map((val) => ({
+        value: val,
+        displayText:
+          filterKey === "status"
+            ? statusDisplay[val] || val
+            : filterKey === "ano"
+            ? `Ano ${val}`
+            : filterKey === "processo"
+            ? `Processo: ${val}`
+            : filterKey === "uasg"
+            ? `UASG ${val}`
+            : val,
+        type,
+      }));
+    });
+
+    if (Object.keys(collected).length > 0) {
+      // Bulk set state and notify
+      window.App.filter.filter_setFilters(collected);
+    }
+  },
+
   // Nova função para inicializar o filtro dinamicamente
   dashboard_initFilter() {
     console.log("🔧 Inicializando filter do dashboard...");
@@ -2028,10 +2153,12 @@ export default {
       App.filter.filter_createDynamic("dashboard-filter-dynamic-container");
       console.log("✅ Filter Dashboard initialized dynamically");
 
+      // Seed filters from URL (deep-linking)
+      this.initFiltersFromUrl();
+
       // Listen for filter changes to update dashboard
       document.addEventListener("filtersChanged", (event) => {
         console.log("🔄 Filters changed:", event.detail.filters);
-        // Here you can trigger dashboard updates when filters change
         this.updateDashboardFilters();
       });
     } else {

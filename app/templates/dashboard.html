@@ -1,16 +1,33 @@
 {% extends "app/base.html" %} {% block title %}Dashboard - Compras Executivo{%
 endblock %} {% block content %}
 
+<style>
+  .sortable-header {
+    transition: background-color 0.2s ease;
+  }
+
+  .sortable-header:hover {
+    background-color: #f0f0f0 !important;
+  }
+
+  .sortable-header:active {
+    background-color: #e6e6e6 !important;
+  }
+
+  .sort-icon {
+    transition: color 0.2s ease;
+  }
+
+  .sortable-header:hover .sort-icon {
+    color: #1351b4 !important;
+  }
+</style>
+
 <div class="dashboard-page">
   <div class="container-fluid">
     <!-- Breadcrumb Component - Dynamic -->
     <div id="dashboard-breadcrumb-dynamic-container">
       <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
-    </div>
-
-    <!-- Filter Component - Dynamic -->
-    <div id="dashboard-filter-dynamic-container">
-      <!-- Filter será carregado dinamicamente via JavaScript -->
     </div>
 
     <div class="row row-tight">
@@ -215,43 +232,6 @@ endblock %} {% block content %}
                           margin-bottom: 4px;
                         "
                       >
-                        Organizar por
-                      </summary>
-                      <div style="margin-left: 16px">
-                        <div class="br-radio" style="margin-bottom: 4px">
-                          <input
-                            id="radio-numero"
-                            type="radio"
-                            name="ordenar"
-                            checked
-                          />
-                          <label for="radio-numero">Número</label>
-                        </div>
-                        <div class="br-radio" style="margin-bottom: 4px">
-                          <input
-                            id="radio-vigencia"
-                            type="radio"
-                            name="ordenar"
-                          />
-                          <label for="radio-vigencia">Vigência</label>
-                        </div>
-                        <div class="br-radio" style="margin-bottom: 4px">
-                          <input id="radio-valor" type="radio" name="ordenar" />
-                          <label for="radio-valor">Valor</label>
-                        </div>
-                      </div>
-                    </details>
-                  </div>
-
-                  <div style="margin-bottom: 8px">
-                    <details>
-                      <summary
-                        style="
-                          cursor: pointer;
-                          font-weight: bold;
-                          margin-bottom: 4px;
-                        "
-                      >
                         Filtrar contratos
                       </summary>
                       <div style="margin-left: 16px">
@@ -270,7 +250,10 @@ endblock %} {% block content %}
               </div>
             </div>
           </div>
-
+          <!-- Filter Component - Dynamic -->
+          <div id="dashboard-filter-dynamic-container">
+            <!-- Filter será carregado dinamicamente via JavaScript -->
+          </div>
           <div
             class="dashboard-table-container"
             style="
@@ -296,14 +279,57 @@ endblock %} {% block content %}
                   "
                 >
                   <tr>
-                    <th style="text-align: left; border-right: 1px solid #ddd">
-                      Detalhes do contrato
+                    <th
+                      class="sortable-header"
+                      style="
+                        text-align: left;
+                        border-right: 1px solid #ddd;
+                        cursor: pointer;
+                        user-select: none;
+                      "
+                      data-sort="numero"
+                      title="Clique para ordenar por número do contrato"
+                    >
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          justify-content: flex-start;
+                          gap: 5px;
+                        "
+                      >
+                        <span>Detalhes do contrato</span>
+                        <i
+                          class="fas fa-sort sort-icon"
+                          style="color: #999; font-size: 12px"
+                        ></i>
+                      </div>
                     </th>
                     <th
-                      class="hide-mobile"
-                      style="text-align: center; border-right: 1px solid #ddd"
+                      class="hide-mobile sortable-header"
+                      style="
+                        text-align: center;
+                        border-right: 1px solid #ddd;
+                        cursor: pointer;
+                        user-select: none;
+                      "
+                      data-sort="vigencia"
+                      title="Clique para ordenar por vigência"
                     >
-                      Vigência
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          gap: 5px;
+                        "
+                      >
+                        <span>Vigência</span>
+                        <i
+                          class="fas fa-sort sort-icon"
+                          style="color: #999; font-size: 12px"
+                        ></i>
+                      </div>
                     </th>
                     {% if show_renewal_column %}
                     <th
@@ -314,34 +340,85 @@ endblock %} {% block content %}
                     </th>
                     {% endif %}
                     <th
-                      class="hide-mobile"
+                      class="hide-mobile sortable-header"
                       style="
                         text-align: center;
                         min-width: 93px;
                         border-right: 1px solid #ddd;
+                        cursor: pointer;
+                        user-select: none;
                       "
+                      data-sort="valor"
+                      title="Clique para ordenar por valor contratado"
                     >
-                      Contratado
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          gap: 5px;
+                        "
+                      >
+                        <span>Contratado</span>
+                        <i
+                          class="fas fa-sort sort-icon"
+                          style="color: #999; font-size: 12px"
+                        ></i>
+                      </div>
                     </th>
                     <th
-                      class="hide-mobile"
+                      class="hide-mobile sortable-header"
                       style="
                         text-align: center;
                         min-width: 93px;
                         border-right: 1px solid #ddd;
+                        cursor: pointer;
+                        user-select: none;
                       "
+                      data-sort="empenhado"
+                      title="Clique para ordenar por valor empenhado"
                     >
-                      Empenhado
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          gap: 5px;
+                        "
+                      >
+                        <span>Empenhado</span>
+                        <i
+                          class="fas fa-sort sort-icon"
+                          style="color: #999; font-size: 12px"
+                        ></i>
+                      </div>
                     </th>
                     <th
-                      class="hide-mobile"
+                      class="hide-mobile sortable-header"
                       style="
                         text-align: center;
                         min-width: 93px;
                         border-right: 1px solid #ddd;
+                        cursor: pointer;
+                        user-select: none;
                       "
+                      data-sort="pagamentos"
+                      title="Clique para ordenar por valor de pagamentos"
                     >
-                      Pagamentos
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          gap: 5px;
+                        "
+                      >
+                        <span>Pagamentos</span>
+                        <i
+                          class="fas fa-sort sort-icon"
+                          style="color: #999; font-size: 12px"
+                        ></i>
+                      </div>
                     </th>
                     <th class="hide-mobile" style="text-align: center">
                       Equipe

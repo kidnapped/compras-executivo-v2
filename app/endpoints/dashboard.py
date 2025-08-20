@@ -407,6 +407,13 @@ async def get_contratos_lista(
     page: Optional[int] = Query(1, ge=1, description="Page number"),
     start: Optional[int] = Query(0, ge=0, description="Start offset"),
     limit: Optional[int] = Query(5, ge=1, le=100, description="Items per page"),
+    # New filter system parameters
+    status_filters: Optional[str] = Query(None, description="Status filters as comma-separated string, e.g., 'vigentes,criticos'"),
+    search_filters: Optional[str] = Query(None, description="Search filters as comma-separated string"),
+    year_filters: Optional[str] = Query(None, description="Year filters as comma-separated string, e.g., '2023,2024'"),
+    ano_filters: Optional[str] = Query(None, description="Ano filters as comma-separated string, e.g., '2023,2024'"),
+    processo_filters: Optional[str] = Query(None, description="Processo filters as comma-separated string"),
+    uasg_filters: Optional[str] = Query(None, description="UASG filters as comma-separated string"),
     db_contratos: AsyncSession = Depends(get_session_contratos),
     db_blocok: AsyncSession = Depends(get_session_blocok)
 ) -> Dict[str, Any]:
@@ -474,7 +481,9 @@ async def get_contratos_lista(
                         "fornecedor": "f.nome",
                         "valor": "c.valor_inicial",
                         "vigencia_fim": "c.vigencia_fim",
-                        "objeto": "c.objeto"
+                        "objeto": "c.objeto",
+                        "valor_empenhado": "(SELECT COALESCE(SUM(e.empenhado::numeric), 0) FROM contratoempenhos ce LEFT JOIN empenhos e ON ce.empenho_id = e.id WHERE ce.contrato_id = c.id)",
+                        "valor_pago": "(SELECT COALESCE(SUM(e.pago::numeric), 0) FROM contratoempenhos ce LEFT JOIN empenhos e ON ce.empenho_id = e.id WHERE ce.contrato_id = c.id)"
                     }
                     
                     if column in column_mapping:
@@ -507,6 +516,62 @@ async def get_contratos_lista(
         elif tipo == "critico":
             where_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '45 days'")
 
+    # Process new filter system parameters
+    if status_filters:
+        status_list = [s.strip() for s in status_filters.split(',') if s.strip()]
+        if status_list:
+            status_conditions = []
+            for status in status_list:
+                if status == "vigentes":
+                    status_conditions.append("c.vigencia_fim >= CURRENT_DATE")
+                elif status == "finalizados":
+                    status_conditions.append("c.vigencia_fim < CURRENT_DATE")
+                elif status == "criticos":
+                    status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '45 days'")
+                elif status == "120dias":
+                    status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '120 days'")
+                elif status == "90dias":
+                    status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '90 days'")
+                elif status == "45dias":
+                    status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '45 days'")
+                elif status == "mais120":
+                    status_conditions.append("c.vigencia_fim > CURRENT_DATE + INTERVAL '120 days'")
+                elif status == "pf":
+                    status_conditions.append("LENGTH(REPLACE(REPLACE(REPLACE(f.cnpj_cpf, '.', ''), '-', ''), '/', '')) = 11")
+                elif status == "pj":
+                    status_conditions.append("LENGTH(REPLACE(REPLACE(REPLACE(f.cnpj_cpf, '.', ''), '-', ''), '/', '')) = 14")
+            
+            if status_conditions:
+                where_conditions.append(f"({' OR '.join(status_conditions)})")
+
+    if search_filters:
+        search_list = [s.strip() for s in search_filters.split(',') if s.strip()]
+        if search_list:
+            search_conditions = []
+            for search_term in search_list:
+                search_conditions.append(f"(c.objeto ILIKE '%{search_term}%' OR f.nome ILIKE '%{search_term}%' OR c.numero ILIKE '%{search_term}%')")
+            where_conditions.append(f"({' OR '.join(search_conditions)})")
+
+    # Handle both year_filters and ano_filters (frontend uses 'ano')
+    year_filter_param = year_filters or ano_filters
+    if year_filter_param:
+        year_list = [y.strip() for y in year_filter_param.split(',') if y.strip().isdigit()]
+        if year_list:
+            year_conditions = [f"EXTRACT(YEAR FROM c.vigencia_inicio) = {year}" for year in year_list]
+            where_conditions.append(f"({' OR '.join(year_conditions)})")
+
+    if processo_filters:
+        processo_list = [p.strip() for p in processo_filters.split(',') if p.strip()]
+        if processo_list:
+            processo_conditions = [f"c.processo ILIKE '%{processo}%'" for processo in processo_list]
+            where_conditions.append(f"({' OR '.join(processo_conditions)})")
+
+    if uasg_filters:
+        uasg_list = [u.strip() for u in uasg_filters.split(',') if u.strip()]
+        if uasg_list:
+            uasg_conditions = [f"u.codigo = '{uasg}'" for uasg in uasg_list]
+            where_conditions.append(f"({' OR '.join(uasg_conditions)})")
+
     where_clause = "WHERE " + " AND ".join(where_conditions)
 
     # ==== STEP 1: Get count first (fastest query) ====
@@ -514,6 +579,7 @@ async def get_contratos_lista(
         SELECT COUNT(*)
         FROM contratos c
         LEFT JOIN fornecedores f ON c.fornecedor_id = f.id
+        LEFT JOIN unidades u ON c.unidade_id = u.id
         {where_clause}
     """
     
