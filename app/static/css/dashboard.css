@@ -80,6 +80,25 @@
   margin-right: 2px;
 }
 
+.widget-atividades-item a:hover {
+  color: #1351b4;
+  text-decoration: underline;
+}
+
+/* Clickable contract number links in próximas atividades */
+.contract-filter-link {
+  color: #1351b4 !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+}
+
+.contract-filter-link:hover {
+  color: #0d4494 !important;
+  text-decoration: underline !important;
+}
+
 .widget-atividades-item span {
   color: #888;
 }

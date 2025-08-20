@@ -370,11 +370,18 @@ export default {
                     <img src="/static/images/clock-icon.png" alt="clock" style="width:18px;height:18px;vertical-align:top; margin:-2px 8px 0px 0px;">
                     <div>
                         <div>
-                        <a href="#">${atividade.data}</a>
+                        <span>${atividade.data}</span>
                         <span>em ${atividade.dias_restantes} ${dia}</span>
                         </div>
                         <div style="margin-top:-4px;font-size:10px;">
-                        Renovação de <b>${diasExibir} dias</b> para o contrato <b>${atividade.numero}</b>
+                        Renovação de <b>${diasExibir} dias</b> para o contrato 
+                        <a href="#" 
+                           class="contract-filter-link" 
+                           data-contract-number="${atividade.numero}"
+                           style="color: #1351b4; text-decoration: none; font-weight: bold;"
+                           title="Clique para filtrar por este contrato">
+                           ${atividade.numero}
+                        </a>
                         </div>
                     </div>
                 </div>
@@ -393,12 +400,43 @@ export default {
               </div>
             </div>
           </div>`;
+
+        // Add click event listeners to contract links
+        this.setupProximasAtividadesClickHandlers();
       })
       .catch((err) => {
         console.error("Erro ao carregar próximas atividades:", err);
         container.innerHTML =
           '<div class="text-danger">Erro ao carregar atividades</div>';
       });
+  },
+
+  // Setup click handlers for contract links in próximas atividades
+  setupProximasAtividadesClickHandlers() {
+    const contractLinks = document.querySelectorAll(".contract-filter-link");
+
+    contractLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const contractNumber = link.getAttribute("data-contract-number");
+
+        if (contractNumber && window.App && window.App.filter) {
+          // Clear existing search filters to avoid conflicts
+          window.App.filter.filter_removeFiltersByKey("search");
+
+          // Add contract number filter
+          window.App.filter.filter_addFilter(
+            "search",
+            contractNumber,
+            `Contrato: ${contractNumber}`,
+            "search"
+          );
+
+          // Notify filter change to update the table
+          window.App.filter.filter_notifyFilterChange();
+        }
+      });
+    });
   },
 
   // New function to render only the card content without the outer structure
