@@ -13,6 +13,7 @@ from app.core.templates import templates
 from app.utils.session_utils import get_uasgs_str
 from app.db.session import get_session_contratos, get_session_blocok
 from app.utils.static_loader import collect_static_files
+from app.dao.unidade_dao import get_unidades_by_codigo
 from app.utils.spa_utils import spa_route_handler, get_page_scripts, add_spa_context
 from app.core import config as app_config
 
@@ -90,32 +91,30 @@ async def render_dashboard(
     uasg_info = None
     
     if uasgs:
-        # Get UASG details for all user's UASGs
+        # Get UASG details for all user's UASGs via DAO
         try:
-            query = text("SELECT codigo, nomeresumido FROM unidades WHERE codigo = ANY(:uasg) ORDER BY codigo")
-            result = await db.execute(query, {"uasg": uasgs})
-            rows = result.fetchall()
-            
-            if rows:
-                if len(rows) == 1:
+            unidades = await get_unidades_by_codigo(db, uasgs, return_type="codigo_nome")
+            if unidades:
+                if len(unidades) == 1:
                     # Single UASG
+                    u = unidades[0]
                     uasg_info = {
-                        "codigo": rows[0][0],
-                        "nome": rows[0][1],
-                        "display": f"{rows[0][0]} - {rows[0][1]}",
+                        "codigo": u["codigo"],
+                        "nome": u["nomeresumido"],
+                        "display": f"{u['codigo']} - {u['nomeresumido']}",
                         "multiple": False,
-                        "count": len(rows)
+                        "count": 1,
                     }
                 else:
                     # Multiple UASGs - show count
-                    codes = [str(row[0]) for row in rows]
+                    codes = [str(u["codigo"]) for u in unidades]
                     uasg_info = {
                         "codigo": codes[0],  # Primary UASG
-                        "nome": rows[0][1],
-                        "display": f"{len(rows)} UASGs ({', '.join(codes[:2])}{'...' if len(codes) > 2 else ''})",
+                        "nome": unidades[0]["nomeresumido"],
+                        "display": f"{len(unidades)} UASGs ({', '.join(codes[:2])}{'...' if len(codes) > 2 else ''})",
                         "multiple": True,
-                        "count": len(rows),
-                        "all_uasgs": [{"codigo": row[0], "nome": row[1]} for row in rows]
+                        "count": len(unidades),
+                        "all_uasgs": [{"codigo": u["codigo"], "nome": u["nomeresumido"]} for u in unidades],
                     }
         except Exception as e:
             logger.warning(f"Error fetching UASG info: {e}")
@@ -151,11 +150,7 @@ async def get_dashboard_contratos(
         raise HTTPException(status_code=403, detail="UASG não definida")
     
     # 1. Descobre os ID_UASG com base nos códigos
-    result = await db.execute(
-        text("SELECT id FROM unidades WHERE codigo = ANY(:uasg)"),
-        {"uasg": uasgs}
-    )
-    ids_uasg = [row.id for row in result.fetchall()]
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
 
     if not ids_uasg:
         return {
@@ -245,11 +240,7 @@ async def get_contratos_por_exercicio(
         raise HTTPException(status_code=403, detail="UASG não definida")
 
     # 1. Busca os ID das UASGs
-    result = await db.execute(
-        text("SELECT id FROM unidades WHERE codigo = ANY(:uasg)"),
-        {"uasg": uasgs}
-    )
-    ids_uasg = [row.id for row in result.fetchall()]
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
 
     if not ids_uasg:
         return {
@@ -302,11 +293,7 @@ async def get_valores_sazonais(
         raise HTTPException(status_code=403, detail="UASG não definida")
 
     # 1. Pega IDs das UASGs
-    result = await db.execute(
-        text("SELECT id FROM unidades WHERE codigo = ANY(:uasg)"),
-        {"uasg": uasgs}
-    )
-    ids_uasg = [row.id for row in result.fetchall()]
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
     if not ids_uasg:
         return {"anos": [], "coluna": [], "linha": []}
 
@@ -360,11 +347,7 @@ async def get_proximas_atividades(
         raise HTTPException(status_code=403, detail="UASG não definida")
 
     # Get unit IDs
-    result = await db.execute(
-        text("SELECT id FROM unidades WHERE codigo = ANY(:uasgs)"),
-        {"uasgs": uasgs}
-    )
-    unit_ids = [row[0] for row in result.fetchall()]
+    unit_ids = await get_unidades_by_codigo(db, uasgs, return_type="ids")
     if not unit_ids:
         return {"atividades": []}
 
@@ -445,11 +428,7 @@ async def get_contratos_lista(
         target_uasgs = session_uasgs
 
     # Get unit IDs from UASG codes
-    result = await db_contratos.execute(
-        text("SELECT id FROM unidades WHERE codigo = ANY(:uasgs)"),
-        {"uasgs": target_uasgs}
-    )
-    unit_ids = [row.id for row in result.fetchall()]
+    unit_ids = await get_unidades_by_codigo(db_contratos, target_uasgs, return_type="ids")
     
     if not unit_ids:
         return {
@@ -832,11 +811,7 @@ async def get_contract_aditivos(
         raise HTTPException(status_code=403, detail="UASG não definida para o usuário.")
 
     # Get unit IDs for the user's UASGs
-    user_units_result = await db.execute(
-        text("SELECT id FROM unidades WHERE codigo = ANY(:uasgs)"),
-        {"uasgs": uasgs}
-    )
-    user_unit_ids = [row.id for row in user_units_result.fetchall()]
+    user_unit_ids = await get_unidades_by_codigo(db, uasgs, return_type="ids")
     if not user_unit_ids:
         raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário foi encontrada.")
 
@@ -917,11 +892,7 @@ async def toggle_contrato_favorito(
         raise HTTPException(status_code=403, detail="UASG não definida para o usuário")
 
     # Get unit IDs for the user's UASGs
-    user_units_result = await db_contratos.execute(
-        text("SELECT id FROM unidades WHERE codigo = ANY(:uasgs)"),
-        {"uasgs": uasgs}
-    )
-    user_unit_ids = [row.id for row in user_units_result.fetchall()]
+    user_unit_ids = await get_unidades_by_codigo(db_contratos, uasgs, return_type="ids")
     if not user_unit_ids:
         raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário")
 
