@@ -143,6 +143,8 @@ async def render_dashboard(
 @router.get("/dashboard/contratos")
 async def get_dashboard_contratos(
     request: Request,
+    year_filters: Optional[str] = Query(None, description="Year filters as comma-separated string, e.g., '2023,2024'"),
+    ano_filters: Optional[str] = Query(None, description="Ano filters as comma-separated string, e.g., '2023,2024'"),
     db: AsyncSession = Depends(get_session_contratos)
 ):
     uasgs = get_uasgs_str(request)
@@ -167,8 +169,21 @@ async def get_dashboard_contratos(
             "outros": 0
         }
 
-    # 2. Executa a query principal
-    query = """
+    # 2. Build WHERE conditions
+    where_conditions = ["c.unidade_id = ANY(:ids)"]
+    
+    # Handle both year_filters and ano_filters (frontend uses 'ano')
+    year_filter_param = year_filters or ano_filters
+    if year_filter_param:
+        year_list = [y.strip() for y in year_filter_param.split(',') if y.strip().isdigit()]
+        if year_list:
+            year_conditions = [f"EXTRACT(YEAR FROM c.vigencia_inicio) = {year}" for year in year_list]
+            where_conditions.append(f"({' OR '.join(year_conditions)})")
+    
+    where_clause = "WHERE " + " AND ".join(where_conditions)
+
+    # 3. Executa a query principal
+    query = f"""
         SELECT
   SUM(CASE
         WHEN c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '45 days'
@@ -195,7 +210,7 @@ async def get_dashboard_contratos(
         ELSE 0.0
       END) AS total_valor_inicial
 FROM contratos c
-WHERE c.unidade_id = ANY(:ids)
+{where_clause}
     """
     result = await db.execute(text(query), {"ids": ids_uasg})
     row = result.mappings().first() or {}
@@ -396,6 +411,49 @@ async def get_proximas_atividades(
         'data_consulta': datetime.now().strftime('%d/%m/%Y %H:%M')
     }
 
+# Endpoint para obter contratos por responsavel user_id
+@router.get("/dashboard/contratos-by-responsavel/{user_id}")
+async def get_contratos_by_responsavel(
+    user_id: int,
+    request: Request,
+    db: AsyncSession = Depends(get_session_contratos)
+) -> Dict[str, Any]:
+    """
+    Get contract IDs for a specific responsavel user_id.
+    Used for filtering contracts by responsavel.
+    """
+    # Get UASGs from request for authorization
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida")
+
+    # Get unit IDs
+    unit_ids = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+    if not unit_ids:
+        raise HTTPException(status_code=403, detail="Nenhuma unidade encontrada")
+
+    # Query to get contract numbers for this responsavel
+    query = text("""
+        SELECT DISTINCT c.numero
+        FROM contratoresponsaveis cr
+        JOIN contratos c ON cr.contrato_id = c.id
+        WHERE cr.user_id = :user_id
+          AND c.unidade_id = ANY(:unit_ids)
+          AND c.deleted_at IS NULL
+          AND ((CURRENT_DATE BETWEEN c.vigencia_inicio AND c.vigencia_fim) 
+               OR (c.vigencia_inicio >= DATE '2021-01-01'))
+        ORDER BY c.numero
+    """)
+
+    result = await db.execute(query, {"user_id": user_id, "unit_ids": unit_ids})
+    contract_numbers = [row.numero for row in result.fetchall()]
+
+    return {
+        "user_id": user_id,
+        "contract_numbers": contract_numbers,
+        "count": len(contract_numbers)
+    }
+
 # Endpoint para obter lista de contratos com paginação e filtros
 @router.get("/dashboard/contratos-lista")
 async def get_contratos_lista(
@@ -508,7 +566,7 @@ async def get_contratos_lista(
     where_conditions = ["c.unidade_id = ANY(:unit_ids)", "c.deleted_at IS NULL"]
     
     # Add contract date filter: active contracts OR contracts started after 2021-01-01
-    where_conditions.append("((CURRENT_DATE BETWEEN c.vigencia_inicio AND c.vigencia_fim) OR (c.vigencia_inicio >= DATE '2021-01-01'))")
+    # where_conditions.append("((CURRENT_DATE BETWEEN c.vigencia_inicio AND c.vigencia_fim) OR (c.vigencia_inicio >= DATE '2021-01-01'))")
     
     # Add favorites filter if needed
     if favoritos and favorite_contract_ids:
@@ -533,11 +591,11 @@ async def get_contratos_lista(
                 elif status == "finalizados":
                     status_conditions.append("c.vigencia_fim < CURRENT_DATE")
                 elif status == "criticos":
-                    status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '45 days'")
-                elif status == "120dias":
                     status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '120 days'")
+                elif status == "120dias":
+                    status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE + INTERVAL '91 days' AND CURRENT_DATE + INTERVAL '120 days'")
                 elif status == "90dias":
-                    status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '90 days'")
+                    status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE + INTERVAL '46 days' AND CURRENT_DATE + INTERVAL '90 days'")
                 elif status == "45dias":
                     status_conditions.append("c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '45 days'")
                 elif status == "mais120":
@@ -718,15 +776,28 @@ async def get_contratos_lista(
     responsaveis_query = """
         SELECT 
             cr.contrato_id,
-            STRING_AGG(DISTINCT u.name, ', ') AS responsaveis
+            cr.user_id AS responsavel_user_id,
+            u.name AS responsavel_name
         FROM contratoresponsaveis cr
         LEFT JOIN users u ON cr.user_id = u.id
         WHERE cr.contrato_id = ANY(:contract_ids)
-        GROUP BY cr.contrato_id
+        ORDER BY cr.contrato_id, u.name
     """
     
     responsaveis_result = await db_contratos.execute(text(responsaveis_query), {"contract_ids": contract_ids})
-    responsaveis_data = {row.contrato_id: row.responsaveis for row in responsaveis_result}
+    responsaveis_data = {}
+    
+    # Group responsaveis by contract_id
+    for row in responsaveis_result:
+        contract_id = row.contrato_id
+        if contract_id not in responsaveis_data:
+            responsaveis_data[contract_id] = []
+        
+        if row.responsavel_name:  # Only add if name exists
+            responsaveis_data[contract_id].append({
+                "user_id": row.responsavel_user_id,
+                "name": row.responsavel_name
+            })
 
     # ==== STEP 6: Get favorite status for these contracts ====
     favorite_contracts = set()
@@ -755,7 +826,7 @@ async def get_contratos_lista(
         })
         
         aditivos_count = aditivos_data.get(contract_id, 0)
-        responsaveis = responsaveis_data.get(contract_id, "")
+        responsaveis_list = responsaveis_data.get(contract_id, [])
         
         # Calculate remaining days
         vigencia_fim = contract.vigencia_fim
@@ -804,7 +875,7 @@ async def get_contratos_lista(
             "naturezadespesa_id": empenho_info["naturezadespesa_id"],
             "naturezadespesa_descricao": empenho_info["naturezadespesa_descricao"],
             "aditivos_count": aditivos_count,
-            "responsaveis": responsaveis,
+            "responsaveis": responsaveis_list,
             "dias_restantes": dias_restantes,
             "status": status,
             "fontawesome_icon": fontawesome_icon,

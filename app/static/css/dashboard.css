@@ -99,6 +99,19 @@
   text-decoration: underline !important;
 }
 
+/* Clickable responsavel links in contracts table */
+.responsavel-filter-link {
+  color: #1351b4 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+}
+
+.responsavel-filter-link:hover {
+  color: #0d4494 !important;
+  text-decoration: underline !important;
+}
+
 .widget-atividades-item span {
   color: #888;
 }

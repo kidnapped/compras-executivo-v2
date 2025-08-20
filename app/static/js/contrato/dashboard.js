@@ -155,7 +155,14 @@ export default {
     const container = document.getElementById("dashboardContratosContent");
     if (!container) return;
 
-    fetch("/dashboard/contratos")
+    // Get current filters and convert to API parameters
+    const apiParams = this.getApiFiltersFromFilterSystem();
+    const queryString = new URLSearchParams(apiParams).toString();
+    const url = queryString
+      ? `/dashboard/contratos?${queryString}`
+      : "/dashboard/contratos";
+
+    fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error("Erro ao carregar");
         return res.json();
@@ -559,7 +566,11 @@ export default {
 
   // Reload all dashboard cards, grids, and charts using the new filters
   updateDashboardFilters() {
+    // Reset pagination to page 1 when filters change
+    this.tableState.currentPage = 1;
+
     this.loadContractsTable();
+    this.dashboardContratosCard(); // Add this to update Contratos e Renovações card
     this.dashboardContratosPorExercicioCard();
     this.dashboardRepresentacaoAnualValores();
     this.dashboardProximasAtividades();
@@ -1364,6 +1375,58 @@ export default {
           }
         });
       });
+
+      // Add click handlers for responsavel filtering
+      document.querySelectorAll(".responsavel-filter-link").forEach((el) => {
+        el.replaceWith(el.cloneNode(true));
+      });
+      document.querySelectorAll(".responsavel-filter-link").forEach((el) => {
+        el.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const userId = el.getAttribute("data-user-id");
+          const responsavelName = el.textContent.trim();
+
+          if (!userId) return;
+
+          try {
+            // Get contracts for this responsavel
+            const response = await fetch(
+              `/dashboard/contratos-by-responsavel/${userId}`
+            );
+            if (!response.ok) throw new Error("Failed to fetch contracts");
+
+            const data = await response.json();
+            const contractNumbers = data.contract_numbers;
+
+            if (contractNumbers.length === 0) {
+              // Show message if no contracts found
+              alert(`Nenhum contrato encontrado para ${responsavelName}`);
+              return;
+            }
+
+            // Clear existing search filters to avoid conflicts
+            if (window.App && window.App.filter) {
+              window.App.filter.filter_removeFiltersByKey("search");
+
+              // Add search filters for each contract number
+              contractNumbers.forEach((contractNumber) => {
+                window.App.filter.filter_addFilter(
+                  "search",
+                  contractNumber,
+                  `Contrato: ${contractNumber}`,
+                  "search"
+                );
+              });
+
+              // Notify filter change to update the table
+              window.App.filter.filter_notifyFilterChange();
+            }
+          } catch (error) {
+            console.error("Error filtering by responsavel:", error);
+            alert(`Erro ao filtrar contratos de ${responsavelName}`);
+          }
+        });
+      });
     }, 0);
 
     // Setup sortable headers after table content is rendered
@@ -1630,7 +1693,17 @@ export default {
                     (resp) => `
                       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
                         <i class=\"fas fa-user\" style=\"color: #003366; font-size: 16px; opacity: 0.85;\"></i>
-                        <span style=\"font-size: 14px; color: #222; word-break: break-word;\">${resp.trim()}</span>
+                        ${
+                          resp.user_id
+                            ? `<a href="#" 
+                             class="responsavel-filter-link" 
+                             data-user-id="${resp.user_id}"
+                             style="color: #1351b4; text-decoration: none; font-size: 14px; word-break: break-word;"
+                             title="Clique para filtrar contratos deste responsável">
+                             ${resp.name.trim()}
+                           </a>`
+                            : `<span style=\"font-size: 14px; color: #222; word-break: break-word;\">${resp.name.trim()}</span>`
+                        }
                       </div>
                     `
                   )
@@ -1650,15 +1723,26 @@ export default {
     // Handle null, undefined, or empty values
     if (!responsaveis) return [];
 
-    // If it's already an array, return it
-    if (Array.isArray(responsaveis)) return responsaveis;
+    // If it's already an array of objects with user_id and name, return it
+    if (Array.isArray(responsaveis)) {
+      // Check if it's the new format (array of objects with user_id and name)
+      if (
+        responsaveis.length > 0 &&
+        typeof responsaveis[0] === "object" &&
+        responsaveis[0].name
+      ) {
+        return responsaveis;
+      }
+      // If it's array of strings (legacy format), convert to new format
+      return responsaveis.map((name) => ({ name: name.trim(), user_id: null }));
+    }
 
-    // If it's a string, split by comma and clean up each name
+    // If it's a string, split by comma and clean up each name (legacy format)
     if (typeof responsaveis === "string") {
       return responsaveis
         .split(",")
-        .map((name) => name.trim())
-        .filter((name) => name.length > 0);
+        .map((name) => ({ name: name.trim(), user_id: null }))
+        .filter((item) => item.name.length > 0);
     }
 
     // If it's some other type, return empty array
