@@ -120,7 +120,7 @@ export default {
 
   cardGrafico({ id, titulo, subtitulo, icone = "/static/images/doc2.png" }) {
     return `
-        <div class="col-12 col-lg-3">
+        <div class="col-12 col-md-3 col-sm-6">
         <div class="br-card h-100 card-contratos" style="min-height: 180px;">
             ${this.cardHeader({ titulo, subtitulo, icone })}
             <div class="card-content" style="padding: 0px; height: 180px !important;">
