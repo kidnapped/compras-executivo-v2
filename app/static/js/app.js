@@ -1,8 +1,9 @@
-import environment from "./environment.js";
+import environment from "./util/environment.js";
 import menu from "./app/menu.js";
 import header from "./app/header.js";
 import footer from "./app/footer.js";
 import cookie from "./app/cookie.js";
+import uiUtils from "./app/ui-utils.js";
 import admin from "./admin.js";
 import cpfAlias from "./admin/admin_cpf_alias.js";
 import modalManager from "./common/modal-manager.js";
@@ -27,6 +28,7 @@ const App = {
   ...header,
   ...footer,
   ...cookie,
+  ...uiUtils,
   ...admin,
   ...cpfAlias,
   ...contratos_dashboard,
@@ -57,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   menu.autoInit();
   footer.autoInit();
   cookie.cookieAutoInit();
+  uiUtils.autoInit();
   modalManager.initialize();
   breadcrumb.breadcrumb_init();
   filter.filter_init();
@@ -71,6 +74,4 @@ document.addEventListener("DOMContentLoaded", () => {
   contratos_dashboard.dashboard_autoInit();
   encontroContas.encontroDeContas_autoInit();
   SPARouter.autoInit();
-
-  App.init();
 });
