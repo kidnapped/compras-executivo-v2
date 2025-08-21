@@ -418,17 +418,25 @@ export default {
     // Método único para inicialização completa via SPA
     admin_initComplete() {
         console.log('🔧 admin_initComplete() chamado via SPA');
-        
         // Verifica se estamos na página correta
         const adminCards = document.querySelector('#admin-cards');
         console.log('🔍 Elemento #admin-cards encontrado:', !!adminCards);
-        
         if (adminCards || window.location.pathname === '/admin') {
             console.log('✅ Página de Admin detectada - iniciando componentes...');
-            
-            setTimeout(() => {
-                this.init();
-            }, 100);
+            // Ensure containers exist before initialization
+            const breadcrumbContainer = document.getElementById('admin-breadcrumb-dynamic-container');
+            const topicoContainer = document.getElementById('admin-topico-container');
+            if (!breadcrumbContainer || !topicoContainer) {
+                console.warn('⚠️ Containers não encontrados, aguardando DOM...');
+                setTimeout(() => {
+                    this.admin_initComplete();
+                }, 100);
+                return;
+            }
+            // Initialize components directly instead of calling init()
+            this.initBreadcrumb();
+            this.initTopico();
+            this.adminCards();
         } else {
             console.log('⚠️ Página de Admin não detectada');
         }

@@ -821,7 +821,7 @@ class SPARouter {
     if (
       data.route === "/admin" &&
       window.App &&
-      window.App.adminCards
+      window.App.admin_initComplete
     ) {
       // Evitar execução dupla com um flag temporal
       const now = Date.now();
@@ -837,7 +837,7 @@ class SPARouter {
 
       setTimeout(() => {
         try {
-          window.App.adminCards();
+          window.App.admin_initComplete();
           console.log("✅ Módulo Admin re-inicializado via SPA!");
         } catch (error) {
           console.error("Erro ao re-inicializar Admin:", error);
