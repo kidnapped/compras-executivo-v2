@@ -240,6 +240,24 @@ async def admin_integracoes(request: Request):
         "template_name": "admin"
     })
 
+@router.get("/admin/cpf_alias", response_class=HTMLResponse)
+async def admin_cpf_alias(request: Request):
+    context = {
+        "request": request, 
+        "template_name": "cpf_alias"
+    }
+    
+    context = add_spa_context(context, request)
+    
+    return spa_route_handler(
+        template_name="admin/admin_cpf_alias.html",
+        context=context,
+        templates=templates,
+        request=request,
+        title="CPF Alias - Compras Executivo",
+        scripts=get_page_scripts("cpf_alias")
+    )
+
 # ETL Endpoints
 @router.get("/admin/etl/dw-tesouro", response_class=HTMLResponse)
 async def admin_etl_dw_tesouro(request: Request):

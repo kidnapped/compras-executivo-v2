@@ -817,6 +817,35 @@ class SPARouter {
       return;
     }
 
+    // Verificar se é a página de admin e se o módulo já está carregado globalmente
+    if (
+      data.route === "/admin" &&
+      window.App &&
+      window.App.adminCards
+    ) {
+      // Evitar execução dupla com um flag temporal
+      const now = Date.now();
+      if (this.lastAdminInit && now - this.lastAdminInit < 2000) {
+        console.log("⚠️ Execução de Admin ignorada - muito recente");
+        return;
+      }
+
+      console.log(
+        "✅ Página Admin detectada - inicializando módulo já carregado..."
+      );
+      this.lastAdminInit = now;
+
+      setTimeout(() => {
+        try {
+          window.App.adminCards();
+          console.log("✅ Módulo Admin re-inicializado via SPA!");
+        } catch (error) {
+          console.error("Erro ao re-inicializar Admin:", error);
+        }
+      }, 200);
+      return;
+    }
+
     if (!data.scripts || !Array.isArray(data.scripts)) {
       console.log("📜 Nenhum script para processar ou scripts não é array");
       return;

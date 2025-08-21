@@ -1,10 +1,96 @@
 export default {
 
+    // Inicialização da página Admin
+    init() {
+        console.log("🔧 Inicializando página Admin...");
+        this.initBreadcrumb();
+        this.initTopico();
+        this.adminCards();
+    },
+
+    // Nova função para inicializar o breadcrumb dinamicamente
+    initBreadcrumb() {
+        console.log('🔧 Inicializando breadcrumb do Admin...');
+        
+        // Verifica se o módulo breadcrumb está disponível
+        if (typeof App !== "undefined" && App.breadcrumb && App.breadcrumb.breadcrumb_createDynamic) {
+            const breadcrumbItems = [
+                {title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio'},
+                {title: 'Administração', icon: 'fas fa-cog', url: ''}
+            ];
+            
+            App.breadcrumb.breadcrumb_createDynamic(breadcrumbItems, 'admin-breadcrumb-dynamic-container');
+            console.log('✅ Breadcrumb Admin initialized dynamically');
+        } else {
+            console.warn('❌ Breadcrumb module not available - App:', typeof App, 'breadcrumb:', App?.breadcrumb ? 'exists' : 'missing');
+            console.warn('⏳ Retrying in 500ms...');
+            // Retry after a short delay if breadcrumb is not available yet
+            setTimeout(() => {
+                this.initBreadcrumb();
+            }, 500);
+        }
+    },
+
+    // Nova função para inicializar o tópico dinamicamente
+    initTopico() {
+        console.log('🔧 Inicializando tópico do Admin...');
+        
+        // Verifica se o módulo topico está disponível
+        if (typeof App !== "undefined" && App.topico && App.topico.topico_createDynamic) {
+            const topicoConfig = {
+                title: 'Administração do Sistema',
+                description: 'Gerencie usuários, permissões, dados e configurações da aplicação',
+                icon: 'fas fa-cog',
+                tags: [
+                    {
+                        text: 'Sistema',
+                        type: 'info',
+                        icon: 'fas fa-server',
+                        title: 'Configurações do sistema'
+                    },
+                ],
+                actions: [
+                    {
+                        icon: 'fas fa-users',
+                        text: 'Usuários',
+                        title: 'Gerenciar usuários do sistema',
+                        onclick: 'window.location.href="/admin/usuarios"',
+                        type: 'secondary'
+                    },
+                    {
+                        icon: 'fas fa-database',
+                        text: 'ETL',
+                        title: 'Processos de carga de dados',
+                        onclick: 'window.location.href="/admin/etl"',
+                        type: 'secondary'
+                    }
+                ]
+            };
+            
+            App.topico.topico_createDynamic(topicoConfig, 'admin-topico-container');
+            console.log('✅ Topico Admin initialized dynamically');
+        } else {
+            console.warn('❌ Topico module not available - App:', typeof App, 'topico:', App?.topico ? 'exists' : 'missing');
+            console.warn('⏳ Retrying in 500ms...');
+            // Retry after a short delay if topico is not available yet
+            setTimeout(() => {
+                this.initTopico();
+            }, 500);
+        }
+    },
+
     adminCards() {
         const container = document.getElementById("admin-cards");
         if (!container) return;
 
         const cards = [
+            {
+                titulo: "CPF Alias",
+                descricao: "Aliases de CPF",
+                icone: "fas fa-user-tag",
+                url: "/admin/cpf_alias",
+                botao: "Gerenciar",
+            },
             {
                 titulo: "Usuários",
                 descricao: "Cadastro, edição e perfis",
@@ -42,7 +128,7 @@ export default {
             },
             {
                 titulo: "ETL",
-                descricao: "Carga e sincronização de dados",
+                descricao: "Carga e sincronização",
                 icone: "fas fa-database",
                 url: "/admin/etl",
                 botao: "Executar",
@@ -67,15 +153,15 @@ export default {
                 icone: "fas fa-plug",
                 url: "/admin/integracoes",
                 botao: "Conferir",
-            },
+            }
         ];
 
         cards.forEach((card) => {
             const col = document.createElement("div");
             col.className = "col-12 col-md-6 col-lg-3 mb-3";
             
-            // Apenas "Usuários" está funcional
-            const isDisabled = card.titulo !== "Usuários" && card.titulo !== "ETL";
+            // Apenas "Usuários", "ETL" e "CPF Alias" estão funcionais
+            const isDisabled = card.titulo !== "ETL" && card.titulo !== "CPF Alias";
             
             col.innerHTML = `
                 <div class="br-card h-100">
@@ -318,5 +404,33 @@ export default {
                     paginacao.innerHTML = html;
                 }
             });
+    },
+
+    // Auto-inicialização da página admin se estivermos na página correta
+    autoInit() {
+        // Verificar se estamos na página admin
+        if (window.location.pathname === '/admin') {
+            console.log("🔧 Auto-inicializando página admin...");
+            this.init();
+        }
+    },
+
+    // Método único para inicialização completa via SPA
+    admin_initComplete() {
+        console.log('🔧 admin_initComplete() chamado via SPA');
+        
+        // Verifica se estamos na página correta
+        const adminCards = document.querySelector('#admin-cards');
+        console.log('🔍 Elemento #admin-cards encontrado:', !!adminCards);
+        
+        if (adminCards || window.location.pathname === '/admin') {
+            console.log('✅ Página de Admin detectada - iniciando componentes...');
+            
+            setTimeout(() => {
+                this.init();
+            }, 100);
+        } else {
+            console.log('⚠️ Página de Admin não detectada');
+        }
     }
 };

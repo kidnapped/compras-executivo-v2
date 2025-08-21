@@ -178,7 +178,10 @@ def get_page_scripts(page_type: str) -> List[Dict[str, str]]:
             {"src": "/static/js/indicadores.js", "type": "module"},
         ],
         "admin": [
-            {"src": "/static/js/admin/admin_etl.js", "type": "module"},
+            {"src": "/static/js/admin.js", "type": "module"},
+        ],
+        "cpf_alias": [
+            {"src": "/static/js/admin/admin_cpf_alias.js", "type": "module"},
         ],
         "uasg-filter": [
             # Não há arquivo específico ainda, mas endpoint existe

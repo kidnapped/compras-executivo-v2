@@ -1,0 +1,12 @@
+/* CPF Alias - Estilos específicos da página */
+
+.cpf-alias-container {
+    min-height: 400px;
+}
+
+.cpf-alias-card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Adicione aqui estilos específicos conforme necessário */

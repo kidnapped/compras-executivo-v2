@@ -3,10 +3,22 @@
 {% block title %}Administração - Compras Executivo{% endblock %}
 
 {% block content %}
-<div class="br-container mt-5">
-    <h1 class="mb-1">Administração do Sistema</h1>
-    <p class="text-muted mb-4">Gerencie usuários, permissões, dados e configurações da aplicação.</p>
+<div class="container-fluid">
+    <!-- Breadcrumb Component - Dynamic -->
+    <div id="admin-breadcrumb-dynamic-container">
+        <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
+    </div>
 
-    <div class="row row-tight" id="admin-cards"></div>
+    <!-- Topico Component - Dynamic -->
+    <div id="admin-topico-container">
+        <!-- Topico será carregado dinamicamente via JavaScript -->
+    </div>
+
+    <div style="height:10px;"></div>
+
+    <!-- Main Content -->
+    <div class="br-container">
+        <div class="row row-tight" id="admin-cards"></div>
+    </div>
 </div>
 {% endblock %}

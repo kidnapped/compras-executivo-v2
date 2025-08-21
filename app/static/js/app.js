@@ -8,6 +8,7 @@ import header from "./app/header.js";
 import footer from "./app/footer.js";
 import cookie from "./app/cookie.js";
 import admin from "./admin.js";
+import cpfAlias from "./admin/admin_cpf_alias.js";
 import modalManager from "./common/modal-manager.js";
 import aditivosHandler from "./contrato/aditivos-handler.js";
 import devOps from "./dev-ops/dev-ops.js";
@@ -22,6 +23,7 @@ import topico from "./app/topico.js";
 import SPARouter from "./spa_router.js";
 import getEcharts from "./util/echarts.js";
 import encontroContas from "./encontro_contas.js";
+import kpis from "./kpi/kpis.js";
 
 const App = {
   ...environment,
@@ -30,6 +32,7 @@ const App = {
   ...footer,
   ...cookie,
   ...admin,
+  ...cpfAlias,
   ...contratos_dashboard,
   ...admin_dw_tesouro,
   ...indicadores,
@@ -38,39 +41,13 @@ const App = {
   ...aditivosHandler,
   ...devOps,
   ...encontroContas,
+  ...kpis,
   breadcrumb,
   filter,
   card_header,
   topico,
   SPARouter,
   getEcharts,
-
-  // Dynamic KPI initialization method
-  async kpisInit() {
-    console.log("🔧 Loading KPIs dynamically...");
-    try {
-      const { initializeAllKpis } = await import("./kpi/kpis.js");
-      await initializeAllKpis();
-      console.log("✅ KPIs loaded and initialized successfully!");
-    } catch (error) {
-      console.error("❌ Error loading KPIs:", error);
-    }
-  },
-
-  // Dynamic Indicadores initialization method
-  indicadoresInit() {
-    console.log("🔧 Loading Indicadores dynamically...");
-    try {
-      if (indicadores.indicadores_initComplete) {
-        indicadores.indicadores_initComplete();
-        console.log("✅ Indicadores loaded and initialized successfully!");
-      } else {
-        console.warn("⚠️ indicadores.indicadores_initComplete not available");
-      }
-    } catch (error) {
-      console.error("❌ Error loading Indicadores:", error);
-    }
-  },
 };
 
 window.App = App;
@@ -96,9 +73,24 @@ document.addEventListener("DOMContentLoaded", () => {
     admin_dw_tesouro.autoInit();
   }
 
+  // Auto-inicialização da página admin se estivermos na página correta
+  if (admin.autoInit) {
+    admin.autoInit();
+  }
+
+  // Auto-inicialização da página CPF Alias se estivermos na página correta
+  if (cpfAlias.autoInit) {
+    cpfAlias.autoInit();
+  }
+
   // Auto-inicialização dos indicadores apenas se estivermos na página correta
   if (indicadores.autoInit) {
     indicadores.autoInit();
+  }
+
+  // Auto-inicialização dos KPIs apenas se estivermos na página correta
+  if (kpis.autoInit) {
+    kpis.autoInit();
   }
 
   // Auto-inicialização da página minha conta se estivermos na página correta

@@ -1,5 +1,10 @@
 /* ===================== ADMIN SPECIFIC STYLES ===================== */
 
+/* Admin breadcrumb container */
+#admin-breadcrumb-dynamic-container {
+  margin-bottom: 1rem;
+}
+
 /* Admin cards and interface styles specific to admin.html template */
 .admin-card-button {
   transition: all 0.2s ease;

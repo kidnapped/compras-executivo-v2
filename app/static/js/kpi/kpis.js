@@ -43,14 +43,32 @@ const initializeAllKpis = async () => {
   }
 };
 
-// Export function for manual initialization (only when needed)
-export { initializeAllKpis };
-
 // Only initialize automatically if we're on the KPI page
 const shouldAutoInit = () => {
   return window.location.pathname.includes('/kpis') || 
          document.querySelector('.kpi-page') ||
          document.querySelector('[data-page="kpis"]');
+};
+
+// Auto initialization method for consistency with other modules
+const autoInit = () => {
+  console.log("🔧 KPIs.autoInit() chamado");
+  
+  if (shouldAutoInit()) {
+    console.log("✅ Página de KPIs detectada - inicializando...");
+    initializeAllKpis();
+  } else {
+    console.log("⚠️ Página de KPIs não detectada");
+  }
+};
+
+// Export functions
+export { initializeAllKpis, autoInit };
+
+// Default export with autoInit method
+export default {
+  autoInit,
+  initializeAllKpis
 };
 
 // Start initialization when DOM is ready, but only if on KPI page
