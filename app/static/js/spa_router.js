@@ -1440,6 +1440,35 @@ class SPARouter {
       lastNavigationTime: this.lastNavigationTime,
     };
   }
+
+  /**
+   * Auto-inicialização do SPARouter - para consistência com outros módulos
+   */
+  static autoInit() {
+    console.log("🔧 SPARouter.autoInit() chamado");
+    
+    if (!window.spaRouter) {
+      window.SPARouter = SPARouter;
+      window.spaRouter = new SPARouter();
+      console.log("🚀 SPA Router inicializado");
+
+      // Integrar com sistema de menu se disponível
+      if (
+        window.menuApp &&
+        typeof window.menuApp.updateActiveMenuItem === "function"
+      ) {
+        // Escutar mudanças de rota
+        window.addEventListener("popstate", function () {
+          setTimeout(() => window.menuApp.updateActiveMenuItem(), 100);
+        });
+
+        // Atualizar menu inicial
+        setTimeout(() => window.menuApp.updateActiveMenuItem(), 200);
+      }
+    } else {
+      console.log("⚠️ SPA Router já está inicializado");
+    }
+  }
 }
 
 // Exportar para uso global

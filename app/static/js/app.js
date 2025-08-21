@@ -1,7 +1,3 @@
-if (process.env.ENVIRONMENT === "production") {
-  import("./app/style.js");
-}
-
 import environment from "./environment.js";
 import menu from "./app/menu.js";
 import header from "./app/header.js";
@@ -56,93 +52,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // Configurar window.menuApp corretamente
   window.menuApp = menu;
 
-  // Inicializar componentes dinâmicos
-  if (header.autoInit) header.autoInit();
-  if (menu.autoInit) menu.autoInit();
-  if (footer.autoInit) footer.autoInit();
-  if (cookie.cookieAutoInit) cookie.cookieAutoInit();
-
+  // Inicializar componentes
+  header.autoInit();
+  menu.autoInit();
+  footer.autoInit();
+  cookie.cookieAutoInit();
   modalManager.initialize();
   breadcrumb.breadcrumb_init();
   filter.filter_init();
   card_header.card_header_init();
   topico.topico_init();
-
-  // Auto-inicialização do admin DW Tesouro se estivermos na página correta
-  if (admin_dw_tesouro.autoInit) {
-    admin_dw_tesouro.autoInit();
-  }
-
-  // Auto-inicialização da página admin se estivermos na página correta
-  if (admin.autoInit) {
-    admin.autoInit();
-  }
-
-  // Auto-inicialização da página CPF Alias se estivermos na página correta
-  if (cpfAlias.autoInit) {
-    cpfAlias.autoInit();
-  }
-
-  // Auto-inicialização dos indicadores apenas se estivermos na página correta
-  if (indicadores.autoInit) {
-    indicadores.autoInit();
-  }
-
-  // Auto-inicialização dos KPIs apenas se estivermos na página correta
-  if (kpis.autoInit) {
-    kpis.autoInit();
-  }
-
-  // Auto-inicialização da página minha conta se estivermos na página correta
-  if (minha_conta.autoInit) {
-    minha_conta.autoInit();
-  }
-
-  // Auto-inicialização do dashboard se estivermos na página correta
-  if (contratos_dashboard.dashboard_autoInit) {
-    contratos_dashboard.dashboard_autoInit();
-  }
-
-  // Auto-inicialização do encontro de contas se estivermos na página correta
-  if (encontroContas.encontroDeContas_autoInit) {
-    encontroContas.encontroDeContas_autoInit();
-  }
-
-  // Inicializar SPA Router
-  if (SPARouter) {
-    window.SPARouter = SPARouter;
-    let attempts = 0;
-    const maxAttempts = 50;
-
-    function tryInitSPA() {
-      attempts++;
-
-      if (window.SPARouter) {
-        window.spaRouter = new window.SPARouter();
-        console.log("🚀 SPA Router inicializado");
-
-        // Integrar com sistema de menu se disponível
-        if (
-          window.menuApp &&
-          typeof window.menuApp.updateActiveMenuItem === "function"
-        ) {
-          // Escutar mudanças de rota
-          window.addEventListener("popstate", function () {
-            setTimeout(() => window.menuApp.updateActiveMenuItem(), 100);
-          });
-
-          // Atualizar menu inicial
-          setTimeout(() => window.menuApp.updateActiveMenuItem(), 200);
-        }
-      } else if (attempts < maxAttempts) {
-        setTimeout(tryInitSPA, 100);
-      } else {
-        console.warn("⚠️ SPA Router não pôde ser inicializado");
-      }
-    }
-
-    tryInitSPA();
-  }
+  admin_dw_tesouro.autoInit();
+  admin.autoInit();
+  cpfAlias.autoInit();
+  indicadores.autoInit();
+  kpis.autoInit();
+  minha_conta.autoInit();
+  contratos_dashboard.dashboard_autoInit();
+  encontroContas.encontroDeContas_autoInit();
+  SPARouter.autoInit();
 
   App.init();
 });
