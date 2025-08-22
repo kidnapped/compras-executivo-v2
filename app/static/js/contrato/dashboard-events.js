@@ -73,13 +73,20 @@ export default {
       // Clean up any open tooltips
       this._cleanupTooltips();
 
-      // Get contract ID from the data attribute
+      // Get contract ID and empenhos count from the data attributes
       const contractId = encontroAction.getAttribute("data-contract-id");
+      const empenhosCount = Number(
+        encontroAction.getAttribute("data-empenhos-count") || 0
+      );
 
-      console.log(`Encontro de Contas clicked for contract ID: ${contractId}`);
+      console.log(
+        `Encontro de Contas clicked for contract ID: ${contractId}, empenhos count: ${empenhosCount}`
+      );
 
-      // Navigate to encontro de contas page with contract ID parameter using SPA
-      if (contractId && contractId !== "N/A") {
+      // Check if there are any empenhos before allowing navigation
+      if (!Number.isNaN(empenhosCount) && empenhosCount <= 0) {
+        this.showDisabledFeatureWarning("empenhos");
+      } else if (contractId && contractId !== "N/A") {
         this._navigateToEncontroContas(contractId);
       } else {
         console.error("Contract ID not found for navigation");
@@ -147,6 +154,10 @@ export default {
       responsaveis: {
         title: "Nenhum responsável designado",
         body: "Este contrato não possui responsáveis designados no momento.",
+      },
+      empenhos: {
+        title: "Nenhum empenho encontrado",
+        body: "Este contrato não possui empenhos cadastrados para encontro de contas.",
       },
     };
 

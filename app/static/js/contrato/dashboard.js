@@ -1570,9 +1570,9 @@ export default {
                   data-tooltip-place="bottom"
                   data-tooltip-type="info"
                   onclick="App.toggleFavorite(${contract.id}, this)" />
-                <img data-contract-id="${
-                  contract.id
-                }" class="encontro-action" src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" 
+                <img data-contract-id="${contract.id}" data-empenhos-count="${
+      contract.total_empenhos || 0
+    }" class="encontro-action" src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" 
                   data-tooltip-text="Encontro de Contas"
                   data-tooltip-place="bottom"
                   data-tooltip-type="info" />
