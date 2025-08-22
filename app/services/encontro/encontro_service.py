@@ -62,11 +62,16 @@ class EncontroService:
                 empenhos_fallback = await self.query_service.get_contract_empenhos(contrato_id, None)
                 logger.info(f"Fallback query found {len(empenhos_fallback)} empenhos")
                 
-                return {
-                    'error': False,
-                    'message': f'No empenhos found for this contract with unidadeempenho_id {unidadeempenho_id}. Fallback found {len(empenhos_fallback)} empenhos.',
-                    'data': []
-                }
+                if empenhos_fallback:
+                    # Use fallback empenhos for processing
+                    empenhos = empenhos_fallback
+                    logger.info(f"Using fallback empenhos for processing (unidadeempenho_id filter may be too restrictive)")
+                else:
+                    return {
+                        'error': False,
+                        'message': f'No empenhos found for this contract with or without unidadeempenho_id filter.',
+                        'data': []
+                    }
 
             logger.info(f"Found {len(empenhos)} empenhos for contract {contrato_id}")
 

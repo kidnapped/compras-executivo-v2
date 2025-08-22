@@ -10,71 +10,56 @@ export default {
    * Uses event delegation for efficiency and to support dynamic content.
    */
   handleTableClick(event) {
-    // Check if the click was on or inside an element meant to open the aditivos modal
-    const aditivoAction = event.target.closest(".aditivo-action");
-    if (aditivoAction) {
+    // Helper function to handle modal actions with similar patterns
+    const handleModalAction = (action, config) => {
       const {
         contractId,
         contractNumero,
         contractAno,
-        aditivosCount,
-        contractAditivosCount,
-      } = aditivoAction.dataset;
+        [config.countField]: primaryCount,
+        [config.fallbackCountField]: fallbackCount,
+      } = action.dataset;
 
-      // Prefer dataset.aditivosCount, fallback to data-contract-aditivos-count attribute
+      // Prefer primary count field, fallback to secondary field
       const count = Number(
-        aditivosCount ??
-          contractAditivosCount ??
-          aditivoAction.getAttribute("data-contract-aditivos-count") ??
+        primaryCount ??
+          fallbackCount ??
+          action.getAttribute(config.fallbackAttr) ??
           0
       );
 
-      // If no aditivos, show a warning message; otherwise open the modal
+      // If no items, show a warning message; otherwise open the modal
       if (!Number.isNaN(count) && count <= 0) {
-        this.showDisabledFeatureWarning();
+        this.showDisabledFeatureWarning(config.warningType);
       } else {
-        // Call the specific handler to show the aditivos
-        aditivosHandler.showAditivos(
-          contractId,
-          contractNumero,
-          contractAno,
-          count
-        );
+        // Call the specific handler
+        config.handler(contractId, contractNumero, contractAno, count);
       }
+    };
+
+    // Check if the click was on or inside an element meant to open the aditivos modal
+    const aditivoAction = event.target.closest(".aditivo-action");
+    if (aditivoAction) {
+      handleModalAction(aditivoAction, {
+        countField: "aditivosCount",
+        fallbackCountField: "contractAditivosCount",
+        fallbackAttr: "data-contract-aditivos-count",
+        warningType: "aditivos",
+        handler: aditivosHandler.showAditivos.bind(aditivosHandler),
+      });
       return;
     }
 
     // Check if the click was on or inside an element meant to open the responsaveis modal
     const responsaveisAction = event.target.closest(".responsaveis-action");
     if (responsaveisAction) {
-      const {
-        contractId,
-        contractNumero,
-        contractAno,
-        responsaveisCount,
-        contractResponsaveisCount,
-      } = responsaveisAction.dataset;
-
-      // Prefer dataset.responsaveisCount, fallback to data-contract-responsaveis-count attribute
-      const count = Number(
-        responsaveisCount ??
-          contractResponsaveisCount ??
-          responsaveisAction.getAttribute("data-contract-responsaveis-count") ??
-          0
-      );
-
-      // If no responsaveis, show a warning message; otherwise open the modal
-      if (!Number.isNaN(count) && count <= 0) {
-        this.showDisabledFeatureWarning("responsaveis");
-      } else {
-        // Call the specific handler to show the responsaveis
-        responsaveisHandler.showResponsaveis(
-          contractId,
-          contractNumero,
-          contractAno,
-          count
-        );
-      }
+      handleModalAction(responsaveisAction, {
+        countField: "responsaveisCount",
+        fallbackCountField: "contractResponsaveisCount",
+        fallbackAttr: "data-contract-responsaveis-count",
+        warningType: "responsaveis",
+        handler: responsaveisHandler.showResponsaveis.bind(responsaveisHandler),
+      });
       return;
     }
 
@@ -85,28 +70,8 @@ export default {
       event.preventDefault();
       event.stopPropagation();
 
-      // Limpar tooltips Bootstrap (sem erro se bootstrap não estiver definido)
-      try {
-        if (typeof bootstrap !== "undefined") {
-          document
-            .querySelectorAll('[data-bs-toggle="tooltip"]')
-            .forEach((el) => {
-              const tooltip = bootstrap.Tooltip.getInstance(el);
-              if (tooltip) {
-                tooltip.hide();
-                tooltip.dispose();
-              }
-            });
-        }
-        // Remove elementos tooltip visíveis
-        document
-          .querySelectorAll('.tooltip, .popover, [class*="tooltip"]')
-          .forEach((el) => {
-            if (el.parentNode) el.parentNode.removeChild(el);
-          });
-      } catch (error) {
-        console.warn("Erro ao remover tooltips:", error);
-      }
+      // Clean up any open tooltips
+      this._cleanupTooltips();
 
       // Get contract ID from the data attribute
       const contractId = encontroAction.getAttribute("data-contract-id");
@@ -115,28 +80,60 @@ export default {
 
       // Navigate to encontro de contas page with contract ID parameter using SPA
       if (contractId && contractId !== "N/A") {
-        // Use SPA router if available, otherwise fallback to traditional navigation
-        if (
-          window.spaRouter &&
-          typeof window.spaRouter.navigateTo === "function"
-        ) {
-          console.log(
-            "Using SPA navigation to:",
-            `/encontro_contas?contrato=${contractId}`
-          );
-          window.spaRouter.navigateTo(
-            `/encontro_contas?contrato=${contractId}`
-          );
-        } else {
-          console.warn(
-            "SPA router not available, falling back to traditional navigation"
-          );
-          window.location.href = `/encontro_contas?contrato=${contractId}`;
-        }
+        this._navigateToEncontroContas(contractId);
       } else {
         console.error("Contract ID not found for navigation");
       }
       return;
+    }
+  },
+
+  /**
+   * Helper function to clean up Bootstrap tooltips
+   * @private
+   */
+  _cleanupTooltips() {
+    try {
+      if (typeof bootstrap !== "undefined") {
+        document
+          .querySelectorAll('[data-bs-toggle="tooltip"]')
+          .forEach((el) => {
+            const tooltip = bootstrap.Tooltip.getInstance(el);
+            if (tooltip) {
+              tooltip.hide();
+              tooltip.dispose();
+            }
+          });
+      }
+      // Remove elementos tooltip visíveis
+      document
+        .querySelectorAll('.tooltip, .popover, [class*="tooltip"]')
+        .forEach((el) => {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        });
+    } catch (error) {
+      console.warn("Erro ao remover tooltips:", error);
+    }
+  },
+
+  /**
+   * Helper function to navigate to encontro de contas page
+   * @param {string} contractId - The contract ID to navigate to
+   * @private
+   */
+  _navigateToEncontroContas(contractId) {
+    // Use SPA router if available, otherwise fallback to traditional navigation
+    if (window.spaRouter && typeof window.spaRouter.navigateTo === "function") {
+      console.log(
+        "Using SPA navigation to:",
+        `/encontro_contas?contrato=${contractId}`
+      );
+      window.spaRouter.navigateTo(`/encontro_contas?contrato=${contractId}`);
+    } else {
+      console.warn(
+        "SPA router not available, falling back to traditional navigation"
+      );
+      window.location.href = `/encontro_contas?contrato=${contractId}`;
     }
   },
 

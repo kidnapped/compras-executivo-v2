@@ -172,6 +172,9 @@ async def get_dashboard_contratos(
     # 2. Build WHERE conditions
     where_conditions = ["c.unidade_id = ANY(:ids)"]
     
+    # Add contract date filter: only contracts started after 2021-01-01
+    where_conditions.append("c.vigencia_inicio >= DATE '2021-01-01'")
+    
     # Handle both year_filters and ano_filters (frontend uses 'ano')
     year_filter_param = year_filters or ano_filters
     if year_filter_param:
@@ -277,6 +280,7 @@ async def get_contratos_por_exercicio(
             unidades AS u ON c.unidadeorigem_id = u.id
         WHERE 
             c.data_assinatura IS NOT NULL
+            AND c.vigencia_inicio >= DATE '2021-01-01'
             AND u.codigo = ANY(:uasg)
         GROUP BY 
             anos
@@ -324,6 +328,7 @@ async def get_valores_sazonais(
           contratos c
         WHERE 
           c.data_assinatura IS NOT NULL
+          AND c.vigencia_inicio >= DATE '2021-01-01'
           AND c.unidadeorigem_id = ANY(:ids)
           AND c.valor_inicial IS NOT NULL
         GROUP BY 
@@ -375,6 +380,7 @@ async def get_proximas_atividades(
         c.vigencia_fim AS fim
     FROM contratos c
     WHERE c.unidade_id = ANY(:unit_ids)
+      AND c.vigencia_inicio >= DATE '2021-01-01'
       AND c.vigencia_fim BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '120 days'
       AND c.numero NOT ILIKE '%NE%'
     ORDER BY c.vigencia_fim
@@ -442,8 +448,7 @@ async def get_contratos_by_responsavel(
           AND cr.deleted_at IS NULL
           AND c.unidade_id = ANY(:unit_ids)
           AND c.deleted_at IS NULL
-          AND ((CURRENT_DATE BETWEEN c.vigencia_inicio AND c.vigencia_fim) 
-               OR (c.vigencia_inicio >= DATE '2021-01-01'))
+          AND c.vigencia_inicio >= DATE '2021-01-01'
         ORDER BY c.numero
     """)
 
@@ -567,8 +572,8 @@ async def get_contratos_lista(
     # Build WHERE conditions
     where_conditions = ["c.unidade_id = ANY(:unit_ids)", "c.deleted_at IS NULL"]
     
-    # Add contract date filter: active contracts OR contracts started after 2021-01-01
-    # where_conditions.append("((CURRENT_DATE BETWEEN c.vigencia_inicio AND c.vigencia_fim) OR (c.vigencia_inicio >= DATE '2021-01-01'))")
+    # Add contract date filter: only contracts started after 2021-01-01
+    where_conditions.append("c.vigencia_inicio >= DATE '2021-01-01'")
     
     # Add favorites filter if needed
     if favoritos and favorite_contract_ids:

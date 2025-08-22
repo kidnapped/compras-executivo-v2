@@ -93,6 +93,7 @@ export default {
     limit: 10,
     totalPages: 1,
     totalItems: 0,
+    isLoading: false, // Add loading guard
     filters: {
       favoritos: false,
       uasgs: [],
@@ -569,11 +570,15 @@ export default {
     // Reset pagination to page 1 when filters change
     this.tableState.currentPage = 1;
 
-    this.loadContractsTable();
-    this.dashboardContratosCard(); // Add this to update Contratos e Renovações card
-    this.dashboardContratosPorExercicioCard();
-    this.dashboardRepresentacaoAnualValores();
-    this.dashboardProximasAtividades();
+    // Debounce rapid filter changes
+    clearTimeout(this._filterUpdateTimeout);
+    this._filterUpdateTimeout = setTimeout(() => {
+      this.loadContractsTable();
+      this.dashboardContratosCard(); // Add this to update Contratos e Renovações card
+      this.dashboardContratosPorExercicioCard();
+      this.dashboardRepresentacaoAnualValores();
+      this.dashboardProximasAtividades();
+    }, 150); // 150ms debounce
   },
 
   // Contract vigencia gauge functionality
@@ -1103,7 +1108,12 @@ export default {
       favoritosCheck.addEventListener("change", (e) => {
         this.tableState.filters.favoritos = e.target.checked;
         this.tableState.currentPage = 1;
-        this.loadContractsTable();
+
+        // Debounce to prevent duplicate calls with filter system
+        clearTimeout(this._legacyFilterTimeout);
+        this._legacyFilterTimeout = setTimeout(() => {
+          this.loadContractsTable();
+        }, 100);
       });
     }
 
@@ -1135,7 +1145,12 @@ export default {
             );
           }
           this.tableState.currentPage = 1;
-          this.loadContractsTable();
+
+          // Debounce to prevent duplicate calls with filter system
+          clearTimeout(this._legacyFilterTimeout);
+          this._legacyFilterTimeout = setTimeout(() => {
+            this.loadContractsTable();
+          }, 100);
         });
       }
     });
@@ -1175,7 +1190,14 @@ export default {
 
   // Load contracts table data
   async loadContractsTable() {
+    // Prevent multiple simultaneous loads
+    if (this.tableState.isLoading) {
+      console.log("🔄 Table already loading, skipping duplicate request");
+      return;
+    }
+
     try {
+      this.tableState.isLoading = true;
       console.log("Loading contracts table...", this.tableState);
 
       // Show loading state
@@ -1267,6 +1289,9 @@ export default {
     } catch (error) {
       console.error("Error loading contracts table:", error);
       this.showTableError();
+    } finally {
+      // Always reset loading state
+      this.tableState.isLoading = false;
     }
   },
 
@@ -1681,71 +1706,72 @@ export default {
         <td class="hide-mobile" style="padding: 8px 0; border-bottom: 1px solid #ddd;">
           ${financialBars.createPaidBar(contract)}
         </td>
-        <td class="hide-mobile" valign="top" style="padding: 5px 8px; min-width: ${
-          this.getResponsaveisArray(contract.responsaveis).length > 0
-            ? "180px"
-            : "120px"
-        };">
+        <td class="hide-mobile" valign="top" style="padding: 5px 8px; min-width: 80px; text-align: center;">
           ${this.renderResponsaveisColumn(contract)}
         </td>
       </tr>
     `;
   },
 
-  // Render responsaveis column with "show more" functionality
+  // Render responsaveis column with users icon and count
   renderResponsaveisColumn(contract) {
     const responsaveis = this.getResponsaveisArray(contract.responsaveis);
 
     if (responsaveis.length === 0) {
-      return `<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px;\">
-                <i class=\"fas fa-exclamation-triangle\" style=\"color: #e52207; font-size: 22px; margin-bottom: 4px;\"></i>
-                <span style=\"color: #888; font-size: 13px; text-align: center;\">Nenhuma designação atribuída para este contrato</span>
+      return `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px;">
+                <i class="fas fa-exclamation-triangle" style="color: #e52207; font-size: 22px; margin-bottom: 4px;"></i>
+                <span style="color: #888; font-size: 13px; text-align: center;">Nenhuma designação atribuída para este contrato</span>
              </div>`;
     }
 
-    // Show only first 3 responsaveis
-    const visibleResponsaveis = responsaveis.slice(0, 3);
-    const hiddenCount = responsaveis.length - 3;
-
-    let html = visibleResponsaveis
-      .map(
-        (resp) => `
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
-            <a href="#" 
-               class="responsaveis-action" 
-               data-contract-id="${contract.id}"
-               data-contract-numero="${contract.numero}"
-               data-contract-ano="${contract.ano}"
-               data-responsaveis-count="${responsaveis.length}"
-               style="color: #1351b4; text-decoration: none; font-size: 10px; word-break: break-word;"
-               title="Ver todos os responsáveis deste contrato">
-               ${resp.name.trim()}
-            </a>
-          </div>
-        `
-      )
-      .join("");
-
-    // Add "show more" button if there are more than 3 responsaveis
-    if (hiddenCount > 0) {
-      html += `
-        <div style="margin-top: 8px;">
-          <a href="#" 
-             class="responsaveis-action" 
-             data-contract-id="${contract.id}"
-             data-contract-numero="${contract.numero}"
-             data-contract-ano="${contract.ano}"
-             data-responsaveis-count="${responsaveis.length}"
-             style="color: #1351b4; text-decoration: none; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px;"
-             title="Ver todos os responsáveis">
-            <i class="fas fa-plus-circle" style="font-size: 12px;"></i>
-            Ver mais ${hiddenCount} responsável${hiddenCount > 1 ? "eis" : ""}
-          </a>
-        </div>
-      `;
-    }
-
-    return html;
+    // Show users icon with count badge
+    return `
+      <div style="display: flex; align-items: center; justify-content: center; min-height: 48px;">
+        <a href="#" 
+           class="responsaveis-action" 
+           data-contract-id="${contract.id}"
+           data-contract-numero="${contract.numero}"
+           data-contract-ano="${contract.ano}"
+           data-responsaveis-count="${responsaveis.length}"
+           style="
+             position: relative;
+             display: inline-flex;
+             align-items: center;
+             justify-content: center;
+             text-decoration: none;
+             color: #1351b4;
+             transition: all 0.2s ease;
+           "
+           title="Ver ${responsaveis.length} responsável${
+      responsaveis.length > 1 ? "eis" : ""
+    } deste contrato"
+           onmouseover="this.style.transform='scale(1.1)'; this.style.color='#0d47a1';"
+           onmouseout="this.style.transform='scale(1)'; this.style.color='#1351b4';">
+          
+          <!-- Users Icon -->
+          <i class="fas fa-users" style="font-size: 24px; color: inherit;"></i>
+          
+          <!-- Count Badge -->
+          <span style="
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e52207;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+          ">${responsaveis.length}</span>
+        </a>
+      </div>
+    `;
   },
 
   // Helper function to convert responsaveis to array format

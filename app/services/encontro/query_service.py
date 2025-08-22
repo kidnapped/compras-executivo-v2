@@ -266,7 +266,20 @@ class QueryService:
     async def _get_linha_evento_ob(self, numero: str, uasg_codigo: str) -> List[Dict]:
         logger.info(f"OB Query - numero: '{numero}', uasg_codigo: '{uasg_codigo}'")
         query = text("""
-            SELECT ob.va_linha_evento, wdo.id_doc_ob, wdo.nr_ordem_pagamento, wdo.id_tp_ob, wdo.id_doc_ob_cancelada, wdo.id_dia_saque_bacen, wdo.id_mes_saque_bacen,wdo.id_ano_saque_bacen
+            SELECT 
+                ob.va_linha_evento, 
+                ob.va_linha_evento as va_linha_evento_individual,
+                wdo.id_doc_ob, 
+                wdo.nr_ordem_pagamento, 
+                wdo.id_tp_ob, 
+                wdo.id_doc_ob_cancelada, 
+                wdo.id_dia_saque_bacen, 
+                wdo.id_mes_saque_bacen,
+                wdo.id_ano_saque_bacen,
+                CASE 
+                    WHEN wdo.id_doc_ob_cancelada IS NULL OR wdo.id_doc_ob_cancelada = '-9' THEN false 
+                    ELSE true 
+                END as is_cancelled
             FROM wd_linha_evento_ob ob
             LEFT JOIN wd_doc_ob wdo ON ob.id_documento_ob = wdo.id_doc_ob
             WHERE ob.co_inscricao_1 = :numero_empenho

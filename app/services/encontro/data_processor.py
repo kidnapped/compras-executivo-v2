@@ -73,12 +73,11 @@ class DataProcessor:
                 doc_dict = self._serialize_dict(doc_dict)
                 
                 # Find the document ID field (different naming conventions)
+                # The full documents use id_doc_{type} but the va_celula data comes from id_documento_{type}
                 doc_id = None
-                possible_id_fields = [f'id_doc_{doc_type}', f'id_documento_{doc_type}', 'id']
-                for id_field in possible_id_fields:
-                    if id_field in doc_dict:
-                        doc_id = doc_dict[id_field]
-                        break
+                primary_id_field = f'id_doc_{doc_type}'
+                if primary_id_field in doc_dict:
+                    doc_id = doc_dict[primary_id_field]
                 
                 # Add va_celula value if it exists for this document
                 if doc_id and doc_id in va_celula_map:
@@ -367,24 +366,19 @@ class DataProcessor:
                 total_value += gps_value
 
         # Calculate OB total separately at contract level to avoid double-counting
-        # Since ob_grouped contains cross-empenho totals, we should calculate once from the grouped data
-        if contract_data:
-            first_empenho_financas = contract_data[0].get('Finanças', {})
-            ob_grouped = first_empenho_financas.get('ob_grouped')
-            if ob_grouped:
-                # Use grouped totals (these are already cross-empenho totals)
-                for ob_doc in ob_grouped:
+        # Since linha_evento_ob now contains nominal totals (after our processing above),
+        # we need to track unique OB documents to avoid counting the same OB multiple times
+        unique_ob_values = {}
+        for item in contract_data:
+            financas = item.get('Finanças', {})
+            for ob_doc in financas.get('linha_evento_ob', []):
+                id_doc_ob = ob_doc.get('id_doc_ob')
+                if id_doc_ob and id_doc_ob not in unique_ob_values:
+                    # Only count each unique OB document once (now contains nominal total)
                     ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
+                    unique_ob_values[id_doc_ob] = ob_value
                     total_ob_value += ob_value
                     total_value += ob_value
-            else:
-                # Fallback: if no grouped data, sum individual OB lines from all empenhos
-                for item in contract_data:
-                    financas = item.get('Finanças', {})
-                    for ob_doc in financas.get('linha_evento_ob', []):
-                        ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
-                        total_ob_value += ob_value
-                        total_value += ob_value
 
         logger.info(
             f"Total financial values - DAR: {total_dar_value}, DARF: {total_darf_value}, GPS: {total_gps_value}, OB: {total_ob_value}, Total: {total_value}"
@@ -503,16 +497,27 @@ class DataProcessor:
                     grouped_entry['id_dia_saque_bacen'] = last_dt.day
                 ob_grouped.append(grouped_entry)
 
-            # Step 4: Apply the grouped OB data to all empenhos that have OB lines
-            # This ensures that every empenho shows the same cross-empenho grouped totals
+            # Step 4: Apply the grouped totals back to individual linha_evento_ob entries
+            # and remove ob_grouped from the response
             if ob_grouped:
+                # Create a mapping of id_doc_ob to its total value
+                ob_totals_map = {grp['id_doc_ob']: grp['va_linha_evento'] for grp in ob_grouped}
+                
                 for empenho_data in contract_data:
                     financas = empenho_data.get('Finanças', {})
                     ob_lines = financas.get('linha_evento_ob', []) or []
-                    if ob_lines:  # Only add ob_grouped to empenhos that have OB lines
-                        financas['ob_grouped'] = self._serialize_list(ob_grouped)
+                    if ob_lines:
+                        # Update each linha_evento_ob with the total nominal value
+                        for ob_line in ob_lines:
+                            id_doc_ob = ob_line.get('id_doc_ob')
+                            if id_doc_ob in ob_totals_map:
+                                # Set the nominal total value in va_linha_evento
+                                ob_line['va_linha_evento'] = ob_totals_map[id_doc_ob]
                         
-            logger.info(f"Cross-empenho OB grouping: found {len(groups)} unique OB documents across {len(contract_data)} empenhos")
+                        # Remove ob_grouped completely since we now have totals in linha_evento_ob
+                        financas.pop('ob_grouped', None)
+                        
+            logger.info(f"Cross-empenho OB nominal values: updated {len(groups) if groups else 0} unique OB documents across {len(contract_data)} empenhos")
 
         except Exception as e:
             logger.warning(f"Failed to apply cross-empenho OB grouping: {e}")
