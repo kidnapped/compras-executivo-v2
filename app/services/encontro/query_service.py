@@ -11,7 +11,7 @@ class QueryService:
         self.db_contratos = db_contratos
         self.db_financeiro = db_financeiro
 
-    async def get_contract_empenhos(self, contrato_id: int, unidadeempenho_id: int = None, empenho_numero: str = None) -> List[Dict]:
+    async def get_contract_empenhos(self, contrato_id: int, unidadeempenho_id: int = None, empenho_numero: str = None, request=None) -> List[Dict]:
         """Get all empenhos for a contract, optionally filtered by empenho number"""
         
         import time
@@ -23,7 +23,37 @@ class QueryService:
         logger.info(f"  - unidadeempenho_id: {unidadeempenho_id}")
         logger.info(f"  - empenho_numero: '{empenho_numero}' (length: {len(empenho_numero) if empenho_numero else 0})")
         
-        if unidadeempenho_id:
+        # Check if user has root scope - bypass unidadeempenho_id filter
+        user_scope = request.session.get("usuario_scope") if request else None
+        if user_scope == "root":
+            logger.info(f"[ROOT SCOPE] Bypassing unidadeempenho_id filter for contract {contrato_id}")
+            
+            if empenho_numero:
+                # Filter by specific empenho number without unidade filter
+                query = text("""
+                    SELECT DISTINCT ce.empenho_id, e.*
+                    FROM contratoempenhos ce
+                    JOIN empenhos e ON ce.empenho_id = e.id
+                    WHERE ce.contrato_id = :contrato_id
+                      AND e.numero = :empenho_numero
+                    ORDER BY e.id;
+                """)
+                result = await self.db_contratos.execute(query, {
+                    "contrato_id": contrato_id,
+                    "empenho_numero": empenho_numero
+                })
+            else:
+                # Get all empenhos for the contract without unidade filter
+                query = text("""
+                    SELECT DISTINCT ce.empenho_id, e.*
+                    FROM contratoempenhos ce
+                    JOIN empenhos e ON ce.empenho_id = e.id
+                    WHERE ce.contrato_id = :contrato_id
+                    ORDER BY e.id;
+                """)
+                result = await self.db_contratos.execute(query, {"contrato_id": contrato_id})
+        
+        elif unidadeempenho_id:
             # Use the same query structure as the working endpoint
             logger.info(f"Querying empenhos for contrato_id={contrato_id}, unidadeempenho_id={unidadeempenho_id}, empenho_numero={empenho_numero}")
             
@@ -122,12 +152,12 @@ class QueryService:
             'gps_va_celula': gps_data
         }
 
-    async def get_financial_data(self, full_numero: str, numero: str, unidade_prefix: str, uasg_codigo: str = None) -> Dict[str, List[Dict]]:
+    async def get_financial_data(self, full_numero: str, numero: str, unidade_prefix: str, uasg_codigo: str = None, empenho: Dict = None) -> Dict[str, List[Dict]]:
         """Get all financial data for an empenho"""
         # Execute queries sequentially to avoid session conflicts
         ne_item_operacao = await self._get_ne_item_operacao(full_numero)
         ne_item = await self._get_ne_item(full_numero)
-        linha_evento_ob = await self._get_linha_evento_ob(numero, uasg_codigo or unidade_prefix)
+        linha_evento_ob = await self._get_linha_evento_ob(numero, uasg_codigo or unidade_prefix, empenho)
         
         return {
             'Orçamentário': ne_item_operacao,
@@ -263,10 +293,34 @@ class QueryService:
         result = await self.db_financeiro.execute(query, {"numero_empenho": full_numero})
         return [dict(row) for row in result.mappings().all()]
 
-    async def _get_linha_evento_ob(self, numero: str, uasg_codigo: str) -> List[Dict]:
-        logger.info(f"OB Query - numero: '{numero}', uasg_codigo: '{uasg_codigo}'")
+    async def _get_linha_evento_ob(self, numero: str, uasg_codigo: str, empenho: Dict = None) -> List[Dict]:
+        """Get OB (ordem bancária) data for an empenho using the empenho's actual UASG"""
+        
+        # If empenho object is available, use its actual unidade_id to get the correct UASG
+        if empenho and empenho.get('unidade_id'):
+            empenho_unidade_id = empenho.get('unidade_id')
+            
+            # Get the empenho's actual UASG code (not contract's)
+            logger.info(f"🔍 Getting UASG for empenho unidade_id: {empenho_unidade_id}")
+            empenho_uasg_query = text("""
+                SELECT u.codigo as empenho_uasg_codigo
+                FROM unidades u
+                WHERE u.id = :empenho_unidade_id
+            """)
+            result = await self.db_contratos.execute(empenho_uasg_query, {"empenho_unidade_id": empenho_unidade_id})
+            empenho_uasg_codigo = result.scalar()
+            
+            if empenho_uasg_codigo:
+                logger.info(f"✅ Using empenho's UASG '{empenho_uasg_codigo}' instead of contract's UASG '{uasg_codigo}'")
+                uasg_codigo = empenho_uasg_codigo
+            else:
+                logger.warning(f"⚠️ Could not resolve UASG for empenho unidade_id {empenho_unidade_id}, falling back to contract's UASG")
+        else:
+            logger.info(f"ℹ️ No empenho object provided, using contract's UASG: '{uasg_codigo}'")
+        
+        logger.info(f"OB Query - numero: '{numero}', final_uasg_codigo: '{uasg_codigo}'")
         query = text("""
-            SELECT 
+            SELECT DISTINCT
                 ob.va_linha_evento, 
                 ob.va_linha_evento as va_linha_evento_individual,
                 wdo.id_doc_ob, 
@@ -281,7 +335,7 @@ class QueryService:
                     ELSE true 
                 END as is_cancelled
             FROM wd_linha_evento_ob ob
-            LEFT JOIN wd_doc_ob wdo ON ob.id_documento_ob = wdo.id_doc_ob
+            JOIN wd_doc_ob wdo ON ob.id_documento_ob = wdo.id_doc_ob
             WHERE ob.co_inscricao_1 = :numero_empenho
               AND ob.id_ug_ne = :uasg_codigo
         """)
@@ -302,4 +356,7 @@ class QueryService:
             logger.info(f"Broader OB search found {len(broad_data)} results")
             if broad_data:
                 logger.info(f"Sample OB data: {broad_data[0] if broad_data else 'None'}")
+                # Log available UASGs for debugging
+                available_uasgs = set(row['id_ug_ne'] for row in broad_data if row.get('id_ug_ne'))
+                logger.info(f"Available UASGs in OB data: {list(available_uasgs)}")
         return ob_data

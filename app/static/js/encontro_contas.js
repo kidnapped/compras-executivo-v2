@@ -1344,6 +1344,14 @@ export default {
               <td>
                 <span class="badge ${statusBadge}">${percentage.display}</span>
               </td>
+              <td>
+                <a href="https://portaldatransparencia.gov.br/despesas/empenho/${empenhoNumber}?ordenarPor=fase&direcao=asc" 
+                   target="_blank" 
+                   title="Ver no Portal da Transparência" 
+                   style="color: #0066cc; text-decoration: none;">
+                  <i class="fas fa-external-link-alt"></i>
+                </a>
+              </td>
             </tr>
           `;
         })
@@ -1362,8 +1370,7 @@ export default {
                 <th style="border: none">Financeiro</th>
                 <th style="border: none">Saldo</th>
                 <th style="border: none">Status</th>
-                <th style="width: 10px; border: none"></th>
-                <th style="width: 10px; border: none"></th>
+                <th style="width: 10px; border: none" title="Portal da Transparência">Portal</th>
               </tr>
             </thead>
             <tbody id="empenhos-originais-tbody">
@@ -1503,7 +1510,12 @@ export default {
               <span class="badge ${statusBadge}">${percentage.display}</span>
             </td>
             <td>
-              <i class="fa-regular fa-eye"></i>d
+              <a href="https://portaldatransparencia.gov.br/despesas/empenho/${empenhoNumber}?ordenarPor=fase&direcao=asc" 
+                 target="_blank" 
+                 title="Ver no Portal da Transparência" 
+                 style="color: #0066cc; text-decoration: none;">
+                <i class="fas fa-external-link-alt"></i>
+              </a>
             </td>
           </tr>
         `;
@@ -1958,7 +1970,7 @@ export default {
       displayText = `${Math.round(percentage)}%`;
     } else {
       // Decimal percentages
-      displayText = `${percentage.toFixed(1)}%`;
+      displayText = `${percentage.toFixed(2)}%`;
     }
 
     return {

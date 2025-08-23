@@ -78,6 +78,10 @@ logging.basicConfig(
     ]
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
 
 # Renderiza a página do dashboard
@@ -253,41 +257,70 @@ async def get_contratos_por_exercicio(
     request: Request,
     db: AsyncSession = Depends(get_session_contratos)
 ) -> dict[str, Any]:
-    uasgs = get_uasgs_str(request)
-    if not uasgs:
-        raise HTTPException(status_code=403, detail="UASG não definida")
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
+    
+    if user_scope == "root":
+        logger.info(f"[ROOT SCOPE] Bypassing UASG filtering for contratos-por-exercicio - user has root scope")
+        # For root scope, get all unit IDs and use different query
+        ids_uasg_result = await db.execute(text("SELECT id FROM unidades"))
+        ids_uasg = [row[0] for row in ids_uasg_result.fetchall()]
+        logger.info(f"[ROOT SCOPE] Found {len(ids_uasg)} total units for root access")
+        
+        # Root scope query without UASG filtering
+        query = """
+            SELECT
+                EXTRACT(YEAR FROM c.data_assinatura)::int AS anos,
+                COUNT(DISTINCT c.id) AS valores
+            FROM 
+                contratos AS c
+            JOIN 
+                unidades AS u ON c.unidadeorigem_id = u.id
+            WHERE 
+                c.data_assinatura IS NOT NULL
+                AND c.vigencia_inicio >= DATE '2021-01-01'
+            GROUP BY 
+                anos
+            ORDER BY 
+                anos;
+        """
+        result = await db.execute(text(query))
+    else:
+        uasgs = get_uasgs_str(request)
+        if not uasgs:
+            raise HTTPException(status_code=403, detail="UASG não definida")
 
-    # 1. Busca os ID das UASGs
-    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+        # 1. Busca os ID das UASGs
+        ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
 
-    if not ids_uasg:
-        return {
-            "titulo": "Contratos por exercício",
-            "subtitulo": "Nenhum dado encontrado",
-            "icone": "/static/images/doc2.png",
-            "anos": [],
-            "valores": []
-        }
+        if not ids_uasg:
+            return {
+                "titulo": "Contratos por exercício",
+                "subtitulo": "Nenhum dado encontrado",
+                "icone": "/static/images/doc2.png",
+                "anos": [],
+                "valores": []
+            }
 
-    # 2. Query por ano de assinatura
-    query = """
-        SELECT
-            EXTRACT(YEAR FROM c.data_assinatura)::int AS anos,
-            COUNT(DISTINCT c.id) AS valores
-        FROM 
-            contratos AS c
-        JOIN 
-            unidades AS u ON c.unidadeorigem_id = u.id
-        WHERE 
-            c.data_assinatura IS NOT NULL
-            AND c.vigencia_inicio >= DATE '2021-01-01'
-            AND u.codigo = ANY(:uasg)
-        GROUP BY 
-            anos
-        ORDER BY 
-            anos;
-    """
-    result = await db.execute(text(query), {"uasg": uasgs})
+        # Non-root scope query with UASG filtering
+        query = """
+            SELECT
+                EXTRACT(YEAR FROM c.data_assinatura)::int AS anos,
+                COUNT(DISTINCT c.id) AS valores
+            FROM 
+                contratos AS c
+            JOIN 
+                unidades AS u ON c.unidadeorigem_id = u.id
+            WHERE 
+                c.data_assinatura IS NOT NULL
+                AND c.vigencia_inicio >= DATE '2021-01-01'
+                AND u.codigo = ANY(:uasg)
+            GROUP BY 
+                anos
+            ORDER BY 
+                anos;
+        """
+        result = await db.execute(text(query), {"uasg": uasgs})
     rows = result.fetchall()
 
     anos = [str(int(row[0])) for row in rows]
@@ -486,30 +519,41 @@ async def get_contratos_lista(
     Optimized version: Split queries for better performance
     """
     
-    # Get UASGs from URL parameter or fallback to session
-    target_uasgs = []
-    if uasgs:
-        try:
-            target_uasgs = json.loads(uasgs)
-        except json.JSONDecodeError:
-            target_uasgs = [uasgs]
-    else:
-        session_uasgs = get_uasgs_str(request)
-        if not session_uasgs:
-            raise HTTPException(status_code=403, detail="UASG não definida")
-        target_uasgs = session_uasgs
-
-    # Get unit IDs from UASG codes
-    unit_ids = await get_unidades_by_codigo(db_contratos, target_uasgs, return_type="ids")
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
     
-    if not unit_ids:
-        return {
-            "data": [],
-            "total": 0,
-            "page": page,
-            "limit": limit,
-            "pages": 0
-        }
+    if user_scope == "root":
+        logger.info(f"[ROOT SCOPE] Bypassing UASG filtering for contracts listing - user has root scope")
+        # For root scope, get all unit IDs and use fallback UASG
+        target_uasgs = ["393003"]  # Fallback UASG for root scope
+        unit_ids_result = await db_contratos.execute(text("SELECT id FROM unidades"))
+        unit_ids = [row[0] for row in unit_ids_result.fetchall()]
+        logger.info(f"[ROOT SCOPE] Found {len(unit_ids)} total units for root access")
+    else:
+        # Get UASGs from URL parameter or fallback to session
+        target_uasgs = []
+        if uasgs:
+            try:
+                target_uasgs = json.loads(uasgs)
+            except json.JSONDecodeError:
+                target_uasgs = [uasgs]
+        else:
+            session_uasgs = get_uasgs_str(request)
+            if not session_uasgs:
+                raise HTTPException(status_code=403, detail="UASG não definida")
+            target_uasgs = session_uasgs
+
+        # Get unit IDs from UASG codes
+        unit_ids = await get_unidades_by_codigo(db_contratos, target_uasgs, return_type="ids")
+        
+        if not unit_ids:
+            return {
+                "data": [],
+                "total": 0,
+                "page": page,
+                "limit": limit,
+                "pages": 0
+            }
 
     # If filtering by favorites, get favorite contract IDs first from blocok database
     favorite_contract_ids = []
@@ -957,37 +1001,67 @@ async def get_contract_aditivos(
     - Error Handling: Returns 404 if not found or 403 if not authorized.
     - Formatting: Dates and currency are formatted.
     """
-    # 1. Authorization: Check user's session for authorized UASGs
-    uasgs = get_uasgs_str(request)
-    if not uasgs:
-        raise HTTPException(status_code=403, detail="UASG não definida para o usuário.")
+    # Check if user has root scope - bypass authorization checks
+    user_scope = request.session.get("usuario_scope")
+    
+    if user_scope == "root":
+        logger.info(f"[ROOT SCOPE] Bypassing authorization for contract {contract_id} aditivos - user has root scope")
+        user_unit_ids = None  # Not needed for root scope
+    else:
+        # 1. Authorization: Check user's session for authorized UASGs
+        uasgs = get_uasgs_str(request)
+        if not uasgs:
+            raise HTTPException(status_code=403, detail="UASG não definida para o usuário.")
 
-    # Get unit IDs for the user's UASGs
-    user_unit_ids = await get_unidades_by_codigo(db, uasgs, return_type="ids")
-    if not user_unit_ids:
-        raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário foi encontrada.")
+        # Get unit IDs for the user's UASGs
+        user_unit_ids = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+        if not user_unit_ids:
+            raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário foi encontrada.")
 
     # 2. Data Fetching: Parameterized query to prevent SQL injection
-    query = text("""
-        SELECT
-            ch.valor_global,
-            ch.valor_inicial,
-            ch.vigencia_inicio,
-            ch.vigencia_fim,
-            ch.objeto,
-            LOWER(ch.observacao) AS observacao,
-            ch.tipo_id,
-            LOWER(ci.descricao) AS tipo_descricao,
-            ch.novo_valor_global
-        FROM contratohistorico ch
-        LEFT JOIN codigoitens ci ON ch.tipo_id = ci.id
-        WHERE ch.contrato_id = :contract_id
-          AND ch.unidade_id = ANY(:user_unit_ids)
-          AND ch.tipo_id <> 60  -- Exclude type 60 (cancellation)
-        ORDER BY ch.vigencia_inicio ASC;
-    """)
+    if user_scope == "root":
+        # For root scope, remove unit filter
+        query = text("""
+            SELECT
+                ch.valor_global,
+                ch.valor_inicial,
+                ch.vigencia_inicio,
+                ch.vigencia_fim,
+                ch.objeto,
+                LOWER(ch.observacao) AS observacao,
+                ch.tipo_id,
+                LOWER(ci.descricao) AS tipo_descricao,
+                ch.novo_valor_global
+            FROM contratohistorico ch
+            LEFT JOIN codigoitens ci ON ch.tipo_id = ci.id
+            WHERE ch.contrato_id = :contract_id
+              AND ch.tipo_id <> 60  -- Exclude type 60 (cancellation)
+            ORDER BY ch.vigencia_inicio ASC;
+        """)
+        query_params = {"contract_id": contract_id}
+    else:
+        # Normal query with unit filter
+        query = text("""
+            SELECT
+                ch.valor_global,
+                ch.valor_inicial,
+                ch.vigencia_inicio,
+                ch.vigencia_fim,
+                ch.objeto,
+                LOWER(ch.observacao) AS observacao,
+                ch.tipo_id,
+                LOWER(ci.descricao) AS tipo_descricao,
+                ch.novo_valor_global
+            FROM contratohistorico ch
+            LEFT JOIN codigoitens ci ON ch.tipo_id = ci.id
+            WHERE ch.contrato_id = :contract_id
+              AND ch.unidade_id = ANY(:user_unit_ids)
+              AND ch.tipo_id <> 60  -- Exclude type 60 (cancellation)
+            ORDER BY ch.vigencia_inicio ASC;
+        """)
+        query_params = {"contract_id": contract_id, "user_unit_ids": user_unit_ids}
     
-    result = await db.execute(query, {"contract_id": contract_id, "user_unit_ids": user_unit_ids})
+    result = await db.execute(query, query_params)
     historico_records = result.mappings().fetchall()
 
     # 3. Error Handling: Check if any records were found
@@ -1042,29 +1116,37 @@ async def get_contract_responsaveis(
         - URL: /contrato/{contract_id}/responsaveis
         - Response: [{"user_id": 123, "name": "João Silva"}, ...]
     """
-    # 1. Permission check: Get UASGs from user session
-    uasgs = get_uasgs_str(request)
-    if not uasgs:
-        raise HTTPException(status_code=403, detail="UASG não definida para o usuário")
-
-    # 2. Get unit IDs for the user's UASGs
-    user_unit_ids = await get_unidades_by_codigo(db_contratos, uasgs, return_type="ids")
-    if not user_unit_ids:
-        raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário")
-
-    # 3. Verify access: Check if contract exists and user has access to it
-    contract_access_query = """
-        SELECT 1 
-        FROM contratos 
-        WHERE id = :contract_id AND unidade_id = ANY(:unit_ids)
-    """
-    contract_access_result = await db_contratos.execute(
-        text(contract_access_query),
-        {"contract_id": contract_id, "unit_ids": user_unit_ids}
-    )
+    # Check if user has root scope - bypass all validations
+    user_scope = request.session.get("usuario_scope")
     
-    if not contract_access_result.scalar_one_or_none():
-        raise HTTPException(status_code=403, detail="Acesso negado aos responsáveis deste contrato.")
+    if user_scope == "root":
+        logger.info(f"[ROOT SCOPE] Bypassing contract access validation for contract {contract_id} responsaveis - user has root scope")
+        # For root scope, skip all access checks and go directly to the query
+        user_unit_ids = None  # Not needed for root scope
+    else:
+        # 1. Permission check: Get UASGs from user session
+        uasgs = get_uasgs_str(request)
+        if not uasgs:
+            raise HTTPException(status_code=403, detail="UASG não definida para o usuário")
+
+        # 2. Get unit IDs for the user's UASGs
+        user_unit_ids = await get_unidades_by_codigo(db_contratos, uasgs, return_type="ids")
+        if not user_unit_ids:
+            raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário")
+
+        # 3. Verify access: Check if contract exists and user has access to it
+        contract_access_query = """
+            SELECT 1 
+            FROM contratos 
+            WHERE id = :contract_id AND unidade_id = ANY(:unit_ids)
+        """
+        contract_access_result = await db_contratos.execute(
+            text(contract_access_query),
+            {"contract_id": contract_id, "unit_ids": user_unit_ids}
+        )
+        
+        if not contract_access_result.scalar_one_or_none():
+            raise HTTPException(status_code=403, detail="Acesso negado aos responsáveis deste contrato.")
 
     # 4. Query responsaveis for this contract
     responsaveis_query = """

@@ -49,7 +49,7 @@ class EncontroService:
             uasg_codigo = validation_result.get('uasg_codigo')
 
             # Step 2: Get contract empenhos with unidadeempenho_id filter (like working endpoint)
-            empenhos = await self.query_service.get_contract_empenhos(contrato_id, unidadeempenho_id, empenho_numero)
+            empenhos = await self.query_service.get_contract_empenhos(contrato_id, unidadeempenho_id, empenho_numero, request)
             
             if empenho_numero:
                 logger.info(f"Found {len(empenhos)} empenhos for contract {contrato_id} filtered by empenho_numero '{empenho_numero}'")
@@ -59,7 +59,7 @@ class EncontroService:
             if not empenhos:
                 # Try without unidade_id filter to see if that's the issue
                 logger.info(f"No empenhos found with unidadeempenho_id filter, trying without filter...")
-                empenhos_fallback = await self.query_service.get_contract_empenhos(contrato_id, None)
+                empenhos_fallback = await self.query_service.get_contract_empenhos(contrato_id, None, None, request)
                 logger.info(f"Fallback query found {len(empenhos_fallback)} empenhos")
                 
                 if empenhos_fallback:
@@ -135,8 +135,8 @@ class EncontroService:
             # Step 1: Get document IDs
             document_ids = await self.query_service.get_document_ids(full_numero)
             
-            # Step 2: Get financial data  
-            financial_data = await self.query_service.get_financial_data(full_numero, numero, unidade_prefix, uasg_codigo)
+            # Step 2: Get financial data (pass empenho object for correct OB filtering)
+            financial_data = await self.query_service.get_financial_data(full_numero, numero, unidade_prefix, uasg_codigo, empenho)
             
             # Step 3: Get full documents if any IDs were found
             document_data = await self.query_service.get_full_documents(document_ids)

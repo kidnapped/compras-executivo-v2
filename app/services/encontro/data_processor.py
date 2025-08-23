@@ -310,9 +310,9 @@ class DataProcessor:
                     if op.get('va_operacao') is not None:
                         value = float(op.get('va_operacao', 0))
                         total_orcamentario += value
-                        logger.info(
-                            f"📊 Summary: Adding processed operation value: {op.get('no_operacao', 'N/A')} - Value: {value}"
-                        )
+                        #logger.info(
+                        #    f"📊 Summary: Adding processed operation value: {op.get('no_operacao', 'N/A')} - Value: {value}"
+                        #)
 
         logger.info(f"Total Orçamentário calculated: {total_orcamentario}")
 

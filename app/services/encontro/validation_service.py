@@ -21,6 +21,31 @@ class ValidationService:
         if not request:
             # If no request provided, assume access (for backward compatibility)
             return {'valid': True, 'unidade_id': None}
+        
+        # Check if user has root scope - bypass all validations
+        user_scope = request.session.get("usuario_scope")
+        if user_scope == "root":
+            logger.info(f"[ROOT SCOPE] Bypassing contract access validation for contract {contrato_id} - user has root scope")
+            # Get contract info without validation
+            contract_query = text("""
+                SELECT c.id, c.unidade_id, u.codigo as uasg_codigo
+                FROM contratos c
+                JOIN unidades u ON c.unidade_id = u.id
+                WHERE c.id = :contrato_id
+            """)
+            result = await self.db_contratos.execute(contract_query, {"contrato_id": contrato_id})
+            contract_row = result.mappings().first()
+            
+            if contract_row:
+                return {
+                    'valid': True, 
+                    'unidade_id': contract_row['unidade_id'],
+                    'uasg_codigo': contract_row['uasg_codigo'],
+                    'unidadeempenho_id': contract_row['unidade_id'],  # Use contract's unidade for root scope
+                    'root_scope': True
+                }
+            else:
+                return {'valid': False, 'message': 'Contract not found'}
             
         # Get UASGs from session (same as other endpoints)
         uasgs = get_uasgs_str(request)
@@ -71,6 +96,23 @@ class ValidationService:
         """Get all contracts accessible to a user"""
         if not request:
             return []
+        
+        # Check if user has root scope - return all contracts
+        user_scope = request.session.get("usuario_scope")
+        if user_scope == "root":
+            logger.info(f"[ROOT SCOPE] Returning all contracts - user has root scope")
+            query = text("""
+                SELECT c.id, c.numero, c.unidade_id, u.codigo as uasg_codigo
+                FROM contratos c
+                JOIN unidades u ON c.unidade_id = u.id
+                ORDER BY c.id
+            """)
+            
+            if limit:
+                query = text(str(query) + f" LIMIT {limit}")
+                
+            result = await self.db_contratos.execute(query)
+            return [dict(row) for row in result.mappings().all()]
             
         # Get UASGs from session
         uasgs = get_uasgs_str(request)
