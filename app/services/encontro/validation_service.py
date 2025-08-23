@@ -28,7 +28,7 @@ class ValidationService:
             logger.info(f"[ROOT SCOPE] Bypassing contract access validation for contract {contrato_id} - user has root scope")
             # Get contract info without validation
             contract_query = text("""
-                SELECT c.id, c.unidade_id, u.codigo as uasg_codigo
+                SELECT c.id, c.unidade_id, c.valor_acumulado, u.codigo as uasg_codigo
                 FROM contratos c
                 JOIN unidades u ON c.unidade_id = u.id
                 WHERE c.id = :contrato_id
@@ -41,6 +41,7 @@ class ValidationService:
                     'valid': True, 
                     'unidade_id': contract_row['unidade_id'],
                     'uasg_codigo': contract_row['uasg_codigo'],
+                    'valor_acumulado': float(contract_row['valor_acumulado']) if contract_row['valor_acumulado'] else 0.0,
                     'unidadeempenho_id': contract_row['unidade_id'],  # Use contract's unidade for root scope
                     'root_scope': True
                 }
@@ -65,7 +66,7 @@ class ValidationService:
         # Validate that the contract belongs to one of the user's UASGs
         # (Same logic as the original endpoint)
         contrato_validation_query = text("""
-            SELECT c.id, c.unidade_id, u.codigo as uasg_codigo
+            SELECT c.id, c.unidade_id, c.valor_acumulado, u.codigo as uasg_codigo
             FROM contratos c
             JOIN unidades u ON c.unidade_id = u.id
             WHERE c.id = :contrato_id AND c.unidade_id = ANY(:ids_uasg)
@@ -84,6 +85,7 @@ class ValidationService:
                 'valid': True, 
                 'unidade_id': contract_row['unidade_id'],
                 'uasg_codigo': contract_row['uasg_codigo'],
+                'valor_acumulado': float(contract_row['valor_acumulado']) if contract_row['valor_acumulado'] else 0.0,
                 'unidadeempenho_id': ids_uasg[0] if ids_uasg else None  # Use first UASG ID
             }
             logger.info(f"Contract validation successful: {result}")

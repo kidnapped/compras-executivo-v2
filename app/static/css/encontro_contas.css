@@ -10,6 +10,7 @@
 /* Padding zero para todos os card contents */
 .encontro-contas-page .encontro-contas-card-content {
   padding: 0 !important;
+  overflow: hidden !important;
 }
 
 /* ===================== ESTILOS PARA 3 CARDS LADO A LADO ===================== */
@@ -81,12 +82,19 @@
   flex: 1;
 }
 
+#encontroContasValoresContent .encontro-contas-card-content #card-content {
+  overflow: hidden !important;
+}
+
+.encontro-contas-three-cards .encontro-contas-card-content {
+  overflow: hidden !important;
+}
 /* ===================== CONTENT STYLING ===================== */
 
 /* Card Content */
 .encontro-contas-card-content {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: hidden;
   position: relative;
   height: 100%;
 }
@@ -116,6 +124,42 @@
   scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
+/* ===================== GENERAL TABLE CONSTRAINTS ===================== */
+
+/* Ensure all br-table elements within cards respect container boundaries */
+.encontro-contas-card-content .br-table {
+  max-width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+
+.encontro-contas-card-content .table-responsive {
+  max-width: 100%;
+  overflow: auto;
+}
+
+.encontro-contas-card-content .br-table th,
+.encontro-contas-card-content .br-table td {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile responsive adjustments for table cells */
+@media (max-width: 768px) {
+  .encontro-contas-card-content .br-table th,
+  .encontro-contas-card-content .br-table td {
+    font-size: 0.5rem !important;
+    padding: 0.15rem 0.05rem !important;
+  }
+
+  #encontroContasEmpenhoOriginaisContent .br-table th,
+  #encontroContasEmpenhoOriginaisContent .br-table td {
+    font-size: 0.5rem !important;
+    padding: 0.15rem 0.05rem !important;
+  }
+}
+
 /* ===================== RESPONSIVE DESIGN ===================== */
 
 /* Desktop (xl) */
@@ -130,7 +174,8 @@
   }
 
   .encontro-contas-three-cards .col-xl-4:last-child {
-    padding-right: 0;
+    padding-right: 8px;
+    padding-left: 0;
   }
 }
 
@@ -146,20 +191,16 @@
   }
 
   .encontro-contas-three-cards .col-lg-4:last-child {
-    padding-right: 0;
+    padding-right: 8px;
+    padding-left: 0;
   }
 }
 
 /* Tablet pequeno e mobile */
 @media (max-width: 991px) {
   .encontro-contas-three-cards .col-md-6 {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-
-  .encontro-contas-three-cards .col-xl-4 {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 0px;
+    padding-right: 0px;
     margin-bottom: 1rem;
   }
 
@@ -179,34 +220,48 @@
 /* Mobile pequeno */
 @media (max-width: 767px) {
   .encontro-contas-three-cards .col-12 {
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     margin-bottom: 1rem;
   }
 
   .encontro-contas-three-cards .sidebar-card {
-    height: 150px !important;
-    min-height: 150px !important;
-    max-height: 150px !important;
+    height: 200px !important;
+    min-height: 200px !important;
+    max-height: 200px !important;
   }
 
   .encontro-contas-three-cards .encontro-contas-content {
-    height: 150px;
-    min-height: 150px;
-    max-height: 150px;
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
   }
 
   .encontro-contas-three-cards .card-body-govbr {
-    height: calc(150px - 50px) !important;
-    min-height: calc(150px - 50px) !important;
-    max-height: calc(150px - 50px) !important;
+    height: calc(200px - 50px) !important;
+    min-height: calc(200px - 50px) !important;
+    max-height: calc(200px - 50px) !important;
   }
 
-  /* Ajustes específicos para a tabela de empenhos em mobile */
+  /* Enhanced mobile adjustments for all table content */
+  .encontro-contas-card-content .br-table th,
+  .encontro-contas-card-content .br-table td {
+    font-size: 0.45rem !important;
+    padding: 0.1rem 0.05rem !important;
+    line-height: 1.1;
+  }
+
+  /* Specific mobile adjustments for empenhos table */
   #encontroContasEmpenhoOriginaisContent .br-table th,
   #encontroContasEmpenhoOriginaisContent .br-table td {
-    font-size: 0.65rem;
-    padding: 0.25rem 0.125rem;
+    font-size: 0.45rem !important;
+    padding: 0.1rem 0.05rem !important;
+  }
+
+  /* Force table layout on mobile to ensure fit */
+  .encontro-contas-card-content .br-table {
+    table-layout: fixed !important;
+    width: 100% !important;
   }
 }
 
@@ -709,15 +764,19 @@
 
 #encontroContasEmpenhoOriginaisContent .table-responsive {
   height: 100%;
+  max-width: 100%;
+  width: 100%;
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
   padding: 0;
   margin: 0;
 }
 
 #encontroContasEmpenhoOriginaisContent .br-table {
   margin: 0;
-  height: 100%;
+  width: 100%;
+  table-layout: fixed;
+  /* Removed height: 100% to prevent row stretching */
 }
 
 #encontroContasEmpenhoOriginaisContent .br-table thead {
@@ -728,14 +787,52 @@
 
 #encontroContasEmpenhoOriginaisContent .br-table th,
 #encontroContasEmpenhoOriginaisContent .br-table td {
-  font-size: 0.75rem;
-  padding: 0.4rem 0.2rem;
+  font-size: 0.65rem;
+  padding: 0.25rem 0.125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* Specific column width adjustments */
+#encontroContasEmpenhoOriginaisContent .br-table th:nth-child(1),
+#encontroContasEmpenhoOriginaisContent .br-table td:nth-child(1) {
+  width: 8%;
+}
+
+#encontroContasEmpenhoOriginaisContent .br-table th:nth-child(2),
+#encontroContasEmpenhoOriginaisContent .br-table td:nth-child(2) {
+  width: 18%;
+}
+
+#encontroContasEmpenhoOriginaisContent .br-table th:nth-child(3),
+#encontroContasEmpenhoOriginaisContent .br-table td:nth-child(3) {
+  width: 14%;
+}
+
+#encontroContasEmpenhoOriginaisContent .br-table th:nth-child(4),
+#encontroContasEmpenhoOriginaisContent .br-table td:nth-child(4),
+#encontroContasEmpenhoOriginaisContent .br-table th:nth-child(5),
+#encontroContasEmpenhoOriginaisContent .br-table td:nth-child(5),
+#encontroContasEmpenhoOriginaisContent .br-table th:nth-child(6),
+#encontroContasEmpenhoOriginaisContent .br-table td:nth-child(6) {
+  width: 16%;
+}
+
+#encontroContasEmpenhoOriginaisContent .br-table th:nth-child(7),
+#encontroContasEmpenhoOriginaisContent .br-table td:nth-child(7) {
+  width: 12%;
+}
+
+#encontroContasEmpenhoOriginaisContent .br-table th:nth-child(8),
+#encontroContasEmpenhoOriginaisContent .br-table td:nth-child(8) {
+  width: 8%;
+}
+
+/* Removed hover effect to eliminate inner shadow appearance */
 #encontroContasEmpenhoOriginaisContent .br-table tbody tr:hover {
-  background-color: #f8f9fa;
-  cursor: pointer;
+  background-color: transparent !important;
+  cursor: default !important;
 }
 
 /* Override específico para o card de orçamentário com tabela gerada pelo JS */
@@ -750,15 +847,18 @@
 
 #encontroContasEmpenhoOrcamentarioContent .table-responsive {
   height: 100%;
+  width: 100%;
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
   padding: 0;
   margin: 0;
 }
 
 #encontroContasEmpenhoOrcamentarioContent .br-table {
   margin: 0;
-  height: 100%;
+  width: 100%;
+  table-layout: fixed;
+  /* Removed height: 100% to prevent row stretching */
 }
 
 #encontroContasEmpenhoOrcamentarioContent .br-table thead {
@@ -769,9 +869,42 @@
 
 #encontroContasEmpenhoOrcamentarioContent .br-table th,
 #encontroContasEmpenhoOrcamentarioContent .br-table td {
-  font-size: 0.7rem;
-  padding: 0.4rem 0.2rem;
+  font-size: 0.6rem;
+  padding: 0.2rem 0.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Specific column width adjustments for orçamentário */
+#encontroContasEmpenhoOrcamentarioContent .br-table th:nth-child(1),
+#encontroContasEmpenhoOrcamentarioContent .br-table td:nth-child(1) {
+  width: 8%;
+}
+
+#encontroContasEmpenhoOrcamentarioContent .br-table th:nth-child(2),
+#encontroContasEmpenhoOrcamentarioContent .br-table td:nth-child(2) {
+  width: 15%;
+}
+
+#encontroContasEmpenhoOrcamentarioContent .br-table th:nth-child(3),
+#encontroContasEmpenhoOrcamentarioContent .br-table td:nth-child(3) {
+  width: 18%;
+}
+
+#encontroContasEmpenhoOrcamentarioContent .br-table th:nth-child(4),
+#encontroContasEmpenhoOrcamentarioContent .br-table td:nth-child(4) {
+  width: 8%;
+}
+
+#encontroContasEmpenhoOrcamentarioContent .br-table th:nth-child(5),
+#encontroContasEmpenhoOrcamentarioContent .br-table td:nth-child(5) {
+  width: 26%;
+}
+
+#encontroContasEmpenhoOrcamentarioContent .br-table th:nth-child(6),
+#encontroContasEmpenhoOrcamentarioContent .br-table td:nth-child(6) {
+  width: 25%;
 }
 
 #encontroContasEmpenhoOrcamentarioContent .br-table tbody tr:hover {
@@ -791,15 +924,18 @@
 
 #encontroContasEmpenhoFinanceiroContent .table-responsive {
   height: 100%;
+  width: 100%;
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
   padding: 0;
   margin: 0;
 }
 
 #encontroContasEmpenhoFinanceiroContent .br-table {
   margin: 0;
-  height: 100%;
+  width: 100%;
+  table-layout: fixed;
+  /* Removed height: 100% to prevent row stretching */
 }
 
 #encontroContasEmpenhoFinanceiroContent .br-table thead {
@@ -810,9 +946,44 @@
 
 #encontroContasEmpenhoFinanceiroContent .br-table th,
 #encontroContasEmpenhoFinanceiroContent .br-table td {
-  font-size: 0.65rem;
-  padding: 0.3rem 0.15rem;
+  font-size: 0.55rem;
+  padding: 0.2rem 0.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Specific column width adjustments for financeiro */
+#encontroContasEmpenhoFinanceiroContent .br-table th:nth-child(1),
+#encontroContasEmpenhoFinanceiroContent .br-table td:nth-child(1) {
+  width: 8%;
+}
+
+#encontroContasEmpenhoFinanceiroContent .br-table th:nth-child(2),
+#encontroContasEmpenhoFinanceiroContent .br-table td:nth-child(2) {
+  width: 14%;
+}
+
+#encontroContasEmpenhoFinanceiroContent .br-table th:nth-child(3),
+#encontroContasEmpenhoFinanceiroContent .br-table td:nth-child(3) {
+  width: 18%;
+}
+
+#encontroContasEmpenhoFinanceiroContent .br-table th:nth-child(4),
+#encontroContasEmpenhoFinanceiroContent .br-table td:nth-child(4) {
+  width: 8%;
+}
+
+#encontroContasEmpenhoFinanceiroContent .br-table th:nth-child(5),
+#encontroContasEmpenhoFinanceiroContent .br-table td:nth-child(5) {
+  width: 12%;
+}
+
+#encontroContasEmpenhoFinanceiroContent .br-table th:nth-child(6),
+#encontroContasEmpenhoFinanceiroContent .br-table td:nth-child(6),
+#encontroContasEmpenhoFinanceiroContent .br-table th:nth-child(7),
+#encontroContasEmpenhoFinanceiroContent .br-table td:nth-child(7) {
+  width: 20%;
 }
 
 #encontroContasEmpenhoFinanceiroContent .br-table tbody tr:hover {
@@ -828,25 +999,29 @@
     gap: 16px;
   }
 
+  .encontro-contas-empenhos-left .card-body-govbr {
+    height: auto;
+    min-height: auto !important;
+    max-height: calc(400px - 50px) !important;
+  }
+
   .encontro-contas-empenhos-left {
     flex: none;
     width: 100%;
-    height: 300px;
+    height: auto;
   }
 
   .encontro-contas-empenhos-left .encontro-contas-content {
-    height: 300px !important;
+    height: auto !important;
   }
 
   .encontro-contas-empenhos-left .sidebar-card {
-    height: 300px !important;
-    min-height: 300px !important;
-    max-height: 300px !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: calc(400px - 50px) !important;
   }
 
   .encontro-contas-empenhos-left .card-body-govbr {
-    height: calc(300px - 50px) !important;
-    min-height: calc(300px - 50px) !important;
     max-height: calc(300px - 50px) !important;
   }
 
@@ -985,5 +1160,19 @@
 @media (max-width: 768px) {
   .empenho-row.selected-empenho::after {
     width: 2px;
+  }
+
+  .encontro-contas-empenhos-right-top,
+  .encontro-contas-empenhos-right-bottom {
+    flex: none;
+    max-width: 100%;
+    height: 200px;
+  }
+
+  .encontro-contas-empenhos-right {
+    display: block;
+  }
+  .encontro-contas-empenhos-right-bottom {
+    padding-top: 20px;
   }
 }

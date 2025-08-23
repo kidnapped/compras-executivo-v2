@@ -109,6 +109,7 @@ async def get_tudo_data(
             "total_empenhos": result.get('summary', {}).get('total_empenhos', 0),
             "total_empenhado": result.get('summary', {}).get('total_empenhado', 0),
             "total_orcamentario": result.get('summary', {}).get('total_orcamentario', 0),
+            "valor_acumulado": result.get('summary', {}).get('valor_acumulado', 0),
             "total_documents": result.get('summary', {}).get('total_documents', {}),
             "total_financial_value": result.get('summary', {}).get('total_financial_value', 0),
             "total_financial_by_type": result.get('summary', {}).get('total_financial_by_type', {}),

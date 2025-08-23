@@ -47,6 +47,7 @@ class EncontroService:
             unidade_id = validation_result.get('unidade_id')
             unidadeempenho_id = validation_result.get('unidadeempenho_id')
             uasg_codigo = validation_result.get('uasg_codigo')
+            valor_acumulado = validation_result.get('valor_acumulado', 0.0)
 
             # Step 2: Get contract empenhos with unidadeempenho_id filter (like working endpoint)
             empenhos = await self.query_service.get_contract_empenhos(contrato_id, unidadeempenho_id, empenho_numero, request)
@@ -94,7 +95,7 @@ class EncontroService:
             logger.info(f"Successfully processed {len(successful_results)} out of {len(empenhos)} empenhos")
 
             # Step 4: Create summary response
-            return self.data_processor.create_summary_response(successful_results)
+            return self.data_processor.create_summary_response(successful_results, valor_acumulado)
 
         except Exception as e:
             logger.error(f"Error in get_complete_contract_data: {e}", exc_info=True)

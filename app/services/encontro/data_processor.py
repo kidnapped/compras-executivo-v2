@@ -262,7 +262,7 @@ class DataProcessor:
             logger.warning(f"Failed to parse date for comparison: {date_string}, error: {e}")
             return None
 
-    def create_summary_response(self, contract_data: List[Dict]) -> Dict[str, Any]:
+    def create_summary_response(self, contract_data: List[Dict], valor_acumulado: float = 0.0) -> Dict[str, Any]:
         """Create a summary response with aggregated data"""
         # First, create cross-empenho OB groupings and apply them to each empenho
         self._apply_cross_empenho_ob_grouping(contract_data)
@@ -390,6 +390,7 @@ class DataProcessor:
                 'total_empenhos': total_empenhos,
                 'total_empenhado': total_empenhado,
                 'total_orcamentario': total_orcamentario,
+                'valor_acumulado': valor_acumulado,
                 'total_documents': {
                     'dar': total_dar_docs,
                     'darf': total_darf_docs,
