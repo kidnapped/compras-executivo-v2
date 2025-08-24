@@ -7,11 +7,12 @@ export default {
     lastSearchTerm: ''
   },
 
-  // Initialize dev-ops functionality
+  // Initialize dev_ops functionality
   initDevOps() {
     this.initUnidadesSelector();
     this.initClearUasgButton();
     this.initCpfValidator();
+    this.initQuickLinks();
   },
 
   // Initialize the unidades organizational selector
@@ -646,5 +647,36 @@ export default {
       resultDiv.style.display = 'none';
       resultDiv.innerHTML = '';
     }
+  },
+
+  // Initialize quick links functionality
+  initQuickLinks() {
+    console.log('Initializing quick links...');
+    
+    const quickLinkButtons = document.querySelectorAll('[id$="-link-btn"]');
+    
+    console.log('Quick link buttons found:', quickLinkButtons.length);
+
+    quickLinkButtons.forEach(button => {
+      if (button.dataset.url) {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          const url = button.dataset.url;
+          console.log('Navigating to:', url);
+          
+          // Add loading state
+          const originalContent = button.innerHTML;
+          button.disabled = true;
+          button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Carregando...';
+          
+          // Navigate to URL
+          window.location.href = url;
+          
+          // Note: The page will change, so we don't need to restore the button state
+        });
+      }
+    });
+
+    console.log('Quick links initialized successfully');
   }
 };

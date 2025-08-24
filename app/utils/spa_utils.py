@@ -186,8 +186,8 @@ def get_page_scripts(page_type: str) -> List[Dict[str, str]]:
         "uasg-filter": [
             # Não há arquivo específico ainda, mas endpoint existe
         ],
-        "dev-ops": [
-            {"src": "/static/js/dev-ops/dev-ops.js", "type": "module"},
+        "dev_ops": [
+            {"src": "/static/js/dev_ops/dev_ops.js", "type": "module"},
         ],
         "encontro_contas": [
             {"src": "/static/js/encontro_contas.js", "type": "module"},

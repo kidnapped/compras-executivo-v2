@@ -6,6 +6,8 @@ from app.core.config_menu import get_menu_for_scope
 from app.dao.login_dao import login as dao_login
 from app.utils.spa_utils import spa_route_handler, add_spa_context
 import time
+import pathlib
+import re
 
 router = APIRouter()
 
@@ -193,3 +195,44 @@ async def govbr_callback(request: Request):
         "settings": settings,
         "template_name": "outros-templates"
     })
+
+@router.get("/login/page_loader", response_class=HTMLResponse)
+async def page_loader(request: Request):
+    """Preview of the Page Loader from base.html"""
+    base_html_path = pathlib.Path(__file__).parent.parent / "templates" / "app" / "base.html"
+    loading_css_path = pathlib.Path(__file__).parent.parent / "static" / "css" / "app" / "loading.css"
+    
+    with open(base_html_path, "r", encoding="utf-8") as f:
+        base_html_content = f.read()
+    
+    # Read the CSS file
+    css_content = ""
+    if loading_css_path.exists():
+        with open(loading_css_path, "r", encoding="utf-8") as f:
+            css_content = f.read()
+    
+    # Extract the Page Loader HTML
+    loader_html_match = re.search(r'<!-- Page Loader -->([\s\S]*?)</div>\s*</div>', base_html_content)
+    
+    if loader_html_match:
+        loader_html = loader_html_match.group(0)
+        
+        complete_html = f"""
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Loader Preview</title>
+    <style>
+        {css_content}
+    </style>
+</head>
+<body>
+    {loader_html}
+</body>
+</html>
+"""
+        return HTMLResponse(content=complete_html)
+    else:
+        return HTMLResponse(content="<div>Page Loader HTML not found in base.html</div>")

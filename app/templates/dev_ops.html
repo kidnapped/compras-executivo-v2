@@ -33,10 +33,10 @@ endblock %} {% block content %}
         </div>
       </div>
       <div class="card-body" style="min-height: 20px; padding: 20px">
-        <!-- Empty container for dev-ops content -->
-        <div id="dev-ops-container" class="h-100">
+        <!-- Empty container for dev_ops content -->
+        <div id="dev_ops-container" class="h-100">
           
-          <!-- Dev-Ops Header Section -->
+          <!-- Dev_Ops Header Section -->
           <div class="row mb-4">
             <div class="col-12">
               <div class="br-hero">
@@ -306,6 +306,37 @@ endblock %} {% block content %}
                 </div>
               </div>
             </div>
+
+            <!-- Quick Links Section -->
+            <div class="col-12 col-lg-6">
+              <div class="br-card h-100" style="min-height: 200px">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-link" style="color: #00366f; font-size: 14px"></i>
+                    <span class="ml-2">Links Rápidos</span>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 20px">
+                  <p class="mb-3" style="color: #666; font-size: 14px">
+                    Acesso rápido a ferramentas e funcionalidades do sistema
+                  </p>
+                  
+                  <div class="row">
+                    <div class="col-6 col-md-6 col-lg-6 mb-3">
+                      <button 
+                        id="loadings-link-btn" 
+                        class="br-button secondary w-100"
+                        data-url="/loadings"
+                      >
+                        <i class="fas fa-spinner mr-2"></i>
+                        Loadings
+                      </button>
+                    </div>
+                    <!-- Espaço para futuros botões -->
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -316,14 +347,19 @@ endblock %} {% block content %}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Dev-ops page loaded, checking for window.App...');
+  console.log('Dev_ops page loaded, checking for window.App...');
   console.log('window.App exists:', !!window.App);
   console.log('window.App.initDevOps exists:', !!(window.App && window.App.initDevOps));
   
-  // Initialize dev-ops functionality
+  // Initialize dev_ops functionality
   if (window.App && window.App.initDevOps) {
-    console.log('Initializing dev-ops functionality...');
+    console.log('Initializing dev_ops functionality...');
     window.App.initDevOps();
+    
+    // Initialize quick links if available
+    if (window.App.initQuickLinks) {
+      window.App.initQuickLinks();
+    }
   } else {
     console.error('App.initDevOps not found. Available App methods:', window.App ? Object.keys(window.App) : 'App not found');
     
@@ -336,6 +372,23 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       if (window.App.initCpfValidator) {
         window.App.initCpfValidator();
+      }
+      if (window.App.initQuickLinks) {
+        window.App.initQuickLinks();
+      }
+    }
+    
+    // Fallback quick links initialization if App methods not available
+    if (!window.App || !window.App.initQuickLinks) {
+      console.log('Initializing quick links fallback...');
+      const loadingsBtn = document.getElementById('loadings-link-btn');
+      if (loadingsBtn) {
+        loadingsBtn.addEventListener('click', function() {
+          const url = this.dataset.url;
+          if (url) {
+            window.location.href = url;
+          }
+        });
       }
     }
   }

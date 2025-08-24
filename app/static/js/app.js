@@ -8,7 +8,7 @@ import admin from "./admin.js";
 import cpfAlias from "./admin/admin_cpf_alias.js";
 import modalManager from "./common/modal-manager.js";
 import aditivosHandler from "./contrato/aditivos-handler.js";
-import devOps from "./dev-ops/dev-ops.js";
+import devOps from "./dev_ops/dev_ops.js";
 import contratos_dashboard from "./contrato/dashboard.js";
 import admin_dw_tesouro from "./admin/admin_dw_tesouro.js";
 import indicadores from "./indicadores.js";

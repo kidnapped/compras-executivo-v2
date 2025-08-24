@@ -33,12 +33,12 @@ async def render_dev_ops(request: Request):
     
     # Usar o handler SPA
     return spa_route_handler(
-        template_name="dev-ops.html",
+        template_name="dev_ops.html",
         context=context,
         templates=templates,
         request=request,
         title="Dev Ops - Compras Executivo",
-        scripts=get_page_scripts("dev-ops")
+        scripts=get_page_scripts("dev_ops")
     )
 
 # Endpoint para buscar unidades organizacionais
