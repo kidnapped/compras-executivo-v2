@@ -188,23 +188,23 @@ class QueryService:
 
     # Private methods for individual queries
     async def _get_dar_ids(self, full_numero: str) -> List[Dict]:
-        query = text("SELECT id_documento_dar, va_celula FROM wd_deta_orca_fina_dar WHERE id_documento_ne = :numero_empenho")
+        query = text("SELECT DISTINCT id_documento_dar, va_celula FROM wd_deta_orca_fina_dar WHERE id_documento_ne = :numero_empenho")
         result = await self.db_financeiro.execute(query, {"numero_empenho": full_numero})
         return [{"id": row[0], "va_celula": row[1]} for row in result.fetchall()]
 
     async def _get_darf_ids(self, full_numero: str) -> List[Dict]:
-        query = text("SELECT id_documento_darf, va_celula FROM wd_deta_orca_fina_darf WHERE id_documento_ne = :numero_empenho")
+        query = text("SELECT DISTINCT id_documento_darf, va_celula FROM wd_deta_orca_fina_darf WHERE id_documento_ne = :numero_empenho")
         result = await self.db_financeiro.execute(query, {"numero_empenho": full_numero})
         return [{"id": row[0], "va_celula": row[1]} for row in result.fetchall()]
 
     async def _get_gps_ids(self, full_numero: str) -> List[Dict]:
-        query = text("SELECT id_documento_gps,va_celula FROM wd_deta_orca_fina_gps WHERE id_documento_ne = :numero_empenho")
+        query = text("SELECT DISTINCT id_documento_gps, va_celula FROM wd_deta_orca_fina_gps WHERE id_documento_ne = :numero_empenho")
         result = await self.db_financeiro.execute(query, {"numero_empenho": full_numero})
         return [{"id": row[0], "va_celula": row[1]} for row in result.fetchall()]
 
     async def _get_full_dar_documents(self, dar_ids: List[int]) -> List[Dict]:
         query = text("""
-            SELECT 
+            SELECT DISTINCT ON (dar.id_doc_dar)
                 dar.*,
                 wsd.no_situacao_doc,
                 CASE 
@@ -216,13 +216,14 @@ class QueryService:
             LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
                 AND wsd.id_tp_documento = 'DR'
             WHERE dar.id_doc_dar = ANY(:dar_ids)
+            ORDER BY dar.id_doc_dar, wds.id_situacao_doc DESC
         """)
         result = await self.db_financeiro.execute(query, {"dar_ids": dar_ids})
         return [dict(row) for row in result.mappings().all()]
 
     async def _get_full_darf_documents(self, darf_ids: List[int]) -> List[Dict]:
         query = text("""
-            SELECT 
+            SELECT DISTINCT ON (darf.id_doc_darf)
                 darf.*,
                 wsd.no_situacao_doc,
                 CASE 
@@ -230,17 +231,18 @@ class QueryService:
                     ELSE false 
                 END as is_negative_value
             FROM wd_doc_darf darf
-            LEFT JOIN wd_documento_slim wds ON darf.id_doc_darf = wds.id_doc_darf
-            LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
+            JOIN wd_documento_slim wds ON darf.id_doc_darf = wds.id_doc_darf
+            JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
                 AND wsd.id_tp_documento = 'DF'
             WHERE darf.id_doc_darf = ANY(:darf_ids)
+            ORDER BY darf.id_doc_darf, wds.id_situacao_doc DESC
         """)
         result = await self.db_financeiro.execute(query, {"darf_ids": darf_ids})
         return [dict(row) for row in result.mappings().all()]
 
     async def _get_full_gps_documents(self, gps_ids: List[int]) -> List[Dict]:
         query = text("""
-            SELECT 
+            SELECT DISTINCT ON (gps.id_doc_gps)
                 gps.*,
                 wsd.no_situacao_doc,
                 CASE 
@@ -252,6 +254,7 @@ class QueryService:
             LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
                 AND wsd.id_tp_documento = 'GP'
             WHERE gps.id_doc_gps = ANY(:gps_ids)
+            ORDER BY gps.id_doc_gps, wds.id_situacao_doc DESC
         """)
         result = await self.db_financeiro.execute(query, {"gps_ids": gps_ids})
         return [dict(row) for row in result.mappings().all()]

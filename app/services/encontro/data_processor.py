@@ -2,6 +2,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 import json
 import logging
+from .financial_calculator import FinancialCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -10,6 +11,7 @@ class DataProcessor:
     
     def __init__(self):
         self.processed_data = {}
+        self.financial_calculator = FinancialCalculator()
 
     def process_empenho_data(self, empenho: Dict, financial_data: Dict, document_data: Dict) -> Dict[str, Any]:
         """Process and combine empenho data with financial and document information"""
@@ -329,56 +331,19 @@ class DataProcessor:
                         f"  Op {i+1}: {op.get('no_operacao', 'N/A')} - va_operacao: {op.get('va_operacao', 'N/A')} - is_oldest: {op.get('is_oldest_operation', False)}"
                     )
 
-        # Calculate total financial value from documents
-        total_value = 0.0
-        total_dar_value = 0.0
-        total_darf_value = 0.0
-        total_gps_value = 0.0
-        total_ob_value = 0.0
-
-        for item in contract_data:
-            financas = item.get('Finanças', {})
-
-            # Sum DAR documents
-            for dar_doc in financas.get('documentos_dar', []):
-                dar_value = (
-                    float(dar_doc.get('va_principal', 0) or 0)
-                    + float(dar_doc.get('va_juros', 0) or 0)
-                    + float(dar_doc.get('va_multa', 0) or 0)
-                )
-                total_dar_value += dar_value
-                total_value += dar_value
-
-            # Sum DARF documents
-            for darf_doc in financas.get('documentos_darf', []):
-                darf_value = (
-                    float(darf_doc.get('va_receita', 0) or 0)
-                    + float(darf_doc.get('va_juros', 0) or 0)
-                    + float(darf_doc.get('va_multa', 0) or 0)
-                )
-                total_darf_value += darf_value
-                total_value += darf_value
-
-            # Sum GPS documents
-            for gps_doc in financas.get('documentos_gps', []):
-                gps_value = float(gps_doc.get('va_inss', 0) or 0)
-                total_gps_value += gps_value
-                total_value += gps_value
-
-        # Calculate OB total separately at contract level to avoid double-counting
-        # Since linha_evento_ob now contains nominal totals (after our processing above),
-        # we need to track unique OB documents to avoid counting the same OB multiple times
-        unique_ob_values = {}
-        for item in contract_data:
-            financas = item.get('Finanças', {})
-            for ob_doc in financas.get('linha_evento_ob', []):
-                id_doc_ob = ob_doc.get('id_doc_ob')
-                if id_doc_ob and id_doc_ob not in unique_ob_values:
-                    # Only count each unique OB document once (now contains nominal total)
-                    ob_value = float(ob_doc.get('va_linha_evento', 0) or 0)
-                    unique_ob_values[id_doc_ob] = ob_value
-                    total_ob_value += ob_value
-                    total_value += ob_value
+        # Calculate total financial value from documents using the new calculator
+        # The calculator now uses frontend-compatible logic (prefers va_celula, va_linha_evento_individual)
+        financial_breakdown = self.financial_calculator.compute_financial_breakdown(contract_data, use_partial=True)
+        
+        # Log the breakdown for transparency
+        logger.info(f"Financial breakdown (frontend-compatible): {financial_breakdown}")
+        
+        # Use the frontend-compatible calculation as the authoritative value
+        total_value = float(financial_breakdown.total)
+        total_dar_value = float(financial_breakdown.dar)
+        total_darf_value = float(financial_breakdown.darf)
+        total_gps_value = float(financial_breakdown.gps)
+        total_ob_value = float(financial_breakdown.ob)
 
         logger.info(
             f"Total financial values - DAR: {total_dar_value}, DARF: {total_darf_value}, GPS: {total_gps_value}, OB: {total_ob_value}, Total: {total_value}"
@@ -404,6 +369,15 @@ class DataProcessor:
                     'darf': total_darf_value,
                     'gps': total_gps_value,
                     'ob': total_ob_value
+                },
+                # Include frontend-compatible breakdown for reference
+                'financial_breakdown_frontend_compatible': {
+                    'dar': total_dar_value,
+                    'darf': total_darf_value,
+                    'gps': total_gps_value,
+                    'ob': total_ob_value,
+                    'total': total_value,
+                    'calculation_method': 'Frontend-compatible (prefers va_celula, va_linha_evento_individual)'
                 }
             }
         }

@@ -6,6 +6,7 @@ import logging
 from .validation_service import ValidationService
 from .query_service import QueryService
 from .data_processor import DataProcessor
+from .financial_calculator import FinancialCalculator, TotalFilters
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ class EncontroService:
         self.validation_service = ValidationService(db_contratos)
         self.query_service = QueryService(db_contratos, db_financeiro)
         self.data_processor = DataProcessor()
+        self.financial_calculator = FinancialCalculator()
         self.db_contratos = db_contratos
         self.db_financeiro = db_financeiro
 
@@ -192,3 +194,77 @@ class EncontroService:
         except Exception as e:
             logger.error(f"Error in get_user_contracts_summary: {e}", exc_info=True)
             return self.data_processor.handle_processing_error(e, f"user {user_id} contracts summary")
+
+    async def compute_financial_totals(
+        self,
+        contrato_id: int,
+        user_id: int,
+        request=None,
+        use_partial: bool = False,
+        empenho_numero: str = None
+    ) -> Dict[str, Any]:
+        """
+        Compute financial totals for a contract using the corrected calculator.
+        
+        Args:
+            contrato_id: Contract ID
+            user_id: User ID for access validation
+            request: Request object for session validation
+            use_partial: Whether to use partial amounts instead of nominal
+            empenho_numero: Optional specific empenho filter
+            
+        Returns:
+            Dict with financial breakdown and validation results
+        """
+        try:
+            # Get contract data
+            contract_result = await self.get_complete_contract_data(
+                contrato_id, user_id, request, empenho_numero
+            )
+            
+            if contract_result.get('error', False):
+                return contract_result
+                
+            contract_data = contract_result.get('data', [])
+            
+            if not contract_data:
+                return {
+                    'error': False,
+                    'message': 'No data found for calculation',
+                    'breakdown': None,
+                    'validation': None
+                }
+            
+            # Compute breakdown using corrected calculator
+            breakdown = self.financial_calculator.compute_financial_breakdown(
+                contract_data, use_partial=use_partial
+            )
+            
+            # Validate calculation
+            validation = self.financial_calculator.validate_calculation(contract_data)
+            
+            return {
+                'error': False,
+                'contrato_id': contrato_id,
+                'use_partial': use_partial,
+                'empenho_count': len(contract_data),
+                'breakdown': {
+                    'dar': float(breakdown.dar),
+                    'darf': float(breakdown.darf),
+                    'gps': float(breakdown.gps),
+                    'ob': float(breakdown.ob),
+                    'total': float(breakdown.total)
+                },
+                'validation': {
+                    'partial_total': float(validation['partial_total']),
+                    'nominal_total': float(validation['nominal_total']),
+                    'difference': float(validation['difference']),
+                    'consistent': validation['consistent'],
+                    'messages': validation['messages']
+                },
+                'sanity_check_sql': self.financial_calculator.generate_sanity_check_sql()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in compute_financial_totals: {e}", exc_info=True)
+            return self.data_processor.handle_processing_error(e, f"financial totals for contract {contrato_id}")
