@@ -1874,6 +1874,10 @@ export default {
   // UNIFIED CALCULATION FUNCTION - Used by both table and chart
   // Always uses individual empenho values (never grouped)
   // For OB documents, specifically uses va_linha_evento_individual
+  // THIS FUNCTION IS USED BY:
+  // - Frontend table calculations (Financeiro column)
+  // - Valores Totais ECharts visualization
+  // - Summary calculations and totals
   encontroDeContas_calculateFinancialTotals(empenho) {
     const empenhoNumero = empenho.empenho?.numero || "Unknown";
 
@@ -2762,8 +2766,24 @@ export default {
       // Extract values from the API response
       const totalEmpenhado = this.state.rawData.total_empenhado || 0;
       const totalOrcamentario = this.state.rawData.total_orcamentario || 0;
-      const totalFinancial = this.state.rawData.total_financial_value || 0;
       const valorGlobal = this.state.rawData.valor_acumulado || 0;
+
+      // Calculate total financial value dynamically using the same logic as frontend tables
+      let totalFinancial = 0;
+      if (this.state.rawData?.empenhos_data) {
+        totalFinancial = this.state.rawData.empenhos_data.reduce(
+          (total, empenho) => {
+            const empenhoTotals =
+              this.encontroDeContas_calculateFinancialTotals(empenho);
+            return total + empenhoTotals.total;
+          },
+          0
+        );
+
+        console.log(
+          `📊 Chart: Calculated total financial value: ${totalFinancial} (from ${this.state.rawData.empenhos_data.length} empenhos)`
+        );
+      }
 
       // Format values for display (convert to millions for readability)
       const formatValue = (value) => {

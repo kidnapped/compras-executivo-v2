@@ -124,3 +124,52 @@ async def get_tudo_data(
     except Exception as e:
         logger.error(f"Error in get_tudo_data for contract {contrato_id}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
+
+@router.get("/financial-totals")
+async def get_financial_totals(
+    request: Request,
+    contrato_id: int = Query(..., description="ID do contrato"),
+    use_partial: bool = Query(False, description="Use partial amounts instead of nominal"),
+    empenho_numero: str = Query(None, description="Número do empenho específico (opcional)"),
+    db_contratos: AsyncSession = Depends(get_session_contratos),
+    db_financeiro: AsyncSession = Depends(get_session_financeiro)
+):
+    """
+    Calcula totais financeiros usando a implementação corrigida
+    
+    - contrato_id: ID do contrato (obrigatório)
+    - use_partial: Se True, usa valores parciais; se False, usa valores nominais (padrão: False)
+    - empenho_numero: Número do empenho específico (opcional)
+    
+    Retorna breakdown detalhado e validação dos cálculos.
+    """
+    try:
+        # Get user ID from session
+        user_id = get_usuario_id(request)
+        if not user_id:
+            raise HTTPException(status_code=403, detail="Usuário não identificado na sessão")
+        
+        # Initialize service
+        encontro_service = EncontroService(db_contratos, db_financeiro)
+        
+        # Compute financial totals using corrected calculator
+        result = await encontro_service.compute_financial_totals(
+            contrato_id, user_id, request, use_partial, empenho_numero
+        )
+        
+        if result.get('error', False):
+            if 'Access denied' in result.get('message', ''):
+                raise HTTPException(status_code=403, detail=result['message'])
+            elif 'not found' in result.get('message', '').lower():
+                raise HTTPException(status_code=404, detail=result['message'])
+            else:
+                raise HTTPException(status_code=500, detail=result['message'])
+        
+        logger.info(f"Financial totals calculated for contract {contrato_id} - Total: {result['breakdown']['total']}")
+        return result
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in get_financial_totals for contract {contrato_id}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
