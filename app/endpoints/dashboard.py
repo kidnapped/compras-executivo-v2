@@ -151,12 +151,22 @@ async def get_dashboard_contratos(
     ano_filters: Optional[str] = Query(None, description="Ano filters as comma-separated string, e.g., '2023,2024'"),
     db: AsyncSession = Depends(get_session_contratos)
 ):
-    uasgs = get_uasgs_str(request)
-    if not uasgs:
-        raise HTTPException(status_code=403, detail="UASG não definida")
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
     
-    # 1. Descobre os ID_UASG com base nos códigos
-    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+    if user_scope == "root":
+        logger.info(f"[ROOT SCOPE] Bypassing UASG filtering for contratos dashboard - user has root scope")
+        # For root scope, get all unit IDs
+        ids_uasg_result = await db.execute(text("SELECT id FROM unidades"))
+        ids_uasg = [row[0] for row in ids_uasg_result.fetchall()]
+        logger.info(f"[ROOT SCOPE] Found {len(ids_uasg)} total units for root access")
+    else:
+        uasgs = get_uasgs_str(request)
+        if not uasgs:
+            raise HTTPException(status_code=403, detail="UASG não definida")
+        
+        # 1. Descobre os ID_UASG com base nos códigos
+        ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
 
     if not ids_uasg:
         return {
@@ -278,7 +288,8 @@ async def get_contratos_por_exercicio(
                 unidades AS u ON c.unidadeorigem_id = u.id
             WHERE 
                 c.data_assinatura IS NOT NULL
-                AND c.vigencia_inicio >= DATE '2021-01-01'
+                AND c.data_assinatura >= DATE '2021-01-01'  -- Filter by signing date instead
+                AND c.data_assinatura <= CURRENT_DATE + INTERVAL '10 days'  -- Limit to today + 10 days
             GROUP BY 
                 anos
             ORDER BY 
@@ -313,7 +324,8 @@ async def get_contratos_por_exercicio(
                 unidades AS u ON c.unidadeorigem_id = u.id
             WHERE 
                 c.data_assinatura IS NOT NULL
-                AND c.vigencia_inicio >= DATE '2021-01-01'
+                AND c.data_assinatura >= DATE '2021-01-01'  -- Filter by signing date instead
+                AND c.data_assinatura <= CURRENT_DATE + INTERVAL '10 days'  -- Limit to today + 10 days
                 AND u.codigo = ANY(:uasg)
             GROUP BY 
                 anos
@@ -361,7 +373,8 @@ async def get_valores_sazonais(
           contratos c
         WHERE 
           c.data_assinatura IS NOT NULL
-          AND c.vigencia_inicio >= DATE '2021-01-01'
+          AND c.data_assinatura >= DATE '2021-01-01'  -- Filter by signing date instead
+          AND c.data_assinatura <= CURRENT_DATE + INTERVAL '10 days'  -- Limit to today + 10 days
           AND c.unidadeorigem_id = ANY(:ids)
           AND c.valor_inicial IS NOT NULL
         GROUP BY 
