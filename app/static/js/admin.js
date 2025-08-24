@@ -175,8 +175,9 @@ export default {
                                      style="background-color:#8f9dd2; border-color:#8f9dd2;">
                                 ${card.botao}
                              </button>` :
-                            `<a href="${card.url}" class="br-button primary small mt-2 admin-card-button" 
+                            `<a href="${card.url}" class="br-button primary small mt-2 admin-card-button spa-link" 
                                 data-card-titulo="${card.titulo}" 
+                                data-spa="true"
                                 style="background-color:#8f9dd2; border-color:#8f9dd2;">
                                 ${card.botao}
                              </a>`
