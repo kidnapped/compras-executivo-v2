@@ -1,5 +1,5 @@
 import asyncio
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Callable, Awaitable
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 
@@ -101,6 +101,196 @@ class EncontroService:
 
         except Exception as e:
             logger.error(f"Error in get_complete_contract_data: {e}", exc_info=True)
+            return self.data_processor.handle_processing_error(e, f"contract {contrato_id}")
+
+    async def get_complete_contract_data_with_progress(
+        self, 
+        contrato_id: int, 
+        user_id: int, 
+        request=None, 
+        empenho_numero: str = None,
+        progress_callback: Optional[Callable[[Dict[str, Any]], Awaitable[None]]] = None
+    ) -> Dict[str, Any]:
+        """
+        Get complete contract data with real-time progress updates via callback
+        
+        Args:
+            contrato_id: The contract ID to process
+            user_id: The user ID for access validation
+            request: The request object for session-based validation
+            empenho_numero: Optional specific empenho number to filter by
+            progress_callback: Optional async callback function for progress updates
+            
+        Returns:
+            Dict containing processed contract data or error information
+        """
+        try:
+            # Step 1: Validate access and get contract info
+            logger.info(f"Starting data retrieval for contract {contrato_id}, user {user_id}")
+            
+            if progress_callback:
+                await progress_callback({
+                    'message': 'Validando acesso ao contrato...',
+                    'step': 'validation',
+                    'contrato_id': contrato_id
+                })
+            
+            validation_result = await self.validation_service.validate_contract_access(contrato_id, user_id, request)
+            if not validation_result.get('valid', False):
+                return {
+                    'error': True,
+                    'message': validation_result.get('message', 'Access denied to this contract'),
+                    'data': None
+                }
+
+            unidade_id = validation_result.get('unidade_id')
+            unidadeempenho_id = validation_result.get('unidadeempenho_id')
+            uasg_codigo = validation_result.get('uasg_codigo')
+            valor_acumulado = validation_result.get('valor_acumulado', 0.0)
+
+            # Step 2: Get contract empenhos with unidadeempenho_id filter
+            if progress_callback:
+                await progress_callback({
+                    'message': 'Buscando empenhos do contrato...',
+                    'step': 'empenhos_search',
+                    'contrato_id': contrato_id
+                })
+            
+            empenhos = await self.query_service.get_contract_empenhos(contrato_id, unidadeempenho_id, empenho_numero, request)
+            
+            if empenho_numero:
+                logger.info(f"Found {len(empenhos)} empenhos for contract {contrato_id} filtered by empenho_numero '{empenho_numero}'")
+            else:
+                logger.info(f"Found {len(empenhos)} empenhos for contract {contrato_id} with unidadeempenho_id {unidadeempenho_id}")
+            
+            if not empenhos:
+                # Try without unidade_id filter to see if that's the issue
+                logger.info(f"No empenhos found with unidadeempenho_id filter, trying without filter...")
+                if progress_callback:
+                    await progress_callback({
+                        'message': 'Tentando busca alternativa de empenhos...',
+                        'step': 'empenhos_fallback',
+                        'contrato_id': contrato_id
+                    })
+                    
+                empenhos_fallback = await self.query_service.get_contract_empenhos(contrato_id, None, None, request)
+                logger.info(f"Fallback query found {len(empenhos_fallback)} empenhos")
+                
+                if empenhos_fallback:
+                    # Use fallback empenhos for processing
+                    empenhos = empenhos_fallback
+                    logger.info(f"Using fallback empenhos for processing (unidadeempenho_id filter may be too restrictive)")
+                else:
+                    return {
+                        'error': False,
+                        'message': f'No empenhos found for this contract with or without unidadeempenho_id filter.',
+                        'data': []
+                    }
+
+            # Notify about found empenhos
+            if progress_callback:
+                await progress_callback({
+                    'message': f'Encontrados {len(empenhos)} empenhos. Processando...',
+                    'step': 'empenhos_found',
+                    'contrato_id': contrato_id,
+                    'total_empenhos': len(empenhos),
+                    'processed_empenhos': 0
+                })
+
+            logger.info(f"Found {len(empenhos)} empenhos for contract {contrato_id}")
+
+            # Step 3: Process each empenho sequentially with progress updates
+            successful_results = []
+            for i, empenho in enumerate(empenhos):
+                try:
+                    empenho_id = empenho.get('id', 'unknown')
+                    logger.info(f"Processing empenho {i+1}/{len(empenhos)}: {empenho_id}")
+                    
+                    if progress_callback:
+                        await progress_callback({
+                            'message': f'Processando empenho {i+1} de {len(empenhos)}...',
+                            'step': 'processing_empenho',
+                            'contrato_id': contrato_id,
+                            'current_empenho': i + 1,
+                            'total_empenhos': len(empenhos),
+                            'processed_empenhos': i,
+                            'empenho_id': empenho_id
+                        })
+                    
+                    result = await self._process_single_empenho(empenho, uasg_codigo)
+                    
+                    if not result.get('error', False):
+                        successful_results.append(result)
+                        logger.info(f"Successfully processed empenho {empenho_id}")
+                        
+                        if progress_callback:
+                            await progress_callback({
+                                'message': f'Empenho {i+1} processado com sucesso',
+                                'step': 'empenho_completed',
+                                'contrato_id': contrato_id,
+                                'current_empenho': i + 1,
+                                'total_empenhos': len(empenhos),
+                                'processed_empenhos': i + 1,
+                                'successful_empenhos': len(successful_results),
+                                'empenho_id': empenho_id
+                            })
+                    else:
+                        logger.warning(f"Processing failed for empenho {empenho_id}: {result.get('message', 'Unknown error')}")
+                        
+                        if progress_callback:
+                            await progress_callback({
+                                'message': f'Erro ao processar empenho {i+1}: {result.get("message", "Erro desconhecido")}',
+                                'step': 'empenho_error',
+                                'contrato_id': contrato_id,
+                                'current_empenho': i + 1,
+                                'total_empenhos': len(empenhos),
+                                'processed_empenhos': i + 1,
+                                'successful_empenhos': len(successful_results),
+                                'empenho_id': empenho_id,
+                                'error_message': result.get('message', 'Unknown error')
+                            })
+                        
+                except Exception as e:
+                    logger.error(f"Failed to process empenho {empenho.get('id', 'unknown')}: {e}", exc_info=True)
+                    
+                    if progress_callback:
+                        await progress_callback({
+                            'message': f'Erro crítico ao processar empenho {i+1}: {str(e)}',
+                            'step': 'empenho_critical_error',
+                            'contrato_id': contrato_id,
+                            'current_empenho': i + 1,
+                            'total_empenhos': len(empenhos),
+                            'processed_empenhos': i + 1,
+                            'successful_empenhos': len(successful_results),
+                            'empenho_id': empenho.get('id', 'unknown'),
+                            'error_message': str(e)
+                        })
+
+            logger.info(f"Successfully processed {len(successful_results)} out of {len(empenhos)} empenhos")
+
+            # Final progress update
+            if progress_callback:
+                await progress_callback({
+                    'message': f'Processamento concluído: {len(successful_results)} de {len(empenhos)} empenhos processados com sucesso',
+                    'step': 'processing_complete',
+                    'contrato_id': contrato_id,
+                    'total_empenhos': len(empenhos),
+                    'successful_empenhos': len(successful_results),
+                    'failed_empenhos': len(empenhos) - len(successful_results)
+                })
+
+            # Step 4: Create summary response
+            return self.data_processor.create_summary_response(successful_results, valor_acumulado)
+
+        except Exception as e:
+            logger.error(f"Error in get_complete_contract_data_with_progress: {e}", exc_info=True)
+            if progress_callback:
+                await progress_callback({
+                    'message': f'Erro crítico durante o processamento: {str(e)}',
+                    'step': 'critical_error',
+                    'contrato_id': contrato_id,
+                    'error_message': str(e)
+                })
             return self.data_processor.handle_processing_error(e, f"contract {contrato_id}")
 
     async def _process_single_empenho(self, empenho: Dict, uasg_codigo: str) -> Dict[str, Any]:

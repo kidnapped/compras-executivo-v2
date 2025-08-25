@@ -152,19 +152,20 @@ export default {
       console.log("🎯 Initializing empenhos card headers...");
       this.encontroDeContas_initCardHeadersEmpenhos();
 
-      // Show loading states immediately after cards are created
-      console.log("🔄 Showing initial loading states for all cards...");
-      setTimeout(() => {
-        this.encontroDeContas_showInitialLoadingStates();
-      }, 200); // Increased timeout to ensure cards are fully created
-
-      // Fill card content - this will be overridden by data when loaded
+      // Fill card content - this will show loading states since no data is available yet
       console.log("🎨 Filling card content...");
       this.encontroDeContas_fillCardContent();
 
-      // Fill empenhos card content - this will be overridden by data when loaded
+      // Fill empenhos card content - this will show loading states since no data is available yet
       console.log("🎨 Filling empenhos card content...");
       this.encontroDeContas_fillCardContentEmpenhos();
+
+      // Show loading states immediately for any containers that might exist
+      console.log("🔄 Showing initial loading states for all cards...");
+      // Use a small delay to ensure card containers are created in DOM
+      setTimeout(() => {
+        this.encontroDeContas_showAllLoadingStates();
+      }, 100); // Reduced timeout and use existing function
 
       // Initialize second topico - Movimentações
       console.log("📋 Initializing movimentações topico...");
@@ -902,6 +903,18 @@ export default {
 
   async encontroDeContas_loadInitialData() {
     try {
+      // Show immediate progress message when data loading starts
+      console.log("🔄 Starting data loading process...");
+      this.encontroDeContas_showProgressMessage(
+        "Carregando dados do contrato..."
+      );
+
+      // Show loading states immediately when data loading starts
+      console.log(
+        "🔄 Showing immediate loading states at start of data loading..."
+      );
+      this.encontroDeContas_showAllLoadingStates();
+
       // Verificar se já está carregando dados (proteção contra múltiplas chamadas da API)
       if (this.state.isLoadingData) {
         console.log(
@@ -920,14 +933,474 @@ export default {
         return;
       }
 
+      // Check if streaming is supported and preferred
+      if (this.encontroDeContas_isStreamingSupported()) {
+        console.log("🌊 Using streaming mode for real-time updates");
+        try {
+          return await this.encontroDeContas_loadInitialDataWithStreaming();
+        } catch (streamingError) {
+          console.warn(
+            "⚠️ Streaming failed, falling back to regular loading:",
+            streamingError
+          );
+          // Only fallback if streaming actually failed, not for other errors
+          if (
+            streamingError.message.includes("Streaming") ||
+            streamingError.message.includes("EventSource")
+          ) {
+            return await this.encontroDeContas_loadInitialDataRegular();
+          } else {
+            throw streamingError; // Re-throw non-streaming errors
+          }
+        }
+      }
+
+      // Fallback to regular loading
+      return await this.encontroDeContas_loadInitialDataRegular();
+    } catch (error) {
+      console.error("❌ Error in loadInitialData:", error);
+      // Don't automatically fallback here to avoid double calls
+      throw error;
+    }
+  },
+
+  /**
+   * Check if streaming is supported by the browser and should be used
+   */
+  encontroDeContas_isStreamingSupported() {
+    // Check for EventSource support
+    const hasEventSource = typeof EventSource !== "undefined";
+
+    // Check if we're not on file protocol
+    const notFileProtocol = window.location.protocol !== "file:";
+
+    // Check if streaming is not explicitly disabled
+    const streamingEnabled = !window.localStorage.getItem("disable-streaming");
+
+    // Allow manual override for testing
+    const forceStreaming =
+      window.localStorage.getItem("force-streaming") === "true";
+
+    console.log("🔍 Streaming support check:", {
+      hasEventSource,
+      notFileProtocol,
+      streamingEnabled,
+      forceStreaming,
+      result:
+        (hasEventSource && notFileProtocol && streamingEnabled) ||
+        forceStreaming,
+    });
+
+    return (
+      (hasEventSource && notFileProtocol && streamingEnabled) || forceStreaming
+    );
+  },
+
+  /**
+   * Load data with streaming updates
+   */
+  async encontroDeContas_loadInitialDataWithStreaming() {
+    try {
       // Marcar como carregando
       this.state.isLoadingData = true;
 
-      // Show loading states for all remaining containers (tables, charts) now that we're about to load data
-      console.log("🔄 Showing loading states for tables and charts...");
+      // Show loading states immediately for streaming
+      console.log("🔄 Showing loading states for streaming...");
+      this.encontroDeContas_showAllLoadingStates();
+
+      // Show initial progress message
+      this.encontroDeContas_showProgressMessage("Iniciando carregamento...");
+
+      console.log("🌊 Starting streaming data load...");
+      const url = `/tudo-stream?contrato_id=${this.state.currentContractId}`;
+      console.log("🌐 Streaming URL:", url);
+
+      const eventSource = new EventSource(url);
+
+      return new Promise((resolve, reject) => {
+        let hasCompleted = false;
+
+        eventSource.onmessage = (event) => {
+          try {
+            const update = JSON.parse(event.data);
+            console.log("📡 Streaming update:", update);
+
+            switch (update.type) {
+              case "start":
+                this.encontroDeContas_showProgressMessage(update.message);
+                break;
+
+              case "progress":
+                this.encontroDeContas_handleProgressUpdate(update);
+                break;
+
+              case "complete":
+                console.log("✅ Streaming completed with data:", update.data);
+
+                // Show final completion state
+                this.encontroDeContas_showCompletionState(update.data);
+
+                this.state.rawData = update.data;
+                this.state.filteredData = update.data;
+
+                // Render tables and fill content
+                this.encontroDeContas_renderAllTables();
+                this.encontroDeContas_fillCardContent();
+                this.encontroDeContas_fillCardContentEmpenhos();
+
+                eventSource.close();
+                hasCompleted = true;
+                resolve(update.data);
+                break;
+
+              case "error":
+                console.error("❌ Streaming error:", update.message);
+                eventSource.close();
+                if (!hasCompleted) {
+                  reject(new Error(update.message));
+                }
+                break;
+            }
+          } catch (parseError) {
+            console.error("❌ Error parsing streaming data:", parseError);
+          }
+        };
+
+        eventSource.onerror = (error) => {
+          console.error("❌ EventSource error:", error);
+          eventSource.close();
+          if (!hasCompleted) {
+            // Mark as completed to prevent multiple fallbacks
+            hasCompleted = true;
+            reject(
+              new Error("Streaming connection failed - EventSource error")
+            );
+          }
+        };
+
+        // Timeout after 5 minutes
+        setTimeout(() => {
+          if (!hasCompleted) {
+            eventSource.close();
+            reject(new Error("Streaming timeout"));
+          }
+        }, 300000);
+      });
+    } catch (error) {
+      console.error("❌ Error in streaming mode:", error);
+      throw error;
+    } finally {
+      this.state.isLoadingData = false;
+    }
+  },
+
+  /**
+   * Handle progress updates from streaming
+   */
+  encontroDeContas_handleProgressUpdate(update) {
+    console.log("📊 Progress update received:", update);
+
+    // Show progress message - this should always happen if there's a message
+    if (update.message) {
+      console.log("📢 Showing progress message from update:", update.message);
+      this.encontroDeContas_showProgressMessage(update.message);
+    } else {
+      console.log("⚠️ No message in progress update");
+    }
+
+    // Update progress indicators if we have empenho counts
+    if (update.total_empenhos && update.processed_empenhos !== undefined) {
+      const percentage = Math.round(
+        (update.processed_empenhos / update.total_empenhos) * 100
+      );
+      console.log(
+        `📊 Updating progress bar: ${update.processed_empenhos}/${update.total_empenhos} (${percentage}%)`
+      );
+      this.encontroDeContas_updateProgressBar(
+        percentage,
+        update.processed_empenhos,
+        update.total_empenhos
+      );
+    }
+
+    // Show specific step information
+    if (update.step) {
+      console.log(`🔄 Processing step: ${update.step}`);
+      this.encontroDeContas_showStepInfo(update.step, update);
+    }
+  },
+
+  /**
+   * Show progress message in UI
+   */
+  encontroDeContas_showProgressMessage(message) {
+    console.log("📢 Showing progress message:", message);
+
+    // Find or create progress container
+    let progressContainer = document.querySelector(
+      "#encontro-progress-container"
+    );
+    if (!progressContainer) {
+      console.log("📦 Creating new progress container...");
+      progressContainer = document.createElement("div");
+      progressContainer.id = "encontro-progress-container";
+      progressContainer.className = "alert alert-info mt-3";
+      progressContainer.style.cssText =
+        "position: relative; z-index: 1000; margin: 1rem 0; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;";
+      progressContainer.innerHTML = `
+        <div class="d-flex align-items-center">
+          <div class="spinner-border spinner-border-sm me-2" role="status" style="color: #28a745;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <span id="progress-message" style="font-weight: 500; color: #333;">Carregando...</span>
+        </div>
+        <div class="progress mt-2" id="main-progress-container" style="display: none; height: 8px; border-radius: 10px; background-color: #e9ecef; overflow: hidden; position: relative;">
+          <div id="progress-bar" class="progress-bar" role="progressbar" 
+               style="width: 0%; background: linear-gradient(90deg, #28a745, #20c997); transition: width 0.4s ease-in-out; border-radius: 10px; position: relative; overflow: hidden;"
+               aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar-shine" style="
+              position: absolute;
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+              animation: shine 2s infinite;
+            "></div>
+          </div>
+        </div>
+        <small id="progress-details" class="text-muted" style="display: none; font-size: 0.85rem; margin-top: 0.25rem;"></small>
+        <style>
+          @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+          }
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+          .progress-complete {
+            animation: pulse 0.6s ease-in-out;
+          }
+          .container-fade-out {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.5s ease-out;
+          }
+        </style>
+      `;
+
+      // Try multiple insertion strategies to ensure it shows up
+      let inserted = false;
+
+      // Strategy 1: Try to insert at the top of main content area
+      const containerFluid = document.querySelector(".container-fluid");
+      if (containerFluid) {
+        console.log("📍 Inserting progress container in container-fluid");
+        const firstChild = containerFluid.firstElementChild;
+        if (firstChild) {
+          containerFluid.insertBefore(progressContainer, firstChild);
+        } else {
+          containerFluid.appendChild(progressContainer);
+        }
+        inserted = true;
+      }
+
+      // Strategy 2: Try to find encontro-specific containers
+      if (!inserted) {
+        const encontroContainer =
+          document.querySelector("#encontro-contas-topico-container") ||
+          document.querySelector("#encontroContasEmpenhosContent")
+            ?.parentElement?.parentElement ||
+          document
+            .querySelector("#empenhos-originais-tbody")
+            ?.closest(".container, .container-fluid");
+        if (encontroContainer) {
+          console.log(
+            "📍 Inserting progress container in encontro-specific container"
+          );
+          encontroContainer.insertBefore(
+            progressContainer,
+            encontroContainer.firstElementChild
+          );
+          inserted = true;
+        }
+      }
+
+      // Strategy 3: Fallback to body
+      if (!inserted) {
+        console.log("📍 Fallback: inserting progress container in body");
+        document.body.insertBefore(
+          progressContainer,
+          document.body.firstElementChild
+        );
+        inserted = true;
+      }
+
+      console.log("✅ Progress container created and inserted:", inserted);
+    }
+
+    // Update message
+    const messageElement = progressContainer.querySelector("#progress-message");
+    if (messageElement) {
+      messageElement.textContent = message;
+      console.log("✅ Progress message updated:", message);
+    } else {
+      console.warn("❌ Could not find progress message element");
+    }
+  },
+
+  /**
+   * Update progress bar with enhanced visual effects
+   */
+  encontroDeContas_updateProgressBar(percentage, processed, total) {
+    const progressBar = document.querySelector("#progress-bar");
+    const progressDetails = document.querySelector("#progress-details");
+    const progressContainer = document.querySelector(
+      "#main-progress-container"
+    );
+
+    if (progressBar && progressDetails && progressContainer) {
+      // Show the progress container
+      progressContainer.style.display = "block";
+
+      // Update progress bar width with smooth animation
+      progressBar.style.width = `${percentage}%`;
+      progressBar.setAttribute("aria-valuenow", percentage);
+
+      // Update progress text with enhanced formatting
+      progressDetails.style.display = "block";
+      progressDetails.innerHTML = `
+        <strong>${processed}</strong> de <strong>${total}</strong> empenhos processados 
+        (<span style="color: #28a745; font-weight: bold;">${percentage}%</span>)
+      `;
+
+      // Add visual feedback based on progress
+      if (percentage === 100) {
+        // Completion effects
+        progressBar.classList.add("progress-complete");
+        progressBar.style.background =
+          "linear-gradient(90deg, #28a745, #20c997, #17a2b8)";
+
+        // Update message for completion
+        const messageElement = document.querySelector("#progress-message");
+        if (messageElement) {
+          messageElement.innerHTML = `
+            <i class="fas fa-check-circle" style="color: #28a745; margin-right: 0.5rem;"></i>
+            <span style="color: #28a745; font-weight: bold;">Processamento concluído!</span>
+          `;
+        }
+
+        // Hide spinner when complete
+        const spinner = document.querySelector(".spinner-border");
+        if (spinner) {
+          spinner.style.display = "none";
+        }
+
+        // Schedule container removal after 3 seconds
+        setTimeout(() => {
+          this.encontroDeContas_hideProgress();
+        }, 3000);
+      } else if (percentage >= 75) {
+        // Near completion - enhanced green
+        progressBar.style.background =
+          "linear-gradient(90deg, #28a745, #20c997)";
+      } else if (percentage >= 50) {
+        // Mid progress - blue to green
+        progressBar.style.background =
+          "linear-gradient(90deg, #17a2b8, #28a745)";
+      } else {
+        // Early progress - blue
+        progressBar.style.background =
+          "linear-gradient(90deg, #007bff, #17a2b8)";
+      }
+
+      console.log(
+        `📊 Progress bar updated: ${percentage}% (${processed}/${total})`
+      );
+    } else {
+      console.warn("❌ Could not find progress bar elements");
+    }
+  },
+
+  /**
+   * Show step-specific information
+   */
+  encontroDeContas_showStepInfo(step, update) {
+    const stepMessages = {
+      validation: "🔐 Validando acesso...",
+      empenhos_search: "🔍 Buscando empenhos...",
+      empenhos_found: `📋 Encontrados ${update.total_empenhos || 0} empenhos`,
+      processing_empenho: `⚙️ Processando empenho ${
+        update.current_empenho || 0
+      }...`,
+      empenho_completed: "✅ Empenho processado",
+      empenho_error: "⚠️ Erro no empenho",
+      processing_complete: "🎉 Processamento concluído",
+    };
+
+    const stepMessage = stepMessages[step] || update.message;
+    if (stepMessage) {
+      console.log(`Step ${step}: ${stepMessage}`);
+    }
+  },
+
+  /**
+   * Show completion state with final success message
+   */
+  encontroDeContas_showCompletionState(data) {
+    console.log("🎉 Showing completion state...");
+
+    // Final success message
+    const totalEmpenhos = data?.total_empenhos || 0;
+    const successMessage = `🎉 Processamento concluído! ${totalEmpenhos} empenhos processados com sucesso.`;
+
+    this.encontroDeContas_showProgressMessage(successMessage);
+
+    // Force progress bar to 100% with completion effects
+    this.encontroDeContas_updateProgressBar(100, totalEmpenhos, totalEmpenhos);
+  },
+
+  /**
+   * Hide progress indicators with smooth animation
+   */
+  encontroDeContas_hideProgress() {
+    const progressContainer = document.querySelector(
+      "#encontro-progress-container"
+    );
+    if (progressContainer) {
+      console.log("🎭 Hiding progress container with fade-out animation...");
+
+      // Add fade-out animation class
+      progressContainer.classList.add("container-fade-out");
+
+      // Remove the container after animation completes
       setTimeout(() => {
-        this.encontroDeContas_showAllLoadingStates();
-      }, 50);
+        try {
+          if (progressContainer.parentNode) {
+            progressContainer.parentNode.removeChild(progressContainer);
+            console.log("✨ Progress container removed successfully");
+          }
+        } catch (error) {
+          console.warn("⚠️ Error removing progress container:", error);
+        }
+      }, 500); // Wait for fade-out animation to complete
+    } else {
+      console.log("📦 No progress container found to hide");
+    }
+  },
+
+  /**
+   * Regular (non-streaming) data loading - original implementation
+   */
+  async encontroDeContas_loadInitialDataRegular() {
+    try {
+      // Marcar como carregando
+      this.state.isLoadingData = true;
+
+      // Show loading states immediately for all remaining containers (tables, charts) now that we're about to load data
+      console.log("🔄 Showing loading states for tables and charts...");
+      this.encontroDeContas_showAllLoadingStates();
 
       console.log("📡 Fetching data from API...");
       const url = `/tudo?contrato_id=${this.state.currentContractId}`;
@@ -994,6 +1467,8 @@ export default {
     } finally {
       // Reset flag de carregamento
       this.state.isLoadingData = false;
+      // Hide progress indicators
+      this.encontroDeContas_hideProgress();
     }
   },
 
@@ -4563,6 +5038,53 @@ export default {
     }
   },
 
+  // ===== DEBUGGING UTILITIES =====
+
+  /**
+   * Disable streaming for debugging (call from console)
+   */
+  encontroDeContas_disableStreaming() {
+    window.localStorage.setItem("disable-streaming", "true");
+    console.log(
+      "🚫 Streaming disabled. Reload page to use regular endpoint only."
+    );
+  },
+
+  /**
+   * Enable streaming (call from console)
+   */
+  encontroDeContas_enableStreaming() {
+    window.localStorage.removeItem("disable-streaming");
+    console.log("✅ Streaming enabled. Reload page to use streaming endpoint.");
+  },
+
+  /**
+   * Force streaming even if browser checks fail (call from console)
+   */
+  encontroDeContas_forceStreaming() {
+    window.localStorage.setItem("force-streaming", "true");
+    console.log("⚡ Streaming forced. Reload page to force streaming.");
+  },
+
+  /**
+   * Check current streaming status
+   */
+  encontroDeContas_checkStreamingStatus() {
+    const isSupported = this.encontroDeContas_isStreamingSupported();
+    const isDisabled =
+      window.localStorage.getItem("disable-streaming") === "true";
+    const isForced = window.localStorage.getItem("force-streaming") === "true";
+
+    console.log("📊 Streaming Status:", {
+      supported: isSupported,
+      disabled: isDisabled,
+      forced: isForced,
+      willUseStreaming: isSupported && !isDisabled,
+    });
+
+    return { supported: isSupported, disabled: isDisabled, forced: isForced };
+  },
+
   // ===== COMPATIBILITY FOR LEGACY EncontroInit API =====
 
   /**
@@ -4588,6 +5110,26 @@ export default {
           this.encontroDeContas_loadContractData(contratoId),
         refreshCards: () => this.encontroDeContas_refreshCards(),
       };
+
+      // Add debugging utilities to window for easy access
+      window.EncontroDebug = {
+        disableStreaming: () => this.encontroDeContas_disableStreaming(),
+        enableStreaming: () => this.encontroDeContas_enableStreaming(),
+        forceStreaming: () => this.encontroDeContas_forceStreaming(),
+        checkStatus: () => this.encontroDeContas_checkStreamingStatus(),
+      };
+
+      console.log("🔧 Debugging utilities available:");
+      console.log(
+        "- EncontroDebug.disableStreaming() - Disable streaming, use regular endpoint"
+      );
+      console.log("- EncontroDebug.enableStreaming() - Enable streaming");
+      console.log(
+        "- EncontroDebug.forceStreaming() - Force streaming even if unsupported"
+      );
+      console.log(
+        "- EncontroDebug.checkStatus() - Check current streaming status"
+      );
     }
   },
 
