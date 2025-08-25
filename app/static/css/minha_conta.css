@@ -11,7 +11,7 @@
     margin: 0 auto;
 }
 
-/* Breadcrumb Moderno */
+/* Estilos de fallback para breadcrumb caso necessário */
 .minha_conta_breadcrumb_modern {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border-radius: 16px;

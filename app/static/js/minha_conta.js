@@ -53,6 +53,7 @@ export default {
     console.log('✅ Elementos encontrados, inicializando componentes...');
     
     // Inicializa todos os componentes
+    this.minha_conta_initBreadcrumb();
     this.minha_conta_formatCPF();
     this.minha_conta_initScrollAnimations();
     this.minha_conta_initHoverEffects();
@@ -75,6 +76,77 @@ export default {
     
     console.log('✅ Minha conta elements initialized successfully');
     return true;
+  },
+
+  // Nova função para inicializar o breadcrumb dinamicamente
+  minha_conta_initBreadcrumb() {
+    console.log('🔧 Inicializando breadcrumb da minha conta...');
+
+    // Verifica se o módulo breadcrumb está disponível
+    if (
+      typeof App !== 'undefined' &&
+      App.breadcrumb &&
+      App.breadcrumb.breadcrumb_createDynamic
+    ) {
+      // Usa o módulo breadcrumb para criar dinamicamente
+      App.breadcrumb.breadcrumb_createDynamic(
+        [
+          {
+            icon: 'fas fa-home',
+            title: 'Início',
+            url: '/'
+          },
+          {
+            icon: 'fas fa-user',
+            title: 'Minha Conta',
+            url: null
+          }
+        ],
+        'minha-conta-breadcrumb-dynamic-container'
+      );
+      console.log('✅ Breadcrumb da minha conta criado via módulo breadcrumb');
+    } else {
+      console.log('⚠️ Módulo breadcrumb não disponível, usando fallback');
+      this.minha_conta_initBreadcrumbFallback();
+    }
+  },
+
+  // Função de fallback para o breadcrumb (caso o módulo não esteja disponível)
+  minha_conta_initBreadcrumbFallback() {
+    console.log('🔧 Carregando breadcrumb da minha conta (fallback)...');
+    
+    const breadcrumbContainer = document.getElementById('minha-conta-breadcrumb-dynamic-container');
+    if (!breadcrumbContainer) {
+      console.log('⚠️ Container do breadcrumb não encontrado');
+      return;
+    }
+
+    const breadcrumbHTML = `
+      <div class="row mb-2">
+        <div class="col-12">
+          <div class="minha_conta_breadcrumb_modern">
+            <div class="minha_conta_breadcrumb_items">
+              <div class="minha_conta_breadcrumb_item">
+                <a href="/">
+                  <i class="fas fa-home"></i>
+                  Início
+                </a>
+              </div>
+              <div class="minha_conta_breadcrumb_separator">
+                <i class="fas fa-chevron-right"></i>
+              </div>
+              <div class="minha_conta_breadcrumb_item active">
+                <i class="fas fa-user"></i>
+                Minha Conta
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    breadcrumbContainer.innerHTML = breadcrumbHTML;
+    console.log('✅ Breadcrumb da minha conta carregado com sucesso (fallback)');
   },
 
   // Format CPF with mask for display

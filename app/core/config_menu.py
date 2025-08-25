@@ -17,6 +17,7 @@ MENU_ITEMS = {
 # Configuração de menus por scope de usuário
 MENU_CONFIG = {
     "root": [
+        "minha_conta",
         "contratos", 
         "filtro_uasg",
         "indicadores_old",
@@ -27,37 +28,37 @@ MENU_CONFIG = {
         "dev_ops",
     ],
     "admin": [
+        "minha_conta",
         "contratos",
         "filtro_uasg", 
         "indicadores",
         "administracao",
-        "minha_conta",
         "suporte",
         "ajuda",
         "sair"
     ],
     "global": [
+        "minha_conta",
         "contratos",
         "filtro_uasg",
         "indicadores",
-        "minha_conta",
         "suporte", 
         "ajuda",
         "sair"
     ],
     "orgao": [
+        "minha_conta",
         "contratos",
         "filtro_uasg",
         "indicadores",
-        "minha_conta",
         "suporte",
         "ajuda", 
         "sair"
     ],
     "unidade": [
+        "minha_conta",
         "contratos",
         "indicadores",
-        "minha_conta",
         "suporte",
         "ajuda",
         "sair"

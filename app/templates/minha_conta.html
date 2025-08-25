@@ -5,28 +5,9 @@
 {% block content %}
 <div class="minha_conta_profile_page">
     <div class="container-fluid">
-        <!-- Header da Página -->
-        <div class="row mb-2"> <!-- Reduzido de mb-4 para mb-2 -->
-            <div class="col-12">
-                <!-- Breadcrumb Moderno -->
-                <div class="minha_conta_breadcrumb_modern">
-                    <div class="minha_conta_breadcrumb_items">
-                        <div class="minha_conta_breadcrumb_item">
-                            <a href="/">
-                                <i class="fas fa-home"></i>
-                                Início
-                            </a>
-                        </div>
-                        <div class="minha_conta_breadcrumb_separator">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                        <div class="minha_conta_breadcrumb_item active">
-                            <i class="fas fa-user"></i>
-                            Minha Conta
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Breadcrumb Component - Dynamic -->
+        <div id="minha-conta-breadcrumb-dynamic-container">
+            <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
         </div>
 
         <!-- Content Section -->
