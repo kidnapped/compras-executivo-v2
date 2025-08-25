@@ -104,7 +104,7 @@ export default {
 
     // Complete card header HTML
     const cardHeaderHTML = `
-            <div class="topico-modern card-header-govbr">
+            <div class="card-header-govbr">
                 <div class="govbr-header-content">
                     <div class="govbr-icon">
                         <i class="${icon}"></i>

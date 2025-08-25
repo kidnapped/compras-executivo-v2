@@ -3,49 +3,23 @@
 {% block title %}CPF Alias - Compras Executivo{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="br-breadcrumb">
-                <ul class="crumb-list">
-                    <li class="crumb home">
-                        <a class="br-button circle" href="/">
-                            <span class="sr-only">Página inicial</span>
-                            <i class="fas fa-home"></i>
-                        </a>
-                    </li>
-                    <li class="crumb">
-                        <i class="icon fas fa-chevron-right"></i>
-                        <a href="/admin">Administração</a>
-                    </li>
-                    <li class="crumb" data-active="active">
-                        <i class="icon fas fa-chevron-right"></i>
-                        <span>CPF Alias</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<div class="cpf-alias-page">
+  <div class="container-fluid">
+    <!-- Breadcrumb Component - Dynamic -->
+    <div id="cpf-alias-breadcrumb-dynamic-container">
+      <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
     </div>
 
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-user-tag fa-2x me-3" style="color: #8f9dd2;"></i>
-                <div>
-                    <h2 class="mb-1">CPF Alias</h2>
-                    <p class="text-muted mb-0">Gerenciamento de aliases de CPF</p>
-                </div>
-            </div>
-        </div>
+    <!-- Topico Component - Dynamic -->
+    <div id="cpf-alias-topico-container">
+      <!-- Topico será carregado dinamicamente via JavaScript -->
     </div>
 
     <!-- Conteúdo da página será implementado aqui -->
     <div id="cpf-alias-content">
         <!-- O conteúdo será carregado via JavaScript -->
     </div>
+  </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
-<!-- Scripts específicos da página serão carregados automaticamente pelo SPA -->
 {% endblock %}

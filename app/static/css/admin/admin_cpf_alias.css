@@ -1,7 +1,87 @@
-/* CPF Alias - Estilos específicos da página */
+/* ===================== CPF ALIAS PAGE ===================== */
+
+.cpf-alias-page {
+  padding: 0;
+  margin: 0;
+}
+
+.cpf-alias-page .container-fluid {
+  padding: 20px;
+}
+
+/* ===================== ESTILOS GLOBAIS PARA CARDS ===================== */
+
+/* Padding zero para todos os card bodies */
+.cpf-alias-page .card-body-govbr {
+  padding: 0;
+  margin: 0;
+}
+
+/* Padding zero para todos os card contents */
+.cpf-alias-page .cpf-alias-card-content {
+  padding: 15px;
+  margin: 0;
+}
+
+/* ===================== LAYOUT PRINCIPAL ===================== */
+
+/* Container dos cards */
+.cpf-alias-layout {
+  margin-top: 20px;
+}
+
+.cpf-alias-layout .row {
+  margin: 0;
+}
+
+/* Layout das colunas */
+.cpf-alias-layout .col-xl-6 {
+  padding: 0 10px;
+}
+
+.cpf-alias-layout .col-xl-6:first-child {
+  padding-left: 0;
+}
+
+.cpf-alias-layout .col-xl-6:last-child {
+  padding-right: 0;
+}
+
+/* Containers dos cards */
+.cpf-alias-content {
+  height: 100%;
+}
+
+/* Cards */
+.cpf-alias-layout .sidebar-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Body dos cards */
+.cpf-alias-layout .card-body-govbr {
+  flex: 1;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Conteúdo dos cards */
+.cpf-alias-layout .cpf-alias-card-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+/* ===================== CONTAINER PRINCIPAL ===================== */
 
 .cpf-alias-container {
     min-height: 400px;
+    margin-top: 20px;
 }
 
 .cpf-alias-card {
@@ -9,4 +89,131 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Adicione aqui estilos específicos conforme necessário */
+/* ===================== LOADING E CHARTS ===================== */
+
+/* Loading container */
+.cpf-alias-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  text-align: center;
+}
+
+.cpf-alias-loading-spinner {
+  margin-bottom: 15px;
+}
+
+.cpf-alias-loading-spinner .fa-spinner {
+  font-size: 2rem;
+  color: #8f9dd2;
+  animation: spin 1s linear infinite;
+}
+
+.cpf-alias-loading h5 {
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.cpf-alias-loading p {
+  color: #666;
+  margin: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===================== RESPONSIVE DESIGN ===================== */
+
+/* Desktop (xl) */
+@media (min-width: 1200px) {
+  .cpf-alias-layout .sidebar-card {
+    height: 450px;
+  }
+}
+
+/* Tablet (lg) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .cpf-alias-layout .sidebar-card {
+    height: 400px;
+  }
+}
+
+/* Tablet pequeno e mobile */
+@media (max-width: 991px) {
+  .cpf-alias-layout .col-xl-6 {
+    padding: 0 5px;
+    margin-bottom: 20px;
+  }
+  
+  .cpf-alias-layout .col-xl-6:first-child,
+  .cpf-alias-layout .col-xl-6:last-child {
+    padding: 0 5px;
+  }
+  
+  .cpf-alias-layout .sidebar-card {
+    height: 350px;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 767px) {
+  .cpf-alias-page .container-fluid {
+    padding: 10px;
+  }
+  
+  .cpf-alias-layout .col-xl-6 {
+    padding: 0;
+    margin-bottom: 15px;
+  }
+  
+  .cpf-alias-layout .sidebar-card {
+    height: 300px;
+  }
+}
+
+/* ===================== SCROLLBAR CUSTOMIZADA ===================== */
+
+.cpf-alias-card-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cpf-alias-card-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.cpf-alias-card-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.cpf-alias-card-content::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Para Firefox */
+.cpf-alias-card-content {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* ===================== ALERTAS E MENSAGENS ===================== */
+
+.cpf-alias-page .alert {
+  margin: 15px 0;
+  border-radius: 6px;
+}
+
+.cpf-alias-page .alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.cpf-alias-page .alert-danger i {
+  margin-right: 8px;
+}
