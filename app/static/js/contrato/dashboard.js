@@ -183,15 +183,21 @@ export default {
   },
 
   async dashboardContratosPorExercicioCard() {
+    console.log('🔄 Iniciando dashboardContratosPorExercicioCard');
     const contentContainer = document.getElementById(
       "dashboardContratosExercicioContent"
     );
-    if (!contentContainer) return;
+    if (!contentContainer) {
+      console.error('❌ Container dashboardContratosExercicioContent não encontrado');
+      return;
+    }
 
     try {
+      console.log('📡 Fazendo fetch para /dashboard/contratos-por-exercicio');
       const res = await fetch("/dashboard/contratos-por-exercicio");
       if (!res.ok) throw new Error("Erro ao carregar");
       const data = await res.json();
+      console.log('✅ Dados recebidos:', data);
 
       // Create chart HTML content for the new card structure
       const chartHtml = `
@@ -200,6 +206,7 @@ export default {
 
       // Update the content area
       contentContainer.innerHTML = chartHtml;
+      console.log('📊 HTML do gráfico inserido');
 
       // Wait for DOM update and ensure container has dimensions
       await new Promise(resolve => setTimeout(resolve, 50));
@@ -207,7 +214,11 @@ export default {
       const chartDom = document.getElementById(
         "grafico-contratos-por-exercicio"
       );
-      if (!chartDom) return;
+      if (!chartDom) {
+        console.error('❌ Elemento grafico-contratos-por-exercicio não encontrado');
+        return;
+      }
+      console.log('🎯 Elemento do gráfico encontrado');
 
       // Force container dimensions if not set
       const containerRect = contentContainer.getBoundingClientRect();
@@ -215,9 +226,13 @@ export default {
         chartDom.style.height = `${containerRect.height}px`;
         chartDom.style.width = `${containerRect.width}px`;
       }
+      console.log('📏 Dimensões do container:', containerRect);
 
+      console.log('📦 Carregando ECharts...');
       const echarts = await getEcharts();
+      console.log('✅ ECharts carregado, inicializando gráfico...');
       const chart = echarts.init(chartDom);
+      console.log('🎨 Chart inicializado, configurando opções...');
       
       // Set option with proper sizing
       chart.setOption({
@@ -230,6 +245,8 @@ export default {
           },
           formatter: (p) =>
             `${p[0].axisValue}<br/><strong>${p[0].data} Contratos</strong>`,
+          extraCssText: 'z-index: 99999 !important;',
+          appendToBody: true,
         },
         grid: { 
           left: 20,
@@ -294,15 +311,21 @@ export default {
   },
 
   async dashboardRepresentacaoAnualValores() {
+    console.log('🔄 Iniciando dashboardRepresentacaoAnualValores');
     const contentContainer = document.getElementById(
       "dashboardRepresentacaoAnualContent"
     );
-    if (!contentContainer) return;
+    if (!contentContainer) {
+      console.error('❌ Container dashboardRepresentacaoAnualContent não encontrado');
+      return;
+    }
 
     try {
+      console.log('📡 Fazendo fetch para /dashboard/valores-por-exercicio');
       const res = await fetch("/dashboard/valores-por-exercicio");
       if (!res.ok) throw new Error("Erro ao carregar");
       const data = await res.json();
+      console.log('✅ Dados de valores recebidos:', data);
 
       // Create chart HTML content for the new card structure
       const chartHtml = `
@@ -311,6 +334,7 @@ export default {
 
       // Update the content area
       contentContainer.innerHTML = chartHtml;
+      console.log('📊 HTML do gráfico de valores inserido');
 
       // Wait for DOM update and ensure container has dimensions
       await new Promise(resolve => setTimeout(resolve, 50));
@@ -318,90 +342,131 @@ export default {
       const chartDom = document.getElementById(
         "grafico-representacao-anual-valores"
       );
-      if (!chartDom) return;
-
-      // Force container dimensions if not set
-      const containerRect = contentContainer.getBoundingClientRect();
-      if (containerRect.height > 0) {
-        chartDom.style.height = `${containerRect.height}px`;
-        chartDom.style.width = `${containerRect.width}px`;
+      if (!chartDom) {
+        console.error('❌ Elemento grafico-representacao-anual-valores não encontrado');
+        return;
       }
+      console.log('🎯 Elemento do gráfico de valores encontrado');
 
-      const echarts = await getEcharts();
-      const chart = echarts.init(chartDom);
-      
-      // Set option with proper sizing
-      chart.setOption({
-        tooltip: {
-          trigger: "axis",
-          axisPointer: { type: "shadow" },
-          backgroundColor: "#084a8a",
-          textStyle: {
-            color: "#ffffff",
-          },
-          formatter: (p) =>
-            `${
-              p[0].axisValue
-            }<br/><strong>R$ ${p[0].data.toLocaleString()}</strong>`,
-        },
-        grid: { 
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 40,
-          containLabel: true
-        },
-        xAxis: {
-          type: "category",
-          data: data.anos,
-          axisLabel: { rotate: 45, fontSize: 11 },
-        },
-        yAxis: {
-          type: "value",
-          axisLabel: { show: false },
-          splitLine: { show: false },
-          axisLine: { show: false },
-          axisTick: { show: false },
-        },
-        series: [
-          {
-            name: "Contratos",
-            type: "bar",
-            data: data.coluna,
-            itemStyle: { color: "#bbc6ea" },
-            barMaxWidth: 20,
-          },
-          {
-            name: "Aditivos",
-            type: "line",
-            data: data.linha,
-            smooth: true,
-            lineStyle: { width: 3, color: "#8f9dd2" },
-            symbol: "circle",
-            symbolSize: 10,
-            itemStyle: {
-              borderWidth: 2,
-              borderColor: "#fff",
-              color: "#bbc6ea",
-            },
-          },
-        ],
-      });
-
-      // Force resize to ensure proper dimensions
+      // Aguarda um pouco para garantir que o DOM esteja totalmente renderizado
       setTimeout(() => {
-        chart.resize();
+        const rect = chartDom.getBoundingClientRect();
+        console.log('📏 Dimensões do container de valores após timeout:', rect);
+        
+        // Verifica se o container tem largura válida
+        if (rect.width === 0) {
+          console.log('⚠️ Container com largura 0, tentando definir largura manualmente...');
+          
+          // Tenta obter largura do container pai
+          const parentRect = chartDom.parentElement?.getBoundingClientRect();
+          if (parentRect && parentRect.width > 0) {
+            chartDom.style.width = `${Math.max(300, parentRect.width - 20)}px`;
+            chartDom.style.height = '200px';
+            console.log('📐 Largura definida manualmente:', chartDom.style.width);
+          } else {
+            // Fallback para largura fixa
+            chartDom.style.width = '400px';
+            chartDom.style.height = '200px';
+            console.log('📐 Usando largura padrão: 400px');
+          }
+          
+          // Aguarda mais um pouco após definir as dimensões
+          setTimeout(() => {
+            initializeValuesChart(chartDom, data);
+          }, 200);
+        } else {
+          initializeValuesChart(chartDom, data);
+        }
       }, 100);
-
-      // Add global resize listener
-      const resizeObserver = new ResizeObserver(() => {
-        chart.resize();
-      });
-      resizeObserver.observe(contentContainer);
-
     } catch (err) {
-      console.error("Erro ao carregar gráfico de valores:", err);
+      console.error("❌ Erro ao carregar gráfico de valores:", err);
       contentContainer.innerHTML = '<div class="text-danger">Erro ao carregar gráfico</div>';
+    }
+    
+    async function initializeValuesChart(chartDom, data) {
+      try {
+        console.log('📦 Carregando ECharts para valores...');
+        const echartsLib = await getEcharts();
+        console.log('✅ ECharts carregado para valores, inicializando gráfico...');
+        const valuesChart = echartsLib.init(chartDom);
+        console.log('🎨 Chart de valores inicializado, configurando opções...');
+        
+        // Set option with proper sizing
+        valuesChart.setOption({
+          tooltip: {
+            trigger: "axis",
+            axisPointer: { type: "shadow" },
+            backgroundColor: "#084a8a",
+            textStyle: {
+              color: "#ffffff",
+            },
+            formatter: (p) =>
+              `${
+                p[0].axisValue
+              }<br/><strong>R$ ${p[0].data.toLocaleString()}</strong>`,
+            extraCssText: 'z-index: 99999 !important;',
+            appendToBody: true,
+          },
+          grid: { 
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: 40,
+            containLabel: true
+          },
+          xAxis: {
+            type: "category",
+            data: data.anos,
+            axisLabel: { rotate: 45, fontSize: 11 },
+          },
+          yAxis: {
+            type: "value",
+            axisLabel: { show: false },
+            splitLine: { show: false },
+            axisLine: { show: false },
+            axisTick: { show: false },
+          },
+          series: [
+            {
+              name: "Contratos",
+              type: "bar",
+              data: data.coluna,
+              itemStyle: { color: "#bbc6ea" },
+              barMaxWidth: 20,
+            },
+            {
+              name: "Aditivos",
+              type: "line",
+              data: data.linha,
+              smooth: true,
+              lineStyle: { width: 3, color: "#8f9dd2" },
+              symbol: "circle",
+              symbolSize: 10,
+              itemStyle: {
+                borderWidth: 2,
+                borderColor: "#fff",
+                color: "#bbc6ea",
+              },
+            },
+          ],
+        });
+
+        // Force resize to ensure proper dimensions
+        setTimeout(() => {
+          valuesChart.resize();
+          console.log('🔄 Chart de valores redimensionado');
+        }, 100);
+
+        // Add global resize listener
+        const resizeObserver = new ResizeObserver(() => {
+          valuesChart.resize();
+        });
+        resizeObserver.observe(chartDom);
+
+      } catch (err) {
+        console.error("❌ Erro ao carregar gráfico de valores:", err);
+        contentContainer.innerHTML = '<div class="text-danger">Erro ao carregar gráfico</div>';
+      }
     }
   },
 
@@ -504,6 +569,11 @@ export default {
     dias45 = 0,
     outros = 0,
   }) {
+    // Helper function to format numbers with dots as thousand separators
+    const formatNumber = (num) => {
+      return new Intl.NumberFormat('pt-BR').format(num);
+    };
+
     // Helper to check if filter is active using new filter system
     const isActive = (filter) => {
       if (window.App && window.App.filter) {
@@ -517,36 +587,36 @@ export default {
     // Content HTML with clickable/filterable fields
     const contentHTML = `
       <div class="card-content">
-        <div class="valor-principal">${quantidade_total} <font style="font-size:14px;">Contratos</font></div>
+        <div class="valor-principal">${formatNumber(quantidade_total)} <font style="font-size:14px;">Contratos</font></div>
         <div class="linha">
           <div class="dashboard-card-filter clickable ${isActive(
             "vigentes"
-          )}" data-filter="vigentes" tabindex="0"><div>Vigentes</div><div class="valor-azul">${vigentes}</div></div>
+          )}" data-filter="vigentes" tabindex="0"><div>Vigentes</div><div class="valor-azul">${formatNumber(vigentes)}</div></div>
           <div class="divider"></div>
           <div class="dashboard-card-filter clickable ${isActive(
             "finalizados"
-          )}" data-filter="finalizados" tabindex="0"><div>Finalizados</div><div class="valor-azul">${finalizados}</div></div>
+          )}" data-filter="finalizados" tabindex="0"><div>Finalizados</div><div class="valor-azul">${formatNumber(finalizados)}</div></div>
           <div class="divider"></div>
           <div class="dashboard-card-filter clickable ${isActive(
             "criticos"
-          )}" data-filter="criticos" tabindex="0"><div>Críticos</div><div class="valor-vermelho">${criticos}</div></div>
+          )}" data-filter="criticos" tabindex="0"><div>Críticos</div><div class="valor-vermelho">${formatNumber(criticos)}</div></div>
         </div>
         <div class="linha" style="gap: 8px;">
           <div class="dashboard-card-filter clickable ${isActive(
             "120dias"
-          )}" data-filter="120dias" tabindex="0"><div>120 dias</div><div class="valor-vermelho">${dias120}</div></div>
+          )}" data-filter="120dias" tabindex="0"><div>120 dias</div><div class="valor-vermelho">${formatNumber(dias120)}</div></div>
           <div class="divider"></div>
           <div class="dashboard-card-filter clickable ${isActive(
             "90dias"
-          )}" data-filter="90dias" tabindex="0"><div>90 dias</div><div class="valor-vermelho">${dias90}</div></div>
+          )}" data-filter="90dias" tabindex="0"><div>90 dias</div><div class="valor-vermelho">${formatNumber(dias90)}</div></div>
           <div class="divider"></div>
           <div class="dashboard-card-filter clickable ${isActive(
             "45dias"
-          )}" data-filter="45dias" tabindex="0"><div>45 dias</div><div class="valor-vermelho">${dias45}</div></div>
+          )}" data-filter="45dias" tabindex="0"><div>45 dias</div><div class="valor-vermelho">${formatNumber(dias45)}</div></div>
           <div class="divider"></div>
           <div class="dashboard-card-filter clickable ${isActive(
             "outros"
-          )}" data-filter="outros" tabindex="0"><div>Outros</div><div class="valor-azul">${outros}</div></div>
+          )}" data-filter="outros" tabindex="0"><div>Outros</div><div class="valor-azul">${formatNumber(outros)}</div></div>
         </div>
       </div>
     `;
@@ -870,6 +940,8 @@ export default {
           color: "#ffffff",
         },
         formatter: "{a} <br/>{b} : {c}%",
+        extraCssText: 'z-index: 99999 !important;',
+        appendToBody: true,
       },
       graphic: [
         // Dot at 0 position (start date)
@@ -1584,7 +1656,7 @@ export default {
     // Generate UASG display HTML conditionally
     const uasgDisplayHtml = showUasgInfo
       ? `
-      <i class="fa fa-home" aria-hidden="true" style="height: 20px; color: #ccc; "></i>
+      <i class="fas fa-home" aria-hidden="true" style="height: 20px; color: #ccc; font-size: 16px;"></i>
       <span style="font-size: 16px;color: #FF9933; white-space: nowrap;" 
         data-tooltip-text="UASG do ${contract.uasg_nome}"
         data-tooltip-place="bottom"
@@ -1608,7 +1680,7 @@ export default {
           </div>  
             <div style="flex: 1;">
               <div style="display: flex; align-items: flex-start; margin-bottom: 5px;">
-                <img src="static/images/ico/ico-fornecedor.png" style="width: 20px; height: 20px;" />
+                <i class="fas fa-building" style="width: 20px; height: 20px; font-size: 16px; color: #666; display: flex; align-items: center; justify-content: center;"></i>
                 <div style="padding-left: 6px;">
                   <span style="color: #929ab5; font-size: 14px; text-transform: uppercase;" data-tooltip-text="Fornecedor do contrato" data-tooltip-place="bottom" data-tooltip-type="info"><b>${
                     contract.fornecedor_nome || "N/A"
@@ -1623,15 +1695,14 @@ export default {
               
               <div style="display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; white-space: nowrap; margin-top: -10px !important;">
               ${uasgDisplayHtml}
-              <img src="${this.getContratoInfo(contract.tipo_id).icon}" 
-                data-tooltip-text="${
+              <span data-tooltip-text="${
                   this.getContratoInfo(contract.tipo_id).name
                 }"
                 data-tooltip-place="bottom"
                 data-tooltip-type="info"
-                style="height: 20px; ${
-                  showUasgInfo ? "margin-left: 10;" : "margin-left: 0;"
-                }" />
+                style="${
+                  showUasgInfo ? "margin-left: 10px;" : "margin-left: 0;"
+                }">${this.getContratoInfo(contract.tipo_id).icon}</span>
                 <span style="font-size: 16px; color: #FF9933; white-space: nowrap;" 
                 data-tooltip-text="Número do contrato"
                 data-tooltip-place="bottom"
@@ -1639,19 +1710,21 @@ export default {
                   contract.numero
                 } <span style="color: #000">/</span> ${contract.ano}</span>
 
-                <img src="static/images/ico/heart_${
-                  contract.favorite_icon
-                }.png" style="cursor: pointer; margin-left: 20px;"  alt="Favorito" 
-                  data-tooltip-text="${contract.favorite_title}"
-                  data-tooltip-place="bottom"
-                  data-tooltip-type="info"
-                  onclick="App.toggleFavorite(${contract.id}, this)" />
-                <img data-contract-id="${contract.id}" data-empenhos-count="${
-      contract.total_empenhos || 0
-    }" class="encontro-action" src="static/images/ico/bank.png" style="cursor: pointer; margin-left: 2px;" 
-                  data-tooltip-text="Encontro de Contas"
-                  data-tooltip-place="bottom"
-                  data-tooltip-type="info" />
+                <i class="fas fa-heart" 
+                   style="cursor: pointer; margin-left: 20px; font-size: 18px; color: ${contract.favorite_icon === 'red' ? '#e52207' : '#999'};" 
+                   data-tooltip-text="${contract.favorite_title}"
+                   data-tooltip-place="bottom"
+                   data-tooltip-type="info"
+                   title="${contract.favorite_title}"
+                   onclick="App.toggleFavorite(${contract.id}, this)"></i>
+                
+                <i class="fas fa-university encontro-action" 
+                   data-contract-id="${contract.id}" 
+                   data-empenhos-count="${contract.total_empenhos || 0}" 
+                   style="cursor: pointer; margin-left: 10px; font-size: 18px; color: #666;" 
+                   data-tooltip-text="Encontro de Contas"
+                   data-tooltip-place="bottom"
+                   data-tooltip-type="info"></i>
 
     <div class="aditivo-action" style="position: relative; display: inline-block; padding-top: 5px; margin-left: -6px;" 
       data-contract-id="${contract.id}"
@@ -1742,7 +1815,7 @@ export default {
     >${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
 </div>              
 
-                <img src="static/images/ico/ico-processos.png" style="margin-left: 10px;" />
+                <i class="fas fa-clipboard-list" style="margin-left: 10px; font-size: 18px; color: #666;"></i>
 
                 <span 
                   class="processo-filter"
@@ -2085,44 +2158,62 @@ export default {
     // Unified function to get contract icon and name based on tipo_id
     const contratoTypes = {
       66: {
-        icon: "static/images/ico/ico-termo-adesao.png",
+        icon: '<i class="fas fa-handshake" style="font-size: 18px; color: #666;"></i>',
         name: "Termo de Adesão",
       },
       175: {
-        icon: "static/images/ico/ico-termo-compromisso.png",
+        icon: '<i class="fas fa-file-signature" style="font-size: 18px; color: #666;"></i>',
         name: "Termo de Compromisso",
       },
       61: {
-        icon: "static/images/ico/ico-credenciamento.png",
+        icon: '<i class="fas fa-certificate" style="font-size: 18px; color: #666;"></i>',
         name: "Credenciamento",
       },
-      62: { icon: "static/images/ico/ico-comodato.png", name: "Comodato" },
-      151: { icon: "static/images/ico/ico-empenho.png", name: "Empenho" },
-      60: { icon: "static/images/ico/ico-contrato.png", name: "Contrato" },
-      164: { icon: "static/images/ico/ico-outros.png", name: "Outros" },
+      62: { 
+        icon: '<i class="fas fa-key" style="font-size: 18px; color: #666;"></i>', 
+        name: "Comodato" 
+      },
+      151: { 
+        icon: '<i class="fas fa-receipt" style="font-size: 18px; color: #666;"></i>', 
+        name: "Empenho" 
+      },
+      60: { 
+        icon: '<i class="fas fa-file-contract" style="font-size: 18px; color: #666;"></i>', 
+        name: "Contrato" 
+      },
+      164: { 
+        icon: '<i class="fas fa-ellipsis-h" style="font-size: 18px; color: #666;"></i>', 
+        name: "Outros" 
+      },
       174: {
-        icon: "static/images/ico/ico-act.png",
+        icon: '<i class="fas fa-users-cog" style="font-size: 18px; color: #666;"></i>',
         name: "Acordo de Cooperação Técnica (ACT)",
       },
-      67: { icon: "static/images/ico/ico-convenio.png", name: "Convênio" },
-      64: { icon: "static/images/ico/ico-concessao.png", name: "Concessão" },
+      67: { 
+        icon: '<i class="fas fa-handshake" style="font-size: 18px; color: #666;"></i>', 
+        name: "Convênio" 
+      },
+      64: { 
+        icon: '<i class="fas fa-award" style="font-size: 18px; color: #666;"></i>', 
+        name: "Concessão" 
+      },
       173: {
-        icon: "static/images/ico/ico-ted.png",
+        icon: '<i class="fas fa-exchange-alt" style="font-size: 18px; color: #666;"></i>',
         name: "Termo de Execução Descentralizada (TED)",
       },
       311: {
-        icon: "static/images/ico/ico-carta-contrato.png",
+        icon: '<i class="fas fa-envelope" style="font-size: 18px; color: #666;"></i>',
         name: "Carta Contrato",
       },
       63: {
-        icon: "static/images/ico/ico-arrendamento.png",
+        icon: '<i class="fas fa-home" style="font-size: 18px; color: #666;"></i>',
         name: "Arrendamento",
       },
     };
 
     return (
       contratoTypes[tipo_id] || {
-        icon: "static/images/ico/ico-default.png",
+        icon: '<i class="fas fa-file" style="font-size: 18px; color: #666;"></i>',
         name: "Tipo não identificado",
       }
     );
@@ -2232,11 +2323,10 @@ export default {
   },
 
   // Toggle favorite status for a contract
-  async toggleFavorite(contractId, imgElement) {
+  async toggleFavorite(contractId, iconElement) {
     try {
       // Show loading state
-      const originalSrc = imgElement.src;
-      imgElement.style.opacity = "0.5";
+      iconElement.style.opacity = "0.5";
 
       const response = await fetch(
         `/dashboard/contrato/${contractId}/favorito`,
@@ -2259,10 +2349,14 @@ export default {
       const data = await response.json();
 
       if (data.success) {
-        // Update the image
-        imgElement.src = `static/images/ico/heart_${data.favorite_icon}.png`;
-        imgElement.title = data.favorite_title;
-        imgElement.setAttribute("data-tooltip-text", data.favorite_title);
+        // Update the icon color based on favorite status
+        if (data.is_favorite) {
+          iconElement.style.color = "#e52207"; // Red for favorited
+          iconElement.title = "Remover dos favoritos";
+        } else {
+          iconElement.style.color = "#999"; // Gray for not favorited
+          iconElement.title = "Adicionar aos favoritos";
+        }
 
         console.log("Favorite status updated:", data);
       } else {
@@ -2274,7 +2368,7 @@ export default {
       alert("Erro ao atualizar favorito. Tente novamente.");
     } finally {
       // Restore opacity
-      imgElement.style.opacity = "1";
+      iconElement.style.opacity = "1";
     }
   },
 
