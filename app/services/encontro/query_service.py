@@ -212,7 +212,7 @@ class QueryService:
                     ELSE false 
                 END as is_negative_value
             FROM wd_doc_dar dar
-            LEFT JOIN wd_documento wds ON dar.id_doc_dar = wds.id_doc_dar
+            LEFT JOIN wd_documento_slim wds ON dar.id_doc_dar = wds.id_doc_dar
             LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
                 AND wsd.id_tp_documento = 'DR'
             WHERE dar.id_doc_dar = ANY(:dar_ids)
@@ -231,7 +231,7 @@ class QueryService:
                     ELSE false 
                 END as is_negative_value
             FROM wd_doc_darf darf
-            JOIN wd_documento wds ON darf.id_doc_darf = wds.id_doc_darf
+            JOIN wd_documento_slim wds ON darf.id_doc_darf = wds.id_doc_darf
             JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
                 AND wsd.id_tp_documento = 'DF'
             WHERE darf.id_doc_darf = ANY(:darf_ids)
@@ -250,7 +250,7 @@ class QueryService:
                     ELSE false 
                 END as is_negative_value
             FROM wd_doc_gps gps
-            LEFT JOIN wd_documento wds ON gps.id_doc_gps = wds.id_doc_gps
+            LEFT JOIN wd_documento_slim wds ON gps.id_doc_gps = wds.id_doc_gps
             LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc 
                 AND wsd.id_tp_documento = 'GP'
             WHERE gps.id_doc_gps = ANY(:gps_ids)

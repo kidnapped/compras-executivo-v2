@@ -346,7 +346,7 @@ class FinancialCalculator:
             FROM contract_empenhos ce
             JOIN wd_deta_orca_fina_dar dof ON dof.id_documento_ne = CONCAT(u.codigo, u.gestao, ce.numero)
             JOIN wd_doc_dar dar ON dar.id_doc_dar = dof.id_documento_dar
-            LEFT JOIN wd_documento wds ON dar.id_doc_dar = wds.id_doc_dar
+            LEFT JOIN wd_documento_slim wds ON dar.id_doc_dar = wds.id_doc_dar
             LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc AND wsd.id_tp_documento = 'DR'
             JOIN unidades u ON u.id = ce.unidade_id
         ),
@@ -368,7 +368,7 @@ class FinancialCalculator:
             FROM contract_empenhos ce
             JOIN wd_deta_orca_fina_darf dof ON dof.id_documento_ne = CONCAT(u.codigo, u.gestao, ce.numero)
             JOIN wd_doc_darf darf ON darf.id_doc_darf = dof.id_documento_darf
-            LEFT JOIN wd_documento wds ON darf.id_doc_darf = wds.id_doc_darf
+            LEFT JOIN wd_documento_slim wds ON darf.id_doc_darf = wds.id_doc_darf
             LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc AND wsd.id_tp_documento = 'DF'
             JOIN unidades u ON u.id = ce.unidade_id
         ),
@@ -390,7 +390,7 @@ class FinancialCalculator:
             FROM contract_empenhos ce
             JOIN wd_deta_orca_fina_gps dof ON dof.id_documento_ne = CONCAT(u.codigo, u.gestao, ce.numero)
             JOIN wd_doc_gps gps ON gps.id_doc_gps = dof.id_documento_gps
-            LEFT JOIN wd_documento wds ON gps.id_doc_gps = wds.id_doc_gps
+            LEFT JOIN wd_documento_slim wds ON gps.id_doc_gps = wds.id_doc_gps
             LEFT JOIN wd_situacao_doc wsd ON wds.id_situacao_doc = wsd.id_situacao_doc AND wsd.id_tp_documento = 'GP'
             JOIN unidades u ON u.id = ce.unidade_id
         ),
