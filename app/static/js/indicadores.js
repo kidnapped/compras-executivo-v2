@@ -45,32 +45,10 @@ export default {
           // Initialize modal manager if not already available
           if (!window.App) window.App = {};
 
-          // Create a simple fallback modal manager immediately
+          // Create simple modal manager
           if (!window.App.modalManager) {
             window.App.modalManager = this.createSimpleModalManager();
           }
-
-          // Try to load the advanced modal manager asynchronously
-          const ensureModalManager = async () => {
-            try {
-              const modalManagerModule = await import(
-                "./common/modal-manager.js"
-              );
-              window.App.modalManager = modalManagerModule.default;
-              window.App.modalManager.initialize();
-              console.log(
-                "✅ Advanced modal manager carregado para indicadores"
-              );
-            } catch (error) {
-              console.warn(
-                "⚠️ Falha ao carregar modal manager avançado, usando versão simples:",
-                error
-              );
-            }
-          };
-
-          // Load advanced modal manager in background
-          ensureModalManager();
 
           this.indicadores_initBreadcrumb();
           this.initTopicoVisaoGeral();
@@ -1002,9 +980,7 @@ export default {
   async indicadores_initGraficoSemLicitacao() {
     try {
       const containerId = "indicadoresSemLicitacaoContent";
-      console.log(
-        "Iniciando carregamento do gráfico de tipos de contrato..."
-      );
+      console.log("Iniciando carregamento do gráfico de tipos de contrato...");
 
       const container = document.getElementById(containerId);
 
@@ -1181,6 +1157,10 @@ export default {
             fontFamily: "Rawline, Arial, sans-serif",
             color: "#333",
             interval: 0, // Show all labels
+            formatter: function (value) {
+              // Show only the first word
+              return value.split(" ")[0];
+            },
           },
           axisLine: {
             lineStyle: {
@@ -1573,281 +1553,6 @@ export default {
     }
   },
 
-  // Função para inicializar o gráfico donut de contratos por área/categoria
-  async indicadores_initGraficoPorArea() {
-    try {
-      const containerId = "indicadoresPorAreaContent";
-      console.log("Iniciando carregamento do gráfico de contratos por área...");
-
-      const container = document.getElementById(containerId);
-
-      if (!container) {
-        console.warn(
-          "Container do gráfico por área não encontrado:",
-          containerId
-        );
-        return;
-      }
-
-      console.log("Container encontrado, aguardando loading inicial...");
-
-      // Delay para que o loading seja bem visível
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      console.log("Buscando dados dos contratos por área...");
-
-      // Buscar dados dos contratos por área
-      const response = await fetch("/indicadores/contratos-por-area");
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar dados: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // Preparar dados para o gráfico donut
-      const chartData = (data.categorias || []).map((categoria) => ({
-        name: categoria.categoria_nome,
-        value: Number(categoria.total_contratos) || 0,
-      }));
-
-      console.log("Dados do gráfico preparados:", chartData);
-
-      // Verificar se há dados para exibir
-      if (!chartData || chartData.length === 0) {
-        container.innerHTML = `
-          <div class="alert alert-info" role="alert">
-            <i class="fas fa-info-circle"></i>
-            Nenhum dado de contratos por área encontrado
-          </div>
-        `;
-        return;
-      }
-
-      // Verificar se echarts está disponível globalmente
-      if (typeof echarts === "undefined") {
-        throw new Error("ECharts não está disponível globalmente");
-      }
-
-      console.log(
-        "ECharts disponível, versão:",
-        echarts.version || "desconhecida"
-      );
-
-      // Criar container para o gráfico
-      container.innerHTML = `
-        <div class="indicadores-por-area-container">
-          <div id="indicadores-por-area-chart chart"></div>
-        </div>
-      `;
-
-      const chartDiv = document.getElementById("indicadores-por-area-chart");
-
-      // Verificar se o elemento foi criado corretamente
-      if (!chartDiv) {
-        throw new Error("Elemento do gráfico não foi criado corretamente");
-      }
-
-      console.log(
-        "Container do gráfico criado:",
-        chartDiv.offsetWidth,
-        "x",
-        chartDiv.offsetHeight
-      );
-
-      // Aguardar o DOM estar totalmente renderizado
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Verificar dimensões do container
-      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
-        console.warn(
-          "Container tem dimensões inválidas, tentando forçar layout..."
-        );
-        chartDiv.style.width = "100%";
-        chartDiv.style.height = "250px";
-        chartDiv.style.display = "block";
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-
-      // Cores para o gráfico donut (tons de verde esmaecidos, seguindo o padrão dos azuis e laranjas)
-      const colors = [
-        "#228B22",
-        "#32CD32",
-        "#90EE90",
-        "#98FB98",
-        "#F0FFF0",
-        "#8FBC8F",
-        "#9ACD32",
-        "#ADFF2F",
-        "#7CFC00",
-        "#7FFF00",
-      ];
-
-      // Configuração do gráfico donut
-      const chartOption = {
-        tooltip: {
-          trigger: "item",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#228B22",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
-          textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
-          },
-          formatter: (params) => {
-            const valor =
-              typeof params.value === "number" && !isNaN(params.value)
-                ? params.value.toLocaleString("pt-BR")
-                : "0";
-            const percentual =
-              typeof params.percent === "number" && !isNaN(params.percent)
-                ? params.percent.toFixed(1)
-                : "0.0";
-
-            return `<div class="indicadores-tooltip">
-              <div class="indicadores-tooltip-title">
-                ${params.name}
-              </div>
-              <div class="indicadores-tooltip-value">
-                <span class="indicadores-tooltip-number">${valor}</span> contratos
-                <br>
-                <span class="indicadores-tooltip-percent">${percentual}%</span> do total
-              </div>
-            </div>`;
-          },
-        },
-        legend: {
-          bottom: "5%",
-          left: "center",
-          textStyle: {
-            fontSize: 11,
-            fontFamily: "Rawline, Arial, sans-serif",
-            color: "#333",
-          },
-          itemGap: 15,
-        },
-        series: [
-          {
-            name: "Contratos por Área/Categoria",
-            type: "pie",
-            radius: ["40%", "70%"],
-            center: ["50%", "45%"],
-            avoidLabelOverlap: false,
-            itemStyle: {
-              borderRadius: 6,
-              borderColor: "#fff",
-              borderWidth: 2,
-            },
-            label: {
-              show: false,
-              position: "center",
-            },
-            emphasis: {
-              label: {
-                show: false,
-                fontSize: 16,
-                fontWeight: "bold",
-                color: "#228B22",
-                formatter: (params) => {
-                  const valor =
-                    typeof params.value === "number" && !isNaN(params.value)
-                      ? params.value.toLocaleString("pt-BR")
-                      : "0";
-                  return `${params.name}\n${valor}`;
-                },
-              },
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
-            },
-            labelLine: {
-              show: false,
-            },
-            data: chartData.map((item, index) => ({
-              name: item.name,
-              value: item.value,
-              itemStyle: {
-                color: colors[index % colors.length],
-              },
-            })),
-          },
-        ],
-        backgroundColor: "transparent",
-      };
-
-      // Inicializar o chart
-      console.log("Inicializando gráfico donut ECharts...", chartData);
-      console.log(
-        "Dimensões finais do container:",
-        chartDiv.offsetWidth,
-        "x",
-        chartDiv.offsetHeight
-      );
-
-      const chart = echarts.init(chartDiv);
-
-      // Verificar se o chart foi inicializado
-      if (!chart) {
-        throw new Error("Falha ao inicializar o gráfico ECharts");
-      }
-
-      console.log("Aplicando configurações do gráfico...");
-      chart.setOption(chartOption);
-
-      // Forçar o redimensionamento inicial com múltiplas tentativas
-      setTimeout(() => {
-        chart.resize();
-        console.log("Gráfico donut por área redimensionado (1ª tentativa)");
-      }, 100);
-
-      setTimeout(() => {
-        chart.resize();
-        console.log("Gráfico donut por área redimensionado (2ª tentativa)");
-      }, 500);
-
-      // Listener para redimensionamento
-      let resizeTimeout;
-      const resizeListener = () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          if (chart && !chart.isDisposed()) {
-            chart.resize();
-          }
-        }, 150);
-      };
-
-      window.addEventListener("resize", resizeListener);
-
-      // Armazenar referência para cleanup
-      if (!window.indicadoresCharts) window.indicadoresCharts = {};
-      window.indicadoresCharts[containerId] = {
-        chart: chart,
-        resizeListener: resizeListener,
-      };
-
-      console.log(
-        "Gráfico donut de contratos por área inicializado com sucesso"
-      );
-    } catch (error) {
-      console.error(
-        "Erro ao inicializar gráfico de contratos por área:",
-        error
-      );
-      const container = document.getElementById("indicadoresPorAreaContent");
-      if (container) {
-        container.innerHTML = `
-          <div class="alert alert-danger" role="alert">
-            <i class="fas fa-exclamation-triangle"></i>
-            Erro ao carregar o gráfico de contratos por área: ${error.message}
-          </div>
-        `;
-      }
-    }
-  },
-
   // Função para inicializar o card de Total de Contratos
   async indicadores_initTotalContratos() {
     try {
@@ -2013,16 +1718,6 @@ export default {
       // Renderizar o card
       container.innerHTML = `
         <div class="indicadores-top-fornecedores-card">
-          <div class="indicadores-chart-header">
-            <div class="indicadores-chart-title">
-              <i class="fas fa-building"></i> ${
-                data.titulo || "Top Fornecedores"
-              }
-            </div>
-            <div class="indicadores-chart-subtitle">${
-              data.subtitulo || "Top 10 fornecedores por valor"
-            }</div>
-          </div>
           <div class="indicadores-chart-container">
             ${chartContainer.outerHTML}
           </div>
@@ -2540,6 +2235,820 @@ export default {
     }
   },
 
+  // Função para inicializar o gráfico de Contratos com Variações Significativas
+  async indicadores_initContratosVariacoes() {
+    try {
+      const containerId = "indicadoresAlertasContent";
+      console.log(
+        "🔧 Iniciando carregamento do gráfico de variações de contratos..."
+      );
+
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        console.error("❌ Container não encontrado:", containerId);
+        return;
+      }
+
+      // Ensure loading state is visible
+      container.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando variações de contratos</h5>
+          <p>Buscando contratos com variações significativas entre valores inicial e global<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+        </div>
+      `;
+
+      console.log("✅ Container com loading exibido, aguardando...");
+
+      // Delay para que o loading seja bem visível
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      console.log("📡 Buscando dados das variações de contratos...");
+
+      // Buscar dados das variações de contratos
+      const response = await fetch(
+        "/indicadores/contratos-variacoes-significativas?limite_percentual=0.25&limite_registros=10"
+      );
+
+      console.log("📡 Response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("📊 Raw data received:", data);
+
+      // Preparar dados para o gráfico de barras comparativas (valor inicial vs valor global)
+      const chartData = (data.contratos || []).map((contrato) => ({
+        contrato_numero: contrato.contrato_numero,
+        valor_inicial: contrato.valor_inicial,
+        valor_global: contrato.valor_global,
+        delta: contrato.delta,
+        delta_pct_formatado: contrato.delta_pct_formatado,
+      }));
+
+      console.log("📊 Dados do gráfico preparados:", chartData);
+
+      // Verificar se há dados para exibir
+      if (!chartData || chartData.length === 0) {
+        container.innerHTML = `
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nenhuma variação significativa encontrada
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível globalmente
+      if (typeof echarts === "undefined") {
+        throw new Error("ECharts não está disponível globalmente");
+      }
+
+      console.log(
+        "ECharts disponível, versão:",
+        echarts.version || "desconhecida"
+      );
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-variacoes-container">
+          <div id="indicadores-variacoes-chart"></div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById("indicadores-variacoes-chart");
+
+      // Verificar se o elemento foi criado corretamente
+      if (!chartDiv) {
+        throw new Error("Elemento do gráfico não foi criado corretamente");
+      }
+
+      console.log(
+        "Container do gráfico criado:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      // Aguardar o DOM estar totalmente renderizado
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Verificar dimensões do container
+      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
+        console.warn(
+          "Container tem dimensões inválidas, tentando forçar layout..."
+        );
+        chartDiv.style.width = "100%";
+        chartDiv.style.height = "250px";
+        chartDiv.style.display = "block";
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      // Preparar dados para o gráfico de barras comparativas
+      const contractLabels = chartData.map((item) => item.contrato_numero);
+      const valoresIniciais = chartData.map((item) => item.valor_inicial);
+      const valoresGlobais = chartData.map((item) => item.valor_global);
+
+      // Inicializar o chart
+      const chart = echarts.init(chartDiv);
+
+      // Configuração do gráfico de barras comparativas
+      const chartOption = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderColor: "#1351B4",
+          borderWidth: 2,
+          borderRadius: 8,
+          padding: [12, 16],
+          textStyle: {
+            fontSize: 14,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+          },
+          formatter: (params) => {
+            if (params && params.length > 0) {
+              const contractIndex = params[0].dataIndex;
+              const contract = chartData[contractIndex];
+
+              return `<div class="indicadores-tooltip">
+                <div class="indicadores-tooltip-title">
+                  Contrato ${contract.contrato_numero}
+                </div>
+                <div class="indicadores-tooltip-value">
+                  <div style="margin-bottom: 4px;">
+                    <span style="color: #1351B4;">●</span> Inicial: 
+                    <span class="indicadores-tooltip-number">R$ ${contract.valor_inicial.toLocaleString(
+                      "pt-BR",
+                      { minimumFractionDigits: 2 }
+                    )}</span>
+                  </div>
+                  <div style="margin-bottom: 4px;">
+                    <span style="color: #e74c3c;">●</span> Global: 
+                    <span class="indicadores-tooltip-number">R$ ${contract.valor_global.toLocaleString(
+                      "pt-BR",
+                      { minimumFractionDigits: 2 }
+                    )}</span>
+                  </div>
+                  <div style="border-top: 1px solid #eee; padding-top: 4px; margin-top: 8px;">
+                    <strong>Variação: ${contract.delta_pct_formatado}</strong>
+                  </div>
+                </div>
+              </div>`;
+            }
+            return "";
+          },
+        },
+        legend: {
+          data: ["Valor Inicial", "Valor Global"],
+          top: "top",
+          textStyle: {
+            fontFamily: "Rawline, Arial, sans-serif",
+            fontSize: 12,
+          },
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "10%",
+          top: "15%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: contractLabels,
+          axisLabel: {
+            rotate: 45,
+            fontSize: 11,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+            interval: 0,
+            formatter: (value) => {
+              // Truncar números de contrato muito longos
+              return value.length > 12 ? value.substring(0, 12) + "..." : value;
+            },
+          },
+          axisLine: {
+            lineStyle: {
+              color: "#e0e0e0",
+            },
+          },
+        },
+        yAxis: {
+          type: "value",
+          axisLabel: {
+            show: false,
+          },
+          splitLine: {
+            show: false,
+          },
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+        },
+        series: [
+          {
+            name: "Valor Inicial",
+            type: "bar",
+            data: valoresIniciais,
+            itemStyle: {
+              color: "#1351B4", // Cor azul do design system gov.br
+              borderRadius: [4, 4, 0, 0],
+            },
+            barMaxWidth: 30,
+            emphasis: {
+              itemStyle: {
+                color: "#0E4B99", // Cor mais escura no hover
+              },
+            },
+          },
+          {
+            name: "Valor Global",
+            type: "bar",
+            data: valoresGlobais,
+            itemStyle: {
+              color: "#e74c3c", // Cor vermelha para destacar o aumento
+              borderRadius: [4, 4, 0, 0],
+            },
+            barMaxWidth: 30,
+            emphasis: {
+              itemStyle: {
+                color: "#c0392b", // Cor mais escura no hover
+              },
+            },
+          },
+        ],
+      };
+
+      // Aplicar configuração
+      chart.setOption(chartOption);
+
+      // Setup de responsividade
+      let resizeTimeout;
+      const resizeListener = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (chart && !chart.isDisposed()) {
+            chart.resize();
+          }
+        }, 150);
+      };
+
+      window.addEventListener("resize", resizeListener);
+
+      // Armazenar referência para cleanup
+      if (!window.indicadoresCharts) window.indicadoresCharts = {};
+      window.indicadoresCharts["indicadoresAlertasContent"] = {
+        chart: chart,
+        resizeListener: resizeListener,
+      };
+
+      console.log(
+        "✅ Gráfico de variações de contratos inicializado com sucesso"
+      );
+    } catch (error) {
+      console.error(
+        "❌ Erro ao inicializar gráfico de variações de contratos:",
+        error
+      );
+
+      // Mostrar mensagem de erro no container
+      const container = document.getElementById(
+        "indicadoresContratosVariacoesContent"
+      );
+      if (container) {
+        container.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro ao carregar gráfico: ${error.message}
+          </div>
+        `;
+      }
+    }
+  },
+
+  // Função para inicializar o gráfico de Evolução Financeira (Projeção de Valores Mensais)
+  async indicadores_initEvolucaoFinanceira() {
+    try {
+      console.log(
+        "🔧 Iniciando carregamento do gráfico de evolução financeira..."
+      );
+
+      const container = document.getElementById(
+        "indicadoresEvolucaoFinanceiraContent"
+      );
+      if (!container) {
+        console.error(
+          "❌ Container indicadoresEvolucaoFinanceiraContent não encontrado"
+        );
+        return;
+      }
+
+      // Mostrar loading
+      container.innerHTML = `
+        <div class="indicadores-loading-container">
+          <div class="indicadores-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <p>Carregando projeção financeira...</p>
+        </div>
+      `;
+
+      // Buscar dados
+      const response = await fetch("/indicadores/projecao-valores-mensais");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("📊 Dados de projeção financeira recebidos:", data);
+
+      // Verificar se há dados
+      if (!data.projecao_mensal || data.projecao_mensal.length === 0) {
+        container.innerHTML = `
+          <div class="indicadores-error">
+            <i class="fas fa-info-circle"></i>
+            <p>Nenhuma projeção financeira encontrada</p>
+            <small>Não há contratos vigentes para os próximos meses</small>
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível
+      if (typeof echarts === "undefined") {
+        throw new Error("ECharts não está disponível");
+      }
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-evolucao-financeira-container">
+          <div id="indicadores-evolucao-financeira-chart"></div>
+          <div class="indicadores-chart-footer">
+            <small><i class="fas fa-info-circle"></i> Projeção baseada na duração dos contratos vigentes</small>
+            <div class="indicadores-total-projetado">
+              <strong>Total Projetado: ${
+                data.total_valor_projetado_formatado || "R$ 0,00"
+              }</strong>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById(
+        "indicadores-evolucao-financeira-chart"
+      );
+      if (!chartDiv) {
+        throw new Error("Falha ao criar container do gráfico");
+      }
+
+      // Aguardar renderização
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Preparar dados para o gráfico de linha
+      const chartLabels = data.projecao_mensal.map(
+        (item) => item.mes_abreviado
+      );
+      const chartValues = data.projecao_mensal.map(
+        (item) => item.valor_previsto / 1000000
+      ); // Converter para milhões
+
+      // Inicializar gráfico
+      const chart = echarts.init(chartDiv);
+
+      const option = {
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderColor: "#1351B4",
+          borderWidth: 2,
+          borderRadius: 8,
+          padding: [12, 16],
+          textStyle: {
+            fontSize: 14,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+          },
+          formatter: (params) => {
+            const item = params[0];
+            const dataIndex = item.dataIndex;
+            const mesData = data.projecao_mensal[dataIndex];
+
+            return `
+              <strong>${mesData.mes_formatado}</strong><br/>
+              Valor Previsto: ${mesData.valor_previsto_formatado}<br/>
+              <small>Baseado em contratos vigentes</small>
+            `;
+          },
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "15%",
+          top: "10%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: chartLabels,
+          axisLabel: {
+            fontSize: 12,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+            rotate: 45,
+          },
+          axisLine: {
+            lineStyle: {
+              color: "#e0e0e0",
+            },
+          },
+        },
+        yAxis: {
+          type: "value",
+          name: "Valor (Milhões R$)",
+          nameLocation: "middle",
+          nameGap: 50,
+          nameTextStyle: {
+            fontSize: 12,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+          },
+          axisLabel: {
+            formatter: (value) => `${value.toFixed(1)}M`,
+            fontSize: 11,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+          },
+          splitLine: {
+            lineStyle: {
+              color: "#f0f0f0",
+              type: "dashed",
+            },
+          },
+        },
+        series: [
+          {
+            name: "Valor Previsto",
+            type: "line",
+            data: chartValues,
+            smooth: true,
+            symbol: "circle",
+            symbolSize: 8,
+            lineStyle: {
+              color: "#1351B4",
+              width: 3,
+            },
+            itemStyle: {
+              color: "#1351B4",
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: "rgba(19, 81, 180, 0.3)",
+                },
+                {
+                  offset: 1,
+                  color: "rgba(19, 81, 180, 0.05)",
+                },
+              ]),
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+          },
+        ],
+        backgroundColor: "transparent",
+      };
+
+      chart.setOption(option);
+
+      // Redimensionamento
+      setTimeout(() => {
+        chart.resize();
+        console.log(
+          "Gráfico de evolução financeira redimensionado (1ª tentativa)"
+        );
+      }, 100);
+
+      setTimeout(() => {
+        chart.resize();
+        console.log(
+          "Gráfico de evolução financeira redimensionado (2ª tentativa)"
+        );
+      }, 500);
+
+      // Listener para redimensionamento
+      let resizeTimeout;
+      const resizeListener = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          chart.resize();
+          console.log(
+            "Gráfico de evolução financeira redimensionado (responsive)"
+          );
+        }, 150);
+      };
+
+      window.addEventListener("resize", resizeListener);
+
+      // Armazenar referência para cleanup
+      if (!window.indicadoresCharts) window.indicadoresCharts = {};
+      window.indicadoresCharts["indicadoresEvolucaoFinanceiraContent"] = {
+        chart: chart,
+        resizeListener: resizeListener,
+      };
+
+      console.log("✅ Gráfico de evolução financeira inicializado com sucesso");
+    } catch (error) {
+      console.error(
+        "❌ Erro ao inicializar gráfico de evolução financeira:",
+        error
+      );
+      const container = document.getElementById(
+        "indicadoresEvolucaoFinanceiraContent"
+      );
+      if (container) {
+        container.innerHTML = `
+          <div class="indicadores-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Erro ao carregar projeção financeira</p>
+            <small>${error.message}</small>
+          </div>
+        `;
+      }
+    }
+  },
+
+  // Função para inicializar o gráfico de Valores por Categoria (Distribuição Financeira)
+  async indicadores_initValoresPorCategoria() {
+    try {
+      const containerId = "indicadoresValoresCategoriaContent";
+      console.log(
+        "Iniciando carregamento do gráfico de valores por categoria..."
+      );
+
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        console.warn(
+          "Container do gráfico de valores por categoria não encontrado:",
+          containerId
+        );
+        return;
+      }
+
+      console.log("Container encontrado, aguardando loading inicial...");
+
+      // Delay para que o loading seja bem visível
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      console.log("Buscando dados de valores por categoria...");
+
+      // Buscar dados de valores por categoria
+      const response = await fetch("/indicadores/contratos-por-categoria");
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Preparar dados para o gráfico donut - usar valor acumulado em vez de quantidade de contratos
+      const chartData = (data.categorias || []).map((categoria) => ({
+        name: categoria.categoria_nome || "Sem categoria",
+        value: Number(categoria.total_valor_acumulado) || 0,
+        formatted: categoria.total_valor_acumulado_formatado || "R$ 0,00",
+        percentage: categoria.pct_total_acumulado_formatado || "0.00%",
+        contracts: categoria.total_contratos || 0,
+      }));
+
+      console.log("Dados do gráfico preparados:", chartData);
+
+      // Verificar se há dados para exibir
+      if (!chartData || chartData.length === 0) {
+        container.innerHTML = `
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nenhum dado de valores por categoria encontrado
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível globalmente
+      if (typeof echarts === "undefined") {
+        throw new Error("ECharts não está disponível globalmente");
+      }
+
+      console.log(
+        "ECharts disponível, versão:",
+        echarts.version || "desconhecida"
+      );
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-valores-categoria-container">
+          <div id="indicadores-valores-categoria-chart"></div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById(
+        "indicadores-valores-categoria-chart"
+      );
+
+      // Verificar se o elemento foi criado corretamente
+      if (!chartDiv) {
+        throw new Error("Elemento do gráfico não foi criado corretamente");
+      }
+
+      console.log(
+        "Container do gráfico criado:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      // Aguardar o DOM estar totalmente renderizado
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Verificar dimensões do container
+      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
+        console.warn(
+          "Container tem dimensões inválidas, tentando forçar layout..."
+        );
+        chartDiv.style.width = "100%";
+        chartDiv.style.height = "250px";
+        chartDiv.style.display = "block";
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      // Cores para o gráfico donut (tons de verde esmaecidos, seguindo o padrão)
+      const colors = [
+        "#2E8B57",
+        "#3CB371",
+        "#90EE90",
+        "#98FB98",
+        "#F0FFF0",
+        "#8FBC8F",
+        "#9ACD32",
+        "#ADFF2F",
+      ];
+
+      // Configuração do gráfico donut
+      const chartOption = {
+        tooltip: {
+          trigger: "item",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderColor: "#2E8B57",
+          borderWidth: 2,
+          borderRadius: 8,
+          padding: [12, 16],
+          textStyle: {
+            fontSize: 14,
+            fontFamily: "Rawline, Arial, sans-serif",
+          },
+          formatter: (params) => {
+            const dataIndex = params.dataIndex;
+            const originalData = chartData[dataIndex];
+
+            return `<div class="indicadores-tooltip">
+              <div class="indicadores-tooltip-title">
+                ${params.name}
+              </div>
+              <div class="indicadores-tooltip-value">
+                <span class="indicadores-tooltip-number">${originalData.formatted}</span>
+                <br>
+                <span class="indicadores-tooltip-percent">${originalData.percentage}</span> do total
+                <br>
+                <small>${originalData.contracts} contratos</small>
+              </div>
+            </div>`;
+          },
+        },
+        legend: {
+          bottom: "5%",
+          left: "center",
+          textStyle: {
+            fontSize: 11,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+          },
+          itemGap: 15,
+        },
+        series: [
+          {
+            name: "Valores por Categoria",
+            type: "pie",
+            radius: ["40%", "70%"],
+            center: ["50%", "40%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 6,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: false,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#2E8B57",
+                formatter: (params) => {
+                  const dataIndex = params.dataIndex;
+                  const originalData = chartData[dataIndex];
+                  return `${params.name}\n${originalData.formatted}`;
+                },
+              },
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: chartData.map((item, index) => ({
+              name: item.name,
+              value: item.value,
+              itemStyle: {
+                color: colors[index % colors.length],
+              },
+            })),
+          },
+        ],
+        backgroundColor: "transparent",
+      };
+
+      // Inicializar o chart
+      console.log("Inicializando gráfico donut ECharts...", chartData);
+      console.log(
+        "Dimensões finais do container:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      const chart = echarts.init(chartDiv);
+
+      // Verificar se o chart foi inicializado
+      if (!chart) {
+        throw new Error("Falha ao inicializar o gráfico ECharts");
+      }
+
+      console.log("Aplicando configurações do gráfico...");
+      chart.setOption(chartOption);
+
+      // Adicionar responsividade
+      window.addEventListener("resize", () => {
+        if (chart && !chart.isDisposed()) {
+          chart.resize();
+        }
+      });
+
+      console.log(
+        "✅ Gráfico de valores por categoria inicializado com sucesso"
+      );
+    } catch (error) {
+      console.error(
+        "❌ Erro ao inicializar gráfico de valores por categoria:",
+        error
+      );
+
+      // Mostrar mensagem de erro no container
+      const container = document.getElementById(
+        "indicadoresValoresCategoriaContent"
+      );
+      if (container) {
+        container.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro ao carregar valores por categoria
+          </div>
+        `;
+      }
+    }
+  },
+
   // Função para inicializar o card de Contratos Vigentes (valores por exercício)
   async indicadores_initVigentes() {
     try {
@@ -2902,6 +3411,7 @@ export default {
             valor_inicial: contract.valor_inicial,
             valor_global: contract.valor_global,
             objeto: contract.objeto,
+            prorrogavel: contract.prorrogavel,
           },
         });
       });
@@ -3164,37 +3674,24 @@ export default {
 
   // Show modal with contract details
   showContractModal(contract) {
-    // Check if modal manager is available
-    if (!window.App || !window.App.modalManager) {
-      console.error("Modal manager not available");
-      // Fallback to alert with more details
-      const contractDate = new Date(contract.date);
-      const today = new Date();
-      const daysUntilExpiration = Math.ceil(
-        (contractDate - today) / (1000 * 60 * 60 * 24)
-      );
+    console.log("🔧 showContractModal called with contract:", contract);
+    console.log("📊 Contract details:", contract.details);
+    console.log("📅 Contract date:", contract.date);
+    console.log("🏷️ Contract name:", contract.name);
 
-      alert(
-        `Contrato: ${
-          contract.name
-        }\nVencimento: ${contractDate.toLocaleDateString("pt-BR")}\n${
-          daysUntilExpiration > 0
-            ? `${daysUntilExpiration} dias restantes`
-            : "Vencido"
-        }\n${
-          contract.details.objeto
-            ? `\nObjeto: ${contract.details.objeto.substring(0, 100)}...`
-            : ""
-        }`
-      );
-      return;
+    // Ensure modal manager is available
+    if (!window.App) window.App = {};
+    if (!window.App.modalManager) {
+      console.log("📦 Creating new modal manager...");
+      window.App.modalManager = this.createSimpleModalManager();
     }
 
+    console.log("✅ Modal manager available:", !!window.App.modalManager);
     const modalManager = window.App.modalManager;
 
     // Format contract details
     const formatCurrency = (value) => {
-      if (!value) return "N/A";
+      if (!value || value === 0 || isNaN(value)) return "N/A";
       return new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
@@ -3203,7 +3700,12 @@ export default {
 
     const formatDate = (dateString) => {
       if (!dateString) return "N/A";
-      return new Date(dateString).toLocaleDateString("pt-BR");
+      try {
+        return new Date(dateString).toLocaleDateString("pt-BR");
+      } catch (error) {
+        console.warn("Error formatting date:", dateString, error);
+        return dateString;
+      }
     };
 
     const getPriorityText = (priority) => {
@@ -3233,12 +3735,13 @@ export default {
       (contractDate - today) / (1000 * 60 * 60 * 24)
     );
 
+    console.log("📊 Days until expiration:", daysUntilExpiration);
+
     // Create modal content
     const modalContent = `
       <div class="contract-modal-content">
         <div class="contract-header">
           <div class="contract-title">
-            <h4 style="margin: 0; color: #1351B4;">${contract.name}</h4>
             <span class="contract-priority" style="
               background-color: ${getPriorityColor(contract.priority)};
               color: white;
@@ -3250,7 +3753,40 @@ export default {
           </div>
         </div>
         
+        <div class="contract-summary" style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+          <h5 style="margin: 0 0 10px 0; color: #1351B4; font-size: 16px;">📋 Resumo do Contrato</h5>
+          <p style="margin: 5px 0; color: #666;">
+            <strong>Status:</strong> ${
+              daysUntilExpiration > 0
+                ? `⏰ Vence em ${daysUntilExpiration} dias`
+                : "⚠️ Contrato vencido"
+            }
+          </p>
+        </div>
+        <div class="detail-row" style="margin-bottom: 15px;">
+            <strong>🔄 Prorrogável:</strong>
+            <span style="
+              padding: 4px 8px; 
+              border-radius: 12px; 
+              font-size: 12px; 
+              font-weight: bold;
+              background-color: ${
+                contract.details.prorrogavel === true ? "#d4edda" : "#f8d7da"
+              };
+              color: ${
+                contract.details.prorrogavel === true ? "#155724" : "#721c24"
+              };
+              border: 1px solid ${
+                contract.details.prorrogavel === true ? "#c3e6cb" : "#f5c6cb"
+              };
+            ">
+              ${contract.details.prorrogavel === true ? "✅ Sim" : "❌ Não"}
+            </span>
+          </div>
+
         <div class="contract-details" style="margin-top: 20px;">
+         
+          
           <div class="detail-row" style="margin-bottom: 15px;">
             <strong>📅 Data de Vencimento:</strong>
             <span style="color: ${
@@ -3277,7 +3813,7 @@ export default {
           }
           
           ${
-            contract.details.valor_inicial
+            contract.details.valor_inicial && contract.details.valor_inicial > 0
               ? `
           <div class="detail-row" style="margin-bottom: 15px;">
             <strong>💰 Valor Inicial:</strong>
@@ -3288,7 +3824,7 @@ export default {
           }
           
           ${
-            contract.details.valor_global
+            contract.details.valor_global && contract.details.valor_global > 0
               ? `
           <div class="detail-row" style="margin-bottom: 15px;">
             <strong>💸 Valor Global:</strong>
@@ -3299,17 +3835,19 @@ export default {
           }
           
           ${
-            contract.details.objeto
+            contract.details.objeto && contract.details.objeto.trim()
               ? `
           <div class="detail-row" style="margin-bottom: 15px;">
             <strong>📋 Objeto:</strong>
-            <div style="margin-top: 5px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; border-left: 3px solid #1351B4;">
+            <div style="margin-top: 5px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; border-left: 3px solid #1351B4; line-height: 1.5;">
               ${contract.details.objeto}
             </div>
           </div>
           `
               : ""
           }
+
+          
         </div>
         
         <div class="contract-actions" style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #ddd;">
@@ -3364,9 +3902,14 @@ export default {
     `;
 
     // Set modal title and content
+    console.log("📝 Opening modal first...");
+    modalManager.open();
+
+    console.log("🎬 Setting modal title and content...");
     modalManager.setTitle(`Contrato ${contract.name}`);
     modalManager.setBody(modalContent);
-    modalManager.open();
+
+    console.log("✅ Modal should now be visible with content");
 
     // Add event listener for details button
     setTimeout(() => {
@@ -3381,29 +3924,10 @@ export default {
 
   // Show modal with all contracts for a specific day
   showAllContractsForDay(contracts, dayNumber) {
-    // Check if modal manager is available
-    if (!window.App || !window.App.modalManager) {
-      console.error("Modal manager not available");
-      // Fallback to alert with contracts list
-      const contractsList = contracts
-        .map((contract) => {
-          const contractDate = new Date(contract.date);
-          const today = new Date();
-          const daysUntilExpiration = Math.ceil(
-            (contractDate - today) / (1000 * 60 * 60 * 24)
-          );
-          return `• ${contract.name} (${
-            daysUntilExpiration > 0
-              ? `${daysUntilExpiration} dias restantes`
-              : "Vencido"
-          })`;
-        })
-        .join("\n");
-
-      alert(
-        `${contracts.length} contrato(s) vencem no dia ${dayNumber}:\n\n${contractsList}`
-      );
-      return;
+    // Ensure modal manager is available
+    if (!window.App) window.App = {};
+    if (!window.App.modalManager) {
+      window.App.modalManager = this.createSimpleModalManager();
     }
 
     const modalManager = window.App.modalManager;
@@ -3527,9 +4051,9 @@ export default {
     window.indicadoresCalendar = this;
     window.indicadoresCurrentContracts = contracts;
 
+    modalManager.open();
     modalManager.setTitle(`Contratos do dia ${dayNumber}`);
     modalManager.setBody(modalContent);
-    modalManager.open();
 
     // Add event listeners after modal is opened
     setTimeout(() => {
@@ -3556,101 +4080,6 @@ export default {
     // TODO: Implement navigation to contract details page
     console.log(`Opening contract details for ID: ${contractId}`);
     // Example: window.location.href = `/contratos/${contractId}`;
-  },
-
-  // Create a simple modal manager for immediate use
-  createSimpleModalManager() {
-    let currentModal = null;
-
-    return {
-      initialize() {
-        console.log("Simple modal manager initialized");
-      },
-
-      open() {
-        // Create modal elements if they don't exist
-        if (currentModal) {
-          this.close();
-        }
-
-        // Create scrim
-        const scrim = document.createElement("div");
-        scrim.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 10998;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 20px;
-          box-sizing: border-box;
-        `;
-
-        // Create modal content
-        const modalContent = document.createElement("div");
-        modalContent.style.cssText = `
-          background: white;
-          border-radius: 8px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-          max-width: 90vw;
-          max-height: 90vh;
-          overflow-y: auto;
-          width: 100%;
-          max-width: 800px;
-        `;
-
-        modalContent.innerHTML = `
-          <div style="padding: 16px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa;">
-            <h3 id="simple-modal-title" style="margin: 0; font-size: 18px; font-weight: 600; color: #333;">Modal Title</h3>
-            <button id="simple-modal-close" style="background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; color: #666; border-radius: 4px;">✕</button>
-          </div>
-          <div id="simple-modal-body" style="padding: 20px;">Modal content</div>
-        `;
-
-        scrim.appendChild(modalContent);
-        document.body.appendChild(scrim);
-
-        // Add close event listeners
-        scrim.addEventListener("click", (e) => {
-          if (e.target === scrim) {
-            this.close();
-          }
-        });
-
-        document
-          .getElementById("simple-modal-close")
-          .addEventListener("click", () => {
-            this.close();
-          });
-
-        // Prevent body scrolling
-        document.body.style.overflow = "hidden";
-
-        currentModal = scrim;
-      },
-
-      close() {
-        if (currentModal && currentModal.parentNode) {
-          currentModal.parentNode.removeChild(currentModal);
-          currentModal = null;
-          document.body.style.overflow = "";
-        }
-      },
-
-      setTitle(title) {
-        const titleEl = document.getElementById("simple-modal-title");
-        if (titleEl) titleEl.textContent = title;
-      },
-
-      setBody(content) {
-        const bodyEl = document.getElementById("simple-modal-body");
-        if (bodyEl) bodyEl.innerHTML = content;
-      },
-    };
   },
 
   indicadores_init() {
@@ -3711,11 +4140,11 @@ export default {
       this.indicadores_initGraficoComAditivos();
     }, 2000);
 
-    // Inicializar o gráfico donut de contratos por área
+    // Inicializar o gráfico de contratos com variações significativas
     setTimeout(() => {
-      console.log("🍩 Inicializando gráfico por área...");
-      this.indicadores_initGraficoPorArea();
-    }, 2500);
+      console.log("📊 Inicializando gráfico de variações de contratos...");
+      this.indicadores_initContratosVariacoes();
+    }, 2250);
 
     // Inicializar o card de total de contratos
     setTimeout(() => {
@@ -3747,6 +4176,18 @@ export default {
       this.indicadores_initCategoria();
     }, 4375);
 
+    // Inicializar o gráfico de evolução financeira
+    setTimeout(() => {
+      console.log("📈 Inicializando gráfico de evolução financeira...");
+      this.indicadores_initEvolucaoFinanceira();
+    }, 4400);
+
+    // Inicializar o gráfico de valores por categoria
+    setTimeout(() => {
+      console.log("💰 Inicializando gráfico de valores por categoria...");
+      this.indicadores_initValoresPorCategoria();
+    }, 4600);
+
     // Inicializar o cronograma de vencimentos
     setTimeout(() => {
       console.log("📅 Inicializando cronograma de vencimentos...");
@@ -3767,162 +4208,268 @@ export default {
     // SEÇÃO 1: WHAT - Visão Geral dos Contratos
 
     // Card 1 - Total de Contratos
-    document.getElementById("indicadoresTotalContratosContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const totalContratosElement = document.getElementById(
+      "indicadoresTotalContratosContent"
+    );
+    if (totalContratosElement) {
+      totalContratosElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando dados de contratos</h5>
+          <p>Buscando informações atualizadas<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando dados de contratos</h5>
-        <p>Buscando informações atualizadas<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
 
     // Card 2 - Contratos por Exercício
-    document.getElementById("indicadoresExercicioContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const exercicioElement = document.getElementById(
+      "indicadoresExercicioContent"
+    );
+    if (exercicioElement) {
+      exercicioElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando contratos por exercício</h5>
+          <p>Buscando dados históricos de contratos<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando contratos por exercício</h5>
-        <p>Buscando dados históricos de contratos<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
 
     // Card 3 - Contratos Vigentes
-    document.getElementById("indicadoresVigentesContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const vigentesElement = document.getElementById(
+      "indicadoresVigentesContent"
+    );
+    if (vigentesElement) {
+      vigentesElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando valores por exercício</h5>
+          <p>Buscando dados de valores por período<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando valores por exercício</h5>
-        <p>Buscando dados de valores por período<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
 
     // Card 4 - Contratos por Categoria
-    document.getElementById("indicadoresCategoriasContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const categoriasElement = document.getElementById(
+      "indicadoresCategoriasContent"
+    );
+    if (categoriasElement) {
+      categoriasElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando contratos por categoria</h5>
+          <p>Buscando dados de categorias<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando contratos por categoria</h5>
-        <p>Buscando dados de categorias<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
 
     // SEÇÃO 2: WHY - Análise de Processos
 
     // Card 1 - Tipos de Contrato
-    document.getElementById("indicadoresSemLicitacaoContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const semLicitacaoElement = document.getElementById(
+      "indicadoresSemLicitacaoContent"
+    );
+    if (semLicitacaoElement) {
+      semLicitacaoElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando tipos de contrato</h5>
+          <p>Buscando dados de modalidades de contratação<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando tipos de contrato</h5>
-        <p>Buscando dados de modalidades de contratação<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
 
     // Card 2 - Contratos com Aditivos
-    document.getElementById("indicadoresComAditivosContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const comAditivosElement = document.getElementById(
+      "indicadoresComAditivosContent"
+    );
+    if (comAditivosElement) {
+      comAditivosElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando contratos com aditivos</h5>
+          <p>Buscando dados de termos aditivos e prorrogações<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando contratos com aditivos</h5>
-        <p>Buscando dados de termos aditivos e prorrogações<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
+
+    // Card 3 - Contratos com Variações Significativas
+    const contratosVariacoesElement = document.getElementById(
+      "indicadoresAlertasContent"
+    );
+    if (contratosVariacoesElement) {
+      contratosVariacoesElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando variações de contratos</h5>
+          <p>Buscando contratos com variações significativas entre valores inicial e global<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+        </div>
+      `;
+    }
 
     // SEÇÃO 3: WHO - Fornecedores e Contratantes
 
     // Card 1 - Top Fornecedores
-    document.getElementById("indicadoresTopFornecedoresContent").innerHTML = ``;
+    const topFornecedoresElement = document.getElementById(
+      "indicadoresTopFornecedoresContent"
+    );
+    if (topFornecedoresElement) {
+      topFornecedoresElement.innerHTML = ``;
+    }
 
     // Card 2 - Análise por Área
-    document.getElementById("indicadoresPorAreaContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
-        </div>
-        <h5>Carregando contratos por área</h5>
-        <p>Buscando dados de categorias e áreas de contratação<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+    const porAreaElement = document.getElementById("indicadoresPorAreaContent");
+    if (porAreaElement) {
+      porAreaElement.innerHTML = ``;
+    }
 
     // SEÇÃO 4: WHERE - Distribuição Geográfica
 
     // Card 1 - Mapa por Estados
-    document.getElementById("indicadoresMapaEstadosContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const mapaEstadosElement = document.getElementById(
+      "indicadoresMapaEstadosContent"
+    );
+    if (mapaEstadosElement) {
+      mapaEstadosElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando mapa do Brasil</h5>
+          <p>Buscando dados dos estados<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando mapa do Brasil</h5>
-        <p>Buscando dados dos estados<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
 
     // Card 2 - Contratos por Região
-    document.getElementById("indicadoresPorRegiaoContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const porRegiaoElement = document.getElementById(
+      "indicadoresPorRegiaoContent"
+    );
+    if (porRegiaoElement) {
+      porRegiaoElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando dados regionais</h5>
+          <p>Buscando contratos por região<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando dados regionais</h5>
-        <p>Buscando contratos por região<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
 
     // SEÇÃO 5: WHEN - Análise Temporal
 
     // Card 1 - Cronograma de Vencimentos
-    document.getElementById("indicadoresCronogramaContent").innerHTML = `
-      <div class="indicadores-map-loading">
-        <div class="indicadores-map-loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+    const cronogramaElement = document.getElementById(
+      "indicadoresCronogramaContent"
+    );
+    if (cronogramaElement) {
+      cronogramaElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando cronograma de vencimentos</h5>
+          <p>Buscando dados de prazos e vencimentos<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
         </div>
-        <h5>Carregando cronograma de vencimentos</h5>
-        <p>Buscando dados de prazos e vencimentos<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
-      </div>
-    `;
+      `;
+    }
 
     // Card 2 - Vigência e Prazos
-    document.getElementById("indicadoresVigenciaPrazosContent").innerHTML = ``;
+    const vigenciaPrazosElement = document.getElementById(
+      "indicadoresVigenciaPrazosContent"
+    );
+    if (vigenciaPrazosElement) {
+      vigenciaPrazosElement.innerHTML = ``;
+    }
 
     // SEÇÃO 6: HOW - Métodos e Eficiência
 
     // Card 1 - Contratos com Cláusulas
-    document.getElementById("indicadoresClausulasContent").innerHTML = ``;
+    const clausulasElement = document.getElementById(
+      "indicadoresClausulasContent"
+    );
+    if (clausulasElement) {
+      clausulasElement.innerHTML = ``;
+    }
 
     // Card 2 - Modalidades de Contratação
-    document.getElementById("indicadoresModalidadesContent").innerHTML = ``;
+    const modalidadesElement = document.getElementById(
+      "indicadoresModalidadesContent"
+    );
+    if (modalidadesElement) {
+      modalidadesElement.innerHTML = ``;
+    }
 
     // Card 3 - Eficiência Processual
-    document.getElementById("indicadoresEficienciaContent").innerHTML = ``;
+    const eficienciaElement = document.getElementById(
+      "indicadoresEficienciaContent"
+    );
+    if (eficienciaElement) {
+      eficienciaElement.innerHTML = ``;
+    }
 
     // SEÇÃO 7: HOW MUCH - Análise Financeira
 
     // Card 1 - Valores por Categoria
-    document.getElementById(
+    const valoresCategoriaElement = document.getElementById(
       "indicadoresValoresCategoriaContent"
-    ).innerHTML = ``;
+    );
+    if (valoresCategoriaElement) {
+      valoresCategoriaElement.innerHTML = ``;
+    }
 
     // Card 2 - Evolução Financeira
-    document.getElementById(
+    const evolucaoFinanceiraElement = document.getElementById(
       "indicadoresEvolucaoFinanceiraContent"
-    ).innerHTML = ``;
+    );
+    if (evolucaoFinanceiraElement) {
+      evolucaoFinanceiraElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando evolução financeira</h5>
+          <p>Buscando projeção de valores mensais<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+        </div>
+      `;
+    }
 
     // SEÇÃO 8: INSIGHTS EXECUTIVOS
 
     // Card 1 - Alertas e Riscos
-    document.getElementById("indicadoresAlertasContent").innerHTML = ``;
+    const alertasElement = document.getElementById("indicadoresAlertasContent");
+    if (alertasElement) {
+      alertasElement.innerHTML = ``;
+    }
 
     // Card 2 - Oportunidades
-    document.getElementById("indicadoresOportunidadesContent").innerHTML = ``;
+    const oportunidadesElement = document.getElementById(
+      "indicadoresOportunidadesContent"
+    );
+    if (oportunidadesElement) {
+      oportunidadesElement.innerHTML = ``;
+    }
 
     // Card 3 - Ações Prioritárias
-    document.getElementById("indicadoresAcoesContent").innerHTML = ``;
+    const acoesElement = document.getElementById("indicadoresAcoesContent");
+    if (acoesElement) {
+      acoesElement.innerHTML = ``;
+    }
 
     console.log("Card content cleared successfully");
   },
@@ -4050,8 +4597,20 @@ export default {
         "indicadores-com-aditivos-header"
       );
 
+      // Card 3 - Contratos com Variações Significativas
+      App.card_header.card_header_createDynamic(
+        {
+          title: "Contratos com Variações Significativas",
+          subtitle:
+            "Análise comparativa entre valores inicial e global dos contratos",
+          icon: "fas fa-chart-bar",
+          actions: [], // Sem botões para economizar espaço
+        },
+        "indicadores-contratos-variacoes-header"
+      );
+
       console.log(
-        "Indicadores card headers Análise de Processos (2 cards) initialized dynamically"
+        "Indicadores card headers Análise de Processos (3 cards) initialized dynamically"
       );
     } else {
       console.warn("CardHeader module not available - retrying in 500ms");
@@ -4193,8 +4752,8 @@ export default {
       // Card 2 - Evolução Financeira
       App.card_header.card_header_createDynamic(
         {
-          title: "Evolução Financeira",
-          subtitle: "Tendências e crescimento dos valores contratuais",
+          title: "Projeção de Valores Mensais",
+          subtitle: "Previsão dos valores contratuais para os próximos 6 meses",
           icon: "fas fa-chart-line",
           actions: [],
         },
@@ -4206,9 +4765,9 @@ export default {
       // Card 1 - Alertas e Riscos
       App.card_header.card_header_createDynamic(
         {
-          title: "Alertas e Riscos",
-          subtitle: "Situações que requerem atenção imediata",
-          icon: "fas fa-exclamation-triangle",
+          title: "Contratos com Variações Significativas",
+          subtitle: "Contratos com aumentos ≥ 25% entre valor inicial e global",
+          icon: "fas fa-chart-line",
           actions: [],
         },
         "indicadores-alertas-header"
@@ -4410,5 +4969,125 @@ export default {
   indicadores_showSettingsAnaliseProcessos() {
     console.log("Showing Settings - Análise de Processos");
     // TODO: Implementar lógica para configurações da análise de processos
+  },
+
+  // Simple modal manager for agenda functions
+  createSimpleModalManager() {
+    let currentModal = null;
+    let modalCounter = 0;
+
+    const manager = {
+      initialize() {
+        console.log("Simple modal manager initialized");
+      },
+
+      open() {
+        console.log("🚀 Modal manager open() called");
+
+        // Create modal elements if they don't exist
+        if (currentModal) {
+          console.log("📦 Closing existing modal");
+          this.close();
+        }
+
+        modalCounter++;
+        const modalId = `simple-modal-${modalCounter}`;
+
+        // Create scrim
+        const scrim = document.createElement("div");
+        scrim.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 10998;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          box-sizing: border-box;
+        `;
+
+        // Create modal content
+        const modalContent = document.createElement("div");
+        modalContent.style.cssText = `
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+          max-width: 90vw;
+          max-height: 90vh;
+          overflow-y: auto;
+          width: 100%;
+          max-width: 800px;
+        `;
+
+        modalContent.innerHTML = `
+          <div style="padding: 16px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa;">
+            <h3 id="${modalId}-title" style="margin: 0; font-size: 18px; font-weight: 600; color: #333;">Modal Title</h3>
+            <button id="${modalId}-close" style="background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; color: #666; border-radius: 4px;">✕</button>
+          </div>
+          <div id="${modalId}-body" style="padding: 20px;">Modal content</div>
+        `;
+
+        scrim.appendChild(modalContent);
+        document.body.appendChild(scrim);
+
+        // Add close event listeners
+        scrim.addEventListener("click", (e) => {
+          if (e.target === scrim) {
+            this.close();
+          }
+        });
+
+        const closeBtn = document.getElementById(`${modalId}-close`);
+        if (closeBtn) {
+          closeBtn.addEventListener("click", () => {
+            this.close();
+          });
+        }
+
+        // Prevent body scrolling
+        document.body.style.overflow = "hidden";
+
+        currentModal = { scrim, modalId };
+        console.log("✅ Modal opened successfully with ID:", modalId);
+      },
+
+      close() {
+        if (
+          currentModal &&
+          currentModal.scrim &&
+          currentModal.scrim.parentNode
+        ) {
+          currentModal.scrim.parentNode.removeChild(currentModal.scrim);
+          currentModal = null;
+          document.body.style.overflow = "";
+        }
+      },
+
+      setTitle(title) {
+        if (currentModal) {
+          const titleEl = document.getElementById(
+            `${currentModal.modalId}-title`
+          );
+          if (titleEl) titleEl.textContent = title;
+        }
+      },
+
+      setBody(content) {
+        if (currentModal) {
+          const bodyEl = document.getElementById(
+            `${currentModal.modalId}-body`
+          );
+          if (bodyEl) bodyEl.innerHTML = content;
+        }
+      },
+    };
+
+    // Auto-initialize
+    manager.initialize();
+    return manager;
   },
 };

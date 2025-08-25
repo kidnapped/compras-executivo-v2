@@ -241,18 +241,17 @@
 
 /* Containers dos cards */
 .indicadores-three-cards .indicadores-content {
-  height: 150px;
-  min-height: 150px;
-  max-height: 150px;
+  height: auto;
+  min-height: 280px;
   display: flex;
   flex-direction: column;
 }
 
 /* Cards compactos */
 .indicadores-three-cards .sidebar-card {
-  height: 150px !important;
-  min-height: 150px !important;
-  max-height: 150px !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: auto !important;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -264,9 +263,9 @@
 
 /* Body dos cards */
 .indicadores-three-cards .card-body-govbr {
-  height: calc(150px - 50px) !important;
-  min-height: calc(150px - 50px) !important;
-  max-height: calc(150px - 50px) !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: auto !important;
   overflow: hidden;
   flex: 1;
   display: flex;
@@ -679,7 +678,7 @@
 
 /* Cards com altura dobrada */
 #indicadores-content-analise-temporal .sidebar-card {
-  min-height: 400px !important;
+  min-height: 650px !important;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -944,7 +943,7 @@
   }
 
   #indicadores-content-analise-temporal .sidebar-card {
-    min-height: 400px !important;
+    min-height: 650px !important;
   }
 
   #indicadores-content-analise-temporal .card-body-govbr {
@@ -1240,6 +1239,160 @@
 
 /* Estilos específicos para a seção de visão geral */
 #indicadores-content-visao-geral .indicadores-exercicio-container {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DE CONTRATOS COM VARIAÇÕES ===================== */
+
+.indicadores-variacoes-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  max-height: 280px !important;
+  padding: 10px 10px 10px 10px !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-variacoes-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 200px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de alertas */
+#indicadores-content-insights-executivos .indicadores-variacoes-container {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DE EVOLUÇÃO FINANCEIRA ===================== */
+
+.indicadores-evolucao-financeira-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  max-height: 280px !important;
+  padding: 10px !important;
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: visible !important;
+}
+
+#indicadores-evolucao-financeira-chart {
+  width: 100% !important;
+  height: 220px !important;
+  min-height: 200px !important;
+  display: block !important;
+  position: relative !important;
+  flex: 1;
+}
+
+.indicadores-chart-footer {
+  padding: 8px 0;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 8px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0 0 8px 8px;
+}
+
+.indicadores-chart-footer small {
+  color: #666;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.indicadores-total-projetado {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #1351b4;
+  font-weight: 600;
+}
+
+/* Estilos específicos para a seção de análise financeira */
+#indicadores-content-analise-financeira
+  .indicadores-evolucao-financeira-container {
+  height: 100% !important;
+  min-height: 280px !important;
+}
+
+#indicadores-content-analise-financeira #indicadores-evolucao-financeira-chart {
+  height: 240px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DE VALORES POR CATEGORIA ===================== */
+
+.indicadores-valores-categoria-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  padding: 10px !important;
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: visible !important;
+}
+
+#indicadores-valores-categoria-chart {
+  width: 100% !important;
+  height: 220px !important;
+  min-height: 200px !important;
+  display: block !important;
+  position: relative !important;
+  flex: 1;
+}
+
+/* Estilos específicos para a seção de análise financeira */
+#indicadores-content-analise-financeira
+  .indicadores-valores-categoria-container {
+  height: 100% !important;
+  min-height: 280px !important;
+}
+
+#indicadores-content-analise-financeira #indicadores-valores-categoria-chart {
+  height: 240px !important;
+}
+
+/* ===================== SEÇÃO ESPECÍFICA - INSIGHTS EXECUTIVOS ===================== */
+
+/* Altura especial para a seção de insights executivos */
+#indicadores-content-insights-executivos .indicadores-content {
+  height: 280px;
+  min-height: 280px;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+#indicadores-content-insights-executivos .card-body-govbr {
+  height: calc(280px - 50px) !important;
+  min-height: calc(280px - 50px) !important;
+  max-height: calc(280px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#indicadores-content-insights-executivos .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+#indicadores-content-insights-executivos .indicadores-total-contratos-card {
   height: 100% !important;
   min-height: 250px !important;
 }
