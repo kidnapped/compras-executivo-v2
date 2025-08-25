@@ -508,3 +508,51 @@ input[type="number"] {
     max-height: none !important;
   }
 }
+
+/* ===================== ECHARTS TOOLTIP Z-INDEX FIX ===================== */
+
+/* Força z-index alto para tooltips do ECharts */
+.echarts-tooltip,
+div[class*="echarts-tooltip"] {
+  z-index: 99999 !important;
+}
+
+/* Garantir que tooltips apareçam sobre todos os elementos */
+body > div[style*="z-index"]:not([class]) {
+  z-index: 99999 !important;
+}
+
+/* Específico para tooltips do ECharts que são criados dinamicamente */
+div[style*="position: absolute"][style*="background"] {
+  z-index: 99999 !important;
+}
+
+/* Tooltip container genérico do ECharts */
+div[style*="pointer-events: none"][style*="position: absolute"] {
+  z-index: 99999 !important;
+}
+
+/* ===================== CARD OVERFLOW FIX FOR TOOLTIPS ===================== */
+
+/* Permitir que tooltips dos gráficos saiam dos limites dos cards */
+#card-contratos-exercicio-container,
+#card-representacao-anual-valores {
+  overflow: visible !important;
+}
+
+#card-contratos-exercicio-container .card-body-govbr,
+#card-representacao-anual-valores .card-body-govbr {
+  overflow: visible !important;
+}
+
+/* Containers específicos dos gráficos */
+#grafico-contratos-por-exercicio,
+#grafico-representacao-anual-valores {
+  overflow: visible !important;
+}
+
+/* Container de conteúdo dos gráficos */
+#dashboardContratosExercicioContent,
+#dashboardRepresentacaoAnualContent {
+  overflow: visible !important;
+}

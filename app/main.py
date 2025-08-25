@@ -51,8 +51,8 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
         cpf = session.get("cpf") if session else None
         
         if cpf:
-            # User is logged in, redirect to /inicio
-            return RedirectResponse(url="/inicio", status_code=302)
+            # User is logged in, redirect to /minha-conta
+            return RedirectResponse(url="/minha-conta", status_code=302)
         else:
             # User is not logged in, redirect to /login
             return RedirectResponse(url="/login", status_code=302)

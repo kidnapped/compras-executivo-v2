@@ -31,7 +31,7 @@ function loginSetupCpfFormatting() {
  */
 function loginForceGovBr() {
     const currentUrl = new URL(window.location.href);
-    const nextUrl = currentUrl.searchParams.get('next') || '/inicio';
+    const nextUrl = currentUrl.searchParams.get('next') || '/minha-conta';
     
     // Redirect to same URL but with gov.br indication
     window.location.href = `/login?force_govbr=1&next=${nextUrl}`;

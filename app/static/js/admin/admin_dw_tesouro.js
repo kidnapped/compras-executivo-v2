@@ -17,7 +17,7 @@ export default {
     // Verifica se o módulo breadcrumb está disponível
     if (typeof App !== "undefined" && App.breadcrumb && App.breadcrumb.breadcrumb_createDynamic) {
       const breadcrumbItems = [
-        {title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio'},
+        {title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta'},
         {title: 'Administração', icon: 'fas fa-cog', url: '/admin'},
         {title: 'ETL', icon: 'fas fa-database', url: '/admin/etl'},
         {title: 'DW Tesouro', icon: 'fas fa-chart-bar', url: ''}

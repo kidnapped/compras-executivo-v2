@@ -1275,10 +1275,7 @@ async def toggle_contrato_favorito(
     result = {
         "success": True,
         "is_favorite": new_status,
-        "favorite_icon": "red" if new_status else "gray",
-        "favorite_status": "red" if new_status else "gray",
-        "favorite_action": "Remove" if new_status else "Adicionar",
-        "favorite_title": "Remover dos favoritos" if new_status else "Adicionar aos favoritos"
+        "message": "Contrato adicionado aos favoritos" if new_status else "Contrato removido dos favoritos"
     }
     
     return result
