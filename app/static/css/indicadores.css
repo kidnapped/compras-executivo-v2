@@ -4,7 +4,8 @@
   background: transparent;
   min-height: 100vh;
   padding: 1rem;
-  font-family: 'Rawline', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-family: "Rawline", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
+    sans-serif;
 }
 
 .indicadores-page .container-fluid {
@@ -53,21 +54,16 @@
 /* Containers dos cards */
 .indicadores-four-cards .indicadores-sidebar,
 .indicadores-four-cards .indicadores-content {
-  height: 150px;
-  min-height: 150px;
-  max-height: 150px;
   display: flex;
   flex-direction: column;
 }
 
 /* Cards compactos */
 .indicadores-four-cards .sidebar-card {
-  height: 150px !important;
-  min-height: 150px !important;
-  max-height: 150px !important;
+  max-height: 280px !important;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
@@ -76,9 +72,6 @@
 
 /* Body dos cards */
 .indicadores-four-cards .card-body-govbr {
-  height: calc(150px - 50px) !important;
-  min-height: calc(150px - 50px) !important;
-  max-height: calc(150px - 50px) !important;
   overflow: hidden;
   flex: 1;
   display: flex;
@@ -122,21 +115,15 @@
 
 /* Containers dos cards */
 .indicadores-two-cards .indicadores-content {
-  height: 150px;
-  min-height: 150px;
-  max-height: 150px;
   display: flex;
   flex-direction: column;
 }
 
 /* Cards compactos */
 .indicadores-two-cards .sidebar-card {
-  height: 150px !important;
-  min-height: 150px !important;
-  max-height: 150px !important;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
@@ -145,9 +132,6 @@
 
 /* Body dos cards */
 .indicadores-two-cards .card-body-govbr {
-  height: calc(150px - 50px) !important;
-  min-height: calc(150px - 50px) !important;
-  max-height: calc(150px - 50px) !important;
   overflow: hidden;
   flex: 1;
   display: flex;
@@ -202,7 +186,7 @@
   max-height: 150px !important;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
@@ -271,7 +255,7 @@
   max-height: 150px !important;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
@@ -310,6 +294,7 @@
   overflow-y: auto;
   position: relative;
   height: 100%;
+  overflow: hidden;
 }
 
 /* Scrollbar customizada */
@@ -360,34 +345,28 @@
   .indicadores-page {
     padding: 0.5rem;
   }
-  
+
   .indicadores-four-cards .col-md-6 {
     flex: 0 0 50%;
     max-width: 50%;
   }
-  
+
   .indicadores-four-cards .col-xl-3 {
     padding-left: 4px;
     padding-right: 4px;
   }
-  
-  .indicadores-four-cards .sidebar-card {
-    height: 120px !important;
-    min-height: 120px !important;
-    max-height: 120px !important;
-  }
-  
+
   .indicadores-four-cards .indicadores-sidebar,
   .indicadores-four-cards .indicadores-content {
-    height: 120px;
-    min-height: 120px;
-    max-height: 120px;
+    height: 280px;
+    min-height: 280px;
+    max-height: 280px;
   }
-  
+
   .indicadores-four-cards .card-body-govbr {
-    height: calc(120px - 45px) !important;
-    min-height: calc(120px - 45px) !important;
-    max-height: calc(120px - 45px) !important;
+    height: calc(280px - 45px) !important;
+    min-height: calc(280px - 45px) !important;
+    max-height: calc(280px - 45px) !important;
   }
 }
 
@@ -398,7 +377,7 @@
     max-width: 100%;
     margin-bottom: 0.75rem;
   }
-  
+
   .indicadores-four-cards .col-xl-3:first-child,
   .indicadores-four-cards .col-xl-3:last-child {
     padding-left: 8px;
@@ -466,10 +445,10 @@
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
-  height: 400px !important;
-  min-height: 400px !important;
+  height: 280px !important;
+  min-height: 280px !important;
   text-align: center;
-  color: #5F70A5;
+  color: #5f70a5;
 }
 
 .indicadores-map-loading-spinner {
@@ -478,19 +457,19 @@
 
 .indicadores-map-loading-spinner .fa-spinner {
   font-size: 2rem;
-  color: #5F70A5;
+  color: #5f70a5;
 }
 
 .indicadores-map-loading h5 {
   margin: 0.5rem 0;
   font-weight: 600;
-  color: #5F70A5;
+  color: #5f70a5;
   font-size: 1.1rem;
 }
 
 .indicadores-map-loading p {
   margin: 0;
-  color: #5F70A5;
+  color: #5f70a5;
   opacity: 0.8;
   font-size: 0.9rem;
 }
@@ -504,7 +483,7 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background-color: #5F70A5;
+  background-color: #5f70a5;
   margin: 0 1px;
   animation: indicadores-loading-dots 1.4s infinite ease-in-out both;
 }
@@ -518,7 +497,9 @@
 }
 
 @keyframes indicadores-loading-dots {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0);
   }
   40% {
@@ -535,7 +516,7 @@
   height: 100% !important;
   min-height: 400px !important;
   text-align: center;
-  color: #5F70A5;
+  color: #5f70a5;
 }
 
 .contratos-regiao-loading-spinner {
@@ -544,19 +525,19 @@
 
 .contratos-regiao-loading-spinner .fa-spinner {
   font-size: 2rem;
-  color: #5F70A5;
+  color: #5f70a5;
 }
 
 .contratos-regiao-loading h5 {
   margin: 0.5rem 0;
   font-weight: 600;
-  color: #5F70A5;
+  color: #5f70a5;
   font-size: 1.1rem;
 }
 
 .contratos-regiao-loading p {
   margin: 0;
-  color: #5F70A5;
+  color: #5f70a5;
   opacity: 0.8;
   font-size: 0.9rem;
 }
@@ -636,7 +617,7 @@
   max-height: 300px !important;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
@@ -656,6 +637,69 @@
 
 /* Conteúdo dos cards com altura dobrada */
 #indicadores-content-analise-processos .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* ===================== SEÇÃO ESPECÍFICA - ANÁLISE TEMPORAL ===================== */
+
+/* Altura especial para a seção de análise temporal */
+#indicadores-content-analise-temporal {
+  margin-top: 1rem;
+}
+
+#indicadores-content-analise-temporal .row {
+  margin: 0;
+  padding: 0 !important;
+}
+
+/* Layout das colunas para análise temporal */
+#indicadores-content-analise-temporal .col-xl-6 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+#indicadores-content-analise-temporal .col-xl-6:first-child {
+  padding-left: 0;
+}
+
+#indicadores-content-analise-temporal .col-xl-6:last-child {
+  padding-right: 0;
+}
+
+/* Containers dos cards com altura dobrada */
+#indicadores-content-analise-temporal .indicadores-content {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards com altura dobrada */
+#indicadores-content-analise-temporal .sidebar-card {
+  min-height: 400px !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Body dos cards com altura dobrada */
+#indicadores-content-analise-temporal .card-body-govbr {
+  min-height: calc(400px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo dos cards com altura dobrada */
+#indicadores-content-analise-temporal .indicadores-card-content {
   height: 100%;
   display: flex;
   align-items: center;
@@ -702,7 +746,7 @@
   max-height: 600px !important;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
@@ -776,7 +820,8 @@
 }
 
 /* Estilos específicos para o gráfico de região na seção de distribuição geográfica */
-#indicadores-content-distribuicao-geografica .indicadores-grafico-regiao-container {
+#indicadores-content-distribuicao-geografica
+  .indicadores-grafico-regiao-container {
   height: 100% !important;
   min-height: 530px;
 }
@@ -788,13 +833,13 @@
   text-align: center !important;
   font-weight: bold;
   margin-bottom: 4px;
-  color: #5F70A5;
+  color: #5f70a5;
 }
 
 /* Estilo para números no tooltip */
 .indicadores-tooltip-number {
   font-weight: bold;
-  color: #5F70A5;
+  color: #5f70a5;
 }
 
 /* Estilo para percentual no tooltip */
@@ -808,150 +853,233 @@
 
 /* Tablet e mobile - ajustes para a seção de distribuição geográfica */
 @media (max-width: 991px) {
+  /* Visão Geral - Responsive */
+  #indicadores-content-visao-geral .indicadores-content {
+    height: 250px;
+    min-height: 250px;
+    max-height: 250px;
+  }
+
+  #indicadores-content-visao-geral .card-body-govbr {
+    height: calc(250px - 45px) !important;
+    min-height: calc(250px - 45px) !important;
+    max-height: calc(250px - 45px) !important;
+  }
+
+  #indicadores-content-visao-geral .indicadores-total-contratos-card {
+    height: 100% !important;
+    min-height: 205px !important;
+  }
+
   /* Análise de Processos - Responsive */
   #indicadores-content-analise-processos .indicadores-content {
     height: 250px;
     min-height: 250px;
     max-height: 250px;
   }
-  
+
   #indicadores-content-analise-processos .sidebar-card {
     height: 250px !important;
     min-height: 250px !important;
     max-height: 250px !important;
   }
-  
+
   #indicadores-content-analise-processos .card-body-govbr {
     height: calc(250px - 45px) !important;
     min-height: calc(250px - 45px) !important;
     max-height: calc(250px - 45px) !important;
   }
-  
+
   /* Distribuição Geográfica - Responsive */
   #indicadores-content-distribuicao-geografica .indicadores-content {
     height: 450px;
     min-height: 450px;
     max-height: 450px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .sidebar-card {
     height: 450px !important;
     min-height: 450px !important;
     max-height: 450px !important;
   }
-  
+
   #indicadores-content-distribuicao-geografica .card-body-govbr {
     height: calc(450px - 45px) !important;
     min-height: calc(450px - 45px) !important;
     max-height: calc(450px - 45px) !important;
   }
-  
+
   #indicadores-content-distribuicao-geografica .mapa-estados-container {
     min-height: 380px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .indicadores-loading-container {
     min-height: 380px;
   }
-  
+
   #indicadoresMapaEstadosContent .indicadores-map-loading {
     min-height: 380px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .indicadores-map-loading {
     min-height: 380px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .contratos-regiao-loading {
     min-height: 380px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .contratos-regiao-container {
     min-height: 380px;
   }
-  
-  #indicadores-content-distribuicao-geografica .indicadores-grafico-regiao-container {
+
+  #indicadores-content-distribuicao-geografica
+    .indicadores-grafico-regiao-container {
     min-height: 380px;
+  }
+
+  /* Análise Temporal - Responsive */
+  #indicadores-content-analise-temporal .indicadores-content {
+    min-height: 400px;
+  }
+
+  #indicadores-content-analise-temporal .sidebar-card {
+    min-height: 400px !important;
+  }
+
+  #indicadores-content-analise-temporal .card-body-govbr {
+    min-height: calc(400px - 45px) !important;
+  }
+
+  #indicadores-content-analise-temporal .indicadores-cronograma-container {
+    height: 100% !important;
+    min-height: 400px !important;
+  }
+
+  #indicadores-content-analise-temporal #indicadores-cronograma-chart {
+    min-height: 400px !important;
   }
 }
 
 /* Mobile pequeno - altura menor mas ainda maior que o padrão */
 @media (max-width: 767px) {
+  /* Visão Geral - Mobile */
+  #indicadores-content-visao-geral .indicadores-content {
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+  }
+
+  #indicadores-content-visao-geral .card-body-govbr {
+    height: calc(200px - 45px) !important;
+    min-height: calc(200px - 45px) !important;
+    max-height: calc(200px - 45px) !important;
+  }
+
+  #indicadores-content-visao-geral .indicadores-total-contratos-card {
+    height: 100% !important;
+    min-height: 155px !important;
+  }
+
   /* Análise de Processos - Mobile */
   #indicadores-content-analise-processos .indicadores-content {
     height: 200px;
     min-height: 200px;
     max-height: 200px;
   }
-  
+
   #indicadores-content-analise-processos .sidebar-card {
     height: 200px !important;
-    min-height: 200px !important;
+    min-height: 00px !important;
     max-height: 200px !important;
   }
-  
+
   #indicadores-content-analise-processos .card-body-govbr {
     height: calc(200px - 45px) !important;
     min-height: calc(200px - 45px) !important;
     max-height: calc(200px - 45px) !important;
   }
-  
+
   #indicadores-content-analise-processos .col-xl-6 {
     padding-left: 8px;
     padding-right: 8px;
   }
-  
+
   /* Distribuição Geográfica - Mobile */
   #indicadores-content-distribuicao-geografica .indicadores-content {
     height: 400px;
     min-height: 400px;
     max-height: 400px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .sidebar-card {
     height: 400px !important;
     min-height: 400px !important;
     max-height: 400px !important;
   }
-  
+
   #indicadores-content-distribuicao-geografica .card-body-govbr {
     height: calc(400px - 45px) !important;
     min-height: calc(400px - 45px) !important;
     max-height: calc(400px - 45px) !important;
   }
-  
+
   #indicadores-content-distribuicao-geografica .col-xl-8,
   #indicadores-content-distribuicao-geografica .col-xl-4 {
     padding-left: 8px;
     padding-right: 8px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .mapa-estados-container {
     min-height: 330px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .indicadores-loading-container {
     min-height: 330px;
   }
-  
+
   #indicadoresMapaEstadosContent .indicadores-map-loading {
     min-height: 330px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .indicadores-map-loading {
     min-height: 330px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .contratos-regiao-loading {
     min-height: 330px;
   }
-  
+
   #indicadores-content-distribuicao-geografica .contratos-regiao-container {
     min-height: 330px;
   }
-  
-  #indicadores-content-distribuicao-geografica .indicadores-grafico-regiao-container {
+
+  #indicadores-content-distribuicao-geografica
+    .indicadores-grafico-regiao-container {
     min-height: 330px;
+  }
+
+  /* Análise Temporal - Mobile */
+  #indicadores-content-analise-temporal .indicadores-content {
+    min-height: 200px;
+  }
+
+  #indicadores-content-analise-temporal .sidebar-card {
+    min-height: 200px !important;
+  }
+
+  #indicadores-content-analise-temporal .col-xl-6 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  #indicadores-content-analise-temporal .indicadores-cronograma-container {
+    height: 100% !important;
+    min-height: 155px !important;
+  }
+
+  #indicadores-content-analise-temporal #indicadores-cronograma-chart {
+    min-height: 135px !important;
   }
 }
 
@@ -1031,6 +1159,1002 @@
 #indicadores-content-analise-processos .indicadores-com-aditivos-container {
   height: 100% !important;
   min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DONUT POR ÁREA ===================== */
+
+.indicadores-por-area-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-por-area-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 230px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de fornecedores e contratantes */
+#indicadores-content-fornecedores-contratantes .indicadores-content {
+  height: 300px;
+  min-height: 300px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+#indicadores-content-fornecedores-contratantes .card-body-govbr {
+  height: calc(300px - 50px) !important;
+  min-height: calc(300px - 50px) !important;
+  max-height: calc(300px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#indicadores-content-fornecedores-contratantes .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+#indicadores-content-fornecedores-contratantes .indicadores-por-area-container {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DE CONTRATOS POR EXERCÍCIO ===================== */
+
+.indicadores-exercicio-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  max-height: 280px !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-exercicio-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 230px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de visão geral */
+#indicadores-content-visao-geral .indicadores-exercicio-container {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DE CONTRATOS VIGENTES ===================== */
+
+.indicadores-vigentes-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  max-height: 280px !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-vigentes-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 230px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de visão geral */
+#indicadores-content-visao-geral .indicadores-vigentes-container {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== SEÇÃO ESPECÍFICA - VISÃO GERAL DOS CONTRATOS ===================== */
+
+/* Altura especial para a seção de visão geral */
+#indicadores-content-visao-geral .indicadores-content {
+  height: 280px;
+  min-height: 280px;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+#indicadores-content-visao-geral .card-body-govbr {
+  height: calc(280px - 50px) !important;
+  min-height: calc(280px - 50px) !important;
+  max-height: calc(280px - 50px) !important;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#indicadores-content-visao-geral .indicadores-card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+#indicadores-content-visao-geral .indicadores-total-contratos-card {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA CRONOGRAMA DE VENCIMENTOS (CALENDÁRIO) ===================== */
+
+.indicadores-cronograma-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 280px !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-cronograma-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 260px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de análise temporal */
+#indicadores-content-analise-temporal .indicadores-cronograma-container {
+  height: 100% !important;
+  min-height: 280px !important;
+}
+
+/* Calendar container (replicating calendar.html styles) */
+.indicadores-calendar-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  color: black;
+}
+
+.indicadores-calendar-header h3 {
+  font-weight: 700;
+}
+
+.indicadores-calendar-header button {
+  background: none;
+  border: none;
+  color: black;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-calendar-header button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.indicadores-calendar-header h3 {
+  font-weight: 500;
+  font-size: 18px;
+  margin: 0;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 12px;
+  color: #495057;
+}
+
+.indicadores-weekdays div {
+  padding: 8px 4px;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-weekdays .weekday-short {
+  display: none;
+}
+
+.indicadores-weekdays .weekday-full {
+  display: inline;
+}
+
+.indicadores-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background-color: #e9ecef;
+}
+
+.indicadores-day {
+  min-height: 100px;
+  max-height: 100px;
+  padding: 4px;
+  background-color: white;
+  position: relative;
+  transition: background-color 0.2s;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.indicadores-day:hover {
+  background-color: #f8f9fa;
+  border-color: #1351b4;
+}
+
+.indicadores-day-number {
+  font-weight: 600;
+  margin-bottom: 2px;
+  font-size: 11px;
+  color: #333;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-contract {
+  font-size: 0.7rem;
+  padding: 1px 3px;
+  margin-top: 2px;
+  border-radius: 2px;
+  background-color: #e7f4ff;
+  border-left: 2px solid #1351b4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-contract:hover {
+  background-color: #d1ecf1;
+  transform: translateY(-1px);
+}
+
+.indicadores-contract.high-priority,
+.indicadores-contract.indicadores-contract-high {
+  background-color: #ffe7e7;
+  border-left-color: #e74c3c;
+}
+
+.indicadores-contract.medium-priority,
+.indicadores-contract.indicadores-contract-medium {
+  background-color: #fff4e7;
+  border-left-color: #f39c12;
+}
+
+.indicadores-contract.low-priority,
+.indicadores-contract.indicadores-contract-low {
+  background-color: #f0ffe7;
+  border-left-color: #2ecc71;
+}
+
+.indicadores-contract.indicadores-contract-default {
+  background-color: #e7f4ff;
+  border-left-color: #1351b4;
+}
+
+/* "More contracts" element */
+.indicadores-contract-more {
+  background-color: #f8f9fa !important;
+  border-left-color: #6c757d !important;
+  color: #6c757d !important;
+  font-weight: bold !important;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.indicadores-contract-more:hover {
+  background-color: #e9ecef !important;
+  border-left-color: #495057 !important;
+  color: #495057 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Contract interaction enhancements */
+.indicadores-contract {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.indicadores-contract:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.indicadores-contract:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.indicadores-other-month {
+  color: #bbb;
+  background-color: #f9f9f9;
+}
+
+.indicadores-today {
+  background-color: #e7f4ff;
+  border-color: #1351b4 !important;
+}
+
+.indicadores-today .indicadores-day-number {
+  color: #1351b4;
+  font-weight: 700;
+}
+
+.indicadores-contract-details {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 200px;
+  padding: 8px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  font-size: 11px;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-contract:hover .indicadores-contract-details {
+  display: block;
+}
+
+/* Legend for calendar */
+.indicadores-calendar-legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 10px;
+}
+
+.indicadores-legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-legend-color {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  border-radius: 2px;
+}
+
+.indicadores-high-priority-color {
+  background-color: #ffe7e7;
+  border-left: 2px solid #e74c3c;
+}
+
+.indicadores-medium-priority-color {
+  background-color: #fff4e7;
+  border-left: 2px solid #f39c12;
+}
+
+.indicadores-low-priority-color {
+  background-color: #f0ffe7;
+  border-left: 2px solid #2ecc71;
+}
+
+.indicadores-default-priority-color {
+  background-color: #e7f4ff;
+  border-left: 2px solid #1351b4;
+}
+
+/* Heatmap styles for year overview */
+.indicadores-heatmap-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-top: 15px;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-heatmap-title {
+  text-align: center;
+  margin-bottom: 12px;
+  color: #1351b4;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-heatmap {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 6px;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.indicadores-heatmap-cell {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 10px;
+  font-weight: 500;
+  color: #333;
+  position: relative;
+  border: 1px solid #e9ecef;
+  font-family: "Rawline", Arial, sans-serif;
+}
+
+.indicadores-heatmap-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.indicadores-heatmap-cell.selected {
+  outline: 2px solid #1351b4;
+  outline-offset: 2px;
+}
+
+.indicadores-heatmap-cell .indicadores-contract-count {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Responsive design for calendar */
+@media (max-width: 768px) {
+  .indicadores-calendar-container {
+    min-height: 220px;
+  }
+
+  .indicadores-weekdays {
+    font-size: 11px;
+  }
+
+  .indicadores-weekdays div {
+    padding: 6px 2px;
+  }
+
+  .indicadores-weekdays .weekday-full {
+    display: none;
+  }
+
+  .indicadores-weekdays .weekday-short {
+    display: block;
+  }
+
+  .indicadores-day {
+    min-height: 105px;
+    max-height: 105px;
+    padding: 2px;
+    font-size: 10px;
+  }
+
+  .indicadores-day-number {
+    font-size: 10px;
+  }
+
+  .indicadores-contract {
+    font-size: 8px;
+    padding: 1px 2px;
+  }
+
+  .indicadores-heatmap {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .indicadores-heatmap-cell {
+    height: 25px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .indicadores-calendar-container {
+    min-height: 200px;
+  }
+
+  .indicadores-day {
+    min-height: 20px;
+    padding: 1px;
+  }
+
+  .indicadores-day-number {
+    font-size: 9px;
+  }
+
+  .indicadores-contract {
+    display: none; /* Hide individual contracts on very small screens */
+  }
+
+  .indicadores-heatmap {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .indicadores-heatmap-cell {
+    height: 22px;
+    font-size: 8px;
+  }
+}
+
+/* Tooltip específico para o calendário */
+.indicadores-tooltip {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #1351b4;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: "Rawline", Arial, sans-serif;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.indicadores-tooltip-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #1351b4;
+  text-align: center;
+}
+
+.indicadores-tooltip-value {
+  margin-bottom: 6px;
+}
+
+.indicadores-tooltip-number {
+  font-weight: bold;
+  color: #1351b4;
+}
+
+.indicadores-tooltip-contracts {
+  font-size: 0.9em;
+  margin-top: 8px;
+}
+
+.indicadores-tooltip-contracts div {
+  margin-bottom: 2px;
+  color: #666;
+}
+
+.indicadores-tooltip-note {
+  font-style: italic;
+  color: #888;
+  font-size: 0.85em;
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* ===================== ESTILOS PARA CARD DE TOTAL DE CONTRATOS ===================== */
+
+.indicadores-total-contratos-card {
+  background: white;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 99999;
+}
+
+.indicadores-total-contracts {
+  color: #ff8000;
+  padding: 15px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.indicadores-total-contracts span {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.indicadores-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  flex: 1;
+}
+
+.indicadores-status-item {
+  padding: 15px 10px;
+  text-align: center;
+  border-right: 1px solid #f1f1f1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.indicadores-status-item:last-child {
+  border-right: none;
+}
+
+.indicadores-status-value {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.indicadores-status-label {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.indicadores-status-value.vigentes {
+  color: #27ae60;
+}
+
+.indicadores-status-value.finalizados {
+  color: #95a5a6;
+}
+
+.indicadores-status-value.criticos {
+  color: #e74c3c;
+}
+
+.indicadores-time-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+}
+
+.indicadores-time-item {
+  text-align: center;
+  padding: 10px 5px;
+  border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.indicadores-time-item:last-child {
+  border-right: none;
+}
+
+.indicadores-time-value {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.indicadores-time-label {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.indicadores-time-value.days-120 {
+  color: #2980b9;
+}
+
+.indicadores-time-value.days-90 {
+  color: #3498db;
+}
+
+.indicadores-time-value.days-45 {
+  color: #f39c12;
+}
+
+.indicadores-time-value.others {
+  color: #7f8c8d;
+}
+
+.indicadores-card-footer {
+  padding: 10px 15px;
+  text-align: center;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+/* Erro para o card de contratos */
+.indicadores-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+  text-align: center;
+  color: #e74c3c;
+}
+
+.indicadores-error i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.indicadores-error p {
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.indicadores-error small {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+/* ===================== ESTILOS PARA CARD DE TOP FORNECEDORES ===================== */
+
+.indicadores-top-fornecedores-card {
+  background: white;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 99999;
+}
+
+.indicadores-chart-header {
+  padding: 15px 15px 10px 15px;
+  border-bottom: 1px solid #eee;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.indicadores-chart-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.indicadores-chart-title i {
+  color: #1351b4;
+  font-size: 1rem;
+}
+
+.indicadores-chart-subtitle {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  font-weight: 400;
+}
+
+.indicadores-chart-container {
+  flex: 1;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+}
+
+.indicadores-chart-footer {
+  padding: 10px 15px;
+  text-align: center;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+.indicadores-chart-footer i {
+  margin-right: 5px;
+  color: #1351b4;
+}
+
+/* Responsive para card de fornecedores */
+@media (max-width: 768px) {
+  .indicadores-chart-container {
+    min-height: 200px;
+    padding: 10px;
+  }
+
+  .indicadores-chart-title {
+    font-size: 1rem;
+  }
+
+  .indicadores-chart-subtitle {
+    font-size: 0.8rem;
+  }
+}
+
+/* Responsive para card de contratos */
+@media (max-width: 768px) {
+  #indicadores-content-visao-geral .indicadores-content {
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+  }
+
+  #indicadores-content-visao-geral .card-body-govbr {
+    height: calc(200px - 45px) !important;
+    min-height: calc(200px - 45px) !important;
+    max-height: calc(200px - 45px) !important;
+  }
+
+  #indicadores-content-visao-geral .indicadores-total-contratos-card {
+    height: 100% !important;
+    min-height: 155px !important;
+  }
+
+  .indicadores-status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    flex: 1;
+  }
+
+  .indicadores-status-item {
+    border-right: none;
+    border-bottom: 1px solid #f1f1f1;
+    padding: 12px;
+  }
+
+  .indicadores-status-item:last-child {
+    border-bottom: none;
+  }
+
+  .indicadores-time-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .indicadores-time-item:nth-child(2n) {
+    border-right: none;
+  }
+
+  .indicadores-time-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px;
+  }
+
+  .indicadores-time-item:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+}
+@media (min-width: 576px) {
+  /* Visão Geral - Mobile */
+  #indicadores-content-visao-geral .indicadores-content {
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+  }
+
+  #indicadores-content-visao-geral .card-body-govbr {
+    height: calc(200px - 45px) !important;
+    min-height: calc(200px - 45px) !important;
+    max-height: calc(200px - 45px) !important;
+  }
+
+  #indicadores-content-visao-geral .indicadores-total-contratos-card {
+    height: 100% !important;
+    min-height: 155px !important;
+  }
+  /* Altura especial para a seção de visão geral */
+  #indicadores-content-visao-geral .indicadores-content {
+    height: 280px;
+    min-height: 280px;
+    max-height: 280px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #indicadores-content-visao-geral .card-body-govbr {
+    height: calc(280px - 50px) !important;
+    min-height: calc(280px - 50px) !important;
+    max-height: calc(280px - 50px) !important;
+    overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #indicadores-content-visao-geral .indicadores-card-content {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  }
+
+  #indicadores-content-visao-geral .indicadores-total-contratos-card {
+    height: 100% !important;
+    min-height: 250px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #indicadores-content-visao-geral .indicadores-content {
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+  }
+
+  #indicadores-content-visao-geral .card-body-govbr {
+    height: calc(200px - 45px) !important;
+    min-height: calc(200px - 45px) !important;
+    max-height: calc(200px - 45px) !important;
+  }
+
+  #indicadores-content-visao-geral .indicadores-total-contratos-card {
+    height: 100% !important;
+    min-height: 155px !important;
+  }
+  .indicadores-time-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .indicadores-time-item {
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .indicadores-time-item:last-child {
+    border-bottom: none;
+  }
+
+  .indicadores-total-contracts {
+    text-align: center;
+    gap: 8px;
+  }
 }
 
 /* ===================== OVERFLOW ESPECÍFICO PARA TOOLTIPS DOS INDICADORES ===================== */

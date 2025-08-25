@@ -7,7 +7,8 @@
   background: transparent;
   min-height: 100vh;
   padding: 1rem;
-  font-family: 'Rawline', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-family: "Rawline", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
+    sans-serif;
 }
 
 .admin_dw_tesouro-page .container-fluid {
@@ -46,8 +47,8 @@
 }
 
 .admin_dw_tesouro-page .col-md-9 {
-    flex: 0 0 calc(75% - 10px);
-    max-width: calc(75% - 10px);
+  flex: 0 0 calc(75% - 10px);
+  max-width: calc(75% - 10px);
 }
 
 /* Sidebar Styles */
@@ -63,19 +64,19 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(7, 29, 65, 0.1);
-  border: 2px solid #E6ECF7;
+  border: 2px solid #e6ecf7;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 500px;
+  min-height: 200px;
   max-height: calc(100vh - 200px); /* Altura máxima fixa */
 }
 
 /* Search Box */
 .search-input {
-  border: 1px solid #E6ECF7;
+  border: 1px solid #e6ecf7;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   background: white;
@@ -84,14 +85,14 @@
 }
 
 .search-input:focus {
-  border-color: #1351B4;
+  border-color: #1351b4;
   background: white;
   outline: none;
   box-shadow: none !important;
 }
 
 .search-input::placeholder {
-  color: #6C757D;
+  color: #6c757d;
   font-style: normal;
 }
 
@@ -173,13 +174,18 @@
 }
 
 .admin-dw-tesouro-tables-list-loading-spinner::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   transform: rotate(45deg);
   animation: shimmer 2s infinite;
 }
@@ -212,12 +218,20 @@
   animation: admin_dw_tesouro_loadingDots 1.4s infinite both;
 }
 
-.admin-dw-tesouro-loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-.admin-dw-tesouro-loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-.admin-dw-tesouro-loading-dots span:nth-child(3) { animation-delay: 0s; }
+.admin-dw-tesouro-loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.admin-dw-tesouro-loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+.admin-dw-tesouro-loading-dots span:nth-child(3) {
+  animation-delay: 0s;
+}
 
 @keyframes admin_dw_tesouro_loadingDots {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0.8);
     opacity: 0.5;
   }
@@ -273,19 +287,19 @@
   border-radius: 10px;
   font-size: 12px;
   font-weight: 500;
-  color: #1E293B;
+  color: #1e293b;
 }
 
 .admin-dw-tesouro-tables-list .tabela:hover {
-  background: #F8F9FA;
-  border-color: #E6ECF7;
+  background: #f8f9fa;
+  border-color: #e6ecf7;
   color: #1351b4;
 }
 
 .admin-dw-tesouro-tables-list .tabela.active {
-  background: #1351B4;
+  background: #1351b4;
   color: white;
-  border-color: #1351B4;
+  border-color: #1351b4;
 }
 
 /* Content Card */
@@ -525,22 +539,22 @@
     min-height: auto;
     flex-wrap: wrap !important;
   }
-  
+
   .admin_dw_tesouro-page .col-md-3,
   .admin_dw_tesouro-page .col-md-9 {
     flex: 1 1 100% !important;
     max-width: 100% !important;
   }
-  
+
   .admin_dw_tesouro-page .col-md-3 {
     min-height: 300px;
     margin-bottom: 1rem;
   }
-  
+
   .admin_dw_tesouro-page .col-md-9 {
     min-height: 400px;
   }
-  
+
   .tables-sidebar,
   .table-content,
   .sidebar-card,
@@ -548,7 +562,7 @@
     min-height: 300px;
     /* REMOVIDO: max-height que limitava no mobile */
   }
-  
+
   /* REMOVIDO: limitação específica da lista no mobile */
 }
 
@@ -694,13 +708,13 @@
 
 /* Indicador visual de que há scroll horizontal */
 .table-responsive::after {
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
   top: 0;
   bottom: 0;
   width: 10px;
-  background: linear-gradient(to left, rgba(0,0,0,0.1), transparent);
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;

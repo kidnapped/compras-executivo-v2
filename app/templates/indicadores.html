@@ -1,8 +1,5 @@
-{% extends "app/base.html" %}
-
-{% block title %}Indicadores - Compras Executivo{% endblock %}
-
-{% block content %}
+{% extends "app/base.html" %} {% block title %}Indicadores - Compras Executivo{%
+endblock %} {% block content %}
 <div class="indicadores-page">
   <div class="container-fluid">
     <!-- Breadcrumb Component - Dynamic -->
@@ -30,7 +27,10 @@
               </div>
               <div class="card-body-govbr">
                 <!-- Content for Card 1 -->
-                <div class="indicadores-card-content" id="indicadoresTotalContratosContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresTotalContratosContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -46,10 +46,13 @@
               <div id="indicadores-exercicio-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 2 -->
-                <div class="indicadores-card-content" id="indicadoresExercicioContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresExercicioContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -65,10 +68,13 @@
               <div id="indicadores-vigentes-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 3 -->
-                <div class="indicadores-card-content" id="indicadoresVigentesContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresVigentesContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -76,18 +82,21 @@
           </div>
         </div>
 
-        <!-- Card 4 - Status Críticos -->
+        <!-- Card 4 - Contratos por Categoria -->
         <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
           <div class="indicadores-content">
             <div class="sidebar-card">
               <!-- Card Header Component - Dynamic -->
-              <div id="indicadores-criticos-header">
+              <div id="indicadores-categorias-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 4 -->
-                <div class="indicadores-card-content" id="indicadoresCriticosContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresCategoriasContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -104,7 +113,10 @@
     </div>
 
     <!-- Main Content -->
-    <div id="indicadores-content-analise-processos" class="indicadores-two-cards">
+    <div
+      id="indicadores-content-analise-processos"
+      class="indicadores-two-cards"
+    >
       <!-- Main Content Layout -->
       <div class="row">
         <!-- Card 1 - Contratos sem Licitação -->
@@ -115,10 +127,13 @@
               <div id="indicadores-sem-licitacao-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 1 -->
-                <div class="indicadores-card-content" id="indicadoresSemLicitacaoContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresSemLicitacaoContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -134,10 +149,13 @@
               <div id="indicadores-com-aditivos-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 2 -->
-                <div class="indicadores-card-content" id="indicadoresComAditivosContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresComAditivosContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -154,7 +172,10 @@
     </div>
 
     <!-- Main Content -->
-    <div id="indicadores-content-fornecedores-contratantes" class="indicadores-asymmetric-cards">
+    <div
+      id="indicadores-content-fornecedores-contratantes"
+      class="indicadores-asymmetric-cards"
+    >
       <!-- Main Content Layout -->
       <div class="row">
         <!-- Card 1 - Top Fornecedores -->
@@ -165,10 +186,13 @@
               <div id="indicadores-top-fornecedores-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 1 -->
-                <div class="indicadores-card-content" id="indicadoresTopFornecedoresContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresTopFornecedoresContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -184,10 +208,13 @@
               <div id="indicadores-por-area-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 2 -->
-                <div class="indicadores-card-content" id="indicadoresPorAreaContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresPorAreaContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -204,7 +231,10 @@
     </div>
 
     <!-- Main Content -->
-    <div id="indicadores-content-distribuicao-geografica" class="indicadores-asymmetric-cards">
+    <div
+      id="indicadores-content-distribuicao-geografica"
+      class="indicadores-asymmetric-cards"
+    >
       <!-- Main Content Layout -->
       <div class="row">
         <!-- Card 1 - Mapa por Estados -->
@@ -215,10 +245,13 @@
               <div id="indicadores-mapa-estados-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 1 -->
-                <div class="indicadores-card-content" id="indicadoresMapaEstadosContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresMapaEstadosContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -234,10 +267,13 @@
               <div id="indicadores-por-regiao-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 2 -->
-                <div class="indicadores-card-content" id="indicadoresPorRegiaoContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresPorRegiaoContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -254,7 +290,10 @@
     </div>
 
     <!-- Main Content -->
-    <div id="indicadores-content-analise-temporal" class="indicadores-two-cards">
+    <div
+      id="indicadores-content-analise-temporal"
+      class="indicadores-two-cards"
+    >
       <!-- Main Content Layout -->
       <div class="row">
         <!-- Card 1 - Cronograma de Vencimentos -->
@@ -265,10 +304,13 @@
               <div id="indicadores-cronograma-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 1 -->
-                <div class="indicadores-card-content" id="indicadoresCronogramaContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresCronogramaContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -284,10 +326,13 @@
               <div id="indicadores-vigencia-prazos-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 2 -->
-                <div class="indicadores-card-content" id="indicadoresVigenciaPrazosContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresVigenciaPrazosContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -304,7 +349,10 @@
     </div>
 
     <!-- Main Content -->
-    <div id="indicadores-content-metodos-eficiencia" class="indicadores-three-cards">
+    <div
+      id="indicadores-content-metodos-eficiencia"
+      class="indicadores-three-cards"
+    >
       <!-- Main Content Layout -->
       <div class="row">
         <!-- Card 1 - Contratos com Cláusulas -->
@@ -315,10 +363,13 @@
               <div id="indicadores-clausulas-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 1 -->
-                <div class="indicadores-card-content" id="indicadoresClausulasContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresClausulasContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -334,10 +385,13 @@
               <div id="indicadores-modalidades-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 2 -->
-                <div class="indicadores-card-content" id="indicadoresModalidadesContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresModalidadesContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -353,10 +407,13 @@
               <div id="indicadores-eficiencia-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 3 -->
-                <div class="indicadores-card-content" id="indicadoresEficienciaContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresEficienciaContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -373,7 +430,10 @@
     </div>
 
     <!-- Main Content -->
-    <div id="indicadores-content-analise-financeira" class="indicadores-two-cards">
+    <div
+      id="indicadores-content-analise-financeira"
+      class="indicadores-two-cards"
+    >
       <!-- Main Content Layout -->
       <div class="row">
         <!-- Card 1 - Valores por Categoria -->
@@ -384,10 +444,13 @@
               <div id="indicadores-valores-categoria-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 1 -->
-                <div class="indicadores-card-content" id="indicadoresValoresCategoriaContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresValoresCategoriaContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -403,10 +466,13 @@
               <div id="indicadores-evolucao-financeira-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 2 -->
-                <div class="indicadores-card-content" id="indicadoresEvolucaoFinanceiraContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresEvolucaoFinanceiraContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -423,7 +489,10 @@
     </div>
 
     <!-- Main Content -->
-    <div id="indicadores-content-insights-executivos" class="indicadores-three-cards">
+    <div
+      id="indicadores-content-insights-executivos"
+      class="indicadores-three-cards"
+    >
       <!-- Main Content Layout -->
       <div class="row">
         <!-- Card 1 - Alertas e Riscos -->
@@ -434,10 +503,13 @@
               <div id="indicadores-alertas-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 1 -->
-                <div class="indicadores-card-content" id="indicadoresAlertasContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresAlertasContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -453,10 +525,13 @@
               <div id="indicadores-oportunidades-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 2 -->
-                <div class="indicadores-card-content" id="indicadoresOportunidadesContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresOportunidadesContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
@@ -472,10 +547,13 @@
               <div id="indicadores-acoes-header">
                 <!-- Card header será carregado dinamicamente via JavaScript -->
               </div>
-              
+
               <div class="card-body-govbr">
                 <!-- Content for Card 3 -->
-                <div class="indicadores-card-content" id="indicadoresAcoesContent">
+                <div
+                  class="indicadores-card-content"
+                  id="indicadoresAcoesContent"
+                >
                   <!-- Conteúdo será carregado dinamicamente -->
                 </div>
               </div>
