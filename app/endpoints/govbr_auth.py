@@ -285,7 +285,7 @@ async def processar_login_govbr(request: Request, token_request: TokenRequest):
         return {
             "success": True,
             "user_info": user_info,
-            "redirect_url": "/inicio"
+            "redirect_url": "/minha-conta"
         }
         
     except HTTPException:

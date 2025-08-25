@@ -16,7 +16,7 @@ login_attempts = {}
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_form(request: Request):
-    next_url = request.query_params.get("next") or "/inicio"
+    next_url = request.query_params.get("next") or "/minha-conta"
     return templates.TemplateResponse("login.html", {
         "request": request,
         "next": next_url,
@@ -86,7 +86,7 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
 
         login_attempts[client_ip] = []
 
-        next_url = request.query_params.get("next") or "/inicio"
+        next_url = request.query_params.get("next") or "/minha-conta"
         print(f"🔁 REDIRECIONANDO PARA /login/success?next={next_url}")
         return RedirectResponse(url=f"/login/success?next={next_url}", status_code=status.HTTP_303_SEE_OTHER)
 
@@ -97,7 +97,7 @@ async def login(request: Request, cpf: str = Form(...), senha: str = Form(...)):
     return templates.TemplateResponse("login.html", {
         "request": request,
         "error": login_result.error or "CPF ou senha incorretos.",
-        "next": request.query_params.get("next") or "/inicio",
+        "next": request.query_params.get("next") or "/minha-conta",
         "template_name": "login"
     })
 
@@ -111,7 +111,7 @@ async def inicio(request: Request):
     # Check if user is logged in
     cpf = request.session.get("cpf")
     if not cpf:
-        return RedirectResponse(url="/login?next=/inicio")
+        return RedirectResponse(url="/login?next=/minha-conta")
     
     # Criar contexto
     context = {
@@ -180,7 +180,7 @@ async def login_success(request: Request):
     if not cpf:
         return RedirectResponse(url="/login")
 
-    next_url = request.query_params.get("next") or "/inicio"
+    next_url = request.query_params.get("next") or "/minha-conta"
 
     # Aqui futuramente colocar regras com base no CPF, perfil, etc.
     return RedirectResponse(url=next_url)

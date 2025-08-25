@@ -1656,7 +1656,7 @@ export default {
     // Generate UASG display HTML conditionally
     const uasgDisplayHtml = showUasgInfo
       ? `
-      <i class="fas fa-home" aria-hidden="true" style="height: 20px; color: #ccc; font-size: 16px;"></i>
+      <i class="fas fa-home" aria-hidden="true" style="height: 18px; color: #ccc; font-size: 14px;"></i>
       <span style="font-size: 16px;color: #FF9933; white-space: nowrap;" 
         data-tooltip-text="UASG do ${contract.uasg_nome}"
         data-tooltip-place="bottom"
@@ -1680,9 +1680,9 @@ export default {
           </div>  
             <div style="flex: 1;">
               <div style="display: flex; align-items: flex-start; margin-bottom: 5px;">
-                <i class="fas fa-building" style="width: 20px; height: 20px; font-size: 16px; color: #666; display: flex; align-items: center; justify-content: center;"></i>
+                <i class="fas fa-building" style="width: 18px; height: 18px; font-size: 12px; color: #666; display: flex; align-items: center; justify-content: center;"></i>
                 <div style="padding-left: 6px;">
-                  <span style="color: #929ab5; font-size: 14px; text-transform: uppercase;" data-tooltip-text="Fornecedor do contrato" data-tooltip-place="bottom" data-tooltip-type="info"><b>${
+                  <span style="color: #929ab5; font-size: 12px; text-transform: uppercase;" data-tooltip-text="Fornecedor do contrato" data-tooltip-place="bottom" data-tooltip-type="info"><b>${
                     contract.fornecedor_nome || "N/A"
                   }</b></span><br />
                   <span style="color: #666; cursor: pointer;" onclick="detalhesFornecedor('${
@@ -1690,6 +1690,19 @@ export default {
                   }');" data-tooltip-text="Fornecedor do contrato" data-tooltip-place="bottom" data-tooltip-type="info">${
       contract.fornecedor_cnpj || "N/A"
     }</span>
+                  
+                  <div style="margin: 4px 0px 10px -27px; display: flex; align-items: center; gap: 0px;">
+                    <i class="fas fa-clipboard-list" style="font-size: 12px; color: #666;"></i>
+                    <span 
+                      class="processo-filter"
+                      style="color: #666; cursor: pointer; font-size: 14px;" 
+                      tabindex="0"
+                      data-processo="${contract.processo || ""}"
+                      data-tooltip-text="Número do processo"
+                      data-tooltip-place="bottom"
+                      data-tooltip-type="info"
+                    >${contract.processo || "N/A"}</span>
+                  </div>
                 </div>
               </div>
               
@@ -1711,7 +1724,7 @@ export default {
                 } <span style="color: #000">/</span> ${contract.ano}</span>
 
                 <i class="fas fa-heart" 
-                   style="cursor: pointer; margin-left: 20px; font-size: 18px; color: ${contract.favorite_icon === 'red' ? '#e52207' : '#999'};" 
+                   style="cursor: pointer; margin-left: 10px; font-size: 14px; color: ${contract.favorite_icon === 'red' ? '#e52207' : '#999'};" 
                    data-tooltip-text="${contract.favorite_title}"
                    data-tooltip-place="bottom"
                    data-tooltip-type="info"
@@ -1721,12 +1734,12 @@ export default {
                 <i class="fas fa-university encontro-action" 
                    data-contract-id="${contract.id}" 
                    data-empenhos-count="${contract.total_empenhos || 0}" 
-                   style="cursor: pointer; margin-left: 10px; font-size: 18px; color: #666;" 
+                   style="cursor: pointer; margin-left: 10px; font-size: 14px; color: #666;" 
                    data-tooltip-text="Encontro de Contas"
                    data-tooltip-place="bottom"
                    data-tooltip-type="info"></i>
 
-    <div class="aditivo-action" style="position: relative; display: inline-block; padding-top: 5px; margin-left: -6px;" 
+    <div class="aditivo-action" style="position: relative; display: inline-block; margin-left: -6px;" 
       data-contract-id="${contract.id}"
       data-contract-numero="${contract.numero}"
       data-contract-ano="${contract.ano}"
@@ -1784,7 +1797,7 @@ export default {
     data-tooltip-place="bottom"
     data-tooltip-type="info">0</div>
 </div>
-      <div style="position: relative; display: inline-block; padding-top: 5px; margin-left: -10px;">
+      <div style="position: relative; display: inline-block; margin-left: -6px;">
   <svg
     width="30"
     height="30"
@@ -1814,18 +1827,6 @@ export default {
     data-tooltip-type="info"
     >${this.getContractYearsDisplay(contract.vigencia_inicio)}</div>
 </div>              
-
-                <i class="fas fa-clipboard-list" style="margin-left: 10px; font-size: 18px; color: #666;"></i>
-
-                <span 
-                  class="processo-filter"
-                  style="color: #666; cursor: pointer; margin-left: 2px;" 
-                  tabindex="0"
-                  data-processo="${contract.processo || ""}"
-                  data-tooltip-text="Número do processo"
-                  data-tooltip-place="bottom"
-                  data-tooltip-type="info"
-                >${contract.processo || "N/A"}</span>
               </div>
 
               
@@ -2158,62 +2159,62 @@ export default {
     // Unified function to get contract icon and name based on tipo_id
     const contratoTypes = {
       66: {
-        icon: '<i class="fas fa-handshake" style="font-size: 18px; color: #666;"></i>',
+        icon: '<i class="fas fa-handshake" style="font-size: 14px; color: #666;"></i>',
         name: "Termo de Adesão",
       },
       175: {
-        icon: '<i class="fas fa-file-signature" style="font-size: 18px; color: #666;"></i>',
+        icon: '<i class="fas fa-file-signature" style="font-size: 14px; color: #666;"></i>',
         name: "Termo de Compromisso",
       },
       61: {
-        icon: '<i class="fas fa-certificate" style="font-size: 18px; color: #666;"></i>',
+        icon: '<i class="fas fa-certificate" style="font-size: 14px; color: #666;"></i>',
         name: "Credenciamento",
       },
       62: { 
-        icon: '<i class="fas fa-key" style="font-size: 18px; color: #666;"></i>', 
+        icon: '<i class="fas fa-key" style="font-size: 14px; color: #666;"></i>', 
         name: "Comodato" 
       },
       151: { 
-        icon: '<i class="fas fa-receipt" style="font-size: 18px; color: #666;"></i>', 
+        icon: '<i class="fas fa-receipt" style="font-size: 14px; color: #666;"></i>', 
         name: "Empenho" 
       },
       60: { 
-        icon: '<i class="fas fa-file-contract" style="font-size: 18px; color: #666;"></i>', 
+        icon: '<i class="fas fa-file-contract" style="font-size: 14px; color: #666;"></i>', 
         name: "Contrato" 
       },
       164: { 
-        icon: '<i class="fas fa-ellipsis-h" style="font-size: 18px; color: #666;"></i>', 
+        icon: '<i class="fas fa-ellipsis-h" style="font-size: 14px; color: #666;"></i>', 
         name: "Outros" 
       },
       174: {
-        icon: '<i class="fas fa-users-cog" style="font-size: 18px; color: #666;"></i>',
+        icon: '<i class="fas fa-users-cog" style="font-size: 14px; color: #666;"></i>',
         name: "Acordo de Cooperação Técnica (ACT)",
       },
       67: { 
-        icon: '<i class="fas fa-handshake" style="font-size: 18px; color: #666;"></i>', 
+        icon: '<i class="fas fa-handshake" style="font-size: 14px; color: #666;"></i>', 
         name: "Convênio" 
       },
       64: { 
-        icon: '<i class="fas fa-award" style="font-size: 18px; color: #666;"></i>', 
+        icon: '<i class="fas fa-award" style="font-size: 14px; color: #666;"></i>', 
         name: "Concessão" 
       },
       173: {
-        icon: '<i class="fas fa-exchange-alt" style="font-size: 18px; color: #666;"></i>',
+        icon: '<i class="fas fa-exchange-alt" style="font-size: 14px; color: #666;"></i>',
         name: "Termo de Execução Descentralizada (TED)",
       },
       311: {
-        icon: '<i class="fas fa-envelope" style="font-size: 18px; color: #666;"></i>',
+        icon: '<i class="fas fa-envelope" style="font-size: 14px; color: #666;"></i>',
         name: "Carta Contrato",
       },
       63: {
-        icon: '<i class="fas fa-home" style="font-size: 18px; color: #666;"></i>',
+        icon: '<i class="fas fa-home" style="font-size: 14px; color: #666;"></i>',
         name: "Arrendamento",
       },
     };
 
     return (
       contratoTypes[tipo_id] || {
-        icon: '<i class="fas fa-file" style="font-size: 18px; color: #666;"></i>',
+        icon: '<i class="fas fa-file" style="font-size: 14px; color: #666;"></i>',
         name: "Tipo não identificado",
       }
     );
@@ -2395,7 +2396,7 @@ export default {
       App.breadcrumb.breadcrumb_createDynamic
     ) {
       const breadcrumbItems = [
-        { title: "Página Inicial", icon: "fas fa-home", url: "/inicio" },
+        { title: "Página Inicial", icon: "fas fa-home", url: "/minha-conta" },
         { title: "Dashboard", icon: "fas fa-tachometer-alt", url: "" },
       ];
 

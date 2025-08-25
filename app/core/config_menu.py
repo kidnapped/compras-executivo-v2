@@ -2,7 +2,6 @@
 
 # Menu completo com todos os itens disponíveis
 MENU_ITEMS = {
-    "inicio": {"texto": "Início", "url": "/inicio", "icone": "fas fa-home"},
     "contratos": {"texto": "Contratos", "url": "/dashboard", "icone": "fas fa-chart-line"},
     "filtro_uasg": {"texto": "Filtro UASG", "url": "/uasg-filter", "icone": "fas fa-filter"},
     "indicadores_old": {"texto": "Indicadores Old", "url": "/kpis", "icone": "fas fa-tachometer-alt"},
@@ -18,7 +17,6 @@ MENU_ITEMS = {
 # Configuração de menus por scope de usuário
 MENU_CONFIG = {
     "root": [
-        "inicio",
         "contratos", 
         "filtro_uasg",
         "indicadores_old",
@@ -29,7 +27,6 @@ MENU_CONFIG = {
         "dev_ops",
     ],
     "admin": [
-        "inicio",
         "contratos",
         "filtro_uasg", 
         "indicadores",
@@ -40,7 +37,6 @@ MENU_CONFIG = {
         "sair"
     ],
     "global": [
-        "inicio",
         "contratos",
         "filtro_uasg",
         "indicadores",
@@ -50,7 +46,6 @@ MENU_CONFIG = {
         "sair"
     ],
     "orgao": [
-        "inicio",
         "contratos",
         "filtro_uasg",
         "indicadores",
@@ -60,7 +55,6 @@ MENU_CONFIG = {
         "sair"
     ],
     "unidade": [
-        "inicio",
         "contratos",
         "indicadores",
         "minha_conta",

@@ -202,7 +202,7 @@ export default {
       App.breadcrumb.breadcrumb_createDynamic
     ) {
       const breadcrumbItems = [
-        { title: "Página Inicial", icon: "fas fa-home", url: "/inicio" },
+        { title: "Página Inicial", icon: "fas fa-home", url: "/minha-conta" },
         { title: "Indicadores", icon: "fas fa-tachometer-alt", url: "" },
       ];
 

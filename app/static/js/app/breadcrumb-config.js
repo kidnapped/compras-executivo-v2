@@ -7,35 +7,35 @@
 window.BreadcrumbPatterns = {
     // Home pattern
     HOME: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' }
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' }
     ],
 
     // Dashboard pattern
     DASHBOARD: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Dashboard', icon: 'fas fa-tachometer-alt', url: '' }
     ],
 
     // Admin patterns
     ADMIN_ROOT: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Administração', icon: 'fas fa-cog', url: '' }
     ],
 
     ADMIN_USERS: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Administração', icon: 'fas fa-cog', url: '/admin' },
         { title: 'Usuários', icon: 'fas fa-users', url: '' }
     ],
 
     ADMIN_ETL: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Administração', icon: 'fas fa-cog', url: '/admin' },
         { title: 'ETL', icon: 'fas fa-database', url: '' }
     ],
 
     ADMIN_DW_TESOURO: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Administração', icon: 'fas fa-cog', url: '/admin' },
         { title: 'ETL', icon: 'fas fa-database', url: '/admin/etl' },
         { title: 'DW Tesouro', icon: 'fas fa-chart-bar', url: '' }
@@ -43,24 +43,24 @@ window.BreadcrumbPatterns = {
 
     // Reports patterns
     REPORTS_ROOT: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Relatórios', icon: 'fas fa-chart-line', url: '' }
     ],
 
     REPORTS_FINANCIAL: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Relatórios', icon: 'fas fa-chart-line', url: '/relatorios' },
         { title: 'Financeiro', icon: 'fas fa-dollar-sign', url: '' }
     ],
 
     // Contracts patterns
     CONTRACTS_ROOT: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Contratos', icon: 'fas fa-file-contract', url: '' }
     ],
 
     CONTRACTS_DETAIL: [
-        { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' },
+        { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' },
         { title: 'Contratos', icon: 'fas fa-file-contract', url: '/contratos' },
         { title: 'Detalhes', icon: 'fas fa-info-circle', url: '' }
     ]
@@ -135,7 +135,7 @@ window.BreadcrumbUtils = {
         };
 
         const breadcrumb = [
-            { title: 'Página Inicial', icon: 'fas fa-home', url: '/inicio' }
+            { title: 'Página Inicial', icon: 'fas fa-home', url: '/minha-conta' }
         ];
 
         if (section && sectionConfig[section]) {

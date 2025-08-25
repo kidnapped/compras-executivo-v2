@@ -209,13 +209,13 @@ export default {
         if (currentPath === itemPath) {
           isActive = true;
         }
-        // 2. URL raiz vs /inicio
-        else if ((currentPath === '/' && itemPath === '/inicio') || 
-                 (currentPath === '/inicio' && itemPath === '/')) {
+        // 2. URL raiz vs /minha-conta
+        else if ((currentPath === '/' && itemPath === '/minha-conta') || 
+                 (currentPath === '/minha-conta' && itemPath === '/')) {
           isActive = true;
         }
         // 3. URL contém o caminho do item (para subpáginas)
-        else if (itemPath !== '/' && itemPath !== '/inicio' && currentPath.startsWith(itemPath)) {
+        else if (itemPath !== '/' && itemPath !== '/minha-conta' && currentPath.startsWith(itemPath)) {
           // Verifica se é realmente uma subpágina (próximo caractere é / ou fim da string)
           const nextChar = currentPath.charAt(itemPath.length);
           if (nextChar === '/' || nextChar === '' || nextChar === '?' || nextChar === '#') {
@@ -342,13 +342,13 @@ export default {
       if (currentPath === itemPath) {
         isActive = true;
       }
-      // 2. URL raiz vs /inicio
-      else if ((currentPath === '/' && itemPath === '/inicio') || 
-               (currentPath === '/inicio' && itemPath === '/')) {
+      // 2. URL raiz vs /minha-conta
+      else if ((currentPath === '/' && itemPath === '/minha-conta') || 
+               (currentPath === '/minha-conta' && itemPath === '/')) {
         isActive = true;
       }
       // 3. URL contém o caminho do item (para subpáginas)
-      else if (itemPath !== '/' && itemPath !== '/inicio' && currentPath.startsWith(itemPath)) {
+      else if (itemPath !== '/' && itemPath !== '/minha-conta' && currentPath.startsWith(itemPath)) {
         // Verifica se é realmente uma subpágina (próximo caractere é / ou fim da string)
         const nextChar = currentPath.charAt(itemPath.length);
         if (nextChar === '/' || nextChar === '' || nextChar === '?' || nextChar === '#') {
