@@ -1,6 +1,6 @@
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import RedirectResponse, Response
+from starlette.responses import RedirectResponse, Response, JSONResponse
 from starlette.templating import Jinja2Templates
 from app.core.config import settings
 import logging
@@ -35,9 +35,27 @@ class AuthSessionMiddleware(BaseHTTPMiddleware):
 
             session = request.session
             logger.debug("🔐 Sessão atual: %s", session)
+            
+            # Debug logging
+            cpf = session.get("cpf")
 
-            if not session.get("cpf"):
-                return RedirectResponse(url="/login")
+            if not cpf:
+                # Check if this is an AJAX/API request
+                is_ajax = (
+                    request.headers.get("X-Requested-With") == "XMLHttpRequest" or
+                    request.headers.get("Accept", "").startswith("application/json") or
+                    "application/json" in request.headers.get("Content-Type", "") or
+                    path.startswith("/api/") or
+                    (path.startswith("/dashboard/contrato/") and path.endswith("/favorito") and request.method == "POST")
+                )
+                
+                if is_ajax:
+                    return JSONResponse(
+                        content={"error": "Authentication required", "detail": "Sessão expirada"}, 
+                        status_code=401
+                    )
+                else:
+                    return RedirectResponse(url="/login")
 
         if settings.USE_GOVBR_LOGIN and path == "/login":
             response = templates.TemplateResponse("login_gov.html", {"request": request, "settings": settings})

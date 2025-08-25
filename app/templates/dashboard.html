@@ -8,6 +8,11 @@ endblock %} {% block content %}
       <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
     </div>
 
+    <!-- Filter Component - Dynamic -->
+    <div id="dashboard-filter-dynamic-container" style="margin-top:-6px;">
+      <!-- Filter será carregado dinamicamente via JavaScript -->
+    </div>
+
     <div class="row row-tight">
       <!-- CONTRATOS E RENOVAÇÕES -->
       <div class="col-12 col-md-3" id="card-contratos-container">
@@ -33,48 +38,72 @@ endblock %} {% block content %}
 
       <!-- CONTRATOS POR EXERCÍCIO -->
       <div class="col-12 col-md-3" id="card-contratos-exercicio-container">
-        <div
-          class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-          style="min-height: 180px"
-        >
-          <div
-            class="br-loading medium"
-            role="progressbar"
-            aria-label="carregando gráfico"
-          ></div>
+        <div class="sidebar-card">
+          <!-- Card Header Component - Dynamic -->
+          <div id="dashboard-contratos-exercicio-header">
+            <!-- Card header será carregado dinamicamente via JavaScript -->
+          </div>
+          <div class="card-body-govbr">
+            <!-- Content for Card -->
+            <div class="dashboard-card-content" id="dashboardContratosExercicioContent">
+              <div class="d-flex justify-content-center align-items-center">
+                <div
+                  class="br-loading medium"
+                  role="progressbar"
+                  aria-label="carregando gráfico"
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- REPRESENTAÇÃO ANUAL DE VALORES -->
       <div class="col-12 col-md-3" id="card-representacao-anual-valores">
-        <div
-          class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-          style="min-height: 180px"
-        >
-          <div
-            class="br-loading medium"
-            role="progressbar"
-            aria-label="carregando gráfico"
-          ></div>
+        <div class="sidebar-card">
+          <!-- Card Header Component - Dynamic -->
+          <div id="dashboard-representacao-anual-header">
+            <!-- Card header será carregado dinamicamente via JavaScript -->
+          </div>
+          <div class="card-body-govbr">
+            <!-- Content for Card -->
+            <div class="dashboard-card-content" id="dashboardRepresentacaoAnualContent">
+              <div class="d-flex justify-content-center align-items-center">
+                <div
+                  class="br-loading medium"
+                  role="progressbar"
+                  aria-label="carregando gráfico"
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- PRÓXIMAS ATIVIDADES -->
       <div class="col-12 col-md-3" id="card-proximas-atividades">
-        <div
-          class="br-card h-100 card-contratos d-flex justify-content-center align-items-center"
-          style="min-height: 180px"
-        >
-          <div
-            class="br-loading medium"
-            role="progressbar"
-            aria-label="carregando gráfico"
-          ></div>
+        <div class="sidebar-card">
+          <!-- Card Header Component - Dynamic -->
+          <div id="dashboard-proximas-atividades-header">
+            <!-- Card header será carregado dinamicamente via JavaScript -->
+          </div>
+          <div class="card-body-govbr">
+            <!-- Content for Card -->
+            <div class="dashboard-card-content" id="dashboardProximasAtividadesContent">
+              <div class="d-flex justify-content-center align-items-center">
+                <div
+                  class="br-loading medium"
+                  role="progressbar"
+                  aria-label="carregando atividades"
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="row row-tight" style="margin-top: -18px">
+    <div class="row row-tight" style="margin-top: -4px">
       <div class="col-12">
         <!-- GRID CONTRATOS -->
         <div class="br-card card-contratos-grid">
@@ -227,10 +256,6 @@ endblock %} {% block content %}
                 </div>
               </div>
             </div>
-          </div>
-          <!-- Filter Component - Dynamic -->
-          <div id="dashboard-filter-dynamic-container">
-            <!-- Filter será carregado dinamicamente via JavaScript -->
           </div>
           <div
             class="dashboard-table-container"

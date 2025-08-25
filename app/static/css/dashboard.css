@@ -40,9 +40,13 @@
 
 /* Widget próximas atividades */
 .widget-atividades-box {
-  border-radius: 4px;
+  height: 100%;
   font-size: 12px;
   background: #fff;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
 .widget-atividades-header {
@@ -117,8 +121,11 @@
 }
 
 .widget-atividades-lista {
-  max-height: 150px;
+  flex: 1;
   overflow-y: auto;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Custom scrollbar for Próximas Atividades */
@@ -345,10 +352,13 @@ input[type="number"] {
 /* ===================== NEW DASHBOARD CARD LAYOUT ===================== */
 
 /* Dashboard card container with new layout */
-#card-contratos-container .sidebar-card {
-  height: 180px !important;
-  min-height: 180px !important;
-  max-height: 180px !important;
+#card-contratos-container .sidebar-card,
+#card-contratos-exercicio-container .sidebar-card,
+#card-representacao-anual-valores .sidebar-card,
+#card-proximas-atividades .sidebar-card {
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -361,10 +371,13 @@ input[type="number"] {
 }
 
 /* Card body for new layout */
-#card-contratos-container .card-body-govbr {
-  height: calc(180px - 48px) !important;
-  min-height: calc(180px - 48px) !important;
-  max-height: calc(180px - 48px) !important;
+#card-contratos-container .card-body-govbr,
+#card-contratos-exercicio-container .card-body-govbr,
+#card-representacao-anual-valores .card-body-govbr,
+#card-proximas-atividades .card-body-govbr {
+  height: calc(220px - 48px) !important;
+  min-height: calc(220px - 48px) !important;
+  max-height: calc(220px - 48px) !important;
   overflow: hidden;
   flex: 1;
   display: flex;
@@ -372,7 +385,10 @@ input[type="number"] {
 }
 
 /* Dashboard card content */
-#card-contratos-container .dashboard-card-content {
+#card-contratos-container .dashboard-card-content,
+#card-contratos-exercicio-container .dashboard-card-content,
+#card-representacao-anual-valores .dashboard-card-content,
+#card-proximas-atividades .dashboard-card-content {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -381,7 +397,10 @@ input[type="number"] {
 }
 
 /* Ensure the existing card styles work with new layout */
-#card-contratos-container .card-content {
+#card-contratos-container .card-content,
+#card-contratos-exercicio-container .card-content,
+#card-representacao-anual-valores .card-content,
+#card-proximas-atividades .card-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -390,9 +409,9 @@ input[type="number"] {
   gap: 0px;
 }
 
-/* Apply card-contratos styles to new structure */
+/* Apply card-contratos specific styles only to contratos container */
 #card-contratos-container .valor-principal {
-  margin: 0px 0px 4px 20px !important;
+  margin: -10px 0px 10px 20px !important;
   font-size: 30px;
   color: #ff8000;
   text-align: left;
@@ -432,7 +451,7 @@ input[type="number"] {
   height: 32px;
 }
 
-/* Apply dashboard filter styles to new structure */
+/* Apply dashboard filter styles only to contratos container (which uses clickable filters) */
 #card-contratos-container .dashboard-card-filter.clickable {
   cursor: pointer;
   border-radius: 6px;
@@ -471,13 +490,19 @@ input[type="number"] {
 
 /* Responsive adjustments */
 @media (max-width: 991px) {
-  #card-contratos-container .sidebar-card {
+  #card-contratos-container .sidebar-card,
+  #card-contratos-exercicio-container .sidebar-card,
+  #card-representacao-anual-valores .sidebar-card,
+  #card-proximas-atividades .sidebar-card {
     height: auto !important;
     min-height: 160px !important;
     max-height: none !important;
   }
 
-  #card-contratos-container .card-body-govbr {
+  #card-contratos-container .card-body-govbr,
+  #card-contratos-exercicio-container .card-body-govbr,
+  #card-representacao-anual-valores .card-body-govbr,
+  #card-proximas-atividades .card-body-govbr {
     height: auto !important;
     min-height: calc(160px - 50px) !important;
     max-height: none !important;

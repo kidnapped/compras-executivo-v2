@@ -183,36 +183,43 @@ export default {
   },
 
   async dashboardContratosPorExercicioCard() {
-    const container = document.getElementById(
-      "card-contratos-exercicio-container"
+    const contentContainer = document.getElementById(
+      "dashboardContratosExercicioContent"
     );
-    if (!container) return;
+    if (!contentContainer) return;
 
     try {
       const res = await fetch("/dashboard/contratos-por-exercicio");
       if (!res.ok) throw new Error("Erro ao carregar");
       const data = await res.json();
 
-      const novoCard = Card.cardGrafico({
-        id: "grafico-contratos-por-exercicio",
-        titulo: "Contratos por exercício",
-        subtitulo: "Histórico de contratos por ano",
-        icone: "/static/images/doc2.png",
-      });
+      // Create chart HTML content for the new card structure
+      const chartHtml = `
+        <div id="grafico-contratos-por-exercicio" style="width: 100%; height: 100%; min-height: 172px;"></div>
+      `;
 
-      const wrapper = document.createElement("div");
-      wrapper.innerHTML = novoCard.trim();
-      const novoElemento = wrapper.firstChild;
-      const parent = container.parentElement;
-      if (parent) parent.replaceChild(novoElemento, container);
+      // Update the content area
+      contentContainer.innerHTML = chartHtml;
+
+      // Wait for DOM update and ensure container has dimensions
+      await new Promise(resolve => setTimeout(resolve, 50));
 
       const chartDom = document.getElementById(
         "grafico-contratos-por-exercicio"
       );
       if (!chartDom) return;
 
+      // Force container dimensions if not set
+      const containerRect = contentContainer.getBoundingClientRect();
+      if (containerRect.height > 0) {
+        chartDom.style.height = `${containerRect.height}px`;
+        chartDom.style.width = `${containerRect.width}px`;
+      }
+
       const echarts = await getEcharts();
       const chart = echarts.init(chartDom);
+      
+      // Set option with proper sizing
       chart.setOption({
         tooltip: {
           trigger: "axis",
@@ -224,7 +231,13 @@ export default {
           formatter: (p) =>
             `${p[0].axisValue}<br/><strong>${p[0].data} Contratos</strong>`,
         },
-        grid: { right: 20 },
+        grid: { 
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: 40,
+          containLabel: true
+        },
         xAxis: {
           type: "category",
           data: data.anos,
@@ -248,6 +261,17 @@ export default {
         ],
       });
 
+      // Force resize to ensure proper dimensions
+      setTimeout(() => {
+        chart.resize();
+      }, 100);
+
+      // Add global resize listener
+      const resizeObserver = new ResizeObserver(() => {
+        chart.resize();
+      });
+      resizeObserver.observe(contentContainer);
+
       chart.off && chart.off("click");
       chart.on("click", (params) => {
         if (params.componentType === "series" && params.seriesType === "bar") {
@@ -265,40 +289,48 @@ export default {
       });
     } catch (err) {
       console.error("Erro ao carregar gráfico:", err);
+      contentContainer.innerHTML = '<div class="text-danger">Erro ao carregar gráfico</div>';
     }
   },
 
   async dashboardRepresentacaoAnualValores() {
-    const container = document.getElementById(
-      "card-representacao-anual-valores"
+    const contentContainer = document.getElementById(
+      "dashboardRepresentacaoAnualContent"
     );
-    if (!container) return;
+    if (!contentContainer) return;
 
     try {
       const res = await fetch("/dashboard/valores-por-exercicio");
       if (!res.ok) throw new Error("Erro ao carregar");
       const data = await res.json();
 
-      const novoCard = Card.cardGrafico({
-        id: "grafico-representacao-anual-valores",
-        titulo: "Valores por exercício",
-        subtitulo: "Valores de contratos nos últimos 6 anos",
-        icone: "/static/images/clock.png",
-      });
+      // Create chart HTML content for the new card structure
+      const chartHtml = `
+        <div id="grafico-representacao-anual-valores" style="width: 100%; height: 100%; min-height: 172px;"></div>
+      `;
 
-      const wrapper = document.createElement("div");
-      wrapper.innerHTML = novoCard.trim();
-      const novoElemento = wrapper.firstChild;
-      const parent = container.parentElement;
-      if (parent) parent.replaceChild(novoElemento, container);
+      // Update the content area
+      contentContainer.innerHTML = chartHtml;
+
+      // Wait for DOM update and ensure container has dimensions
+      await new Promise(resolve => setTimeout(resolve, 50));
 
       const chartDom = document.getElementById(
         "grafico-representacao-anual-valores"
       );
       if (!chartDom) return;
 
+      // Force container dimensions if not set
+      const containerRect = contentContainer.getBoundingClientRect();
+      if (containerRect.height > 0) {
+        chartDom.style.height = `${containerRect.height}px`;
+        chartDom.style.width = `${containerRect.width}px`;
+      }
+
       const echarts = await getEcharts();
       const chart = echarts.init(chartDom);
+      
+      // Set option with proper sizing
       chart.setOption({
         tooltip: {
           trigger: "axis",
@@ -312,7 +344,13 @@ export default {
               p[0].axisValue
             }<br/><strong>R$ ${p[0].data.toLocaleString()}</strong>`,
         },
-        grid: { right: 20 },
+        grid: { 
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: 40,
+          containLabel: true
+        },
         xAxis: {
           type: "category",
           data: data.anos,
@@ -349,14 +387,27 @@ export default {
           },
         ],
       });
+
+      // Force resize to ensure proper dimensions
+      setTimeout(() => {
+        chart.resize();
+      }, 100);
+
+      // Add global resize listener
+      const resizeObserver = new ResizeObserver(() => {
+        chart.resize();
+      });
+      resizeObserver.observe(contentContainer);
+
     } catch (err) {
       console.error("Erro ao carregar gráfico de valores:", err);
+      contentContainer.innerHTML = '<div class="text-danger">Erro ao carregar gráfico</div>';
     }
   },
 
   dashboardProximasAtividades() {
-    const container = document.getElementById("card-proximas-atividades");
-    if (!container) return;
+    const contentContainer = document.getElementById("dashboardProximasAtividadesContent");
+    if (!contentContainer) return;
 
     fetch("/dashboard/atividades")
       .then((res) => res.json())
@@ -397,16 +448,10 @@ export default {
           })
           .join("");
 
-        container.innerHTML = `
-          <div class="br-card h-100 card-contratos">
-            <div class="card-content" style="padding: 0px; height: 186px !important;">
-              <div class="widget-atividades-box">
-                <div class="widget-atividades-header">
-                  <i class="fas fa-chart-line"></i> Próximas atividades
-                </div>
-                <div class="widget-atividades-lista">${conteudo}</div>
-              </div>
-            </div>
+        // Update the content area with the new card structure
+        contentContainer.innerHTML = `
+          <div class="widget-atividades-box">
+            <div class="widget-atividades-lista">${conteudo}</div>
           </div>`;
 
         // Add click event listeners to contract links
@@ -414,8 +459,7 @@ export default {
       })
       .catch((err) => {
         console.error("Erro ao carregar próximas atividades:", err);
-        container.innerHTML =
-          '<div class="text-danger">Erro ao carregar atividades</div>';
+        contentContainer.innerHTML = '<div class="text-danger">Erro ao carregar atividades</div>';
       });
   },
 
@@ -459,7 +503,6 @@ export default {
     dias90 = 0,
     dias45 = 0,
     outros = 0,
-    icone = "/static/images/doc2.png",
   }) {
     // Helper to check if filter is active using new filter system
     const isActive = (filter) => {
@@ -977,6 +1020,39 @@ export default {
           actions: [], // No buttons for cleaner layout
         },
         "dashboard-contratos-header"
+      );
+
+      // Card 2 - Contratos por Exercício
+      App.card_header.card_header_createDynamic(
+        {
+          title: "Contratos por Exercício",
+          subtitle: "Distribuição de contratos por ano",
+          icon: "fas fa-chart-bar",
+          actions: [], // No buttons for cleaner layout
+        },
+        "dashboard-contratos-exercicio-header"
+      );
+
+      // Card 3 - Representação Anual de Valores
+      App.card_header.card_header_createDynamic(
+        {
+          title: "Representação Anual de Valores",
+          subtitle: "Evolução dos valores contratuais",
+          icon: "fas fa-chart-line",
+          actions: [], // No buttons for cleaner layout
+        },
+        "dashboard-representacao-anual-header"
+      );
+
+      // Card 4 - Próximas Atividades
+      App.card_header.card_header_createDynamic(
+        {
+          title: "Próximas Atividades",
+          subtitle: "Contratos próximos ao vencimento",
+          icon: "fas fa-calendar-check",
+          actions: [], // No buttons for cleaner layout
+        },
+        "dashboard-proximas-atividades-header"
       );
     } else {
       console.warn("⚠️ Módulo card_header não disponível");
@@ -2168,7 +2244,11 @@ export default {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Indicate this is an AJAX request
+            "Accept": "application/json", // Expect JSON response
           },
+          credentials: "same-origin", // Include cookies for authentication
+          redirect: "error", // Fail on any redirect
         }
       );
 
@@ -2190,7 +2270,7 @@ export default {
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
-      // Optionally show an error message to the user
+      // Use the original gov.br error message
       alert("Erro ao atualizar favorito. Tente novamente.");
     } finally {
       // Restore opacity

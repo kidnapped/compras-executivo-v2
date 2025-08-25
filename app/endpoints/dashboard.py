@@ -308,7 +308,6 @@ async def get_contratos_por_exercicio(
             return {
                 "titulo": "Contratos por exercício",
                 "subtitulo": "Nenhum dado encontrado",
-                "icone": "/static/images/doc2.png",
                 "anos": [],
                 "valores": []
             }
@@ -341,7 +340,6 @@ async def get_contratos_por_exercicio(
     return {
         "titulo": "Contratos por exercício",
         "subtitulo": "Histórico de contratos por ano",
-        "icone": "/static/images/doc2.png",
         "anos": anos,
         "valores": valores
     }
@@ -1214,24 +1212,40 @@ async def toggle_contrato_favorito(
     cpf = request.session.get('cpf')
     if not cpf:
         raise HTTPException(status_code=401, detail="CPF não encontrado na sessão")
+
+    # Check if user has root scope - bypass authorization checks
+    user_scope = request.session.get("usuario_scope")
     
-    # Check if contract exists and user has access to it
-    uasgs = get_uasgs_str(request)
-    if not uasgs:
-        raise HTTPException(status_code=403, detail="UASG não definida para o usuário")
+    if user_scope == "root":
+        # For root scope, just check if contract exists
+        contract_check = await db_contratos.execute(
+            text("SELECT 1 FROM contratos WHERE id = :contract_id"),
+            {"contract_id": contract_id}
+        )
+        contract_result = contract_check.scalar_one_or_none()
+        
+        if not contract_result:
+            raise HTTPException(status_code=404, detail="Contrato não encontrado")
+    else:
+        # Non-root scope - check UASG access
+        uasgs = get_uasgs_str(request)
+        if not uasgs:
+            raise HTTPException(status_code=403, detail="UASG não definida para o usuário")
 
-    # Get unit IDs for the user's UASGs
-    user_unit_ids = await get_unidades_by_codigo(db_contratos, uasgs, return_type="ids")
-    if not user_unit_ids:
-        raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário")
+        # Get unit IDs for the user's UASGs
+        user_unit_ids = await get_unidades_by_codigo(db_contratos, uasgs, return_type="ids")
+        if not user_unit_ids:
+            raise HTTPException(status_code=403, detail="Nenhuma unidade correspondente às UASGs do usuário")
 
-    # Check if contract exists and user has access
-    contract_check = await db_contratos.execute(
-        text("SELECT 1 FROM contratos WHERE id = :contract_id AND unidade_id = ANY(:unit_ids)"),
-        {"contract_id": contract_id, "unit_ids": user_unit_ids}
-    )
-    if not contract_check.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="Contrato não encontrado ou sem acesso")
+        # Check if contract exists and user has access
+        contract_check = await db_contratos.execute(
+            text("SELECT 1 FROM contratos WHERE id = :contract_id AND unidade_id = ANY(:unit_ids)"),
+            {"contract_id": contract_id, "unit_ids": user_unit_ids}
+        )
+        contract_result = contract_check.scalar_one_or_none()
+        
+        if not contract_result:
+            raise HTTPException(status_code=404, detail="Contrato não encontrado ou sem acesso")
     
     # Check if already favorited (using blocok database)
     existing_favorite = await db_blocok.execute(
@@ -1258,7 +1272,7 @@ async def toggle_contrato_favorito(
         await db_blocok.commit()
         new_status = True
     
-    return {
+    result = {
         "success": True,
         "is_favorite": new_status,
         "favorite_icon": "red" if new_status else "gray",
@@ -1266,3 +1280,5 @@ async def toggle_contrato_favorito(
         "favorite_action": "Remove" if new_status else "Adicionar",
         "favorite_title": "Remover dos favoritos" if new_status else "Adicionar aos favoritos"
     }
+    
+    return result

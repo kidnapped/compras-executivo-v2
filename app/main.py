@@ -23,10 +23,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# 2. Depois o seu middleware de sessão e modo reparo
+# IMPORTANTE: FastAPI executa middlewares em ordem INVERSA (LIFO)
+# O primeiro adicionado será o último executado
+# Portanto, adicionamos AuthSessionMiddleware primeiro para ser executado por último
+
+# 1. Adicionar AuthSessionMiddleware primeiro (será executado POR ÚLTIMO)
 app.add_middleware(AuthSessionMiddleware)
 
-# 1. Middleware de sessão DEVE vir antes
+# 2. Adicionar SessionMiddleware por último (será executado PRIMEIRO)
 app.add_middleware(
     SessionMiddleware,
     secret_key=settings.SECRET_KEY,
