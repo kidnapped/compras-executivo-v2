@@ -171,23 +171,53 @@ async def login(cpf: str, password: str) -> LoginResult:
                 user_data["usuario_name"] = f"Usuário Alias {cpf_logged[:3]}***"
                 user_data["usuario_email"] = f"alias_{cpf_logged}@sistema.gov.br"
         
-        # Buscar roles
+        # Buscar roles - APENAS roles válidas [9,8,7,23]
         print(f"🔍 Buscando roles para CPF: {cpf_for_search}")
         stmt_roles = text("""
-            SELECT r.name 
+            SELECT r.id, r.name 
             FROM model_has_roles mhr
             JOIN roles r ON mhr.role_id = r.id
             JOIN users u ON mhr.model_id::numeric = u.id
-            WHERE u.cpf = :cpf
+            WHERE u.cpf = :cpf AND r.id IN (9,8,7,23)
         """)
         result_roles = await contratos_session.execute(stmt_roles, {
             "cpf": cpf_for_search
         })
         roles_rows = result_roles.fetchall()
-        roles = [row[0] for row in roles_rows] if roles_rows else []
-        print(f"📋 Roles encontradas: {roles}")
-        # Se tiver múltiplas roles, pegar a primeira
-        user_data["usuario_role"] = roles[0] if roles else None
+        
+        # Debug: mostrar roles válidas encontradas (já filtradas pela query)
+        print(f"📋 Roles válidas encontradas:")
+        valid_roles = [(row[0], row[1]) for row in roles_rows] if roles_rows else []
+        for role_id, role_name in valid_roles:
+            print(f"  Role ID: {role_id}, Nome: '{role_name}'")
+        
+        if not valid_roles:
+            print(f"❌ ACESSO NEGADO: Usuário não possui roles válidas [9,8,7,23]")
+            return LoginResult(success=False, error="Usuário não possui permissões para acessar o sistema.")
+        
+        # Determinar a role de maior hierarquia na ordem [9,8,7,23]
+        hierarchy_order = [23, 7, 8, 9]  # Do maior para o menor
+        selected_role = None
+        
+        for hierarchy_id in hierarchy_order:
+            for role_id, role_name in valid_roles:
+                if role_id == hierarchy_id:
+                    selected_role = (role_id, role_name)
+                    break
+            if selected_role:
+                break
+        
+        if selected_role:
+            role_id, role_name = selected_role
+            user_data["usuario_role"] = role_name
+            print(f"✅ Role selecionada: ID={role_id}, Nome='{role_name}' (maior hierarquia)")
+            
+            # Se havia múltiplas roles válidas, mostrar quais foram ignoradas
+            if len(valid_roles) > 1:
+                ignored_roles = [(rid, rname) for rid, rname in valid_roles if rid != role_id]
+                print(f"⚠️ Roles válidas ignoradas: {ignored_roles}")
+        else:
+            user_data["usuario_role"] = None
         
         # Se é login por alias e não tem role, usar role padrão
         if not user_data["usuario_role"] and settings.USE_ALIAS_LOGIN:
@@ -198,20 +228,50 @@ async def login(cpf: str, password: str) -> LoginResult:
     async for blocok_session in get_session_blocok():
         scopes = []
         current_role = user_data["usuario_role"]
+        print(f"🔍 Buscando scope para role: '{current_role}'")
+        
         if current_role:
+            # Mapeamento de roles para perfis (corrigir diferenças de nomenclatura)
+            role_to_perfil_mapping = {
+                "Administrador Órgão": "Administrador de órgão",
+                "Administrador Unidade": "Administrador de unidade",
+                "Administrador Geral": "Administrador Suporte",  # Role padrão para alias
+            }
+            
+            # Usar mapeamento se existir, caso contrário usar a role original
+            perfil_to_search = role_to_perfil_mapping.get(current_role, current_role)
+            print(f"🔄 Perfil mapeado: '{current_role}' -> '{perfil_to_search}'")
+            
+            # Buscar scope com o perfil mapeado
             stmt_scope = text("""
                 SELECT abrangencia FROM perfil_acesso WHERE perfil = :perfil
             """)
             result_scope = await blocok_session.execute(stmt_scope, {
-                "perfil": current_role
+                "perfil": perfil_to_search
             })
             scope_rows = result_scope.fetchall()
+            
+            # Se não encontrou com mapeamento, tentar busca case-insensitive
+            if not scope_rows:
+                stmt_scope_ci = text("""
+                    SELECT abrangencia FROM perfil_acesso WHERE UPPER(perfil) = UPPER(:perfil)
+                """)
+                result_scope_ci = await blocok_session.execute(stmt_scope_ci, {
+                    "perfil": perfil_to_search
+                })
+                scope_rows = result_scope_ci.fetchall()
+            
             for scope_row in scope_rows:
-                if scope_row[0] not in scopes:
-                    scopes.append(scope_row[0])
+                scope_value = scope_row[0]
+                if scope_value and scope_value not in scopes:
+                    scopes.append(scope_value)
         
         # Se tiver múltiplos scopes, pegar o primeiro
         user_data["usuario_scope"] = scopes[0] if scopes else None
+        print(f"📋 Scope encontrado: '{user_data['usuario_scope']}'")
+        
+        if len(scopes) > 1:
+            print(f"⚠️ Múltiplos scopes encontrados, usando: '{scopes[0]}'")
     
     print(f"📊 DADOS FINAIS DO USUÁRIO:")
     print(f"  CPF: {user_data['cpf']}")

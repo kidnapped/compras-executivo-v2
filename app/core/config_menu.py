@@ -22,25 +22,23 @@ MENU_CONFIG = {
         "filtro_uasg",
         "indicadores_old",
         "indicadores",
-        "administracao",
         "suporte",
         "ajuda",
+        "administracao",
         "dev_ops",
     ],
     "admin": [
         "minha_conta",
         "contratos",
-        "filtro_uasg", 
         "indicadores",
-        "administracao",
         "suporte",
         "ajuda",
+        "administracao",
         "sair"
     ],
     "global": [
         "minha_conta",
         "contratos",
-        "filtro_uasg",
         "indicadores",
         "suporte", 
         "ajuda",
@@ -49,8 +47,6 @@ MENU_CONFIG = {
     "orgao": [
         "minha_conta",
         "contratos",
-        "filtro_uasg",
-        "indicadores",
         "suporte",
         "ajuda", 
         "sair"
@@ -58,7 +54,6 @@ MENU_CONFIG = {
     "unidade": [
         "minha_conta",
         "contratos",
-        "indicadores",
         "suporte",
         "ajuda",
         "sair"
