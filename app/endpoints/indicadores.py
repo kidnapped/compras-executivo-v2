@@ -870,3 +870,85 @@ async def get_indicadores_contratos_sem_empenhos(
         import traceback
         logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
+
+@router.get("/indicadores/contratos-com-clausulas")
+async def get_indicadores_contratos_com_clausulas(
+    request: Request,
+    db: AsyncSession = Depends(get_session_contratos)
+):
+    """
+    Endpoint para obter contratos com cláusulas preenchidas
+    Migrado de KPI7 para a nova arquitetura de indicadores
+    """
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
+    
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida")
+    
+    # Descobre os ID_UASG com base nos códigos
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+
+    if not ids_uasg:
+        return {
+            "titulo": "Contratos com Cláusulas",
+            "subtitulo": "Nenhum dado encontrado",
+            "tipos_contratacao": [
+                {"tipo": "Com Cláusulas", "total_contratos": 0},
+                {"tipo": "Sem Cláusulas", "total_contratos": 0}
+            ],
+            "total_com_clausulas": 0,
+            "total_contratos": 0,
+            "percentual_com_clausulas": 0.0
+        }
+
+    query = """
+        WITH contratos_totais AS (
+          SELECT COUNT(DISTINCT contrato_id) AS total_contratos
+          FROM contratohistorico
+          WHERE deleted_at IS NULL
+            AND unidade_id = ANY(:ids)
+        ),
+        contratos_com_clausulas AS (
+          SELECT COUNT(DISTINCT contrato_id) AS total_com_clausulas
+          FROM contratohistorico
+          WHERE deleted_at IS NULL
+            AND unidade_id = ANY(:ids)
+            AND (
+              TRIM(COALESCE(fundamento_legal, '')) <> ''
+              OR TRIM(COALESCE(info_complementar, '')) <> ''
+            )
+        )
+        SELECT 
+          ctc.total_com_clausulas,
+          ct.total_contratos,
+          ROUND(100.0 * ctc.total_com_clausulas / NULLIF(ct.total_contratos, 0), 2) AS percentual_com_clausulas
+        FROM contratos_com_clausulas ctc, contratos_totais ct;
+    """
+    result = await db.execute(text(query), {"ids": ids_uasg})
+    row = result.mappings().first() or {}
+
+    total_com_clausulas = row.get("total_com_clausulas", 0) or 0
+    total_contratos = row.get("total_contratos", 0) or 0
+    contratos_sem_clausulas = total_contratos - total_com_clausulas
+
+    tipos_contratacao = [
+        {
+            "tipo": "Com Cláusulas",
+            "total_contratos": total_com_clausulas
+        },
+        {
+            "tipo": "Sem Cláusulas", 
+            "total_contratos": contratos_sem_clausulas
+        }
+    ]
+
+    return {
+        "titulo": "Contratos com Cláusulas",
+        "subtitulo": "Percentual de contratos com cláusulas preenchidas",
+        "tipos_contratacao": tipos_contratacao,
+        "total_com_clausulas": total_com_clausulas,
+        "total_contratos": total_contratos,
+        "percentual_com_clausulas": float(row.get("percentual_com_clausulas", 0.0) or 0.0)
+    }
