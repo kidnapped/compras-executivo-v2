@@ -9,6 +9,60 @@ export default {
     this.filter_setupEventListeners();
     this.filter_handleResponsiveTooltips();
     this.filter_initializeFilterState();
+    this.filter_initializeVisibility();
+  },
+
+  filter_initializeVisibility() {
+    const container = document.querySelector(".filter-container");
+    if (!container) return;
+
+    // Check if there are any existing filters on page load
+    const filters = this.filter_getCurrentFilters();
+    const hasFilters = Object.keys(filters).length > 0;
+    
+    if (hasFilters) {
+      this.filter_showContainer();
+    } else {
+      this.filter_hideContainer();
+    }
+  },
+
+  filter_showContainer() {
+    const container = document.querySelector(".filter-container");
+    if (!container) return;
+
+    // Remove any existing animation classes
+    container.classList.remove("filter-collapsing");
+    
+    // Show the container
+    container.style.display = "block";
+    
+    // Force a reflow
+    container.offsetHeight;
+    
+    // Add expanding animation
+    container.classList.add("filter-expanding");
+    
+    // Add show class after a brief delay to ensure proper animation
+    setTimeout(() => {
+      container.classList.add("filter-show");
+      container.classList.remove("filter-expanding");
+    }, 400);
+  },
+
+  filter_hideContainer() {
+    const container = document.querySelector(".filter-container");
+    if (!container) return;
+
+    // Add collapsing animation
+    container.classList.add("filter-collapsing");
+    container.classList.remove("filter-show");
+    
+    // Hide the container after animation completes
+    setTimeout(() => {
+      container.style.display = "none";
+      container.classList.remove("filter-collapsing");
+    }, 300);
   },
 
   filter_setupEventListeners() {
@@ -226,19 +280,24 @@ export default {
     const container = document.querySelector(".filter-items");
     if (!container) return;
 
-    container.innerHTML = "";
-
     const filters = this.filter_getCurrentFilters();
     const hasFilters = Object.keys(filters).length > 0;
+    const containerElement = document.querySelector(".filter-container");
+    const wasVisible = containerElement && containerElement.classList.contains("filter-show");
+
+    container.innerHTML = "";
 
     if (!hasFilters) {
-      // Show empty state
-      const emptyState = document.createElement("div");
-      emptyState.className = "filter-empty-state";
-      emptyState.innerHTML =
-        '<i class="fas fa-filter"></i> <span>Nenhum filtro ativo</span>';
-      container.appendChild(emptyState);
+      // Only animate hide if it was previously visible
+      if (wasVisible) {
+        this.filter_hideContainer();
+      }
       return;
+    }
+
+    // Only animate show if it was previously hidden
+    if (!wasVisible) {
+      this.filter_showContainer();
     }
 
     // Render filter items
@@ -344,15 +403,11 @@ export default {
       return;
     }
 
-    // Complete filter HTML
+    // Complete filter HTML - starts hidden
     const filterHTML = `
-            <div class="filter-container">
+            <div class="filter-container" style="display: none;">
                 <div class="filter-modern">
                     <div class="filter-items">
-                        <div class="filter-empty-state">
-                            <i class="fas fa-filter"></i>
-                            <span>Nenhum filtro ativo</span>
-                        </div>
                     </div>
                 </div>
             </div>

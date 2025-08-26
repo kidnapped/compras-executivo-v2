@@ -1,7 +1,18 @@
 /* Filter Component Styles - Based on breadcrumb component */
 .filter-container {
   margin-top: 12px;
-  margin-bottom: 6px;
+  margin-bottom: -6px;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(-10px);
+}
+
+.filter-container.filter-show {
+  opacity: 1;
+  max-height: 200px; /* Adjust based on your needs */
+  transform: translateY(0);
 }
 
 .filter-modern {
@@ -10,6 +21,12 @@
   padding: 0.6rem 0.9rem;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(109, 127, 183, 0.08);
+  transition: all 0.3s ease;
+  transform: scale(0.95);
+}
+
+.filter-container.filter-show .filter-modern {
+  transform: scale(1);
 }
 
 .filter-items {
@@ -130,8 +147,9 @@
   font-size: 0.7rem;
 }
 
-/* Empty state */
+/* Empty state - hidden when container is smart */
 .filter-empty-state {
+  display: none; /* Hidden by default since we're using smart hiding */
   color: #64748b;
   font-size: 0.75rem;
   font-style: italic;
@@ -242,10 +260,44 @@
   }
 }
 
+@keyframes filterContainerExpand {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+    transform: translateY(0);
+  }
+}
+
+@keyframes filterContainerCollapse {
+  from {
+    opacity: 1;
+    max-height: 200px;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+}
+
 .filter-item.filter-item-enter {
   animation: filterSlideIn 0.3s ease-out;
 }
 
 .filter-item.filter-item-exit {
   animation: filterSlideOut 0.2s ease-in;
+}
+
+.filter-container.filter-expanding {
+  animation: filterContainerExpand 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.filter-container.filter-collapsing {
+  animation: filterContainerCollapse 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }

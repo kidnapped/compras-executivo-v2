@@ -1,5 +1,5 @@
 <!-- Filter Component -->
-<div class="filter-container">
+<div class="filter-container" style="display: none;">
   <div class="filter-modern">
     <div class="filter-items">
       {% if active_filters and active_filters|length > 0 %}
@@ -20,12 +20,6 @@
           <i class="fas fa-times-circle"></i>
           <span>Limpar filtros</span>
         </button>
-      {% else %}
-        <!-- Empty state -->
-        <div class="filter-empty-state">
-          <i class="fas fa-filter"></i>
-          <span>Nenhum filtro ativo</span>
-        </div>
       {% endif %}
     </div>
   </div>

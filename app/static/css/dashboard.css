@@ -248,6 +248,7 @@ input[type="number"] {
 /* Ensure dashboard row can grow with content */
 .row-tight {
   min-height: fit-content;
+  margin-top: 12px;
 }
 
 .row-tight .col-12 {
