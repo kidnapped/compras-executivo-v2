@@ -54,7 +54,9 @@ export default {
     
     // Inicializa todos os componentes
     this.minha_conta_initBreadcrumb();
+    this.minha_conta_initCardHeaders();
     this.minha_conta_formatCPF();
+    this.minha_conta_formatProfileName();
     this.minha_conta_initScrollAnimations();
     this.minha_conta_initHoverEffects();
     this.minha_conta_initPulseAnimation();
@@ -83,7 +85,7 @@ export default {
     console.log('🔧 Inicializando breadcrumb da minha conta...');
 
     // Verifica se o módulo breadcrumb está disponível
-    if (
+    if ( 
       typeof App !== 'undefined' &&
       App.breadcrumb &&
       App.breadcrumb.breadcrumb_createDynamic
@@ -149,6 +151,174 @@ export default {
     console.log('✅ Breadcrumb da minha conta carregado com sucesso (fallback)');
   },
 
+  // Nova função para inicializar os headers dos cards dinamicamente
+  minha_conta_initCardHeaders() {
+    console.log('🔧 Inicializando headers dos cards da minha conta...');
+
+    // Verifica se o módulo cardHeader está disponível
+    if (
+      typeof App !== 'undefined' &&
+      App.cardHeader &&
+      App.cardHeader.card_header_createDynamic
+    ) {
+      // Header do card Perfil do Usuário
+      App.cardHeader.card_header_createDynamic(
+        {
+          title: 'Perfil do Usuário',
+          subtitle: 'Suas informações principais no sistema',
+          icon: 'fas fa-user'
+        },
+        'minha-conta-perfil-header'
+      );
+
+      // Header do card Informações Pessoais
+      App.cardHeader.card_header_createDynamic(
+        {
+          title: 'Informações Pessoais',
+          subtitle: 'Dados do seu cadastro no sistema',
+          icon: 'fas fa-id-card'
+        },
+        'minha-conta-informacoes-header'
+      );
+
+      // Header do card Acesso Rápido
+      App.cardHeader.card_header_createDynamic(
+        {
+          title: 'Acesso Rápido',
+          subtitle: 'Links úteis do sistema',
+          icon: 'fas fa-bolt'
+        },
+        'minha-conta-acesso-header'
+      );
+
+      // Header do card Status do Sistema
+      App.cardHeader.card_header_createDynamic(
+        {
+          title: 'Status do Sistema',
+          subtitle: 'Informações da sessão atual',
+          icon: 'fas fa-info-circle'
+        },
+        'minha-conta-status-header'
+      );
+
+      // Header do card UASGs Vinculadas
+      App.cardHeader.card_header_createDynamic(
+        {
+          title: 'UASGs Vinculadas',
+          subtitle: 'Unidades administrativas às quais você tem acesso',
+          icon: 'fas fa-building'
+        },
+        'minha-conta-uasgs-header'
+      );
+      console.log('✅ Headers dos cards da minha conta criados via módulo cardHeader');
+    } else {
+      console.log('⚠️ Módulo cardHeader não disponível, usando fallback');
+      this.minha_conta_initCardHeadersFallback();
+    }
+  },
+
+  // Função de fallback para os headers dos cards (caso o módulo não esteja disponível)
+  minha_conta_initCardHeadersFallback() {
+    console.log('🔧 Carregando headers dos cards da minha conta (fallback)...');
+    
+    // Header do card Perfil do Usuário
+    const perfilHeaderContainer = document.getElementById('minha-conta-perfil-header');
+    if (perfilHeaderContainer) {
+      const perfilHeaderHTML = `
+        <div class="card-header-govbr">
+          <div class="govbr-header-content">
+            <div class="govbr-icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="govbr-title">
+              <h3>Perfil do Usuário</h3>
+              <span class="govbr-subtitle">Suas informações principais no sistema</span>
+            </div>
+          </div>
+        </div>
+      `;
+      perfilHeaderContainer.innerHTML = perfilHeaderHTML;
+    }
+
+    // Header do card Informações Pessoais
+    const informacoesHeaderContainer = document.getElementById('minha-conta-informacoes-header');
+    if (informacoesHeaderContainer) {
+      const informacoesHeaderHTML = `
+        <div class="card-header-govbr">
+          <div class="govbr-header-content">
+            <div class="govbr-icon">
+              <i class="fas fa-id-card"></i>
+            </div>
+            <div class="govbr-title">
+              <h3>Informações Pessoais</h3>
+              <span class="govbr-subtitle">Dados do seu cadastro no sistema</span>
+            </div>
+          </div>
+        </div>
+      `;
+      informacoesHeaderContainer.innerHTML = informacoesHeaderHTML;
+    }
+
+    // Header do card Acesso Rápido
+    const acessoHeaderContainer = document.getElementById('minha-conta-acesso-header');
+    if (acessoHeaderContainer) {
+      const acessoHeaderHTML = `
+        <div class="card-header-govbr">
+          <div class="govbr-header-content">
+            <div class="govbr-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="govbr-title">
+              <h3>Acesso Rápido</h3>
+              <span class="govbr-subtitle">Links úteis do sistema</span>
+            </div>
+          </div>
+        </div>
+      `;
+      acessoHeaderContainer.innerHTML = acessoHeaderHTML;
+    }
+
+    // Header do card Status do Sistema
+    const statusHeaderContainer = document.getElementById('minha-conta-status-header');
+    if (statusHeaderContainer) {
+      const statusHeaderHTML = `
+        <div class="card-header-govbr">
+          <div class="govbr-header-content">
+            <div class="govbr-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="govbr-title">
+              <h3>Status do Sistema</h3>
+              <span class="govbr-subtitle">Informações da sessão atual</span>
+            </div>
+          </div>
+        </div>
+      `;
+      statusHeaderContainer.innerHTML = statusHeaderHTML;
+    }
+
+    // Header do card UASGs Vinculadas
+    const uasgsHeaderContainer = document.getElementById('minha-conta-uasgs-header');
+    if (uasgsHeaderContainer) {
+      const uasgsHeaderHTML = `
+        <div class="card-header-govbr">
+          <div class="govbr-header-content">
+            <div class="govbr-icon">
+              <i class="fas fa-building"></i>
+            </div>
+            <div class="govbr-title">
+              <h3>UASGs Vinculadas</h3>
+              <span class="govbr-subtitle">Unidades administrativas às quais você tem acesso</span>
+            </div>
+          </div>
+        </div>
+      `;
+      uasgsHeaderContainer.innerHTML = uasgsHeaderHTML;
+    }
+    
+    console.log('✅ Headers dos cards da minha conta carregados com sucesso (fallback)');
+  },
+
   // Format CPF with mask for display
   minha_conta_formatCPF() {
     const cpfDisplay = document.getElementById('cpf-display');
@@ -157,6 +327,28 @@ export default {
       if (cpf.length === 11) {
         cpfDisplay.textContent = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
       }
+    }
+  },
+
+  // Format profile name with capitalize effect
+  minha_conta_formatProfileName() {
+    const profileName = document.querySelector('.profile-name');
+    if (profileName && profileName.textContent) {
+      const originalText = profileName.textContent.trim();
+      // Convert to lowercase first, then capitalize each word
+      const formattedText = originalText
+        .toLowerCase()
+        .split(' ')
+        .map(word => {
+          if (word.length > 0) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          }
+          return word;
+        })
+        .join(' ');
+      
+      profileName.textContent = formattedText;
+      console.log(`✅ Nome formatado: "${originalText}" → "${formattedText}"`);
     }
   },
 
@@ -284,5 +476,13 @@ export default {
         }
       }, 300);
     }, 3000);
+  },
+
+  // Função para mostrar configurações (chamada pelo botão do header)
+  minha_conta_showSettings() {
+    console.log('🔧 Abrindo configurações da conta...');
+    
+    // Cria uma notificação temporária (pode ser substituída por um modal real posteriormente)
+    this.minha_conta_showCopyNotification('Funcionalidade em desenvolvimento', 'success');
   }
 };

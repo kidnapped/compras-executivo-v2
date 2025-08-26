@@ -10,165 +10,162 @@
             <!-- Breadcrumb será carregado dinamicamente via JavaScript -->
         </div>
 
-        <!-- Content Section -->
-        <div class="minha_conta_profile_content">
-            <div class="row">
-                <div class="col-12">
-                    <!-- Perfil do Usuário -->
-                    <div class="row g-4 mb-4">
-                        <div class="col-12">
-                            <div class="minha_conta_info_card">
-                                <div class="minha_conta_card_header_modern">
-                                    <div class="minha_conta_header_icon">
+        <!-- Perfil do Usuário Card - Format similar to indicadores -->
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="minha_conta_card_container">
+                    <div class="minha_conta_card_modern">
+                        <!-- Card Header Component - Dynamic -->
+                        <div id="minha-conta-perfil-header">
+                            <!-- Card header será carregado dinamicamente via JavaScript -->
+                        </div>
+                        <div class="minha_conta_card_body">
+                            <div class="minha_conta_profile_header_card">
+                                <div class="minha_conta_avatar_section">
+                                    <div class="minha_conta_avatar_circle">
                                         <i class="fas fa-user"></i>
                                     </div>
-                                    <div class="minha_conta_header_text">
-                                        <h3>Perfil do Usuário</h3>
-                                        <p>Suas informações principais no sistema</p>
+                                    <div class="minha_conta_avatar_status online"></div>
+                                </div>
+                                <div class="minha_conta_profile_info">
+                                    <h1 class="profile-name">{{ user_data.nome or 'Usuário' }}</h1>
+                                    <p class="minha_conta_profile_role">{{ user_data.role or 'Perfil não definido' }}
+                                    </p>
+                                    <div class="minha_conta_profile_badges">
+                                        <span class="minha_conta_badge minha_conta_badge_primary">
+                                            <i class="fas fa-shield-alt me-1"></i>
+                                            {{ user_data.scope or 'Acesso padrão' }}
+                                        </span>
+                                        {% if user_data.uasgs %}
+                                        <span class="minha_conta_badge minha_conta_badge_secondary">
+                                            <i class="fas fa-building me-1"></i>
+                                            {{ user_data.uasgs|length }} UASG{{ 's' if user_data.uasgs|length > 1 else
+                                            '' }}
+                                        </span>
+                                        {% endif %}
                                     </div>
                                 </div>
-                                <div class="minha_conta_card_body_modern">
-                                    <div class="minha_conta_profile_header_card">
-                                        <div class="minha_conta_avatar_section">
-                                            <div class="minha_conta_avatar_circle">
-                                                <i class="fas fa-user"></i>
-                                            </div>
-                                            <div class="minha_conta_avatar_status online"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="minha_conta_profile_content">
+            <div class="row g-4">
+                <!-- Informações Pessoais - Lado Esquerdo -->
+                <div class="col-lg-8">
+                    <div class="minha_conta_card_container">
+                        <div class="minha_conta_card_modern">
+                            <!-- Card Header Component - Dynamic -->
+                            <div id="minha-conta-informacoes-header">
+                                <!-- Card header será carregado dinamicamente via JavaScript -->
+                            </div>
+                            <div class="minha_conta_card_body">
+                                <div class="minha_conta_info_grid">
+                                    <div class="minha_conta_info_item minha_conta_clickable_item"
+                                        data-copy="CPF: {{ user_data.cpf or 'Não informado' }}">
+                                        <div class="minha_conta_info_icon">
+                                            <i class="fas fa-fingerprint"></i>
                                         </div>
-                                        <div class="minha_conta_profile_info">
-                                            <h1 class="profile-name">{{ user_data.nome or 'Usuário' }}</h1>
-                                            <p class="minha_conta_profile_role">{{ user_data.role or 'Perfil não definido' }}</p>
-                                            <div class="minha_conta_profile_badges">
-                                                <span class="minha_conta_badge minha_conta_badge_primary">
-                                                    <i class="fas fa-shield-alt me-1"></i>
-                                                    {{ user_data.scope or 'Acesso padrão' }}
-                                                </span>
-                                                {% if user_data.uasgs %}
-                                                <span class="minha_conta_badge minha_conta_badge_secondary">
-                                                    <i class="fas fa-building me-1"></i>
-                                                    {{ user_data.uasgs|length }} UASG{{ 's' if user_data.uasgs|length > 1 else '' }}
-                                                </span>
-                                                {% endif %}
-                                            </div>
+                                        <div class="minha_conta_info_content">
+                                            <label>CPF</label>
+                                            <span id="cpf-display">{{ user_data.cpf or 'Não informado' }}</span>
+                                        </div>
+                                        <div class="minha_conta_copy_indicator">
+                                            <i class="fas fa-copy"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="minha_conta_info_item minha_conta_clickable_item"
+                                        data-copy="ID do Usuário: {{ user_data.usuario_id or 'Não definido' }}">
+                                        <div class="minha_conta_info_icon">
+                                            <i class="fas fa-hashtag"></i>
+                                        </div>
+                                        <div class="minha_conta_info_content">
+                                            <label>ID do Usuário</label>
+                                            <span>{{ user_data.usuario_id or 'Não definido' }}</span>
+                                        </div>
+                                        <div class="minha_conta_copy_indicator">
+                                            <i class="fas fa-copy"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="minha_conta_info_item minha_conta_clickable_item"
+                                        data-copy="Nome Completo: {{ user_data.nome or 'Não informado' }}">
+                                        <div class="minha_conta_info_icon">
+                                            <i class="fas fa-user-tag"></i>
+                                        </div>
+                                        <div class="minha_conta_info_content">
+                                            <label>Nome Completo</label>
+                                            <span>{{ user_data.nome or 'Não informado' }}</span>
+                                        </div>
+                                        <div class="minha_conta_copy_indicator">
+                                            <i class="fas fa-copy"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="minha_conta_info_item minha_conta_clickable_item"
+                                        data-copy="Email: {{ user_data.email or 'Não informado' }}">
+                                        <div class="minha_conta_info_icon">
+                                            <i class="fas fa-envelope"></i>
+                                        </div>
+                                        <div class="minha_conta_info_content">
+                                            <label>Email</label>
+                                            <span>{{ user_data.email or 'Não informado' }}</span>
+                                        </div>
+                                        <div class="minha_conta_copy_indicator">
+                                            <i class="fas fa-copy"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="minha_conta_info_item minha_conta_clickable_item"
+                                        data-copy="Perfil de Acesso: {{ user_data.role or 'Não definido' }}">
+                                        <div class="minha_conta_info_icon">
+                                            <i class="fas fa-user-shield"></i>
+                                        </div>
+                                        <div class="minha_conta_info_content">
+                                            <label>Perfil de Acesso</label>
+                                            <span>{{ user_data.role or 'Não definido' }}</span>
+                                        </div>
+                                        <div class="minha_conta_copy_indicator">
+                                            <i class="fas fa-copy"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="minha_conta_info_item minha_conta_clickable_item"
+                                        data-copy="Abrangência: {{ user_data.scope or 'Não definido' }}">
+                                        <div class="minha_conta_info_icon">
+                                            <i class="fas fa-globe"></i>
+                                        </div>
+                                        <div class="minha_conta_info_content">
+                                            <label>Abrangência</label>
+                                            <span>{{ user_data.scope or 'Não definido' }}</span>
+                                        </div>
+                                        <div class="minha_conta_copy_indicator">
+                                            <i class="fas fa-copy"></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <!-- Lado Direito: Acesso Rápido + Status do Sistema -->
+                <div class="col-lg-4">
                     <div class="row g-4">
-                        <!-- Informações Pessoais -->
-                        <div class="col-12 col-lg-8">
-                            <div class="minha_conta_info_card">
-                                <div class="minha_conta_card_header_modern">
-                                    <div class="minha_conta_header_icon">
-                                        <i class="fas fa-id-card"></i>
+                        <!-- Acesso Rápido - Em cima à direita -->
+                        <div class="col-12">
+                            <div class="minha_conta_card_container">
+                                <div class="minha_conta_card_modern">
+                                    <!-- Card Header Component - Dynamic -->
+                                    <div id="minha-conta-acesso-header">
+                                        <!-- Card header será carregado dinamicamente via JavaScript -->
                                     </div>
-                                    <div class="minha_conta_header_text">
-                                        <h3>Informações Pessoais</h3>
-                                        <p>Seus dados básicos no sistema</p>
-                                    </div>
-                                </div>
-                                <div class="minha_conta_card_body_modern">
-                                    <div class="minha_conta_info_grid">
-                                        <div class="minha_conta_info_item minha_conta_clickable_item" data-copy="CPF: {{ user_data.cpf or 'Não informado' }}">
-                                            <div class="minha_conta_info_icon">
-                                                <i class="fas fa-fingerprint"></i>
-                                            </div>
-                                            <div class="minha_conta_info_content">
-                                                <label>CPF</label>
-                                                <span id="cpf-display">{{ user_data.cpf or 'Não informado' }}</span>
-                                            </div>
-                                            <div class="minha_conta_copy_indicator">
-                                                <i class="fas fa-copy"></i>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="minha_conta_info_item minha_conta_clickable_item" data-copy="ID do Usuário: {{ user_data.usuario_id or 'Não definido' }}">
-                                            <div class="minha_conta_info_icon">
-                                                <i class="fas fa-hashtag"></i>
-                                            </div>
-                                            <div class="minha_conta_info_content">
-                                                <label>ID do Usuário</label>
-                                                <span>{{ user_data.usuario_id or 'Não definido' }}</span>
-                                            </div>
-                                            <div class="minha_conta_copy_indicator">
-                                                <i class="fas fa-copy"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="minha_conta_info_item minha_conta_clickable_item" data-copy="Nome Completo: {{ user_data.nome or 'Não informado' }}">
-                                            <div class="minha_conta_info_icon">
-                                                <i class="fas fa-user-tag"></i>
-                                            </div>
-                                            <div class="minha_conta_info_content">
-                                                <label>Nome Completo</label>
-                                                <span>{{ user_data.nome or 'Não informado' }}</span>
-                                            </div>
-                                            <div class="minha_conta_copy_indicator">
-                                                <i class="fas fa-copy"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="minha_conta_info_item minha_conta_clickable_item" data-copy="Email: {{ user_data.email or 'Não informado' }}">
-                                            <div class="minha_conta_info_icon">
-                                                <i class="fas fa-envelope"></i>
-                                            </div>
-                                            <div class="minha_conta_info_content">
-                                                <label>Email</label>
-                                                <span>{{ user_data.email or 'Não informado' }}</span>
-                                            </div>
-                                            <div class="minha_conta_copy_indicator">
-                                                <i class="fas fa-copy"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="minha_conta_info_item minha_conta_clickable_item" data-copy="Perfil de Acesso: {{ user_data.role or 'Não definido' }}">
-                                            <div class="minha_conta_info_icon">
-                                                <i class="fas fa-user-shield"></i>
-                                            </div>
-                                            <div class="minha_conta_info_content">
-                                                <label>Perfil de Acesso</label>
-                                                <span>{{ user_data.role or 'Não definido' }}</span>
-                                            </div>
-                                            <div class="minha_conta_copy_indicator">
-                                                <i class="fas fa-copy"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="minha_conta_info_item minha_conta_clickable_item" data-copy="Abrangência: {{ user_data.scope or 'Não definido' }}">
-                                            <div class="minha_conta_info_icon">
-                                                <i class="fas fa-globe"></i>
-                                            </div>
-                                            <div class="minha_conta_info_content">
-                                                <label>Abrangência</label>
-                                                <span>{{ user_data.scope or 'Não definido' }}</span>
-                                            </div>
-                                            <div class="minha_conta_copy_indicator">
-                                                <i class="fas fa-copy"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sidebar com informações adicionais -->
-                        <div class="col-12 col-lg-4">
-                            <div class="sidebar-cards">
-                                <!-- Acesso Rápido -->
-                                <div class="minha_conta_info_card">
-                                    <div class="minha_conta_card_header_modern">
-                                        <div class="minha_conta_header_icon">
-                                            <i class="fas fa-bolt"></i>
-                                        </div>
-                                        <div class="minha_conta_header_text">
-                                            <h3>Acesso Rápido</h3>
-                                            <p>Links úteis</p>
-                                        </div>
-                                    </div>
-                                    <div class="minha_conta_card_body_modern">
+                                    <div class="minha_conta_card_body">
                                         <div class="minha_conta_quick_actions">
                                             <a href="/dashboard" class="minha_conta_quick_action_item">
                                                 <div class="minha_conta_action_icon">
@@ -186,36 +183,35 @@
                                                 </div>
                                                 <div class="minha_conta_action_content">
                                                     <span>Administração</span>
-                                                    <small>Configurações</small>
+                                                    <small>Gerenciar sistema</small>
                                                 </div>
                                                 <i class="fas fa-chevron-right minha_conta_action_arrow"></i>
                                             </a>
-                                            <a href="/kpis" class="minha_conta_quick_action_item">
+                                            <a href="/user_account" class="minha_conta_quick_action_item">
                                                 <div class="minha_conta_action_icon">
-                                                    <i class="fas fa-tachometer-alt"></i>
+                                                    <i class="fas fa-user-edit"></i>
                                                 </div>
                                                 <div class="minha_conta_action_content">
-                                                    <span>KPIs</span>
-                                                    <small>Indicadores</small>
+                                                    <span>Conta de Usuário</span>
+                                                    <small>Editar perfil</small>
                                                 </div>
                                                 <i class="fas fa-chevron-right minha_conta_action_arrow"></i>
                                             </a>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                <!-- Status do Sistema -->
-                                <div class="minha_conta_info_card">
-                                    <div class="minha_conta_card_header_modern">
-                                        <div class="minha_conta_header_icon">
-                                            <i class="fas fa-info-circle"></i>
-                                        </div>
-                                        <div class="minha_conta_header_text">
-                                            <h3>Status do Sistema</h3>
-                                            <p>Informações da sessão</p>
-                                        </div>
+                        <!-- Status do Sistema - Embaixo à direita -->
+                        <div class="col-12">
+                            <div class="minha_conta_card_container">
+                                <div class="minha_conta_card_modern">
+                                    <!-- Card Header Component - Dynamic -->
+                                    <div id="minha-conta-status-header">
+                                        <!-- Card header será carregado dinamicamente via JavaScript -->
                                     </div>
-                                    <div class="minha_conta_card_body_modern">
+                                    <div class="minha_conta_card_body">
                                         <div class="minha_conta_status_items">
                                             <div class="minha_conta_status_item">
                                                 <div class="minha_conta_status_indicator online"></div>
@@ -244,44 +240,42 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- UASGs Vinculadas -->
-                    {% if user_data.uasgs %}
-                    <div class="row g-4 mb-4">
-                        <div class="col-12">
-                            <div class="minha_conta_info_card">
-                                <div class="minha_conta_card_header_modern">
-                                    <div class="minha_conta_header_icon">
-                                        <i class="fas fa-building"></i>
-                                    </div>
-                                    <div class="minha_conta_header_text">
-                                        <h3>UASGs Vinculadas</h3>
-                                        <p>Unidades administrativas às quais você tem acesso</p>
-                                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segunda linha para outros cards -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <!-- UASGs Vinculadas -->
+                {% if user_data.uasgs %}
+                <div class="minha_conta_card_modern">
+                    <!-- Card Header Component - Dynamic -->
+                    <div id="minha-conta-uasgs-header">
+                        <!-- Card header será carregado dinamicamente via JavaScript -->
+                    </div>
+                    <div class="minha_conta_card_body">
+                        <div class="minha_conta_uasg_grid">
+                            {% for uasg in user_data.uasgs %}
+                            <div class="minha_conta_uasg_item">
+                                <div class="minha_conta_uasg_icon">
+                                    <i class="fas fa-institution"></i>
                                 </div>
-                                <div class="minha_conta_card_body_modern">
-                                    <div class="minha_conta_uasg_grid">
-                                        {% for uasg in user_data.uasgs %}
-                                        <div class="minha_conta_uasg_item">
-                                            <div class="minha_conta_uasg_icon">
-                                                <i class="fas fa-institution"></i>
-                                            </div>
-                                            <div class="minha_conta_uasg_code">{{ uasg }}</div>
-                                            <div class="minha_conta_uasg_status active">Ativa</div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
+                                <div class="minha_conta_uasg_code">{{ uasg }}</div>
+                                <div class="minha_conta_uasg_status active">Ativa</div>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
 
-                    <!-- Espaçamento entre seções -->
-                    <div class="minha_conta_section_spacer"></div>
-
-                    <!-- Segurança -->
-                    <div class="row g-4">
+        <!-- Terceira linha para outros cards -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="row g-4">
                         <div class="col-12">
                             <div class="minha_conta_info_card minha_conta_security_card">
                                 <div class="minha_conta_card_header_modern">
@@ -300,7 +294,8 @@
                                         </div>
                                         <div class="minha_conta_notice_content">
                                             <h4>Política de Segurança</h4>
-                                            <p>Para alterações de senha ou outras configurações de segurança, entre em contato com o administrador do sistema através dos canais oficiais.</p>
+                                            <p>Para alterações de senha ou outras configurações de segurança, entre em
+                                                contato com o administrador do sistema através dos canais oficiais.</p>
                                         </div>
                                     </div>
                                     <div class="minha_conta_security_features">
@@ -338,4 +333,6 @@
         </div>
     </div>
 
-{% endblock %}
+    <div style="height:20px;"></div>
+
+    {% endblock %}
