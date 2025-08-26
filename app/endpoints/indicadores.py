@@ -42,8 +42,24 @@ async def indicadores(request: Request):
 
 @router.get("/indicadores/mapa-estados")
 async def get_indicadores_mapa_estados(
+    request: Request,
     db: AsyncSession = Depends(get_session_contratos)
 ):
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
+    
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida")
+    
+    # Descobre os ID_UASG com base nos códigos
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+
+    if not ids_uasg:
+        return {
+            "estados": []
+        }
+
     query = """
         WITH estados AS (
           SELECT * FROM (VALUES
@@ -63,10 +79,11 @@ async def get_indicadores_mapa_estados(
         JOIN municipios m ON m.id = u.municipio_id
         JOIN estados e ON e.estado_id = m.estado_id
         WHERE c.deleted_at IS null and c.unidade_id is not null
+        AND c.unidade_id = ANY(:unidade_ids)
         GROUP BY e.uf
         ORDER BY total_contratos DESC;
     """
-    result = await db.execute(text(query))
+    result = await db.execute(text(query), {"unidade_ids": ids_uasg})
     rows = result.mappings().all() or []
 
     estados = [
@@ -83,8 +100,24 @@ async def get_indicadores_mapa_estados(
 
 @router.get("/indicadores/contratos-por-regiao")
 async def get_indicadores_contratos_por_regiao(
+    request: Request,
     db: AsyncSession = Depends(get_session_contratos)
 ):
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
+    
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida")
+    
+    # Descobre os ID_UASG com base nos códigos
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+
+    if not ids_uasg:
+        return {
+            "regioes": []
+        }
+
     query = """
         WITH regioes AS (
             SELECT * FROM (VALUES
@@ -103,10 +136,11 @@ async def get_indicadores_contratos_por_regiao(
         JOIN municipios m ON m.id = u.municipio_id
         JOIN regioes r ON r.estado_id = m.estado_id
         WHERE c.deleted_at IS NULL
+        AND c.unidade_id = ANY(:unidade_ids)
         GROUP BY r.regiao
         ORDER BY total_contratos DESC;
     """
-    result = await db.execute(text(query))
+    result = await db.execute(text(query), {"unidade_ids": ids_uasg})
     rows = result.mappings().all() or []
 
     regioes = [
@@ -172,8 +206,27 @@ async def get_indicadores_contratos_por_tipo(
 
 @router.get("/indicadores/contratos-com-aditivos")
 async def get_indicadores_contratos_com_aditivos(
+    request: Request,
     db: AsyncSession = Depends(get_session_contratos)
 ):
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
+    
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=403, detail="UASG não definida")
+    
+    # Descobre os ID_UASG com base nos códigos
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+
+    if not ids_uasg:
+        return {
+            "tipos_contratacao": [
+                {"tipo": "Com Aditivos", "total_contratos": 0},
+                {"tipo": "Sem Aditivos", "total_contratos": 0}
+            ]
+        }
+
     query = """
         SELECT
           COUNT(DISTINCT ch.contrato_id) FILTER (WHERE ch.tipo_id IS NOT NULL AND cit.descricao ILIKE '%aditivo%') AS contratos_com_aditivos,
@@ -181,9 +234,10 @@ async def get_indicadores_contratos_com_aditivos(
         FROM contratohistorico ch
         LEFT JOIN codigoitens cit ON cit.id = ch.tipo_id
         WHERE ch.deleted_at IS NULL
+          AND ch.unidade_id = ANY(:unidade_ids)
           AND CURRENT_DATE BETWEEN ch.vigencia_inicio AND ch.vigencia_fim;
     """
-    result = await db.execute(text(query))
+    result = await db.execute(text(query), {"unidade_ids": ids_uasg})
     row = result.mappings().first() or {}
 
     contratos_com_aditivos = row.get("contratos_com_aditivos", 0) or 0
@@ -294,7 +348,6 @@ async def get_indicadores_cronograma_vencimentos(
         FROM contratos c
         WHERE
             c.vigencia_fim IS NOT NULL
-            AND CAST(c.vigencia_fim AS DATE) BETWEEN '2025-01-01' AND '2025-12-31'
             AND c.unidade_id = ANY(:ids)
             AND c.deleted_at IS NULL
         ORDER BY c.vigencia_fim
@@ -376,7 +429,7 @@ async def get_indicadores_top_fornecedores(
           )
         GROUP BY f.id, f.nome
         ORDER BY valor_total_contratos DESC 
-        LIMIT 10;
+        LIMIT 20;
     """
     result = await db.execute(text(query), {"ids": ids_uasg})
     rows = result.mappings().all() or []
@@ -826,7 +879,9 @@ async def get_indicadores_contratos_sem_empenhos(
               AND c.unidade_id = ANY(:unidade_ids)
               AND c.vigencia_inicio > '01-01-2021'
               AND c.deleted_at IS NULL
-            ORDER BY c.vigencia_fim DESC, c.valor_acumulado::numeric DESC 
+              AND c.valor_inicial IS NOT NULL
+              AND c.valor_inicial::numeric > 1
+            ORDER BY c.valor_global::numeric DESC, c.vigencia_fim ASC
             LIMIT 10;
         """)
         
@@ -952,3 +1007,148 @@ async def get_indicadores_contratos_com_clausulas(
         "total_contratos": total_contratos,
         "percentual_com_clausulas": float(row.get("percentual_com_clausulas", 0.0) or 0.0)
     }
+
+
+@router.get("/indicadores/contratos-com-responsaveis")
+async def get_indicadores_contratos_com_responsaveis(
+    request: Request,
+    db: AsyncSession = Depends(get_session_contratos)
+):
+    """
+    Endpoint para obter contratos com responsáveis atribuídos
+    """
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
+    
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=400, detail="UASG não encontrada na sessão")
+    
+    # Descobre os ID_UASG com base nos códigos
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+
+    if not ids_uasg:
+        raise HTTPException(status_code=404, detail="Nenhuma unidade encontrada para os códigos UASG fornecidos")
+
+    try:
+        query = """
+            WITH cf AS (
+              SELECT id
+              FROM contratos
+              WHERE deleted_at IS NULL
+                AND unidade_id = ANY(:unidade_ids)
+                AND situacao IS true
+                AND vigencia_inicio >= DATE '2021-01-01'
+            )
+            SELECT
+              COUNT(*) FILTER (WHERE r.ok IS NOT NULL) AS com_responsavel,
+              COUNT(*) FILTER (WHERE r.ok IS NULL)     AS sem_responsavel
+            FROM cf
+            LEFT JOIN LATERAL (
+              SELECT 1 AS ok
+              FROM contratoresponsaveis cr
+              WHERE cr.contrato_id = cf.id
+                AND cr.deleted_at IS NULL
+              LIMIT 1
+            ) r ON TRUE;
+        """
+        
+        result = await db.execute(text(query), {"unidade_ids": ids_uasg})
+        row = result.mappings().first() or {}
+
+        com_responsavel = row.get("com_responsavel", 0) or 0
+        sem_responsavel = row.get("sem_responsavel", 0) or 0
+        total = com_responsavel + sem_responsavel
+
+        tipos_responsabilidade = [
+            {
+                "tipo": "Com Responsável",
+                "total_contratos": com_responsavel
+            },
+            {
+                "tipo": "Sem Responsável",
+                "total_contratos": sem_responsavel
+            }
+        ]
+
+        return {
+            "titulo": "Contratos por Responsabilidade",
+            "subtitulo": "Distribuição de contratos com e sem responsáveis atribuídos",
+            "tipos_responsabilidade": tipos_responsabilidade,
+            "total_contratos": total,
+            "percentual_com_responsavel": round(100.0 * com_responsavel / total, 2) if total > 0 else 0.0
+        }
+
+    except Exception as e:
+        logger.error(f"Erro ao buscar contratos com responsáveis: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
+
+@router.get("/indicadores/top-responsaveis")
+async def get_indicadores_top_responsaveis(
+    request: Request,
+    db: AsyncSession = Depends(get_session_contratos)
+):
+    """
+    Endpoint para obter Top 10 responsáveis com mais contratos
+    """
+    # Check if user has root scope - bypass UASG filtering
+    user_scope = request.session.get("usuario_scope")
+    
+    uasgs = get_uasgs_str(request)
+    if not uasgs:
+        raise HTTPException(status_code=400, detail="UASG não encontrada na sessão")
+    
+    # Descobre os ID_UASG com base nos códigos
+    ids_uasg = await get_unidades_by_codigo(db, uasgs, return_type="ids")
+
+    if not ids_uasg:
+        raise HTTPException(status_code=404, detail="Nenhuma unidade encontrada para os códigos UASG fornecidos")
+
+    try:
+        query = """
+            WITH contratos_filtrados AS MATERIALIZED (
+              SELECT c.id
+              FROM contratos c
+              WHERE c.deleted_at IS NULL
+                AND c.unidade_id = ANY(:unidade_ids)
+                AND c.situacao IS true -- contratos ativos (bool)
+            ),
+            vinculos AS (
+              -- um responsável conta 1 vez por contrato
+              SELECT DISTINCT cr.user_id, cr.contrato_id
+              FROM contratoresponsaveis cr
+              JOIN contratos_filtrados cf ON cf.id = cr.contrato_id
+              WHERE cr.deleted_at IS NULL
+            )
+            SELECT
+              u.id   AS responsavel_id,
+              COALESCE(u.name, '(sem nome)') AS responsavel_nome,
+              COUNT(*) AS contratos_qtd
+            FROM vinculos v
+            LEFT JOIN users u ON u.id = v.user_id
+            GROUP BY u.id, COALESCE(u.name, '(sem nome)')
+            ORDER BY contratos_qtd DESC, responsavel_nome
+            LIMIT 10;
+        """
+        
+        result = await db.execute(text(query), {"unidade_ids": ids_uasg})
+        rows = result.mappings().all() or []
+
+        responsaveis = []
+        for row in rows:
+            responsaveis.append({
+                "responsavel_id": row.get("responsavel_id"),
+                "responsavel_nome": row.get("responsavel_nome") or "(sem nome)",
+                "contratos_qtd": row.get("contratos_qtd", 0) or 0
+            })
+
+        return {
+            "titulo": "Top 10 Responsáveis",
+            "subtitulo": "Responsáveis com maior número de contratos ativos",
+            "responsaveis": responsaveis,
+            "total_responsaveis": len(responsaveis)
+        }
+
+    except Exception as e:
+        logger.error(f"Erro ao buscar top responsáveis: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")

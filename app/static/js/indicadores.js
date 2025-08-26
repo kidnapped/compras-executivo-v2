@@ -607,14 +607,9 @@ export default {
       const mapOption = {
         tooltip: {
           trigger: "item",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#5F70A5",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
+          backgroundColor: "#084a8a",
           textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#ffffff",
           },
           formatter: (params) => {
             const nomeCompleto = estadosNomes[params.name] || params.name;
@@ -818,17 +813,10 @@ export default {
       const chartOption = {
         tooltip: {
           trigger: "axis",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#5F70A5",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
+          axisPointer: { type: "shadow" },
+          backgroundColor: "#084a8a",
           textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
-          },
-          axisPointer: {
-            type: "shadow",
+            color: "#ffffff",
           },
           formatter: (params) => {
             const data = params[0];
@@ -1111,15 +1099,9 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "shadow" },
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#1351B4",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
+          backgroundColor: "#084a8a",
           textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
-            color: "#333",
+            color: "#ffffff",
           },
           formatter: (params) => {
             if (params && params.length > 0) {
@@ -1389,14 +1371,9 @@ export default {
       const chartOption = {
         tooltip: {
           trigger: "item",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#D2691E",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
+          backgroundColor: "#084a8a",
           textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#ffffff",
           },
           formatter: (params) => {
             const valor =
@@ -1547,6 +1524,267 @@ export default {
           <div class="alert alert-danger" role="alert">
             <i class="fas fa-exclamation-triangle"></i>
             Erro ao carregar o gráfico de contratos com aditivos: ${error.message}
+          </div>
+        `;
+      }
+    }
+  },
+
+  // Função para inicializar o gráfico de contratos com cláusulas
+  async indicadores_initGraficoClausulas() {
+    try {
+      const containerId = "indicadoresClausulasContent";
+      console.log(
+        "Iniciando carregamento do gráfico de contratos com cláusulas..."
+      );
+
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        console.warn(
+          "Container do gráfico com cláusulas não encontrado:",
+          containerId
+        );
+        return;
+      }
+
+      console.log("Container encontrado, aguardando loading inicial...");
+
+      // Delay para que o loading seja bem visível
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      console.log("Buscando dados dos contratos com cláusulas...");
+
+      // Buscar dados dos contratos com cláusulas
+      const response = await fetch("/indicadores/contratos-com-clausulas");
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Preparar dados para o gráfico donut
+      const chartData = (data.tipos_contratacao || []).map((tipo) => ({
+        name: tipo.tipo,
+        value: Number(tipo.total_contratos) || 0,
+      }));
+
+      console.log("Dados do gráfico preparados:", chartData);
+
+      // Verificar se há dados para exibir
+      if (!chartData || chartData.length === 0) {
+        container.innerHTML = `
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nenhum dado de cláusulas encontrado
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível globalmente
+      if (typeof echarts === "undefined") {
+        throw new Error("ECharts não está disponível globalmente");
+      }
+
+      console.log(
+        "ECharts disponível, versão:",
+        echarts.version || "desconhecida"
+      );
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-clausulas-container">
+          <div id="indicadores-clausulas-chart"></div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById("indicadores-clausulas-chart");
+
+      // Verificar se o elemento foi criado corretamente
+      if (!chartDiv) {
+        throw new Error("Elemento do gráfico não foi criado corretamente");
+      }
+
+      console.log(
+        "Container do gráfico criado:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      // Aguardar o DOM estar totalmente renderizado
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Verificar dimensões do container
+      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
+        console.warn(
+          "Container tem dimensões inválidas, tentando forçar layout..."
+        );
+        chartDiv.style.width = "100%";
+        chartDiv.style.height = "250px";
+        chartDiv.style.display = "block";
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      // Cores para o gráfico donut (tons de verde para cláusulas, seguindo o padrão dos azuis)
+      const colors = ["#2E8B57", "#90EE90", "#98FB98", "#F0FFF0", "#FAFAFA"];
+
+      // Configuração do gráfico donut
+      const chartOption = {
+        tooltip: {
+          trigger: "item",
+          backgroundColor: "#084a8a",
+          textStyle: {
+            color: "#ffffff",
+          },
+          formatter: (params) => {
+            const valor =
+              typeof params.value === "number" && !isNaN(params.value)
+                ? params.value.toLocaleString("pt-BR")
+                : "0";
+            const percentual =
+              typeof params.percent === "number" && !isNaN(params.percent)
+                ? params.percent.toFixed(1)
+                : "0.0";
+
+            return `<div class="indicadores-tooltip">
+              <div class="indicadores-tooltip-title">
+                ${params.name}
+              </div>
+              <div class="indicadores-tooltip-value">
+                <span class="indicadores-tooltip-number">${valor}</span> contratos
+                <br>
+                <span class="indicadores-tooltip-percent">${percentual}%</span> do total
+              </div>
+            </div>`;
+          },
+        },
+        legend: {
+          bottom: "5%",
+          left: "center",
+          textStyle: {
+            fontSize: 11,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+          },
+          itemGap: 15,
+        },
+        series: [
+          {
+            name: "Contratos por Tipo de Cláusula",
+            type: "pie",
+            radius: ["40%", "70%"],
+            center: ["50%", "45%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 6,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: false,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#2E8B57",
+                formatter: (params) => {
+                  const valor =
+                    typeof params.value === "number" && !isNaN(params.value)
+                      ? params.value.toLocaleString("pt-BR")
+                      : "0";
+                  return `${params.name}\n${valor}`;
+                },
+              },
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: chartData.map((item, index) => ({
+              name: item.name,
+              value: item.value,
+              itemStyle: {
+                color: colors[index % colors.length],
+              },
+            })),
+          },
+        ],
+        backgroundColor: "transparent",
+      };
+
+      // Inicializar o chart
+      console.log("Inicializando gráfico donut ECharts...", chartData);
+      console.log(
+        "Dimensões finais do container:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      const chart = echarts.init(chartDiv);
+
+      // Verificar se o chart foi inicializado
+      if (!chart) {
+        throw new Error("Falha ao inicializar o gráfico ECharts");
+      }
+
+      console.log("Aplicando configurações do gráfico...");
+      chart.setOption(chartOption);
+
+      // Forçar o redimensionamento inicial com múltiplas tentativas
+      setTimeout(() => {
+        chart.resize();
+        console.log("Gráfico donut cláusulas redimensionado (1ª tentativa)");
+      }, 100);
+
+      setTimeout(() => {
+        chart.resize();
+        console.log("Gráfico donut cláusulas redimensionado (2ª tentativa)");
+      }, 500);
+
+      // Listener para redimensionamento
+      let resizeTimeout;
+      const resizeListener = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (chart && !chart.isDisposed()) {
+            chart.resize();
+          }
+        }, 150);
+      };
+
+      window.addEventListener("resize", resizeListener);
+
+      // Armazenar referência para cleanup
+      if (!window.indicadoresCharts) window.indicadoresCharts = {};
+      window.indicadoresCharts[containerId] = {
+        chart: chart,
+        resizeListener: resizeListener,
+      };
+
+      console.log(
+        "Gráfico donut de contratos com cláusulas inicializado com sucesso"
+      );
+    } catch (error) {
+      console.error(
+        "Erro ao inicializar gráfico de contratos com cláusulas:",
+        error
+      );
+      const container = document.getElementById("indicadoresClausulasContent");
+      if (container) {
+        container.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro ao carregar o gráfico de contratos com cláusulas: ${error.message}
           </div>
         `;
       }
@@ -1900,14 +2138,9 @@ export default {
         const option = {
           tooltip: {
             trigger: "item",
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            borderColor: "#228B22",
-            borderWidth: 2,
-            borderRadius: 8,
-            padding: [12, 16],
+            backgroundColor: "#084a8a",
             textStyle: {
-              fontSize: 14,
-              fontFamily: "Rawline, Arial, sans-serif",
+              color: "#ffffff",
             },
             formatter: (params) => {
               const valor =
@@ -2104,15 +2337,9 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "shadow" },
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#1351B4",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
+          backgroundColor: "#084a8a",
           textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
-            color: "#333",
+            color: "#ffffff",
           },
           formatter: (params) => {
             if (params && params.length > 0) {
@@ -2362,15 +2589,9 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "shadow" },
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#1351B4",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
+          backgroundColor: "#084a8a",
           textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
-            color: "#333",
+            color: "#ffffff",
           },
           formatter: (params) => {
             if (params && params.length > 0) {
@@ -2383,14 +2604,14 @@ export default {
                 </div>
                 <div class="indicadores-tooltip-value">
                   <div style="margin-bottom: 4px;">
-                    <span style="color: #1351B4;">●</span> Inicial: 
+                    <span style="color: #ffffff;">●</span> Inicial: 
                     <span class="indicadores-tooltip-number">R$ ${contract.valor_inicial.toLocaleString(
                       "pt-BR",
                       { minimumFractionDigits: 2 }
                     )}</span>
                   </div>
                   <div style="margin-bottom: 4px;">
-                    <span style="color: #e74c3c;">●</span> Global: 
+                    <span style="color: #ffffff;">●</span> Global: 
                     <span class="indicadores-tooltip-number">R$ ${contract.valor_global.toLocaleString(
                       "pt-BR",
                       { minimumFractionDigits: 2 }
@@ -2536,6 +2757,283 @@ export default {
     }
   },
 
+  // Função para inicializar o gráfico de Oportunidades (Contratos sem Empenhos)
+  async indicadores_initOportunidades() {
+    try {
+      const containerId = "indicadoresOportunidadesContent";
+      console.log(
+        "🔧 Iniciando carregamento do gráfico de oportunidades (contratos sem empenhos)..."
+      );
+
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        console.error("❌ Container não encontrado:", containerId);
+        return;
+      }
+
+      // Ensure loading state is visible
+      container.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando oportunidades</h5>
+          <p>Buscando contratos sem empenhos associados<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+        </div>
+      `;
+
+      console.log("✅ Container com loading exibido, aguardando...");
+
+      // Delay para que o loading seja bem visível
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      console.log("📡 Buscando dados dos contratos sem empenhos...");
+
+      // Buscar dados dos contratos sem empenhos
+      const response = await fetch("/indicadores/contratos-sem-empenhos");
+
+      console.log("📡 Response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("📊 Raw data received:", data);
+
+      // Preparar dados para o gráfico de barras verticais (valor inicial)
+      const chartData = (data.contratos || []).map((contrato) => ({
+        contrato_numero: contrato.contrato_numero,
+        fornecedor_nome: contrato.fornecedor_nome,
+        valor_inicial: contrato.valor_inicial,
+        valor_global: contrato.valor_global,
+        valor_acumulado: contrato.valor_acumulado,
+        valor_inicial_formatado: contrato.valor_inicial_formatado,
+        valor_acumulado_formatado: contrato.valor_acumulado_formatado,
+        vigencia_fim: contrato.vigencia_fim,
+        objeto: contrato.objeto,
+      }));
+
+      console.log("📊 Dados do gráfico preparados:", chartData);
+
+      // Verificar se há dados para exibir
+      if (!chartData || chartData.length === 0) {
+        container.innerHTML = `
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nenhum contrato sem empenho encontrado
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível globalmente
+      if (typeof echarts === "undefined") {
+        throw new Error("ECharts não está disponível globalmente");
+      }
+
+      console.log(
+        "ECharts disponível, versão:",
+        echarts.version || "desconhecida"
+      );
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-oportunidades-container">
+          <div id="indicadores-oportunidades-chart"></div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById(
+        "indicadores-oportunidades-chart"
+      );
+
+      // Verificar se o elemento foi criado corretamente
+      if (!chartDiv) {
+        throw new Error("Elemento do gráfico não foi criado corretamente");
+      }
+
+      console.log(
+        "Container do gráfico criado:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      // Aguardar o DOM estar totalmente renderizado
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Verificar dimensões do container
+      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
+        console.warn(
+          "Container tem dimensões inválidas, tentando forçar layout..."
+        );
+        chartDiv.style.width = "100%";
+        chartDiv.style.height = "250px";
+        chartDiv.style.display = "block";
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      // Preparar dados para o gráfico de barras horizontais
+      const contractLabels = chartData.map((item) => item.contrato_numero);
+      const valoresIniciais = chartData.map((item) => item.valor_inicial);
+
+      // Inicializar o chart
+      const chart = echarts.init(chartDiv);
+
+      // Configuração do gráfico de barras horizontais
+      const chartOption = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          backgroundColor: "#084a8a",
+          textStyle: {
+            color: "#ffffff",
+          },
+          formatter: (params) => {
+            if (params && params.length > 0) {
+              const contractIndex = params[0].dataIndex;
+              const contract = chartData[contractIndex];
+
+              return `<div class="indicadores-tooltip">
+                <div class="indicadores-tooltip-title">
+                  Contrato ${contract.contrato_numero}
+                </div>
+                <div class="indicadores-tooltip-value">
+                  <div style="margin-bottom: 4px;">
+                    <strong>Fornecedor:</strong> ${contract.fornecedor_nome}
+                  </div>
+                  <div style="margin-bottom: 4px;">
+                    <strong>Valor Inicial:</strong> 
+                    <span class="indicadores-tooltip-number">${
+                      contract.valor_inicial_formatado
+                    }</span>
+                  </div>
+                  <div style="margin-bottom: 4px;">
+                    <strong>Vigência até:</strong> ${new Date(
+                      contract.vigencia_fim
+                    ).toLocaleDateString("pt-BR")}
+                  </div>
+                  <div style="margin-bottom: 4px; font-size: 12px; color: #ffffff;">
+                    ${
+                      contract.objeto
+                        ? contract.objeto.substring(0, 80) +
+                          (contract.objeto.length > 80 ? "..." : "")
+                        : "Sem descrição"
+                    }
+                  </div>
+                </div>
+              </div>`;
+            }
+            return "";
+          },
+        },
+        grid: {
+          left: "0%",
+          right: "0%",
+          bottom: "15%",
+          top: "5%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: contractLabels,
+          axisLabel: {
+            rotate: 45,
+            fontSize: 11,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+            interval: 0,
+            formatter: (value) => {
+              // Truncar números de contrato muito longos
+              return value.length > 12 ? value.substring(0, 12) + "..." : value;
+            },
+          },
+          axisLine: {
+            lineStyle: {
+              color: "#e0e0e0",
+            },
+          },
+        },
+        yAxis: {
+          type: "value",
+          axisLabel: {
+            show: false,
+          },
+          splitLine: {
+            show: false,
+          },
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+        },
+        series: [
+          {
+            name: "Valor Inicial",
+            type: "bar",
+            data: valoresIniciais,
+            itemStyle: {
+              color: "#28a745", // Cor verde para oportunidades
+              borderRadius: [4, 4, 0, 0],
+            },
+            barMaxWidth: 30,
+            emphasis: {
+              itemStyle: {
+                color: "#218838", // Cor mais escura no hover
+              },
+            },
+          },
+        ],
+      };
+
+      // Aplicar configuração
+      chart.setOption(chartOption);
+
+      // Setup de responsividade
+      let resizeTimeout;
+      const resizeListener = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (chart && !chart.isDisposed()) {
+            chart.resize();
+          }
+        }, 150);
+      };
+
+      window.addEventListener("resize", resizeListener);
+
+      // Armazenar referência para cleanup
+      if (!window.indicadoresCharts) window.indicadoresCharts = {};
+      window.indicadoresCharts["indicadoresOportunidadesContent"] = {
+        chart: chart,
+        resizeListener: resizeListener,
+      };
+
+      console.log(
+        "✅ Gráfico de oportunidades (contratos sem empenhos) inicializado com sucesso"
+      );
+    } catch (error) {
+      console.error("❌ Erro ao inicializar gráfico de oportunidades:", error);
+
+      // Mostrar mensagem de erro no container
+      const container = document.getElementById(
+        "indicadoresOportunidadesContent"
+      );
+      if (container) {
+        container.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro ao carregar gráfico: ${error.message}
+          </div>
+        `;
+      }
+    }
+  },
+
   // Função para inicializar o gráfico de Evolução Financeira (Projeção de Valores Mensais)
   async indicadores_initEvolucaoFinanceira() {
     try {
@@ -2628,15 +3126,9 @@ export default {
       const option = {
         tooltip: {
           trigger: "axis",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#1351B4",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
+          backgroundColor: "#084a8a",
           textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
-            color: "#333",
+            color: "#ffffff",
           },
           formatter: (params) => {
             const item = params[0];
@@ -2913,14 +3405,9 @@ export default {
       const chartOption = {
         tooltip: {
           trigger: "item",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#2E8B57",
-          borderWidth: 2,
-          borderRadius: 8,
-          padding: [12, 16],
+          backgroundColor: "#084a8a",
           textStyle: {
-            fontSize: 14,
-            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#ffffff",
           },
           formatter: (params) => {
             const dataIndex = params.dataIndex;
@@ -3043,6 +3530,544 @@ export default {
           <div class="alert alert-danger" role="alert">
             <i class="fas fa-exclamation-triangle"></i>
             Erro ao carregar valores por categoria
+          </div>
+        `;
+      }
+    }
+  },
+
+  // Função para inicializar o gráfico de Eficiência Processual (Contratos com Responsáveis)
+  async indicadores_initEficiencia() {
+    try {
+      const containerId = "indicadoresEficienciaContent";
+      console.log(
+        "🔧 Iniciando carregamento do gráfico de eficiência processual..."
+      );
+
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        console.error("❌ Container não encontrado:", containerId);
+        return;
+      }
+
+      // Ensure loading state is visible
+      container.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando eficiência processual</h5>
+          <p>Analisando contratos com responsáveis<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+        </div>
+      `;
+
+      // Delay para que o loading seja bem visível
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      console.log("🔧 Buscando dados de contratos com responsáveis...");
+
+      // Buscar dados do endpoint
+      const response = await fetch("/indicadores/contratos-com-responsaveis");
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Preparar dados para o gráfico donut
+      const chartData = (data.tipos_responsabilidade || []).map((tipo) => ({
+        name: tipo.tipo,
+        value: Number(tipo.total_contratos) || 0,
+      }));
+
+      console.log("📊 Dados do gráfico preparados:", chartData);
+
+      // Verificar se há dados para exibir
+      if (!chartData || chartData.length === 0) {
+        container.innerHTML = `
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nenhum dado de responsabilidade encontrado
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível globalmente
+      if (typeof echarts === "undefined") {
+        throw new Error("ECharts não está disponível globalmente");
+      }
+
+      console.log(
+        "ECharts disponível, versão:",
+        echarts.version || "desconhecida"
+      );
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-eficiencia-container">
+          <div id="indicadores-eficiencia-chart"></div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById("indicadores-eficiencia-chart");
+
+      // Verificar se o elemento foi criado corretamente
+      if (!chartDiv) {
+        throw new Error("Elemento do gráfico não foi criado corretamente");
+      }
+
+      console.log(
+        "Container do gráfico criado:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      // Aguardar o DOM estar totalmente renderizado
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Verificar dimensões do container
+      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
+        console.warn(
+          "Container tem dimensões inválidas, tentando forçar layout..."
+        );
+        chartDiv.style.width = "100%";
+        chartDiv.style.height = "250px";
+        chartDiv.style.display = "block";
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      // Cores para o gráfico donut (tons de roxo para eficiência)
+      const colors = ["#6A5ACD", "#9370DB", "#DDA0DD", "#E6E6FA", "#F8F8FF"];
+
+      // Configuração do gráfico donut
+      const chartOption = {
+        tooltip: {
+          trigger: "item",
+          backgroundColor: "#084a8a",
+          textStyle: {
+            color: "#ffffff",
+          },
+          formatter: (params) => {
+            const valor =
+              typeof params.value === "number" && !isNaN(params.value)
+                ? params.value.toLocaleString("pt-BR")
+                : "0";
+            const percentual =
+              typeof params.percent === "number" && !isNaN(params.percent)
+                ? params.percent.toFixed(1)
+                : "0.0";
+
+            return `<div class="indicadores-tooltip">
+              <div class="indicadores-tooltip-title">
+                ${params.name}
+              </div>
+              <div class="indicadores-tooltip-value">
+                <span class="indicadores-tooltip-number">${valor}</span> contratos
+                <br>
+                <span class="indicadores-tooltip-percent">${percentual}%</span> do total
+              </div>
+            </div>`;
+          },
+        },
+        legend: {
+          bottom: "5%",
+          left: "center",
+          textStyle: {
+            fontSize: 11,
+            fontFamily: "Rawline, Arial, sans-serif",
+            color: "#333",
+          },
+          itemGap: 15,
+        },
+        series: [
+          {
+            name: "Contratos por Responsabilidade",
+            type: "pie",
+            radius: ["40%", "70%"],
+            center: ["50%", "45%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 6,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: false,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#6A5ACD",
+                formatter: (params) => {
+                  const valor =
+                    typeof params.value === "number" && !isNaN(params.value)
+                      ? params.value.toLocaleString("pt-BR")
+                      : "0";
+                  return `${params.name}\n${valor}`;
+                },
+              },
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: chartData.map((item, index) => ({
+              name: item.name,
+              value: item.value,
+              itemStyle: {
+                color: colors[index % colors.length],
+              },
+            })),
+          },
+        ],
+        backgroundColor: "transparent",
+      };
+
+      // Inicializar o chart
+      console.log("Inicializando gráfico donut ECharts...", chartData);
+      console.log(
+        "Dimensões finais do container:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      const chart = echarts.init(chartDiv);
+
+      // Verificar se o chart foi inicializado
+      if (!chart) {
+        throw new Error("Falha ao inicializar o gráfico ECharts");
+      }
+
+      console.log("Aplicando configurações do gráfico...");
+      chart.setOption(chartOption);
+
+      // Forçar o redimensionamento inicial com múltiplas tentativas
+      setTimeout(() => {
+        chart.resize();
+        console.log("Gráfico donut eficiência redimensionado (1ª tentativa)");
+      }, 100);
+
+      setTimeout(() => {
+        chart.resize();
+        console.log("Gráfico donut eficiência redimensionado (2ª tentativa)");
+      }, 500);
+
+      // Listener para redimensionamento
+      let resizeTimeout;
+      const resizeListener = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (chart && !chart.isDisposed()) {
+            chart.resize();
+          }
+        }, 150);
+      };
+
+      window.addEventListener("resize", resizeListener);
+
+      // Armazenar referência para cleanup
+      if (!window.indicadoresCharts) window.indicadoresCharts = {};
+      window.indicadoresCharts[containerId] = {
+        chart: chart,
+        resizeListener: resizeListener,
+      };
+
+      console.log(
+        "Gráfico donut de eficiência processual inicializado com sucesso"
+      );
+    } catch (error) {
+      console.error(
+        "Erro ao inicializar gráfico de eficiência processual:",
+        error
+      );
+      const container = document.getElementById("indicadoresEficienciaContent");
+      if (container) {
+        container.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro ao carregar o gráfico de eficiência processual: ${error.message}
+          </div>
+        `;
+      }
+    }
+  },
+
+  // Função para inicializar o gráfico de distribuição de carga de trabalho (Top Responsáveis)
+  async indicadores_initModalidades() {
+    try {
+      const containerId = "indicadoresModalidadesContent";
+      console.log(
+        "Iniciando carregamento do gráfico de distribuição de carga de trabalho..."
+      );
+
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        console.warn(
+          "Container do gráfico modalidades não encontrado:",
+          containerId
+        );
+        return;
+      }
+
+      console.log("Container encontrado, aguardando loading inicial...");
+
+      // Delay para que o loading seja bem visível
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      console.log("Buscando dados de distribuição de carga de trabalho...");
+
+      // Buscar dados dos top responsáveis
+      const response = await fetch("/indicadores/top-responsaveis");
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Preparar dados para o gráfico de barras
+      const chartData = (data.responsaveis || []).map((responsavel) => ({
+        name: responsavel.responsavel_nome,
+        value: Number(responsavel.contratos_qtd) || 0,
+      }));
+
+      console.log("Dados de distribuição de carga preparados:", chartData);
+
+      // Verificar se há dados para exibir
+      if (!chartData || chartData.length === 0) {
+        container.innerHTML = `
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            Nenhum responsável encontrado
+          </div>
+        `;
+        return;
+      }
+
+      // Verificar se echarts está disponível globalmente
+      if (typeof echarts === "undefined") {
+        throw new Error("ECharts não está disponível globalmente");
+      }
+
+      console.log(
+        "ECharts disponível, versão:",
+        echarts.version || "desconhecida"
+      );
+
+      // Criar container para o gráfico
+      container.innerHTML = `
+        <div class="indicadores-modalidades-container">
+          <div id="indicadores-modalidades-chart"></div>
+        </div>
+      `;
+
+      const chartDiv = document.getElementById("indicadores-modalidades-chart");
+
+      // Verificar se o elemento foi criado corretamente
+      if (!chartDiv) {
+        throw new Error("Elemento do gráfico não foi criado corretamente");
+      }
+
+      console.log(
+        "Container do gráfico criado:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      // Aguardar o DOM estar totalmente renderizado
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Verificar dimensões do container
+      if (chartDiv.offsetWidth === 0 || chartDiv.offsetHeight === 0) {
+        console.warn(
+          "Container tem dimensões inválidas, tentando forçar layout..."
+        );
+        chartDiv.style.width = "100%";
+        chartDiv.style.height = "300px";
+        chartDiv.style.display = "block";
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      // Preparar dados para o gráfico de barras horizontais
+      const chartLabels = chartData.map((item) => item.name);
+      const chartValues = chartData.map((item) => item.value);
+
+      // Cores para o gráfico de barras (tons de azul governo)
+      const colors = [
+        "#1351B4",
+        "#0E4B99",
+        "#5F70A5",
+        "#8B9ED6",
+        "#A2B2E3",
+        "#C4D3F0",
+        "#E3EAFC",
+        "#F1F5FE",
+        "#F8FAFF",
+        "#FFFFFF",
+      ];
+
+      // Configuração do gráfico de barras horizontais
+      const chartOption = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          backgroundColor: "#084a8a",
+          textStyle: {
+            color: "#ffffff",
+          },
+          formatter: (params) => {
+            const param = params[0];
+            const valor =
+              typeof param.value === "number" && !isNaN(param.value)
+                ? param.value.toLocaleString("pt-BR")
+                : "0";
+
+            return `<div class="indicadores-tooltip">
+              <div class="indicadores-tooltip-title">
+                ${param.name}
+              </div>
+              <div class="indicadores-tooltip-value">
+                <span class="indicadores-tooltip-number">${valor}</span> contratos
+              </div>
+            </div>`;
+          },
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          top: "5%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "value",
+          axisLabel: {
+            formatter: (value) => value.toLocaleString("pt-BR"),
+            fontSize: 11,
+          },
+        },
+        yAxis: {
+          type: "category",
+          data: chartLabels,
+          axisLabel: {
+            fontSize: 11,
+            fontWeight: "normal",
+            formatter: (value) => {
+              // Truncar nomes muito longos
+              return value.length > 20 ? value.substring(0, 17) + "..." : value;
+            },
+          },
+        },
+        series: [
+          {
+            name: "Contratos por Responsável",
+            type: "bar",
+            data: chartData.map((item, index) => ({
+              name: item.name,
+              value: item.value,
+              itemStyle: {
+                color: colors[index % colors.length],
+                borderRadius: [0, 4, 4, 0],
+              },
+            })),
+            label: {
+              show: true,
+              position: "right",
+              formatter: (params) => params.value.toLocaleString("pt-BR"),
+              fontSize: 11,
+              fontWeight: "bold",
+              color: "#333",
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+          },
+        ],
+        backgroundColor: "transparent",
+      };
+
+      // Inicializar o chart
+      console.log("Inicializando gráfico ECharts...", chartData);
+      console.log(
+        "Dimensões finais do container:",
+        chartDiv.offsetWidth,
+        "x",
+        chartDiv.offsetHeight
+      );
+
+      const chart = echarts.init(chartDiv);
+
+      // Verificar se o chart foi inicializado
+      if (!chart) {
+        throw new Error("Falha ao inicializar o gráfico ECharts");
+      }
+
+      console.log("Aplicando configurações do gráfico...");
+      chart.setOption(chartOption);
+
+      // Forçar o redimensionamento inicial com múltiplas tentativas
+      setTimeout(() => {
+        chart.resize();
+        console.log("Gráfico modalidades redimensionado (1ª tentativa)");
+      }, 100);
+
+      setTimeout(() => {
+        chart.resize();
+        console.log("Gráfico modalidades redimensionado (2ª tentativa)");
+      }, 500);
+
+      // Listener para redimensionamento
+      let resizeTimeout;
+      const resizeListener = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (chart && !chart.isDisposed()) {
+            chart.resize();
+          }
+        }, 150);
+      };
+
+      window.addEventListener("resize", resizeListener);
+
+      // Armazenar referência para cleanup
+      if (!window.indicadoresCharts) window.indicadoresCharts = {};
+      window.indicadoresCharts[containerId] = {
+        chart: chart,
+        resizeListener: resizeListener,
+      };
+
+      console.log(
+        "Gráfico de distribuição de carga de trabalho inicializado com sucesso"
+      );
+    } catch (error) {
+      console.error(
+        "Erro ao inicializar gráfico de distribuição de carga:",
+        error
+      );
+      const container = document.getElementById(
+        "indicadoresModalidadesContent"
+      );
+      if (container) {
+        container.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro ao carregar gráfico de distribuição de carga: ${error.message}
           </div>
         `;
       }
@@ -3280,24 +4305,45 @@ export default {
       const calendarContainer = document.createElement("div");
       calendarContainer.className = "indicadores-calendar-container";
 
-      // Create calendar HTML structure
+      // Create calendar HTML structure with two months
       calendarContainer.innerHTML = `
         <div class="indicadores-calendar-header">
           <button id="indicadores-prev-month" type="button"><i class="fa-solid fa-chevron-left"></i></button>
-          <h3 id="indicadores-current-month-year">Janeiro 2025</h3>
+          <div class="indicadores-months-display">
+            <h3 id="indicadores-current-month-year">Janeiro 2025</h3>
+            <h3 id="indicadores-next-month-year">Fevereiro 2025</h3>
+          </div>
           <button id="indicadores-next-month" type="button"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-        <div class="indicadores-weekdays">
-          <div><span class="weekday-full">Segunda</span><span class="weekday-short">Seg</span></div>
-          <div><span class="weekday-full">Terça</span><span class="weekday-short">Ter</span></div>
-          <div><span class="weekday-full">Quarta</span><span class="weekday-short">Qua</span></div>
-          <div><span class="weekday-full">Quinta</span><span class="weekday-short">Qui</span></div>
-          <div><span class="weekday-full">Sexta</span><span class="weekday-short">Sex</span></div>
-          <div><span class="weekday-full">Sábado</span><span class="weekday-short">Sáb</span></div>
-          <div><span class="weekday-full">Domingo</span><span class="weekday-short">Dom</span></div>
-        </div>
-        <div class="indicadores-days" id="indicadores-calendar-days">
-          <!-- Days will be populated by JavaScript -->
+        <div class="indicadores-dual-calendar">
+          <div class="indicadores-month-container">
+            <div class="indicadores-weekdays">
+              <div><span class="weekday-full">Segunda</span><span class="weekday-short">Seg</span></div>
+              <div><span class="weekday-full">Terça</span><span class="weekday-short">Ter</span></div>
+              <div><span class="weekday-full">Quarta</span><span class="weekday-short">Qua</span></div>
+              <div><span class="weekday-full">Quinta</span><span class="weekday-short">Qui</span></div>
+              <div><span class="weekday-full">Sexta</span><span class="weekday-short">Sex</span></div>
+              <div><span class="weekday-full">Sábado</span><span class="weekday-short">Sáb</span></div>
+              <div><span class="weekday-full">Domingo</span><span class="weekday-short">Dom</span></div>
+            </div>
+            <div class="indicadores-days" id="indicadores-calendar-days-current">
+              <!-- Current month days will be populated by JavaScript -->
+            </div>
+          </div>
+          <div class="indicadores-month-container">
+            <div class="indicadores-weekdays">
+              <div><span class="weekday-full">Segunda</span><span class="weekday-short">Seg</span></div>
+              <div><span class="weekday-full">Terça</span><span class="weekday-short">Ter</span></div>
+              <div><span class="weekday-full">Quarta</span><span class="weekday-short">Qua</span></div>
+              <div><span class="weekday-full">Quinta</span><span class="weekday-short">Qui</span></div>
+              <div><span class="weekday-full">Sexta</span><span class="weekday-short">Sex</span></div>
+              <div><span class="weekday-full">Sábado</span><span class="weekday-short">Sáb</span></div>
+              <div><span class="weekday-full">Domingo</span><span class="weekday-short">Dom</span></div>
+            </div>
+            <div class="indicadores-days" id="indicadores-calendar-days-next">
+              <!-- Next month days will be populated by JavaScript -->
+            </div>
+          </div>
         </div>
         <div class="indicadores-calendar-legend">
           <div class="indicadores-legend-item">
@@ -3331,8 +4377,8 @@ export default {
         monthlyData: this.calculateMonthlyContractCounts(contractsData),
       };
 
-      // Render initial calendar
-      this.renderCalendar(
+      // Render initial calendar (both months)
+      this.renderDualCalendar(
         this.calendarState.currentDate,
         this.calendarState.contractsData
       );
@@ -3344,7 +4390,7 @@ export default {
           this.calendarState.currentDate.setMonth(
             this.calendarState.currentDate.getMonth() - 1
           );
-          this.renderCalendar(
+          this.renderDualCalendar(
             this.calendarState.currentDate,
             this.calendarState.contractsData
           );
@@ -3356,7 +4402,7 @@ export default {
           this.calendarState.currentDate.setMonth(
             this.calendarState.currentDate.getMonth() + 1
           );
-          this.renderCalendar(
+          this.renderDualCalendar(
             this.calendarState.currentDate,
             this.calendarState.contractsData
           );
@@ -3464,20 +4510,19 @@ export default {
     return `rgb(${red}, ${green}, ${blue})`;
   },
 
-  // Render calendar for a specific month
-  renderCalendar(date, contracts) {
-    const calendarDays = document.getElementById("indicadores-calendar-days");
+  // Render dual calendar for two consecutive months
+  renderDualCalendar(date, contracts) {
     const currentMonthYear = document.getElementById(
       "indicadores-current-month-year"
     );
+    const nextMonthYear = document.getElementById(
+      "indicadores-next-month-year"
+    );
 
-    if (!calendarDays || !currentMonthYear) {
+    if (!currentMonthYear || !nextMonthYear) {
       console.error("❌ Elementos do calendário não encontrados");
       return;
     }
-
-    // Clear previous calendar
-    calendarDays.innerHTML = "";
 
     // Brazilian month names
     const monthsFull = [
@@ -3495,10 +4540,48 @@ export default {
       "Dezembro",
     ];
 
-    // Set current month and year in header
+    // Current month
+    const currentDate = new Date(date);
+
+    // Next month
+    const nextDate = new Date(date);
+    nextDate.setMonth(nextDate.getMonth() + 1);
+
+    // Set headers
     currentMonthYear.textContent = `${
-      monthsFull[date.getMonth()]
-    } ${date.getFullYear()}`;
+      monthsFull[currentDate.getMonth()]
+    } ${currentDate.getFullYear()}`;
+
+    nextMonthYear.textContent = `${
+      monthsFull[nextDate.getMonth()]
+    } ${nextDate.getFullYear()}`;
+
+    // Render current month
+    this.renderSingleMonth(
+      currentDate,
+      contracts,
+      "indicadores-calendar-days-current"
+    );
+
+    // Render next month
+    this.renderSingleMonth(
+      nextDate,
+      contracts,
+      "indicadores-calendar-days-next"
+    );
+  },
+
+  // Render calendar for a specific month (updated to work with dual calendar)
+  renderSingleMonth(date, contracts, containerId) {
+    const calendarDays = document.getElementById(containerId);
+
+    if (!calendarDays) {
+      console.error(`❌ Container ${containerId} não encontrado`);
+      return;
+    }
+
+    // Clear previous calendar
+    calendarDays.innerHTML = "";
 
     // Create a new date for the first day of the month
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -3593,6 +4676,12 @@ export default {
     }
   },
 
+  // Legacy render calendar function (kept for compatibility)
+  renderCalendar(date, contracts) {
+    // For backward compatibility, use the dual calendar approach
+    this.renderDualCalendar(date, contracts);
+  },
+
   // Create a day element for the calendar
   createDayElement(dayNumber, isOtherMonth, isToday, contracts) {
     const dayElement = document.createElement("div");
@@ -3673,11 +4762,12 @@ export default {
   },
 
   // Show modal with contract details
-  showContractModal(contract) {
+  showContractModal(contract, context = null) {
     console.log("🔧 showContractModal called with contract:", contract);
     console.log("📊 Contract details:", contract.details);
     console.log("📅 Contract date:", contract.date);
     console.log("🏷️ Contract name:", contract.name);
+    console.log("🔄 Context:", context);
 
     // Ensure modal manager is available
     if (!window.App) window.App = {};
@@ -3740,163 +4830,433 @@ export default {
     // Create modal content
     const modalContent = `
       <div class="contract-modal-content">
+        <!-- Priority Badge Header -->
         <div class="contract-header">
-          <div class="contract-title">
-            <span class="contract-priority" style="
-              background-color: ${getPriorityColor(contract.priority)};
-              color: white;
-              padding: 2px 8px;
-              border-radius: 12px;
-              font-size: 12px;
-              font-weight: bold;
-            ">${getPriorityText(contract.priority)}</span>
+          <span class="contract-priority-badge" style="
+            background-color: ${getPriorityColor(contract.priority)};
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+          ">
+            <i class="fas fa-exclamation-triangle" style="font-size: 12px;"></i>
+            ${getPriorityText(contract.priority)}
+          </span>
+          <div class="contract-expiry-date" style="
+            background-color: ${
+              daysUntilExpiration <= 30 ? "#fff5f5" : "#f0f9ff"
+            };
+            color: ${daysUntilExpiration <= 30 ? "#e74c3c" : "#1351B4"};
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid ${
+              daysUntilExpiration <= 30 ? "#fecaca" : "#bfdbfe"
+            };
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-align: right;
+          ">
+            <i class="fas fa-calendar-alt" style="font-size: 12px;"></i>
+            <div>
+              <div style="font-weight: 500; font-size: 12px; opacity: 0.8;">Data de Vencimento</div>
+              <div style="font-weight: 600; font-size: 13px;">
+                ${formatDate(contract.date)}
+                ${
+                  daysUntilExpiration > 0
+                    ? `(${daysUntilExpiration} dias restantes)`
+                    : "(Vencido)"
+                }
+              </div>
+            </div>
           </div>
         </div>
         
-        <div class="contract-summary" style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
-          <h5 style="margin: 0 0 10px 0; color: #1351B4; font-size: 16px;">📋 Resumo do Contrato</h5>
-          <p style="margin: 5px 0; color: #666;">
-            <strong>Status:</strong> ${
-              daysUntilExpiration > 0
-                ? `⏰ Vence em ${daysUntilExpiration} dias`
-                : "⚠️ Contrato vencido"
-            }
-          </p>
-        </div>
-        <div class="detail-row" style="margin-bottom: 15px;">
-            <strong>🔄 Prorrogável:</strong>
-            <span style="
-              padding: 4px 8px; 
-              border-radius: 12px; 
-              font-size: 12px; 
-              font-weight: bold;
-              background-color: ${
-                contract.details.prorrogavel === true ? "#d4edda" : "#f8d7da"
-              };
-              color: ${
-                contract.details.prorrogavel === true ? "#155724" : "#721c24"
-              };
-              border: 1px solid ${
-                contract.details.prorrogavel === true ? "#c3e6cb" : "#f5c6cb"
-              };
+        <!-- Contract Summary Card -->
+        <div class="contract-summary-card" style="
+          margin-top: 20px; 
+          padding: 20px; 
+          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+          border-radius: 12px; 
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        ">
+          <h5 style="
+            margin: 0 0 15px 0; 
+            color: #1351B4; 
+            font-size: 18px; 
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          ">
+            <i class="fas fa-file-contract" style="color: #1351B4;"></i>
+            RESUMO DO CONTRATO
+          </h5>
+          
+          <!-- Status and Prorrogável Row -->
+          <div class="info-row" style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            flex-wrap: wrap;
+            gap: 16px;
+          ">
+            <!-- Status Section -->
+            <div style="
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              flex: 1;
+              min-width: 200px;
             ">
-              ${contract.details.prorrogavel === true ? "✅ Sim" : "❌ Não"}
-            </span>
+              <div style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #64748b;
+                font-weight: 500;
+                font-size: 14px;
+              ">
+                <i class="fas fa-info-circle" style="width: 16px;"></i>
+                Status:
+              </div>
+              <div style="
+                color: ${daysUntilExpiration <= 30 ? "#e74c3c" : "#059669"};
+                font-weight: 600;
+                font-size: 14px;
+              ">
+                ${
+                  daysUntilExpiration > 0
+                    ? `Vence em ${daysUntilExpiration} dias`
+                    : "Contrato vencido"
+                }
+              </div>
+            </div>
+            
+            <!-- Prorrogável Section -->
+            <div style="
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              flex-shrink: 0;
+            ">
+              <div style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #64748b;
+                font-weight: 500;
+                font-size: 14px;
+              ">
+                <i class="fas fa-sync-alt" style="width: 16px;"></i>
+                Prorrogável:
+              </div>
+              <span style="
+                padding: 4px 10px; 
+                border-radius: 16px; 
+                font-size: 12px; 
+                font-weight: 600;
+                background-color: ${
+                  contract.details.prorrogavel === true ? "#dcfce7" : "#fef2f2"
+                };
+                color: ${
+                  contract.details.prorrogavel === true ? "#166534" : "#991b1b"
+                };
+                border: 1px solid ${
+                  contract.details.prorrogavel === true ? "#bbf7d0" : "#fecaca"
+                };
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+              ">
+                <i class="fas fa-${
+                  contract.details.prorrogavel === true ? "check" : "times"
+                }" style="font-size: 10px;"></i>
+                ${contract.details.prorrogavel === true ? "Sim" : "Não"}
+              </span>
+            </div>
           </div>
+        </div>
 
-        <div class="contract-details" style="margin-top: 20px;">
-         
+        <!-- Contract Details Grid -->
+        <div class="contract-details-grid" style="
+          margin-top: 20px;
+          display: grid;
+          gap: 16px;
+          grid-template-columns: 1fr;
+        ">
           
-          <div class="detail-row" style="margin-bottom: 15px;">
-            <strong>📅 Data de Vencimento:</strong>
-            <span style="color: ${
-              daysUntilExpiration <= 30 ? "#e74c3c" : "#333"
-            };">
-              ${formatDate(contract.date)}
-              ${
-                daysUntilExpiration > 0
-                  ? `(${daysUntilExpiration} dias restantes)`
-                  : "(Vencido)"
-              }
-            </span>
+          <!-- Inline Details: Unit, Initial Value, Global Value -->
+          <div class="inline-details-row" style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+          ">
+            ${
+              contract.details.unidade_id
+                ? `
+            <!-- Unit Details -->
+            <div class="detail-card" style="
+              padding: 16px;
+              background-color: white;
+              border-radius: 8px;
+              border: 1px solid #e2e8f0;
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            ">
+              <div class="detail-header" style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+                color: #1351B4;
+                font-weight: 600;
+                font-size: 14px;
+              ">
+                <i class="fas fa-building"></i>
+                Unidade
+              </div>
+              <div style="color: #374151; font-size: 15px; font-weight: 500;">
+                ${contract.details.unidade_id}
+              </div>
+            </div>
+            `
+                : ""
+            }
+            
+            ${
+              contract.details.valor_inicial &&
+              contract.details.valor_inicial > 0
+                ? `
+            <!-- Initial Value -->
+            <div class="detail-card" style="
+              padding: 16px;
+              background-color: white;
+              border-radius: 8px;
+              border: 1px solid #e2e8f0;
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            ">
+              <div class="detail-header" style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+                color: #1351B4;
+                font-weight: 600;
+                font-size: 14px;
+              ">
+                <i class="fas fa-dollar-sign"></i>
+                Valor Inicial
+              </div>
+              <div style="color: #059669; font-size: 16px; font-weight: 600;">
+                ${formatCurrency(contract.details.valor_inicial)}
+              </div>
+            </div>
+            `
+                : ""
+            }
+            
+            ${
+              contract.details.valor_global && contract.details.valor_global > 0
+                ? `
+            <!-- Global Value -->
+            <div class="detail-card" style="
+              padding: 16px;
+              background-color: white;
+              border-radius: 8px;
+              border: 1px solid #e2e8f0;
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            ">
+              <div class="detail-header" style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+                color: #1351B4;
+                font-weight: 600;
+                font-size: 14px;
+              ">
+                <i class="fas fa-coins"></i>
+                Valor Global
+              </div>
+              <div style="color: #059669; font-size: 16px; font-weight: 600;">
+                ${formatCurrency(contract.details.valor_global)}
+              </div>
+            </div>
+            `
+                : ""
+            }
           </div>
           
-          ${
-            contract.details.unidade_id
-              ? `
-          <div class="detail-row" style="margin-bottom: 15px;">
-            <strong>🏢 Unidade:</strong>
-            <span>${contract.details.unidade_id}</span>
-          </div>
-          `
-              : ""
-          }
-          
-          ${
-            contract.details.valor_inicial && contract.details.valor_inicial > 0
-              ? `
-          <div class="detail-row" style="margin-bottom: 15px;">
-            <strong>💰 Valor Inicial:</strong>
-            <span>${formatCurrency(contract.details.valor_inicial)}</span>
-          </div>
-          `
-              : ""
-          }
-          
-          ${
-            contract.details.valor_global && contract.details.valor_global > 0
-              ? `
-          <div class="detail-row" style="margin-bottom: 15px;">
-            <strong>💸 Valor Global:</strong>
-            <span>${formatCurrency(contract.details.valor_global)}</span>
-          </div>
-          `
-              : ""
-          }
-          
-          ${
-            contract.details.objeto && contract.details.objeto.trim()
-              ? `
-          <div class="detail-row" style="margin-bottom: 15px;">
-            <strong>📋 Objeto:</strong>
-            <div style="margin-top: 5px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; border-left: 3px solid #1351B4; line-height: 1.5;">
+        </div>
+        
+        ${
+          contract.details.objeto && contract.details.objeto.trim()
+            ? `
+        <!-- Object Description -->
+        <div class="object-section" style="margin-top: 20px;">
+          <div class="detail-card" style="
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          ">
+            <div class="detail-header" style="
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              margin-bottom: 12px;
+              color: #1351B4;
+              font-weight: 600;
+              font-size: 14px;
+            ">
+              <i class="fas fa-clipboard-list"></i>
+              Objeto
+            </div>
+            <div style="
+              color: #374151;
+              line-height: 1.6;
+              font-size: 14px;
+              padding: 12px;
+              background-color: #f8fafc;
+              border-radius: 6px;
+              border-left: 4px solid #1351B4;
+            ">
               ${contract.details.objeto}
             </div>
           </div>
+        </div>
+        `
+            : ""
+        }
+        
+        <!-- Action Buttons -->
+        <div class="contract-actions" style="
+          margin-top: 25px; 
+          padding-top: 20px; 
+          border-top: 1px solid #e2e8f0;
+          display: flex;
+          gap: 12px;
+          justify-content: ${
+            context && context.fromList ? "space-between" : "flex-end"
+          };
+        ">
+          ${
+            context && context.fromList
+              ? `
+          <!-- Back Button (only when opened from list) -->
+          <button type="button" id="back-to-list-btn" style="
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+          ">
+            <i class="fas fa-arrow-left" style="font-size: 12px;"></i>
+            Voltar à Lista
+          </button>
           `
               : ""
           }
-
           
-        </div>
-        
-        <div class="contract-actions" style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #ddd;">
-          <button type="button" class="btn btn-primary" id="contract-details-btn" style="
-            background-color: #1351B4;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-          ">Ver Detalhes</button>
-          <button type="button" class="btn btn-secondary" onclick="window.App.modalManager.close()" style="
-            background-color: #6c757d;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-          ">Fechar</button>
+          <div style="display: flex; gap: 12px;">
+            <button type="button" class="btn btn-primary" id="contract-details-btn" style="
+              background: linear-gradient(135deg, #1351B4 0%, #0f3f8f 100%);
+              border: none;
+              color: white;
+              padding: 10px 20px;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 14px;
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+              transition: all 0.2s ease;
+              box-shadow: 0 2px 4px rgba(19, 81, 180, 0.2);
+            ">
+              <i class="fas fa-external-link-alt" style="font-size: 12px;"></i>
+              Ver Detalhes
+            </button>
+            <button type="button" onclick="window.App.modalManager.close()" style="
+              background-color: #f8fafc;
+              border: 1px solid #e2e8f0;
+              color: #64748b;
+              padding: 10px 20px;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 500;
+              font-size: 14px;
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+              transition: all 0.2s ease;
+            ">
+              <i class="fas fa-times" style="font-size: 12px;"></i>
+              Fechar
+            </button>
+          </div>
         </div>
       </div>
       
       <style>
         .contract-modal-content {
-          font-family: "Rawline", Arial, sans-serif;
+          font-family: "Rawline", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          max-width: 600px;
+          margin: 0 auto;
         }
         .contract-header {
           display: flex;
           justify-content: space-between;
-          align-items: flex-start;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 12px;
         }
-        .contract-title {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        .detail-row {
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-        }
-        .detail-row strong {
-          color: #1351B4;
-          font-size: 14px;
+        .info-row:last-child {
+          border-bottom: none !important;
+          margin-bottom: 0 !important;
         }
         .btn:hover {
-          opacity: 0.9;
           transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .detail-card:hover {
+          border-color: #cbd5e1;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #back-to-list-btn:hover {
+          background-color: #e2e8f0;
+          border-color: #94a3b8;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 768px) {
+          .contract-header {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          .contract-actions {
+            flex-direction: column;
+          }
+          .detail-header {
+            font-size: 13px !important;
+          }
         }
       </style>
     `;
@@ -3918,6 +5278,20 @@ export default {
         detailsBtn.addEventListener("click", () => {
           this.openContractDetails(contract.id);
         });
+      }
+
+      // Add event listener for back button (when opened from list)
+      if (context && context.fromList) {
+        const backBtn = document.getElementById("back-to-list-btn");
+        if (backBtn) {
+          backBtn.addEventListener("click", () => {
+            // Return to the contracts list for the specific day
+            this.showAllContractsForDay(
+              context.allContracts,
+              context.dayNumber
+            );
+          });
+        }
       }
     }, 100);
   },
@@ -4063,7 +5437,12 @@ export default {
           item.addEventListener("click", () => {
             const contract = contracts[index];
             if (contract) {
-              this.showContractModal(contract);
+              // Pass context information to indicate this was opened from the list
+              this.showContractModal(contract, {
+                fromList: true,
+                dayNumber: dayNumber,
+                allContracts: contracts,
+              });
             }
           });
         });
@@ -4140,11 +5519,23 @@ export default {
       this.indicadores_initGraficoComAditivos();
     }, 2000);
 
+    // Inicializar o gráfico donut de contratos com cláusulas
+    setTimeout(() => {
+      console.log("🍩 Inicializando gráfico com cláusulas...");
+      this.indicadores_initGraficoClausulas();
+    }, 2125);
+
     // Inicializar o gráfico de contratos com variações significativas
     setTimeout(() => {
       console.log("📊 Inicializando gráfico de variações de contratos...");
       this.indicadores_initContratosVariacoes();
     }, 2250);
+
+    // Inicializar o gráfico de oportunidades (contratos sem empenhos)
+    setTimeout(() => {
+      console.log("🔍 Inicializando gráfico de oportunidades...");
+      this.indicadores_initOportunidades();
+    }, 2375);
 
     // Inicializar o card de total de contratos
     setTimeout(() => {
@@ -4187,6 +5578,20 @@ export default {
       console.log("💰 Inicializando gráfico de valores por categoria...");
       this.indicadores_initValoresPorCategoria();
     }, 4600);
+
+    // Inicializar o gráfico de eficiência processual
+    setTimeout(() => {
+      console.log("⚡ Inicializando gráfico de eficiência processual...");
+      this.indicadores_initEficiencia();
+    }, 4800);
+
+    // Inicializar o gráfico de distribuição de carga de trabalho
+    setTimeout(() => {
+      console.log(
+        "� Inicializando gráfico de distribuição de carga de trabalho..."
+      );
+      this.indicadores_initModalidades();
+    }, 4900);
 
     // Inicializar o cronograma de vencimentos
     setTimeout(() => {
@@ -4407,12 +5812,17 @@ export default {
       clausulasElement.innerHTML = ``;
     }
 
-    // Card 2 - Modalidades de Contratação
+    // Card 2 - Distribuição de Carga de Trabalho
     const modalidadesElement = document.getElementById(
       "indicadoresModalidadesContent"
     );
     if (modalidadesElement) {
-      modalidadesElement.innerHTML = ``;
+      modalidadesElement.innerHTML = `
+        <div class="indicadores-loading">
+          <div class="indicadores-loading-spinner"></div>
+          <p>Analisando distribuição de carga de trabalho<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+        </div>
+      `;
     }
 
     // Card 3 - Eficiência Processual
@@ -4462,7 +5872,15 @@ export default {
       "indicadoresOportunidadesContent"
     );
     if (oportunidadesElement) {
-      oportunidadesElement.innerHTML = ``;
+      oportunidadesElement.innerHTML = `
+        <div class="indicadores-map-loading">
+          <div class="indicadores-map-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h5>Carregando oportunidades</h5>
+          <p>Buscando contratos sem empenhos associados<span class="indicadores-loading-dots"><span></span><span></span><span></span></span></p>
+        </div>
+      `;
     }
 
     // Card 3 - Ações Prioritárias
@@ -4659,7 +6077,8 @@ export default {
       App.card_header.card_header_createDynamic(
         {
           title: "Mapa por Estados",
-          subtitle: "Visualização geográfica da distribuição nacional",
+          subtitle:
+            "Visualização geográfica da distribuição nacional contratos → unidades → municipios",
           icon: "fas fa-map",
           actions: [],
         },
@@ -4670,7 +6089,8 @@ export default {
       App.card_header.card_header_createDynamic(
         {
           title: "Contratos por Região",
-          subtitle: "Concentração regional das contratações",
+          subtitle:
+            "Concentração regional das contratações contratos → unidades → municipios",
           icon: "fas fa-chart-pie",
           actions: [],
         },
@@ -4717,9 +6137,9 @@ export default {
       // Card 2 - Modalidades de Contratação
       App.card_header.card_header_createDynamic(
         {
-          title: "Modalidades de Contratação",
-          subtitle: "Distribuição por tipo de processo licitatório",
-          icon: "fas fa-list-alt",
+          title: "Distribuição de Carga de Trabalho",
+          subtitle: "Top responsáveis com maior número de contratos",
+          icon: "fas fa-users-cog",
           actions: [],
         },
         "indicadores-modalidades-header"

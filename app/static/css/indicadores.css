@@ -67,7 +67,7 @@
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Body dos cards */
@@ -127,12 +127,12 @@
   border: 1px solid #e9ecef;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible !important;
 }
 
 /* Body dos cards */
 .indicadores-two-cards .card-body-govbr {
-  overflow: hidden;
+  overflow: visible !important;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -293,7 +293,7 @@
   overflow-y: auto;
   position: relative;
   height: 100%;
-  overflow: hidden;
+  overflow: visible !important;
 }
 
 /* Scrollbar customizada */
@@ -832,19 +832,19 @@
   text-align: center !important;
   font-weight: bold;
   margin-bottom: 4px;
-  color: #5f70a5;
+  color: #ffffff !important;
 }
 
 /* Estilo para números no tooltip */
 .indicadores-tooltip-number {
   font-weight: bold;
-  color: #5f70a5;
+  color: #ffffff !important;
 }
 
 /* Estilo para percentual no tooltip */
 .indicadores-tooltip-percent {
   font-size: 0.9em;
-  color: #666;
+  color: #ffffff !important;
   font-style: italic;
 }
 
@@ -1272,6 +1272,93 @@
   min-height: 250px !important;
 }
 
+/* ===================== ESTILOS PARA GRÁFICO DE OPORTUNIDADES ===================== */
+
+.indicadores-oportunidades-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  max-height: 280px !important;
+  padding: 10px 10px 10px 10px !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-oportunidades-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 200px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de oportunidades */
+#indicadores-content-insights-executivos .indicadores-oportunidades-container {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DE EFICIÊNCIA PROCESSUAL ===================== */
+
+.indicadores-eficiencia-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  max-height: 280px !important;
+  padding: 10px 10px 10px 10px !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-eficiencia-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 200px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de eficiência */
+#indicadores-content-metodos-eficiencia .indicadores-eficiencia-container {
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* ===================== ESTILOS PARA GRÁFICO DE MODALIDADES (TOP RESPONSÁVEIS) ===================== */
+
+.indicadores-modalidades-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 300px !important;
+  max-height: 350px !important;
+  padding: 10px 10px 10px 10px !important;
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+#indicadores-modalidades-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+  display: block !important;
+  position: relative !important;
+}
+
+/* Estilos específicos para a seção de modalidades */
+#indicadores-content-metodos-eficiencia .indicadores-modalidades-container {
+  height: 100% !important;
+  min-height: 300px !important;
+}
+
 /* ===================== ESTILOS PARA GRÁFICO DE EVOLUÇÃO FINANCEIRA ===================== */
 
 .indicadores-evolucao-financeira-container {
@@ -1386,6 +1473,7 @@
 
 #indicadores-content-insights-executivos .indicadores-card-content {
   height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1496,16 +1584,21 @@
   overflow: hidden;
   width: 100%;
   height: 100%;
-  min-height: 260px;
+  min-height: 300px;
   font-family: "Rawline", Arial, sans-serif;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .indicadores-calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: 10px 15px;
   color: black;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .indicadores-calendar-header h3 {
@@ -1516,12 +1609,17 @@
   background: none;
   border: none;
   color: black;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border-radius: 4px;
   transition: background-color 0.2s;
   font-family: "Rawline", Arial, sans-serif;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .indicadores-calendar-header button:hover {
@@ -1564,11 +1662,12 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 1px;
   background-color: #e9ecef;
+  flex: 1;
+  grid-template-rows: repeat(5, 1fr);
 }
 
 .indicadores-day {
-  min-height: 100px;
-  max-height: 100px;
+  min-height: 60px;
   padding: 4px;
   background-color: white;
   position: relative;
@@ -1576,6 +1675,8 @@
   border: 1px solid transparent;
   cursor: pointer;
   font-size: 11px;
+  display: flex;
+  flex-direction: column;
 }
 
 .indicadores-day:hover {
@@ -1714,6 +1815,91 @@
   padding: 0 10px;
 }
 
+/* Dual calendar layout */
+.indicadores-dual-calendar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 10px 15px 15px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.indicadores-month-container {
+  background-color: #fafafa;
+  border-radius: 6px;
+  padding: 8px;
+  border: 1px solid #e9ecef;
+  min-width: 0; /* Allow shrinking */
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.indicadores-months-display {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: 100%;
+  flex: 1;
+}
+
+.indicadores-months-display h3 {
+  font-weight: 500;
+  font-size: 14px;
+  margin: 0;
+  font-family: "Rawline", Arial, sans-serif;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* Adjust weekdays for dual calendar */
+.indicadores-month-container .indicadores-weekdays {
+  font-size: 12px;
+  padding: 0;
+}
+
+.indicadores-month-container .indicadores-weekdays div {
+  padding: 4px 1px;
+  font-size: 11px;
+}
+
+/* Adjust days for dual calendar */
+.indicadores-month-container .indicadores-days {
+  gap: 1px;
+  flex: 1;
+  grid-template-rows: repeat(5, 1fr);
+}
+
+.indicadores-month-container .indicadores-day {
+  min-height: 50px;
+  padding: 3px;
+  font-size: 10px;
+  line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+}
+
+.indicadores-month-container .indicadores-day-number {
+  font-size: 12px;
+  margin-bottom: 2px;
+  font-weight: 700;
+}
+
+.indicadores-month-container .indicadores-contract {
+  font-size: 9px;
+  padding: 2px 3px;
+  margin-bottom: 1px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
 .indicadores-legend-item {
   display: flex;
   align-items: center;
@@ -1819,15 +2005,47 @@
 /* Responsive design for calendar */
 @media (max-width: 768px) {
   .indicadores-calendar-container {
-    min-height: 220px;
+    min-height: 300px;
+  }
+
+  /* Dual calendar responsive - stack on mobile */
+  .indicadores-dual-calendar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 8px 10px 10px;
+  }
+
+  .indicadores-months-display {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .indicadores-months-display h3 {
+    font-size: 12px;
+  }
+
+  .indicadores-month-container .indicadores-day {
+    min-height: 55px;
+    max-height: 55px;
+    font-size: 7px;
+  }
+
+  .indicadores-month-container .indicadores-day-number {
+    font-size: 8px;
+  }
+
+  .indicadores-month-container .indicadores-contract {
+    font-size: 6px;
+    padding: 1px;
   }
 
   .indicadores-weekdays {
-    font-size: 11px;
+    font-size: 9px;
   }
 
   .indicadores-weekdays div {
-    padding: 6px 2px;
+    padding: 4px 1px;
   }
 
   .indicadores-weekdays .weekday-full {
@@ -1837,7 +2055,42 @@
   .indicadores-weekdays .weekday-short {
     display: block;
   }
+}
 
+@media (max-width: 480px) {
+  .indicadores-calendar-container {
+    min-height: 250px;
+  }
+
+  .indicadores-dual-calendar {
+    padding: 5px;
+    gap: 8px;
+  }
+
+  .indicadores-month-container {
+    padding: 5px;
+  }
+
+  .indicadores-month-container .indicadores-day {
+    min-height: 45px;
+    max-height: 45px;
+    padding: 1px;
+  }
+
+  .indicadores-month-container .indicadores-day-number {
+    font-size: 7px;
+  }
+
+  .indicadores-month-container .indicadores-contract {
+    font-size: 5px;
+  }
+
+  .indicadores-months-display h3 {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 768px) {
   .indicadores-day {
     min-height: 105px;
     max-height: 105px;
@@ -1890,51 +2143,6 @@
     height: 22px;
     font-size: 8px;
   }
-}
-
-/* Tooltip específico para o calendário */
-.indicadores-tooltip {
-  background: rgba(255, 255, 255, 0.95);
-  border: 2px solid #1351b4;
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-family: "Rawline", Arial, sans-serif;
-  color: #333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.indicadores-tooltip-title {
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #1351b4;
-  text-align: center;
-}
-
-.indicadores-tooltip-value {
-  margin-bottom: 6px;
-}
-
-.indicadores-tooltip-number {
-  font-weight: bold;
-  color: #1351b4;
-}
-
-.indicadores-tooltip-contracts {
-  font-size: 0.9em;
-  margin-top: 8px;
-}
-
-.indicadores-tooltip-contracts div {
-  margin-bottom: 2px;
-  color: #666;
-}
-
-.indicadores-tooltip-note {
-  font-style: italic;
-  color: #888;
-  font-size: 0.85em;
-  margin-top: 6px;
-  text-align: center;
 }
 
 /* ===================== ESTILOS PARA CARD DE TOTAL DE CONTRATOS ===================== */
