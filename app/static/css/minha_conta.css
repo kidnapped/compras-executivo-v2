@@ -703,6 +703,7 @@ div.minha_conta_profile_info h1.profile-name {
 /* Security Card */
 .minha_conta_security_card {
     border-color: #f59e0b;
+    margin-top: -4px !important;
 }
 
 .minha_conta_security_card::before {

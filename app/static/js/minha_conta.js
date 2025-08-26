@@ -210,6 +210,16 @@ export default {
         },
         'minha-conta-uasgs-header'
       );
+
+      // Header do card Segurança & Privacidade
+      App.cardHeader.card_header_createDynamic(
+        {
+          title: 'Segurança & Privacidade',
+          subtitle: 'Configurações de segurança da sua conta',
+          icon: 'fas fa-shield-alt'
+        },
+        'minha-conta-seguranca-header'
+      );
       console.log('✅ Headers dos cards da minha conta criados via módulo cardHeader');
     } else {
       console.log('⚠️ Módulo cardHeader não disponível, usando fallback');
@@ -314,6 +324,25 @@ export default {
         </div>
       `;
       uasgsHeaderContainer.innerHTML = uasgsHeaderHTML;
+    }
+    
+    // Header do card Segurança & Privacidade
+    const segurancaHeaderContainer = document.getElementById('minha-conta-seguranca-header');
+    if (segurancaHeaderContainer) {
+      const segurancaHeaderHTML = `
+        <div class="card-header-govbr">
+          <div class="govbr-header-content">
+            <div class="govbr-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="govbr-title">
+              <h3>Segurança & Privacidade</h3>
+              <span class="govbr-subtitle">Configurações de segurança da sua conta</span>
+            </div>
+          </div>
+        </div>
+      `;
+      segurancaHeaderContainer.innerHTML = segurancaHeaderHTML;
     }
     
     console.log('✅ Headers dos cards da minha conta carregados com sucesso (fallback)');

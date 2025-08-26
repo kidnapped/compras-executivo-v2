@@ -275,54 +275,46 @@
         <!-- Terceira linha para outros cards -->
         <div class="row mt-4">
             <div class="col-12">
-                <div class="row g-4">
-                        <div class="col-12">
-                            <div class="minha_conta_info_card minha_conta_security_card">
-                                <div class="minha_conta_card_header_modern">
-                                    <div class="minha_conta_header_icon">
-                                        <i class="fas fa-shield-alt"></i>
+                <div class="minha_conta_card_container minha_conta_security_card">
+                    <div class="minha_conta_card_modern">
+                        <!-- Card Header Component - Dynamic -->
+                        <div id="minha-conta-seguranca-header">
+                            <!-- Card header será carregado dinamicamente via JavaScript -->
+                        </div>
+                        <div class="minha_conta_card_body">
+                            <div class="minha_conta_security_notice">
+                                <div class="minha_conta_notice_icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="minha_conta_notice_content">
+                                    <h4>Política de Segurança</h4>
+                                    <p>Para alterações de senha ou outras configurações de segurança, entre em
+                                        contato com o administrador do sistema através dos canais oficiais.</p>
+                                </div>
+                            </div>
+                            <div class="minha_conta_security_features">
+                                <div class="minha_conta_feature_item disabled">
+                                    <div class="minha_conta_feature_icon">
+                                        <i class="fas fa-key"></i>
                                     </div>
-                                    <div class="minha_conta_header_text">
-                                        <h3>Segurança & Privacidade</h3>
-                                        <p>Configurações de segurança da sua conta</p>
+                                    <div class="minha_conta_feature_content">
+                                        <span>Alteração de Senha</span>
+                                        <small>Contate o administrador</small>
+                                    </div>
+                                    <div class="minha_conta_feature_status">
+                                        <i class="fas fa-lock"></i>
                                     </div>
                                 </div>
-                                <div class="minha_conta_card_body_modern">
-                                    <div class="minha_conta_security_notice">
-                                        <div class="minha_conta_notice_icon">
-                                            <i class="fas fa-info-circle"></i>
-                                        </div>
-                                        <div class="minha_conta_notice_content">
-                                            <h4>Política de Segurança</h4>
-                                            <p>Para alterações de senha ou outras configurações de segurança, entre em
-                                                contato com o administrador do sistema através dos canais oficiais.</p>
-                                        </div>
+                                <div class="minha_conta_feature_item disabled">
+                                    <div class="minha_conta_feature_icon">
+                                        <i class="fas fa-mobile-alt"></i>
                                     </div>
-                                    <div class="minha_conta_security_features">
-                                        <div class="minha_conta_feature_item disabled">
-                                            <div class="minha_conta_feature_icon">
-                                                <i class="fas fa-key"></i>
-                                            </div>
-                                            <div class="minha_conta_feature_content">
-                                                <span>Alteração de Senha</span>
-                                                <small>Contate o administrador</small>
-                                            </div>
-                                            <div class="minha_conta_feature_status">
-                                                <i class="fas fa-lock"></i>
-                                            </div>
-                                        </div>
-                                        <div class="minha_conta_feature_item disabled">
-                                            <div class="minha_conta_feature_icon">
-                                                <i class="fas fa-mobile-alt"></i>
-                                            </div>
-                                            <div class="minha_conta_feature_content">
-                                                <span>Autenticação em Dois Fatores</span>
-                                                <small>Funcionalidade futura</small>
-                                            </div>
-                                            <div class="minha_conta_feature_status">
-                                                <i class="fas fa-clock"></i>
-                                            </div>
-                                        </div>
+                                    <div class="minha_conta_feature_content">
+                                        <span>Autenticação em Dois Fatores</span>
+                                        <small>Funcionalidade futura</small>
+                                    </div>
+                                    <div class="minha_conta_feature_status">
+                                        <i class="fas fa-clock"></i>
                                     </div>
                                 </div>
                             </div>
