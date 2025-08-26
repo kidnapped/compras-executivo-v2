@@ -1,5 +1,148 @@
 /* ===================== MENU LATERAL ===================== */
 
+/* Menu Logo */
+.menu-logo {
+  height: 40px !important;
+  margin-right: 10px !important;
+}
+
+/* UASG Display Section */
+#menu-uasgs-display {
+  display: none;
+  padding: 0px !important;
+  margin-bottom: 10px;
+}
+
+.menu-uasg-item {
+  display: flex !important;
+  align-items: center !important;
+  padding: 4px 6px !important;
+  margin-bottom: 2px !important;
+  background-color: #fff !important;
+  border-radius: 3px !important;
+  font-size: 0.7rem !important;
+  height: 24px !important;
+  overflow: hidden !important;
+}
+
+.menu-uasg-item i {
+  color: #1351b4 !important;
+  margin-right: 6px !important;
+  font-size: 0.6rem !important;
+  flex-shrink: 0 !important;
+}
+
+.menu-uasg-code {
+  color: #495057 !important;
+  font-weight: 600 !important;
+  flex-shrink: 0 !important;
+}
+
+.menu-uasg-name {
+  color: #6c757d !important;
+  margin-left: 4px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.menu-uasg-more {
+  display: flex !important;
+  align-items: center !important;
+  padding: 4px 6px !important;
+  margin-bottom: 2px !important;
+  background-color: #fff !important;
+  border-radius: 3px !important;
+  font-size: 0.7rem !important;
+  height: 24px !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.menu-uasg-more:hover {
+  background-color: #e9ecef !important;
+}
+
+.menu-uasg-more i {
+  color: #6c757d !important;
+  margin-right: 6px !important;
+  font-size: 0.6rem !important;
+}
+
+.menu-uasg-more-text {
+  color: #495057 !important;
+  font-weight: 500 !important;
+}
+
+/* Tooltip melhorado */
+#menu-uasgs-tooltip {
+  position: fixed !important;
+  background: #2c3e50 !important;
+  color: white !important;
+  padding: 12px 16px !important;
+  border-radius: 8px !important;
+  font-size: 0.75rem !important;
+  z-index: 10000 !important;
+  max-width: 280px !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #34495e !important;
+  line-height: 1.4 !important;
+}
+
+/* Custom scrollbar para o tooltip */
+#menu-uasgs-tooltip::-webkit-scrollbar {
+  width: 6px;
+}
+
+#menu-uasgs-tooltip::-webkit-scrollbar-track {
+  background: #34495e;
+  border-radius: 3px;
+}
+
+#menu-uasgs-tooltip::-webkit-scrollbar-thumb {
+  background: #5a6c7d;
+  border-radius: 3px;
+}
+
+#menu-uasgs-tooltip::-webkit-scrollbar-thumb:hover {
+  background: #7f8c8d;
+}
+
+.menu-uasgs-tooltip-header {
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+  color: #ecf0f1 !important;
+  border-bottom: 1px solid #34495e !important;
+  padding-bottom: 6px !important;
+}
+
+.menu-uasgs-tooltip-item {
+  margin-bottom: 6px !important;
+  padding: 4px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.menu-uasgs-tooltip-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.menu-uasgs-tooltip-code {
+  font-weight: 600 !important;
+  color: #3498db !important;
+  margin-right: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+.menu-uasgs-tooltip-name {
+  color: #bdc3c7 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
 #main-navigation {
   position: fixed;
   top: 130px; /* MESMO valor do header normal */

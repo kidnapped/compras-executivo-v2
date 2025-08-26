@@ -35,13 +35,34 @@ export default {
       // Simples: espera renderizar e chama a função original
       setTimeout(() => {
         this.menu();
+        this.displayUasgs();
         this.isInitializing = false;
         console.log('✅ Menu initialized successfully');
+        
+        // Adicionar listener para mudanças de UASG
+        this.setupUasgChangeListener();
       }, 100);
     } else {
       console.log('⚠️ Container #menu-dynamic-container não encontrado, menu não será inicializado');
       this.isInitializing = false;
     }
+  },
+
+  // Configura listener para mudanças de UASG
+  setupUasgChangeListener() {
+    // Escutar eventos de mudança de UASG
+    document.addEventListener('unidadeSelected', () => {
+      console.log('🔄 UASG atualizada, recarregando exibição no menu');
+      setTimeout(() => this.displayUasgs(), 100);
+    });
+    
+    document.addEventListener('unidadeCleared', () => {
+      console.log('🔄 UASG removida, ocultando exibição no menu');
+      const displayContainer = document.getElementById('menu-uasgs-display');
+      if (displayContainer) {
+        displayContainer.style.display = 'none';
+      }
+    });
   },
 
   // Renderiza HTML do menu
@@ -63,10 +84,24 @@ export default {
           </div>
         </div>
         <nav class="menu-body" role="tree">
+          <!-- UASG Display Section -->
+          <div id="menu-uasgs-display">
+            <div id="menu-uasgs-list">
+              <!-- UASGs will be dynamically inserted here -->
+            </div>
+          </div>
           <div id="menu-dinamico"></div>
         </nav>
       </nav>
     `;
+
+    // Criar tooltip separado no body se não existir
+    if (!document.getElementById('menu-uasgs-tooltip')) {
+      const tooltip = document.createElement('div');
+      tooltip.id = 'menu-uasgs-tooltip';
+      tooltip.style.display = 'none';
+      document.body.appendChild(tooltip);
+    }
   },
 
   // Check if we're in development mode
@@ -392,6 +427,332 @@ export default {
         }
       }
     });
+  },
+
+  // Exibe as UASGs do usuário no menu
+  async displayUasgs() {
+    try {
+      // Criar tooltip se não existir
+      this.createTooltipIfNeeded();
+      
+      // Obter UASGs do atributo data-uasgs do body
+      const bodyUasgs = document.body.getAttribute('data-uasgs');
+      console.log('🔍 UASGs encontradas no body:', bodyUasgs);
+      
+      if (!bodyUasgs || bodyUasgs.trim() === '') {
+        console.log('📄 Nenhuma UASG encontrada na sessão');
+        return;
+      }
+      
+      const uasgCodes = bodyUasgs.split(',').map(code => code.trim()).filter(code => code !== '');
+      
+      if (uasgCodes.length === 0) {
+        console.log('📄 Lista de UASGs vazia');
+        return;
+      }
+      
+      console.log('🏢 Buscando informações das UASGs:', uasgCodes);
+      
+      // Buscar informações das UASGs
+      const response = await fetch(`/uasg-filter/search?codes=${uasgCodes.join(',')}`);
+      const data = await response.json();
+      
+      if (data.success && data.data.length > 0) {
+        this.renderUasgDisplay(data.data);
+      } else {
+        console.warn('⚠️ Erro ao buscar informações das UASGs:', data.message);
+        // Fallback: exibir apenas os códigos
+        this.renderUasgDisplayFallback(uasgCodes);
+      }
+      
+    } catch (error) {
+      console.error('❌ Erro ao exibir UASGs:', error);
+      // Fallback: tentar exibir apenas os códigos se estão disponíveis
+      const bodyUasgs = document.body.getAttribute('data-uasgs');
+      if (bodyUasgs && bodyUasgs.trim() !== '') {
+        const uasgCodes = bodyUasgs.split(',').map(code => code.trim()).filter(code => code !== '');
+        if (uasgCodes.length > 0) {
+          this.renderUasgDisplayFallback(uasgCodes);
+        }
+      }
+    }
+  },
+
+  // Renderiza a exibição das UASGs com informações completas
+  renderUasgDisplay(uasgs) {
+    const displayContainer = document.getElementById('menu-uasgs-display');
+    const listContainer = document.getElementById('menu-uasgs-list');
+    
+    if (!displayContainer || !listContainer) {
+      console.warn('⚠️ Containers da exibição de UASGs não encontrados');
+      return;
+    }
+    
+    // Limpar lista atual
+    listContainer.innerHTML = '';
+    
+    const maxVisible = 3;
+    const hasMore = uasgs.length > maxVisible;
+    const visibleUasgs = uasgs.slice(0, maxVisible);
+    const hiddenUasgs = uasgs.slice(maxVisible);
+    
+    // Renderizar UASGs visíveis
+    visibleUasgs.forEach((uasg, index) => {
+      const uasgElement = this.createUasgElement(uasg);
+      listContainer.appendChild(uasgElement);
+    });
+    
+    // Se há mais UASGs, adicionar indicador com tooltip
+    if (hasMore) {
+      const moreIndicator = this.createMoreIndicator(hiddenUasgs.length, uasgs);
+      listContainer.appendChild(moreIndicator);
+    }
+    
+    // Mostrar o container
+    displayContainer.style.display = 'block';
+    
+    console.log(`✅ Exibindo ${visibleUasgs.length} UASGs no menu (${hiddenUasgs.length} ocultas)`);
+  },
+
+  // Renderiza a exibição das UASGs apenas com códigos (fallback)
+  renderUasgDisplayFallback(uasgCodes) {
+    const displayContainer = document.getElementById('menu-uasgs-display');
+    const listContainer = document.getElementById('menu-uasgs-list');
+    
+    if (!displayContainer || !listContainer) {
+      console.warn('⚠️ Containers da exibição de UASGs não encontrados');
+      return;
+    }
+    
+    // Limpar lista atual
+    listContainer.innerHTML = '';
+    
+    const maxVisible = 3;
+    const hasMore = uasgCodes.length > maxVisible;
+    const visibleCodes = uasgCodes.slice(0, maxVisible);
+    const hiddenCodes = uasgCodes.slice(maxVisible);
+    
+    // Renderizar códigos visíveis
+    visibleCodes.forEach(code => {
+      const uasgElement = this.createUasgElementFallback(code);
+      listContainer.appendChild(uasgElement);
+    });
+    
+    // Se há mais códigos, adicionar indicador com tooltip
+    if (hasMore) {
+      const moreIndicator = this.createMoreIndicatorFallback(hiddenCodes.length, uasgCodes);
+      listContainer.appendChild(moreIndicator);
+    }
+    
+    // Mostrar o container
+    displayContainer.style.display = 'block';
+    
+    console.log(`✅ Exibindo ${visibleCodes.length} UASGs no menu (fallback - ${hiddenCodes.length} ocultas)`);
+  },
+
+  // Cria elemento individual de UASG
+  createUasgElement(uasg) {
+    const div = document.createElement('div');
+    div.className = 'menu-uasg-item';
+    
+    const truncatedName = uasg.nomeresumido && uasg.nomeresumido.length > 20 
+      ? uasg.nomeresumido.substring(0, 20) + '...' 
+      : uasg.nomeresumido || 'Nome não disponível';
+    
+    div.innerHTML = `
+      <i class="fas fa-building"></i>
+      <span class="menu-uasg-code">${uasg.codigo}</span>
+      <span class="menu-uasg-name">- ${truncatedName}</span>
+    `;
+    
+    return div;
+  },
+
+  // Cria elemento individual de UASG (fallback)
+  createUasgElementFallback(code) {
+    const div = document.createElement('div');
+    div.className = 'menu-uasg-item';
+    
+    div.innerHTML = `
+      <i class="fas fa-building"></i>
+      <span class="menu-uasg-code">${code}</span>
+      <span class="menu-uasg-name">- Carregando...</span>
+    `;
+    
+    return div;
+  },
+
+  // Cria indicador "mais UASGs"
+  createMoreIndicator(hiddenCount, allUasgs) {
+    const div = document.createElement('div');
+    div.className = 'menu-uasg-more';
+    
+    div.innerHTML = `
+      <i class="fas fa-ellipsis-h"></i>
+      <span class="menu-uasg-more-text">+${hiddenCount} mais</span>
+    `;
+    
+    // Adicionar eventos de tooltip com delay
+    div.addEventListener('mouseenter', (e) => {
+      clearTimeout(this.hideTimeout);
+      this.tooltipTimeout = setTimeout(() => {
+        this.showUasgTooltip(e, allUasgs);
+      }, 300); // 300ms delay antes de mostrar
+    });
+    
+    div.addEventListener('mouseleave', () => {
+      clearTimeout(this.tooltipTimeout);
+      this.hideTimeout = setTimeout(() => {
+        this.hideUasgTooltip();
+      }, 500); // 500ms delay antes de esconder
+    });
+    
+    return div;
+  },
+
+  // Cria indicador "mais UASGs" (fallback)
+  createMoreIndicatorFallback(hiddenCount, allCodes) {
+    const div = document.createElement('div');
+    div.className = 'menu-uasg-more';
+    
+    div.innerHTML = `
+      <i class="fas fa-ellipsis-h"></i>
+      <span class="menu-uasg-more-text">+${hiddenCount} mais</span>
+    `;
+    
+    // Adicionar eventos de tooltip com delay
+    div.addEventListener('mouseenter', (e) => {
+      clearTimeout(this.hideTimeout);
+      this.tooltipTimeout = setTimeout(() => {
+        this.showUasgTooltipFallback(e, allCodes);
+      }, 300); // 300ms delay antes de mostrar
+    });
+    
+    div.addEventListener('mouseleave', () => {
+      clearTimeout(this.tooltipTimeout);
+      this.hideTimeout = setTimeout(() => {
+        this.hideUasgTooltip();
+      }, 500); // 500ms delay antes de esconder
+    });
+    
+    return div;
+  },
+
+  // Cria o tooltip se não existir
+  createTooltipIfNeeded() {
+    if (!document.getElementById('menu-uasgs-tooltip')) {
+      const tooltip = document.createElement('div');
+      tooltip.id = 'menu-uasgs-tooltip';
+      tooltip.style.display = 'none';
+      document.body.appendChild(tooltip);
+      console.log('✅ Tooltip de UASGs criado');
+    }
+  },
+
+  // Mostra tooltip com todas as UASGs
+  showUasgTooltip(event, allUasgs) {
+    const tooltip = document.getElementById('menu-uasgs-tooltip');
+    if (!tooltip) return;
+    
+    let tooltipContent = '<div class="menu-uasgs-tooltip-header">Todas as UASGs:</div>';
+    
+    allUasgs.forEach(uasg => {
+      const name = uasg.nomeresumido || 'Nome não disponível';
+      tooltipContent += `
+        <div class="menu-uasgs-tooltip-item">
+          <span class="menu-uasgs-tooltip-code">${uasg.codigo}</span>
+          <span class="menu-uasgs-tooltip-name">${name}</span>
+        </div>
+      `;
+    });
+    
+    tooltip.innerHTML = tooltipContent;
+    tooltip.style.display = 'block';
+    
+    // Posicionar tooltip na altura do primeiro item das UASGs
+    const menuRect = document.getElementById('main-navigation').getBoundingClientRect();
+    const firstUasgItem = document.querySelector('.menu-uasg-item');
+    
+    if (firstUasgItem) {
+      const firstItemRect = firstUasgItem.getBoundingClientRect();
+      tooltip.style.left = `${menuRect.right + 10}px`;
+      tooltip.style.top = `${firstItemRect.top}px`;
+    } else {
+      // Fallback para o container se não houver itens
+      const uasgDisplayRect = document.getElementById('menu-uasgs-display').getBoundingClientRect();
+      tooltip.style.left = `${menuRect.right + 10}px`;
+      tooltip.style.top = `${uasgDisplayRect.top}px`;
+    }
+
+    // Adicionar eventos para manter tooltip aberto quando mouse está sobre ele
+    this.setupTooltipEvents(tooltip);
+  },
+
+  // Mostra tooltip com todas as UASGs (fallback)
+  showUasgTooltipFallback(event, allCodes) {
+    const tooltip = document.getElementById('menu-uasgs-tooltip');
+    if (!tooltip) return;
+    
+    let tooltipContent = '<div class="menu-uasgs-tooltip-header">Todas as UASGs:</div>';
+    
+    allCodes.forEach(code => {
+      tooltipContent += `
+        <div class="menu-uasgs-tooltip-item">
+          <span class="menu-uasgs-tooltip-code">${code}</span>
+          <span class="menu-uasgs-tooltip-name">Carregando...</span>
+        </div>
+      `;
+    });
+    
+    tooltip.innerHTML = tooltipContent;
+    tooltip.style.display = 'block';
+    
+    // Posicionar tooltip na altura do primeiro item das UASGs
+    const menuRect = document.getElementById('main-navigation').getBoundingClientRect();
+    const firstUasgItem = document.querySelector('.menu-uasg-item');
+    
+    if (firstUasgItem) {
+      const firstItemRect = firstUasgItem.getBoundingClientRect();
+      tooltip.style.left = `${menuRect.right + 10}px`;
+      tooltip.style.top = `${firstItemRect.top}px`;
+    } else {
+      // Fallback para o container se não houver itens
+      const uasgDisplayRect = document.getElementById('menu-uasgs-display').getBoundingClientRect();
+      tooltip.style.left = `${menuRect.right + 10}px`;
+      tooltip.style.top = `${uasgDisplayRect.top}px`;
+    }
+
+    // Adicionar eventos para manter tooltip aberto quando mouse está sobre ele
+    this.setupTooltipEvents(tooltip);
+  },
+
+  // Esconde tooltip
+  // Configura eventos do tooltip para permitir interação
+  setupTooltipEvents(tooltip) {
+    // Remove eventos anteriores para evitar duplicação
+    tooltip.removeEventListener('mouseenter', this.tooltipMouseEnter);
+    tooltip.removeEventListener('mouseleave', this.tooltipMouseLeave);
+    
+    // Adiciona novos eventos
+    this.tooltipMouseEnter = () => {
+      clearTimeout(this.hideTimeout);
+    };
+    
+    this.tooltipMouseLeave = () => {
+      this.hideTimeout = setTimeout(() => {
+        this.hideUasgTooltip();
+      }, 300); // Delay menor quando sai do tooltip
+    };
+    
+    tooltip.addEventListener('mouseenter', this.tooltipMouseEnter);
+    tooltip.addEventListener('mouseleave', this.tooltipMouseLeave);
+  },
+
+  hideUasgTooltip() {
+    const tooltip = document.getElementById('menu-uasgs-tooltip');
+    if (tooltip) {
+      tooltip.style.display = 'none';
+    }
   }
 
 };
